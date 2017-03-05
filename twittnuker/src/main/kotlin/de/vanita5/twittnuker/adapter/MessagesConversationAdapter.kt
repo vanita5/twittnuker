@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import org.apache.commons.lang3.time.DateUtils
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
@@ -49,7 +50,10 @@ import de.vanita5.twittnuker.view.holder.message.NoticeSummaryEventViewHolder
 import de.vanita5.twittnuker.view.holder.message.StickerMessageViewHolder
 import java.util.*
 
-class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),
+class MessagesConversationAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager),
         IItemCountsAdapter {
     private val calendars = Pair(Calendar.getInstance(), Calendar.getInstance())
     override val itemCounts: ItemCounts = ItemCounts(2)

@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter
 
 import android.content.Context
 import android.support.v4.text.BidiFormatter
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
@@ -38,15 +39,14 @@ import javax.inject.Inject
 open class BaseArrayAdapter<T>(
         context: Context,
         layoutRes: Int,
-        collection: Collection<T>? = null
+        collection: Collection<T>? = null,
+        override val getRequestManager: () -> RequestManager
 ) : ArrayAdapter<T>(context, layoutRes, collection), IContentAdapter, ILoadMoreSupportAdapter,
         IItemCountsAdapter {
     val linkify: TwidereLinkify
 
     @Inject
     override lateinit var userColorNameManager: UserColorNameManager
-    @Inject
-    override lateinit var mediaLoader: MediaLoaderWrapper
     @Inject
     override lateinit var bidiFormatter: BidiFormatter
     @Inject

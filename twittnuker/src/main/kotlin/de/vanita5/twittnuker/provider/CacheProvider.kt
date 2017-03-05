@@ -30,9 +30,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.webkit.MimeTypeMap
-import com.nostra13.universalimageloader.cache.disc.DiskCache
 import okio.ByteString
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
+import org.mariotaku.mediaviewer.library.FileCache
 import org.mariotaku.restfu.RestFuUtils
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.annotation.CacheFileType
@@ -44,11 +44,9 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 class CacheProvider : ContentProvider() {
-    @Inject
-    internal lateinit var simpleDiskCache: DiskCache
+    internal lateinit var fileCache: FileCache
 
     override fun onCreate(): Boolean {
         GeneralComponentHelper.build(context).inject(this)
@@ -68,7 +66,7 @@ class CacheProvider : ContentProvider() {
         val type = uri.getQueryParameter(TwittnukerConstants.QUERY_PARAM_TYPE)
         when (type) {
             CacheFileType.IMAGE -> {
-                val file = simpleDiskCache.get(getCacheKey(uri)) ?: return null
+                val file = fileCache.get(getCacheKey(uri)) ?: return null
                 return BitmapUtils.getImageMimeType(file)
             }
             CacheFileType.VIDEO -> {
@@ -82,7 +80,7 @@ class CacheProvider : ContentProvider() {
     }
 
     fun getMetadata(uri: Uri): CacheMetadata? {
-        val file = simpleDiskCache.get(getMetadataKey(uri)) ?: return null
+        val file = fileCache.get(getMetadataKey(uri)) ?: return null
         var `is`: FileInputStream? = null
         try {
             val mapper = LoganSquareMapperFinder.mapperFor(CacheMetadata::class.java)
@@ -110,7 +108,7 @@ class CacheProvider : ContentProvider() {
     @Throws(FileNotFoundException::class)
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
         try {
-            val file = simpleDiskCache.get(getCacheKey(uri)) ?: throw FileNotFoundException()
+            val file = fileCache.get(getCacheKey(uri)) ?: throw FileNotFoundException()
             val modeBits = modeToMode(mode)
             if (modeBits != ParcelFileDescriptor.MODE_READ_ONLY)
                 throw IllegalArgumentException("Cache can't be opened for write")

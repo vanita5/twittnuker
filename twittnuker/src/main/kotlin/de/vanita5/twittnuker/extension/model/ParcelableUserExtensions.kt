@@ -20,27 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.imageloader;
+package de.vanita5.twittnuker.extension.model
 
-import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import android.content.Context
+import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
-public class URLFileNameGenerator implements FileNameGenerator {
 
-    private final Md5FileNameGenerator mGenerator;
+fun ParcelableUser.getBestProfileImage(context: Context): String? {
+    return profile_image_url
+}
 
-    public URLFileNameGenerator() {
-        mGenerator = new Md5FileNameGenerator();
-    }
-
-    @Override
-    public String generate(String imageUri) {
-        if (imageUri == null) return null;
-        int start = imageUri.indexOf("://");
-        if (start == -1) {
-            return mGenerator.generate(imageUri);
-        }
-        return mGenerator.generate(imageUri.substring(start + 3));
-    }
-
+fun ParcelableUser.getBestProfileBanner(width: Int): String? {
+    return InternalTwitterContentUtils.getBestBannerUrl(profile_banner_url, width)
 }

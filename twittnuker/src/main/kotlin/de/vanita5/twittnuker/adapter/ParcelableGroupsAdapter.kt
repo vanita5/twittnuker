@@ -27,8 +27,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGroupsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -38,21 +38,22 @@ import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.view.holder.GroupViewHolder
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 
-class ParcelableGroupsAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), Constants, IGroupsAdapter<List<ParcelableGroup>> {
+class ParcelableGroupsAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager), IGroupsAdapter<List<ParcelableGroup>> {
     override val showAccountsColor: Boolean
         get() = false
-    override val nameFirst: Boolean
+    override val nameFirst = preferences[nameFirstKey]
     override var groupAdapterListener: IGroupsAdapter.GroupAdapterListener? = null
 
-    private val inflater: LayoutInflater
-    private val mEventListener: EventListener
+    private val inflater = LayoutInflater.from(context)
+    private val eventListener: EventListener
     private var data: List<ParcelableGroup>? = null
 
 
     init {
-        mEventListener = EventListener(this)
-        inflater = LayoutInflater.from(context)
-        nameFirst = preferences[nameFirstKey]
+        eventListener = EventListener(this)
     }
 
     fun getData(): List<ParcelableGroup>? {

@@ -46,7 +46,7 @@ class MediaPreviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun displayMedia(adapter: MediaPreviewAdapter, media: ParcelableMediaUpdate) {
-        adapter.mediaLoader.displayPreviewImage(imageView, media.uri, true)
+        adapter.getRequestManager().load(media.uri).into(imageView)
         videoIndicatorView.visibility = if (media.type == ParcelableMedia.Type.VIDEO) {
             View.VISIBLE
         } else {

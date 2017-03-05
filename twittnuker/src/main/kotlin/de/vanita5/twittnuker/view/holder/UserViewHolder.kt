@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.list_item_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.*
+import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.Utils
@@ -120,7 +121,6 @@ class UserViewHolder(
 
     fun displayUser(user: ParcelableUser) {
         val context = itemView.context
-        val loader = adapter.mediaLoader
         val manager = adapter.userColorNameManager
         val twitter = adapter.twitterWrapper
 
@@ -138,10 +138,9 @@ class UserViewHolder(
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            loader.displayProfileImage(profileImageView, user)
+            adapter.getRequestManager().load(user.getBestProfileImage(context)).into(profileImageView)
         } else {
             profileImageView.visibility = View.GONE
-            loader.cancelDisplayTask(profileImageView)
         }
 
         if (twitter.isUpdatingRelationship(user.account_key, user.key)) {

@@ -33,6 +33,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
+import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.view.ProfileImageView
@@ -82,10 +83,9 @@ abstract class AbsMessageViewHolder(itemView: View, val adapter: MessagesConvers
             if (adapter.displaySenderProfile && adapter.profileImageEnabled && sender != null
                     && !message.is_outgoing) {
                 this.visibility = View.VISIBLE
-                adapter.mediaLoader.displayProfileImage(this, sender)
+                adapter.getRequestManager().load(sender.getBestProfileImage(context)).into(this)
             } else {
                 this.visibility = View.GONE
-                adapter.mediaLoader.cancelDisplayTask(this)
             }
         }
     }

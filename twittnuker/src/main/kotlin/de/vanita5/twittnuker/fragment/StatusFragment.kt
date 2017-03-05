@@ -60,6 +60,7 @@ import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.Space
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.adapter_item_status_count_label.view.*
 import kotlinx.android.synthetic.main.fragment_status.*
@@ -90,6 +91,7 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
+import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
@@ -760,16 +762,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private val linkify: TwidereLinkify
 
 
-        private val locationView: TextView
-        private val retweetedByView: TextView
+        private val locationView = itemView.locationView
+        private val retweetedByView = itemView.retweetedBy
 
         init {
             this.linkClickHandler = DetailStatusLinkClickHandler(adapter.context,
                     adapter.multiSelectManager, adapter, adapter.preferences)
             this.linkify = TwidereLinkify(linkClickHandler)
 
-            locationView = itemView.locationView
-            retweetedByView = itemView.retweetedBy
             initViews()
         }
 
@@ -781,7 +781,6 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             if (account == null || status == null) return
             val fragment = adapter.fragment
             val context = adapter.context
-            val loader = adapter.mediaLoader
             val formatter = adapter.bidiFormatter
             val twitter = adapter.twitterWrapper
             val nameFirst = adapter.nameFirst
@@ -857,8 +856,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     } else if (adapter.isDetailMediaExpanded) {
                         itemView.quotedMediaLabel.visibility = View.GONE
                         itemView.quotedMediaPreview.visibility = View.VISIBLE
-                        itemView.quotedMediaPreview.displayMedia(loader = loader, media = quotedMedia,
-                                accountId = status.account_key, mediaClickListener = adapter.fragment)
+                        itemView.quotedMediaPreview.displayMedia(adapter.getRequestManager,
+                                media = quotedMedia, accountId = status.account_key,
+                                mediaClickListener = adapter.fragment)
                     } else {
                         itemView.quotedMediaLabel.visibility = View.VISIBLE
                         itemView.quotedMediaPreview.visibility = View.GONE
@@ -897,7 +897,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
-            loader.displayProfileImage(itemView.profileImage, status)
+            adapter.getRequestManager().load(status.getBestProfileImage(context)).into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)
@@ -989,7 +989,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.mediaPreviewContainer.visibility = View.VISIBLE
                 itemView.mediaPreview.visibility = View.VISIBLE
                 itemView.mediaPreviewLoad.visibility = View.GONE
-                itemView.mediaPreview.displayMedia(loader = loader, media = media,
+                itemView.mediaPreview.displayMedia(adapter.getRequestManager, media = media,
                         accountId = status.account_key, mediaClickListener = adapter.fragment,
                         loadingHandler = adapter.mediaLoadingHandler)
             } else {
@@ -1187,7 +1187,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private class CountsUsersAdapter(
                 private val fragment: StatusFragment,
                 private val statusAdapter: StatusAdapter
-        ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context) {
+        ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context, { Glide.with(fragment) }) {
 
             private val inflater = LayoutInflater.from(statusAdapter.context)
 
@@ -1336,15 +1336,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
 
             internal class ProfileImageViewHolder(private val adapter: CountsUsersAdapter, itemView: View) : ViewHolder(itemView), OnClickListener {
-                private val profileImageView: ImageView
+                private val profileImageView = itemView.findViewById(R.id.profileImage) as ImageView
 
                 init {
                     itemView.setOnClickListener(this)
-                    profileImageView = itemView.findViewById(R.id.profileImage) as ImageView
                 }
 
                 fun displayUser(item: ParcelableUser) {
-                    adapter.mediaLoader.displayProfileImage(profileImageView, item)
+                    adapter.getRequestManager().load(item.getBestProfileImage(adapter.context)).into(profileImageView)
                 }
 
                 override fun onClick(v: View) {
@@ -1453,7 +1452,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     private class SpaceViewHolder(itemView: View) : ViewHolder(itemView)
 
-    class StatusAdapter(val fragment: StatusFragment) : LoadMoreSupportAdapter<ViewHolder>(fragment.context), IStatusesAdapter<List<ParcelableStatus>> {
+    class StatusAdapter(
+            val fragment: StatusFragment
+    ) : LoadMoreSupportAdapter<ViewHolder>(fragment.context, { Glide.with(fragment) }), IStatusesAdapter<List<ParcelableStatus>> {
         private val inflater: LayoutInflater
         override val mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
         override val twidereLinkify: TwidereLinkify

@@ -35,8 +35,7 @@ import android.support.annotation.UiThread
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
-import com.nostra13.universalimageloader.core.DisplayImageOptions
-import com.nostra13.universalimageloader.core.assist.ImageSize
+import com.bumptech.glide.Glide
 import net.ypresto.androidtranscoder.MediaTranscoder
 import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import org.apache.commons.lang3.ArrayUtils
@@ -56,8 +55,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.mediaSizeLimit
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
@@ -725,8 +724,8 @@ class UpdateStatusTask(
             }
 
             val data = if (sizeLimit != null) when (type) {
-                ParcelableMedia.Type.IMAGE -> imageStream(context, resolver, mediaLoader, mediaUri,
-                        mediaType, sizeLimit)
+                ParcelableMedia.Type.IMAGE -> imageStream(context, resolver, mediaUri, mediaType,
+                        sizeLimit)
                 ParcelableMedia.Type.VIDEO -> videoStream(context, resolver, mediaUri, mediaType,
                         sizeLimit, chucked)
                 else -> null
@@ -756,7 +755,6 @@ class UpdateStatusTask(
         private fun imageStream(
                 context: Context,
                 resolver: ContentResolver,
-                mediaLoader: MediaLoaderWrapper,
                 mediaUri: Uri,
                 defaultType: String?,
                 sizeLimit: SizeLimit
@@ -774,12 +772,8 @@ class UpdateStatusTask(
                     imageLimit.maxWidth, imageLimit.maxHeight)
             o.inJustDecodeBounds = false
             if (o.outWidth > 0 && o.outHeight > 0 && mediaType != "image/gif") {
-                val displayOptions = DisplayImageOptions.Builder()
-                        .considerExifParams(true)
-                        .build()
-                val bitmap = mediaLoader.loadImageSync(mediaUri.toString(),
-                        ImageSize(o.outWidth, o.outHeight).scaleDown(o.inSampleSize),
-                        displayOptions)
+
+                val bitmap = Glide.with(context).load(mediaUri).asBitmap().into(o.outWidth, o.outHeight).get()
 
                 if (bitmap != null) {
                     size.set(bitmap.width, bitmap.height)

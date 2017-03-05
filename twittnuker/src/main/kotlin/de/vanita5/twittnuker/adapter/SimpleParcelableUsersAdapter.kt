@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -32,8 +33,9 @@ import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 
 class SimpleParcelableUsersAdapter(
         context: Context,
-        layoutRes: Int = R.layout.list_item_simple_user
-) : BaseArrayAdapter<ParcelableUser>(context, layoutRes) {
+        layoutRes: Int = R.layout.list_item_simple_user,
+        getRequestManager: () -> RequestManager
+) : BaseArrayAdapter<ParcelableUser>(context, layoutRes, getRequestManager = getRequestManager) {
 
     override fun getItemId(position: Int): Long {
         val item = getItem(position)

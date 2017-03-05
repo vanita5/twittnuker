@@ -89,7 +89,7 @@ class UserAutoCompleteAdapter(val context: Context) : SimpleCursorAdapter(contex
             val profileImageUrl = cursor.getString(indices.profile_image_url)
             profileImageLoader.displayProfileImage(icon, profileImageUrl)
         } else {
-            profileImageLoader.cancelDisplayTask(icon)
+            //TODO cancel image load
         }
 
         icon.visibility = if (displayProfileImage) View.VISIBLE else View.GONE

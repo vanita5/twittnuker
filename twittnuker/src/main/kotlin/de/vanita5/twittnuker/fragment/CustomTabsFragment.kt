@@ -42,6 +42,7 @@ import android.view.*
 import android.widget.*
 import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.AdapterView.OnItemClickListener
+import com.bumptech.glide.Glide
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter
 import kotlinx.android.synthetic.main.layout_draggable_list_with_empty_view.*
 import kotlinx.android.synthetic.main.list_item_section_header.view.*
@@ -272,7 +273,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
             val positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
 
             val iconsAdapter = TabIconsAdapter(context)
-            val accountsAdapter = AccountsSpinnerAdapter(context)
+            val accountsAdapter = AccountsSpinnerAdapter(context, getRequestManager = { Glide.with(this) })
             iconSpinner.adapter = iconsAdapter
             accountSpinner.adapter = accountsAdapter
 
@@ -407,7 +408,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             val extraConf = activityResultMap.get(requestCode)
             activityResultMap.remove(requestCode)
-            extraConf?.onActivityResult(requestCode and 0xFF, resultCode, data)
+            extraConf?.onActivityResult(this, requestCode and 0xFF, resultCode, data)
         }
 
         fun startExtraConfigurationActivityForResult(extraConf: TabConfiguration.ExtraConfiguration, intent: Intent, requestCode: Int) {

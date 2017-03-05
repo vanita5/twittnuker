@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util.dagger
 
 import android.content.Context
-import com.nostra13.universalimageloader.core.ImageLoader
 import com.twitter.Validator
 import okhttp3.Cache
 import okhttp3.ConnectionPool
@@ -76,9 +75,6 @@ class DependencyHolder internal constructor(context: Context) {
         internal set
     @Inject
     lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
-        internal set
-    @Inject
-    lateinit var imageLoader: ImageLoader
         internal set
 
     init {

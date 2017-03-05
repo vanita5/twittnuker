@@ -27,6 +27,7 @@ import android.os.Bundle
 import android.support.v4.app.hasRunningLoadersSafe
 import android.support.v4.content.Loader
 import android.text.TextUtils
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
@@ -123,7 +124,7 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
     }
 
     override fun onCreateAdapter(context: Context): ListParcelableStatusesAdapter {
-        return ListParcelableStatusesAdapter(context)
+        return ListParcelableStatusesAdapter(context, { Glide.with(this) })
     }
 
     override fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?) {

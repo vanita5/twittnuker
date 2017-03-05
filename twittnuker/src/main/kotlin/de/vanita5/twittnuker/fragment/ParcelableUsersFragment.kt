@@ -30,6 +30,7 @@ import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.commons.parcel.ParcelUtils
@@ -97,7 +98,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
         }
 
     override fun onCreateAdapter(context: Context): ParcelableUsersAdapter {
-        val adapter = ParcelableUsersAdapter(context)
+        val adapter = ParcelableUsersAdapter(context, { Glide.with(this) })
         adapter.simpleLayout = simpleLayout
         adapter.friendshipClickListener = this
         return adapter

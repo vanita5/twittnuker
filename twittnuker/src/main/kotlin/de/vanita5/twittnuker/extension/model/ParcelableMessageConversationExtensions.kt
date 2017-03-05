@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
 import android.widget.ImageView
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
@@ -33,7 +34,6 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.message.conversation.DefaultConversationExtras
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import java.util.*
 
@@ -134,16 +134,17 @@ fun ParcelableMessageConversation.getSummaryText(context: Context, manager: User
             text_unescaped, this)
 }
 
-fun ParcelableMessageConversation.displayAvatarTo(mediaLoader: MediaLoaderWrapper, view: ImageView) {
+fun ParcelableMessageConversation.displayAvatarTo(getRequestManager: () -> RequestManager, view: ImageView) {
     if (conversation_type == ConversationType.ONE_TO_ONE) {
         val user = this.user
         if (user != null) {
-            mediaLoader.displayProfileImage(view, user)
+            getRequestManager().load(user.getBestProfileImage(view.context)).into(view)
         } else {
-            mediaLoader.displayProfileImage(view, null)
+            // TODO: show default conversation icon
+            getRequestManager().load(R.drawable.ic_profile_image_default_group).into(view)
         }
     } else {
-        mediaLoader.displayGroupConversationAvatar(view, conversation_avatar)
+        getRequestManager().load(conversation_avatar).placeholder(R.drawable.ic_profile_image_default_group).into(view)
     }
 }
 

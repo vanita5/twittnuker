@@ -28,13 +28,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.model.aspect_ratio
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import java.lang.ref.WeakReference
 
@@ -74,7 +74,7 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
         }
     }
 
-    fun displayMedia(loader: MediaLoaderWrapper, media: Array<ParcelableMedia>?, accountId: UserKey? = null,
+    fun displayMedia(getRequestManager: () -> RequestManager, media: Array<ParcelableMedia>?, accountId: UserKey? = null,
                      extraId: Long = -1, withCredentials: Boolean = false,
                      mediaClickListener: OnMediaClickListener? = null, loadingHandler: MediaLoadingHandler? = null) {
         if (media == null || style == PreviewStyle.NONE) {
@@ -109,9 +109,13 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
                 }
                 if (url != imageView.tag || imageView.drawable == null) {
                     if (withCredentials) {
-                        loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler, video)
+                        getRequestManager().load(url).into(imageView)
+                        // TODO handle load progress w/ authentication
+                        // loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler, video)
                     } else {
-                        loader.displayPreviewImage(imageView, url, loadingHandler, video)
+                        getRequestManager().load(url).into(imageView)
+                        // TODO handle load progress
+                        // loader.displayPreviewImage(imageView, url, loadingHandler, video)
                     }
                 }
                 imageView.tag = url
@@ -126,7 +130,7 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
                 (child.layoutParams as MediaLayoutParams).media = item
                 child.visibility = View.VISIBLE
             } else {
-                loader.cancelDisplayTask(imageView)
+                // TODO cancel image load task
                 imageView.tag = null
                 child.visibility = View.GONE
             }

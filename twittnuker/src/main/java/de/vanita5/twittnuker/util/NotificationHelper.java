@@ -42,7 +42,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,6 +52,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -73,8 +74,6 @@ import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 public class NotificationHelper implements Constants {
 
     private Context mContext;
-    @Inject
-    ImageLoader mMediaLoader;
     @Inject
     ActivityTracker mActivityTracker;
     private SharedPreferencesWrapper mSharedPreferences;
@@ -660,13 +659,16 @@ public class NotificationHelper implements Constants {
         final Resources res = mContext.getResources();
         final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
         final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-        final File profileImageFile = mMediaLoader.getDiskCache().get(profileImageUrl);
 
         Bitmap profileImage = null;
-        if (profileImageFile != null && profileImageFile.isFile()) {
-            profileImage = BitmapFactory.decodeFile(profileImageFile.getAbsolutePath());
-        } else if (ConnectivityManagerCompat.isActiveNetworkMetered(connectivityManager)) {
-            profileImage = mMediaLoader.loadImageSync(profileImageUrl);
+        if (ConnectivityManagerCompat.isActiveNetworkMetered(connectivityManager)) {
+            try {
+                profileImage = Glide.with(mContext).load(profileImageUrl).asBitmap().into(w, h).get();
+            } catch (InterruptedException e) {
+                DebugLog.d(LOGTAG, "getProfileImageForNotification", e);
+            } catch (ExecutionException e) {
+                DebugLog.d(LOGTAG, "getProfileImageForNotification", e);
+            }
         }
         return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
     }

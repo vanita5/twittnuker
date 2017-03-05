@@ -66,6 +66,7 @@ import android.view.*
 import android.view.View.OnClickListener
 import android.view.View.OnTouchListener
 import android.view.animation.AnimationUtils
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.android.synthetic.main.fragment_user.view.*
@@ -126,6 +127,7 @@ import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener
@@ -519,10 +521,10 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
         val defWidth = resources.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
-        val bannerUrl = ParcelableUserUtils.getProfileBannerUrl(user)
+        val bannerUrl = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(user), width)
         if (ObjectUtils.notEqual(profileBanner.tag, bannerUrl) || profileBanner.drawable == null) {
             profileBanner.tag = bannerUrl
-            mediaLoader.displayProfileBanner(profileBanner, bannerUrl, width)
+            Glide.with(this).load(bannerUrl).into(profileBanner)
         }
         val relationship = relationship
         if (relationship == null) {
@@ -1155,7 +1157,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             }
             R.id.profileBanner -> {
                 val bannerUrl = ParcelableUserUtils.getProfileBannerUrl(user) ?: return
-                val url = InternalTwitterContentUtils.getBestBannerUrl(bannerUrl,
+                val url = getBestBannerUrl(bannerUrl,
                         Integer.MAX_VALUE)
                 val profileBanner = ParcelableMediaUtils.image(url)
                 profileBanner.type = ParcelableMedia.Type.IMAGE

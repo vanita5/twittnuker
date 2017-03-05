@@ -26,6 +26,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -37,8 +38,8 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
 
 class ParcelableUserListsAdapter(
-        context: Context
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IUserListsAdapter<List<ParcelableUserList>> {
+        context: Context, getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager), IUserListsAdapter<List<ParcelableUserList>> {
     override val showAccountsColor: Boolean = false
     override val nameFirst: Boolean = preferences[nameFirstKey]
     override var userListClickListener: IUserListsAdapter.UserListClickListener? = null

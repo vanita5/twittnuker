@@ -25,16 +25,19 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.extension.view.holder.display
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.extension.view.holder.display
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
 
 class SimpleParcelableUserListsAdapter(
-        context: Context
-) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_simple_user_list) {
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_simple_user_list,
+        getRequestManager = getRequestManager) {
 
     override val itemCounts: ItemCounts = ItemCounts(2)
 
@@ -60,7 +63,7 @@ class SimpleParcelableUserListsAdapter(
                     return@run h
                 }
                 val userList = getItem(position)
-                holder.display(userList, mediaLoader, userColorNameManager, profileImageEnabled)
+                holder.display(userList, getRequestManager, userColorNameManager, profileImageEnabled)
                 return view
             }
             1 -> {

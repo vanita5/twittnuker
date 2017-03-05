@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.constant.displayProfileImageKey
@@ -38,12 +39,13 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import javax.inject.Inject
 
 abstract class BaseRecyclerViewAdapter<VH : RecyclerView.ViewHolder>(
-        val context: Context
+        val context: Context,
+        override val getRequestManager: () -> RequestManager
 ) : RecyclerView.Adapter<VH>(), IContentAdapter {
+
     @Inject
     override final lateinit var twitterWrapper: AsyncTwitterWrapper
-    @Inject
-    override final lateinit var mediaLoader: MediaLoaderWrapper
+
     @Inject
     override final lateinit var userColorNameManager: UserColorNameManager
     @Inject

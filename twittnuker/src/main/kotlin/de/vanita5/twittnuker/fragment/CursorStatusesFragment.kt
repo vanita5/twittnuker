@@ -31,11 +31,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.Loader
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
-import org.mariotaku.sqliteqb.library.ArgsArray
+import org.mariotaku.ktextension.toNulls
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -53,7 +54,6 @@ import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.buildStatusFilterWhereClause
-import org.mariotaku.ktextension.toNulls
 
 abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
@@ -165,7 +165,7 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
     }
 
     override fun onCreateAdapter(context: Context): ListParcelableStatusesAdapter {
-        return ListParcelableStatusesAdapter(context)
+        return ListParcelableStatusesAdapter(context, { Glide.with(this) })
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableStatus>?>) {

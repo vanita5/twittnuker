@@ -26,6 +26,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -36,7 +37,10 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageEntryViewHolder
 
 
-class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),
+class MessagesEntriesAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager),
         IItemCountsAdapter {
     override val itemCounts: ItemCounts = ItemCounts(2)
 
@@ -109,5 +113,6 @@ class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
         const val ITEM_TYPE_MESSAGE_ENTRY = 1
         const val ITEM_VIEW_TYPE_LOAD_INDICATOR = 2
     }
+
 
 }

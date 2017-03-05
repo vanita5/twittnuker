@@ -23,21 +23,22 @@
 package de.vanita5.twittnuker.extension.view.holder
 
 import android.view.View
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
 
-fun SimpleUserListViewHolder.display(userList: ParcelableUserList, mediaLoader: MediaLoaderWrapper,
+fun SimpleUserListViewHolder.display(userList: ParcelableUserList, getRequestManager: () -> RequestManager,
                                      userColorNameManager: UserColorNameManager, displayProfileImage: Boolean) {
     nameView.text = userList.name
     createdByView.text = createdByView.context.getString(R.string.created_by,
             userColorNameManager.getDisplayName(userList, false))
-    profileImageView.visibility = if (displayProfileImage) View.VISIBLE else View.GONE
     if (displayProfileImage) {
-        mediaLoader.displayProfileImage(profileImageView, userList)
+        profileImageView.visibility = View.VISIBLE
+        getRequestManager().load(userList.getBestProfileImage(itemView.context)).into(profileImageView)
     } else {
-        mediaLoader.cancelDisplayTask(profileImageView)
+        profileImageView.visibility = View.GONE
     }
 }

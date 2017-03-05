@@ -26,21 +26,21 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 
 class AccountsSpinnerAdapter(
         context: Context,
-        itemViewResource: Int = R.layout.list_item_simple_user
-) : BaseArrayAdapter<AccountDetails>(context, itemViewResource) {
+        itemViewResource: Int = R.layout.list_item_simple_user,
+        accounts: Collection<AccountDetails>? = null,
+        getRequestManager: () -> RequestManager
+) : BaseArrayAdapter<AccountDetails>(context, itemViewResource, accounts, getRequestManager) {
 
     private var dummyItemText: String? = null
-
-    constructor(context: Context, accounts: Collection<AccountDetails>) : this(context) {
-        addAll(accounts)
-    }
 
     override fun getItemId(position: Int): Long {
         return getItem(position).hashCode().toLong()
@@ -72,10 +72,9 @@ class AccountsSpinnerAdapter(
                 if (profileImageEnabled) {
                     icon.visibility = View.VISIBLE
                     icon.style = profileImageStyle
-                    mediaLoader.displayProfileImage(icon, item.user)
+                    getRequestManager().load(item.user.getBestProfileImage(context)).into(icon)
                 } else {
                     icon.visibility = View.GONE
-                    mediaLoader.cancelDisplayTask(icon)
                 }
             }
         } else {

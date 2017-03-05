@@ -41,7 +41,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
@@ -55,10 +54,14 @@ import android.view.*
 import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
-import org.mariotaku.ktextension.*
+import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.setItemAvailability
+import org.mariotaku.ktextension.setMenuItemIcon
 import de.vanita5.twittnuker.Constants.EXTRA_FEATURES_NOTICE_VERSION
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -78,8 +81,10 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.ShapedImageView
 import java.lang.ref.WeakReference
@@ -493,10 +498,11 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         val width = if (bannerWidth > 0) bannerWidth else defWidth
         val bannerView = accountProfileBanner.nextView as ImageView
         if (bannerView.drawable == null || account != bannerView.tag) {
-            mediaLoader.displayProfileBanner(bannerView, account, width)
+            val url = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(account.user), width)
+            Glide.with(this).load(url).into(bannerView)
             bannerView.tag = account
         } else {
-            mediaLoader.cancelDisplayTask(bannerView)
+            // TODO cancel loading
         }
     }
 

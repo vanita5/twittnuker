@@ -26,6 +26,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -37,18 +38,20 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-class VariousItemsAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context) {
+class VariousItemsAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager) {
 
-    private val mInflater: LayoutInflater
+    private val inflater = LayoutInflater.from(context)
     val dummyAdapter: DummyItemAdapter
 
     private var data: List<*>? = null
 
     init {
-        mInflater = LayoutInflater.from(context)
         val handler = StatusAdapterLinkClickHandler<Any>(context,
                 preferences)
-        dummyAdapter = DummyItemAdapter(context, TwidereLinkify(handler), this)
+        dummyAdapter = DummyItemAdapter(context, TwidereLinkify(handler), this, getRequestManager)
         handler.setAdapter(dummyAdapter)
         dummyAdapter.updateOptions()
         loadMoreIndicatorPosition = ILoadMoreSupportAdapter.NONE
@@ -58,13 +61,13 @@ class VariousItemsAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerVie
         when (viewType) {
             VIEW_TYPE_STATUS -> {
                 return ListParcelableStatusesAdapter.createStatusViewHolder(dummyAdapter,
-                        mInflater, parent)
+                        inflater, parent)
             }
             VIEW_TYPE_USER -> {
-                return ParcelableUsersAdapter.createUserViewHolder(dummyAdapter, mInflater, parent)
+                return ParcelableUsersAdapter.createUserViewHolder(dummyAdapter, inflater, parent)
             }
             VIEW_TYPE_USER_LIST -> {
-                return ParcelableUserListsAdapter.createUserListViewHolder(dummyAdapter, mInflater,
+                return ParcelableUserListsAdapter.createUserListViewHolder(dummyAdapter, inflater,
                         parent)
             }
         }

@@ -27,6 +27,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -36,7 +37,10 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.SelectableUserViewHolder
 
-class SelectableUsersAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),
+class SelectableUsersAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager),
         IItemCountsAdapter {
 
     val ITEM_VIEW_TYPE_USER = 2

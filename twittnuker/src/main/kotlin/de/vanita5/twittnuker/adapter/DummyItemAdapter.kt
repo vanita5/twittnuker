@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
@@ -40,16 +41,15 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 import javax.inject.Inject
 
-class DummyItemAdapter @JvmOverloads constructor(
+class DummyItemAdapter(
         val context: Context,
         override val twidereLinkify: TwidereLinkify = TwidereLinkify(null),
-        private val adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>? = null
+        private val adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>? = null,
+        override val getRequestManager: () -> RequestManager
 ) : IStatusesAdapter<Any>, IUsersAdapter<Any>, IUserListsAdapter<Any> {
 
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
-    @Inject
-    override lateinit var mediaLoader: MediaLoaderWrapper
     @Inject
     override lateinit var twitterWrapper: AsyncTwitterWrapper
     @Inject

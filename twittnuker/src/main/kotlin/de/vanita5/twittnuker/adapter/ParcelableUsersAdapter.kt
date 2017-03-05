@@ -26,7 +26,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import de.vanita5.twittnuker.Constants
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
@@ -36,8 +36,11 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-class ParcelableUsersAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), Constants, IUsersAdapter<List<ParcelableUser>> {
-    private val inflater: LayoutInflater
+class ParcelableUsersAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager), IUsersAdapter<List<ParcelableUser>> {
+    private val inflater = LayoutInflater.from(context)
     private var data: List<ParcelableUser>? = null
 
     override val showAccountsColor: Boolean = false
@@ -45,10 +48,6 @@ class ParcelableUsersAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
     override var requestClickListener: IUsersAdapter.RequestClickListener? = null
     override var friendshipClickListener: IUsersAdapter.FriendshipClickListener? = null
     override var simpleLayout: Boolean = false
-
-    init {
-        inflater = LayoutInflater.from(context)
-    }
 
     fun getData(): List<ParcelableUser>? {
         return data

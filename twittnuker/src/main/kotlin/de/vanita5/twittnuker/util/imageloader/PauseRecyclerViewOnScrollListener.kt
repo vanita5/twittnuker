@@ -20,33 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface
+package de.vanita5.twittnuker.util.imageloader
 
-import android.support.v4.text.BidiFormatter
-import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle
+import android.support.v7.widget.RecyclerView
 
-interface IContentAdapter {
+class PauseRecyclerViewOnScrollListener(
+        private val pauseOnScroll: Boolean,
+        private val pauseOnFling: Boolean
+) : RecyclerView.OnScrollListener() {
 
-    val userColorNameManager: UserColorNameManager
-
-    fun getItemCount(): Int
-
-    @ShapeStyle
-    val profileImageStyle: Int
-
-    val profileImageEnabled: Boolean
-
-    val textSize: Float
-
-    val twitterWrapper: AsyncTwitterWrapper
-
-    val getRequestManager: () -> RequestManager
-
-    val bidiFormatter: BidiFormatter
-
-    val showAbsoluteTime: Boolean
+    override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+        when (newState) {
+            RecyclerView.SCROLL_STATE_IDLE -> {
+                // TODO resume media load
+            }
+            RecyclerView.SCROLL_STATE_DRAGGING -> if (this.pauseOnScroll) {
+                // TODO pause media load
+            }
+            RecyclerView.SCROLL_STATE_SETTLING -> if (this.pauseOnFling) {
+                // TODO pause media load
+            }
+        }
+    }
 
 }

@@ -25,12 +25,16 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
-class ListParcelableStatusesAdapter(context: Context) : ParcelableStatusesAdapter(context) {
+class ListParcelableStatusesAdapter(
+        context: Context,
+        getRequestManager: () -> RequestManager
+) : ParcelableStatusesAdapter(context, getRequestManager) {
 
     override val progressViewIds: IntArray
         get() = intArrayOf(R.id.media_preview_progress)

@@ -44,6 +44,7 @@ import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_drafts.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.Expression
@@ -67,7 +68,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        adapter = DraftsAdapter(activity).apply {
+        adapter = DraftsAdapter(activity, { Glide.with(this) }).apply {
             textSize = preferences[textSizeKey].toFloat()
         }
 

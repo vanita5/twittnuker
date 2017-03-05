@@ -20,33 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface
+package de.vanita5.twittnuker.extension.model
 
-import android.support.v4.text.BidiFormatter
-import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle
+import android.content.Context
+import de.vanita5.twittnuker.model.ParcelableUserList
 
-interface IContentAdapter {
-
-    val userColorNameManager: UserColorNameManager
-
-    fun getItemCount(): Int
-
-    @ShapeStyle
-    val profileImageStyle: Int
-
-    val profileImageEnabled: Boolean
-
-    val textSize: Float
-
-    val twitterWrapper: AsyncTwitterWrapper
-
-    val getRequestManager: () -> RequestManager
-
-    val bidiFormatter: BidiFormatter
-
-    val showAbsoluteTime: Boolean
-
+fun ParcelableUserList.getBestProfileImage(context: Context): String? {
+    return user_profile_image_url
 }

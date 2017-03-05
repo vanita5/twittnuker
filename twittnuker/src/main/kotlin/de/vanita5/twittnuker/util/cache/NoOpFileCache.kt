@@ -20,33 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface
+package de.vanita5.twittnuker.util.cache
 
-import android.support.v4.text.BidiFormatter
-import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle
+import android.net.Uri
+import org.mariotaku.mediaviewer.library.FileCache
+import de.vanita5.twittnuker.provider.CacheProvider
+import java.io.File
+import java.io.InputStream
 
-interface IContentAdapter {
+class NoOpFileCache : FileCache {
+    override fun fromUri(uri: Uri): String {
+        return CacheProvider.getCacheKey(uri)
+    }
 
-    val userColorNameManager: UserColorNameManager
+    override fun toUri(key: String): Uri {
+        return CacheProvider.getCacheUri(key, null)
+    }
 
-    fun getItemCount(): Int
+    override fun get(key: String): File? {
+        return null
+    }
 
-    @ShapeStyle
-    val profileImageStyle: Int
+    override fun remove(key: String) {
+    }
 
-    val profileImageEnabled: Boolean
-
-    val textSize: Float
-
-    val twitterWrapper: AsyncTwitterWrapper
-
-    val getRequestManager: () -> RequestManager
-
-    val bidiFormatter: BidiFormatter
-
-    val showAbsoluteTime: Boolean
+    override fun save(key: String, stream: InputStream, metadata: ByteArray?, listener: FileCache.CopyListener?) {
+    }
 
 }

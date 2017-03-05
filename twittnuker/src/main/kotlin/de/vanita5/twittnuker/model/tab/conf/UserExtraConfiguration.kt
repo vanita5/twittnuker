@@ -28,6 +28,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_extra_config_user.view.*
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
@@ -67,7 +68,7 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
             fragment.startExtraConfigurationActivityForResult(this@UserExtraConfiguration, intent, 1)
         }
         hintView = view.selectUserHint
-        val adapter = DummyItemAdapter(context)
+        val adapter = DummyItemAdapter(context, getRequestManager = { Glide.with(fragment) })
         adapter.updateOptions()
         viewHolder = SimpleUserViewHolder(view.listItem, adapter)
 
@@ -75,7 +76,7 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
         hintView.visibility = View.VISIBLE
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(fragment: TabEditorDialogFragment, requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -83,7 +84,6 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
                     viewHolder.displayUser(user)
                     viewHolder.itemView.visibility = View.VISIBLE
                     hintView.visibility = View.GONE
-
                     this.value = user
                 }
             }

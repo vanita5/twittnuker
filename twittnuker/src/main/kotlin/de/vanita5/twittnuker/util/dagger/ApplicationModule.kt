@@ -34,12 +34,6 @@ import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.extractor.ExtractorsFactory
 import com.google.android.exoplayer2.upstream.DataSource
-import com.nostra13.universalimageloader.cache.disc.DiskCache
-import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache
-import com.nostra13.universalimageloader.core.ImageLoader
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType
-import com.nostra13.universalimageloader.utils.L
 import com.squareup.otto.Bus
 import com.squareup.otto.ThreadEnforcer
 import com.twitter.Extractor
@@ -54,18 +48,15 @@ import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.mediaviewer.library.FileCache
 import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache
-import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader
-import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator
+import de.vanita5.twittnuker.util.cache.JsonCache
+import de.vanita5.twittnuker.util.cache.NoOpFileCache
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
-import de.vanita5.twittnuker.util.media.UILFileCache
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
@@ -76,7 +67,6 @@ import de.vanita5.twittnuker.util.sync.LegacySyncController
 import de.vanita5.twittnuker.util.sync.SyncController
 import de.vanita5.twittnuker.util.sync.SyncPreferences
 import java.io.File
-import java.io.IOException
 import javax.inject.Singleton
 
 @Module
@@ -159,22 +149,6 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun imageLoader(preferences: SharedPreferencesWrapper, downloader: MediaDownloader): ImageLoader {
-        val loader = ImageLoader.getInstance()
-        val cb = ImageLoaderConfiguration.Builder(application)
-        cb.threadPriority(Thread.NORM_PRIORITY - 2)
-        cb.denyCacheImageMultipleSizesInMemory()
-        cb.tasksProcessingOrder(QueueProcessingType.LIFO)
-        // cb.memoryCache(new ImageMemoryCache(40));
-        cb.diskCache(createDiskCache("images", preferences))
-        cb.imageDownloader(TwidereImageDownloader(application, downloader))
-        L.writeDebugLogs(BuildConfig.DEBUG)
-        loader.init(cb.build())
-        return loader
-    }
-
-    @Provides
-    @Singleton
     fun activityTracker(): ActivityTracker {
         return ActivityTracker()
     }
@@ -201,8 +175,8 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun mediaLoaderWrapper(loader: ImageLoader, preferences: SharedPreferencesWrapper): MediaLoaderWrapper {
-        val wrapper = MediaLoaderWrapper(loader)
+    fun mediaLoaderWrapper(preferences: SharedPreferencesWrapper): MediaLoaderWrapper {
+        val wrapper = MediaLoaderWrapper()
         wrapper.reloadOptions(preferences)
         val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         wrapper.isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
@@ -213,18 +187,6 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun dns(preferences: SharedPreferencesWrapper): Dns {
         return TwidereDns(application, preferences)
-    }
-
-    @Provides
-    @Singleton
-    fun providesDiskCache(preferences: SharedPreferencesWrapper): DiskCache {
-        return createDiskCache("files", preferences)
-    }
-
-    @Provides
-    @Singleton
-    fun fileCache(cache: DiskCache): FileCache {
-        return UILFileCache(cache)
     }
 
     @Provides
@@ -336,19 +298,16 @@ class ApplicationModule(private val application: Application) {
         return DefaultExtractorsFactory()
     }
 
-    private fun createDiskCache(dirName: String, preferences: SharedPreferencesWrapper): DiskCache {
-        val cacheDir = Utils.getExternalCacheDir(application, dirName)
-        val fallbackCacheDir = Utils.getInternalCacheDir(application, dirName)
-        val fileNameGenerator = URLFileNameGenerator()
-        val cacheSize = preferences.getInt(KEY_CACHE_SIZE_LIMIT, 300).coerceIn(100..500)
-        try {
-            val cacheMaxSizeBytes = cacheSize * 1024 * 1024
-            if (cacheDir != null)
-                return LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator, cacheMaxSizeBytes.toLong(), 0)
-            return LruDiskCache(fallbackCacheDir, null, fileNameGenerator, cacheMaxSizeBytes.toLong(), 0)
-        } catch (e: IOException) {
-            return ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator)
-        }
+    @Provides
+    @Singleton
+    fun jsonCache(): JsonCache {
+        return JsonCache()
+    }
+
+    @Provides
+    @Singleton
+    fun fileCache(): FileCache {
+        return NoOpFileCache()
     }
 
     private fun getCacheDir(dirName: String): File {
