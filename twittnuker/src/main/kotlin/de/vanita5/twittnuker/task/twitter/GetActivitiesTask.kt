@@ -28,7 +28,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
-import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -36,8 +35,9 @@ import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
+import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -180,7 +180,7 @@ abstract class GetActivitiesTask(
             olderCount = DataStoreUtils.getActivitiesCount(context, contentUri, minPositionKey,
                     Activities.POSITION_KEY, false, arrayOf(details.key))
         }
-        val writeUri = UriUtils.appendQueryParameters(contentUri, QUERY_PARAM_SHOW_NOTIFICATION, notify)
+        val writeUri = UriUtils.appendQueryParameters(contentUri, QUERY_PARAM_NOTIFY_CHANGE, notify)
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {
             val where = Expression.and(
                     Expression.equalsArgs(Activities.ACCOUNT_KEY),
