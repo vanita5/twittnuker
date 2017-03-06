@@ -97,7 +97,7 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
     }
 
     override fun onCreateAdapter(context: Context): StaggeredGridParcelableStatusesAdapter {
-        return StaggeredGridParcelableStatusesAdapter(context, { Glide.with(this) })
+        return StaggeredGridParcelableStatusesAdapter(context, Glide.with(this))
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableStatus>> {

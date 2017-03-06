@@ -71,7 +71,7 @@
         tools:textSize="@dimen/text_size_extra_small"
         tools:visibility="visible"/>
 
-    <ImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profileImage"
         style="?profileImageStyle"
         android:layout_width="@dimen/icon_size_status_profile_image"

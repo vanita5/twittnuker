@@ -38,8 +38,8 @@ import de.vanita5.twittnuker.view.holder.UserViewHolder
 
 class ParcelableUsersAdapter(
         context: Context,
-        getRequestManager: () -> RequestManager
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager), IUsersAdapter<List<ParcelableUser>> {
+        requestManager: RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, requestManager), IUsersAdapter<List<ParcelableUser>> {
     private val inflater = LayoutInflater.from(context)
     private var data: List<ParcelableUser>? = null
 

@@ -26,12 +26,11 @@ import android.view.View
 import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
 
-fun SimpleUserListViewHolder.display(userList: ParcelableUserList, getRequestManager: () -> RequestManager,
+fun SimpleUserListViewHolder.display(userList: ParcelableUserList, requestManager: RequestManager,
                                      userColorNameManager: UserColorNameManager, displayProfileImage: Boolean) {
     nameView.text = userList.name
     createdByView.text = createdByView.context.getString(R.string.created_by,
@@ -39,7 +38,7 @@ fun SimpleUserListViewHolder.display(userList: ParcelableUserList, getRequestMan
     if (displayProfileImage) {
         profileImageView.visibility = View.VISIBLE
         val context = itemView.context
-        getRequestManager().loadProfileImage(context, userList.getBestProfileImage(context)).into(profileImageView)
+        requestManager.loadProfileImage(context, userList).into(profileImageView)
     } else {
         profileImageView.visibility = View.GONE
     }

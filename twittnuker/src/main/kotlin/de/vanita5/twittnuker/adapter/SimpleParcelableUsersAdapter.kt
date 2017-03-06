@@ -34,8 +34,8 @@ import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 class SimpleParcelableUsersAdapter(
         context: Context,
         layoutRes: Int = R.layout.list_item_simple_user,
-        getRequestManager: () -> RequestManager
-) : BaseArrayAdapter<ParcelableUser>(context, layoutRes, getRequestManager = getRequestManager) {
+        requestManager: RequestManager
+) : BaseArrayAdapter<ParcelableUser>(context, layoutRes, requestManager = requestManager) {
 
     override fun getItemId(position: Int): Long {
         val item = getItem(position)

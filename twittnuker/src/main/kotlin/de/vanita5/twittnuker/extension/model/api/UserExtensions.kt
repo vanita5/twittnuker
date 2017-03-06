@@ -26,6 +26,10 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.util.Utils
 
 fun User.getProfileImageOfSize(size: String): String {
+    if ("normal" != size) {
+        val larger = profileImageUrlProfileSize ?: profileImageUrlLarge
+        if (larger != null) return larger
+    }
     val profileImage = profileImageUrlHttps ?: profileImageUrl
     return Utils.getTwitterProfileImageOfSize(profileImage, size) ?: profileImage
 }

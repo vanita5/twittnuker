@@ -39,8 +39,8 @@ import de.vanita5.twittnuker.view.holder.SelectableUserViewHolder
 
 class SelectableUsersAdapter(
         context: Context,
-        getRequestManager: () -> RequestManager
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager),
+        requestManager: RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, requestManager),
         IItemCountsAdapter {
 
     val ITEM_VIEW_TYPE_USER = 2

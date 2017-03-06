@@ -37,8 +37,8 @@ class AccountsSpinnerAdapter(
         context: Context,
         itemViewResource: Int = R.layout.list_item_simple_user,
         accounts: Collection<AccountDetails>? = null,
-        getRequestManager: () -> RequestManager
-) : BaseArrayAdapter<AccountDetails>(context, itemViewResource, accounts, getRequestManager) {
+        requestManager: RequestManager
+) : BaseArrayAdapter<AccountDetails>(context, itemViewResource, accounts, requestManager) {
 
     private var dummyItemText: String? = null
 
@@ -72,7 +72,7 @@ class AccountsSpinnerAdapter(
                 if (profileImageEnabled) {
                     icon.visibility = View.VISIBLE
                     icon.style = profileImageStyle
-                    getRequestManager().loadProfileImage(context, item.user).into(icon)
+                    requestManager.loadProfileImage(context, item.user).into(icon)
                 } else {
                     icon.visibility = View.GONE
                 }

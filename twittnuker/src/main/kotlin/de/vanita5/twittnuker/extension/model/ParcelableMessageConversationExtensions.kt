@@ -23,10 +23,7 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
-import android.widget.ImageView
-import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
@@ -133,21 +130,6 @@ fun ParcelableMessageConversation.getSummaryText(context: Context, manager: User
         nameFirst: Boolean): CharSequence? {
     return getSummaryText(context, manager, nameFirst, message_type, message_extras, sender_key,
             text_unescaped, this)
-}
-
-fun ParcelableMessageConversation.displayAvatarTo(getRequestManager: () -> RequestManager, view: ImageView) {
-    val context = view.context
-    if (conversation_type == ConversationType.ONE_TO_ONE) {
-        val user = this.user
-        if (user != null) {
-            getRequestManager().loadProfileImage(context, user).into(view)
-        } else {
-            // TODO: show default conversation icon
-            getRequestManager().loadProfileImage(context, R.drawable.ic_profile_image_default_group).into(view)
-        }
-    } else {
-        getRequestManager().loadProfileImage(context, conversation_avatar).placeholder(R.drawable.ic_profile_image_default_group).into(view)
-    }
 }
 
 

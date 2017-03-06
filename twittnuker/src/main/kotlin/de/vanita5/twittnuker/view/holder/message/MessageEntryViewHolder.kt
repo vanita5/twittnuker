@@ -27,7 +27,11 @@ import android.view.View
 import kotlinx.android.synthetic.main.list_item_message_entry.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
-import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.getSummaryText
+import de.vanita5.twittnuker.extension.model.getTitle
+import de.vanita5.twittnuker.extension.model.notificationDisabled
+import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 
@@ -79,7 +83,7 @@ class MessageEntryViewHolder(itemView: View, val adapter: MessagesEntriesAdapter
         } else {
             stateIndicator.visibility = View.GONE
         }
-        conversation.displayAvatarTo(adapter.getRequestManager, profileImage)
+        adapter.requestManager.loadProfileImage(adapter.context, conversation).into(profileImage)
         if (conversation.unread_count > 0) {
             unreadCount.visibility = View.VISIBLE
             unreadCount.text = conversation.unread_count.toString()

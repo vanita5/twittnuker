@@ -38,8 +38,8 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
 
 class ParcelableUserListsAdapter(
-        context: Context, getRequestManager: () -> RequestManager
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, getRequestManager), IUserListsAdapter<List<ParcelableUserList>> {
+        context: Context, requestManager: RequestManager
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, requestManager), IUserListsAdapter<List<ParcelableUserList>> {
     override val showAccountsColor: Boolean = false
     override val nameFirst: Boolean = preferences[nameFirstKey]
     override var userListClickListener: IUserListsAdapter.UserListClickListener? = null

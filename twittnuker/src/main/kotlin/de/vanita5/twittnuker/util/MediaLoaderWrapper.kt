@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.util
 
 import android.content.SharedPreferences
-import android.graphics.drawable.Drawable
-import android.text.TextUtils
 import android.widget.ImageView
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.mediaPreloadKey
@@ -35,7 +33,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.getActivityStatus
 
-class MediaLoaderWrapper() {
+class MediaLoaderWrapper {
 
     var isNetworkMetered: Boolean = true
     private var preloadEnabled: Boolean = true
@@ -45,21 +43,6 @@ class MediaLoaderWrapper() {
 
 
     fun displayOriginalProfileImage(view: ImageView, user: ParcelableUser) {
-        if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_original)) {
-            displayProfileImage(view, user.extras.profile_image_url_original)
-        } else if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
-            displayProfileImage(view, user.extras.profile_image_url_profile_size)
-        } else {
-            displayProfileImage(view, Utils.getOriginalTwitterProfileImage(user.profile_image_url))
-        }
-    }
-
-    fun displayProfileImage(view: ImageView, user: ParcelableUser) {
-        if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
-            displayProfileImage(view, user.extras.profile_image_url_profile_size)
-        } else {
-            displayProfileImage(view, user.profile_image_url)
-        }
     }
 
     fun displayProfileImage(view: ImageView, url: String?) {
@@ -82,9 +65,6 @@ class MediaLoaderWrapper() {
     fun reloadOptions(preferences: SharedPreferences) {
         preloadEnabled = preferences[mediaPreloadKey]
         preloadOnWifiOnly = preferences[mediaPreloadOnWifiOnlyKey]
-    }
-
-    private fun displayDashboardProfileImage(view: ImageView, url: String?, drawableOnLoading: Drawable?) {
     }
 
     private fun preloadMedia(media: Array<ParcelableMedia>?) {

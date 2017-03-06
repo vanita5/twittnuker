@@ -856,7 +856,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     } else if (adapter.isDetailMediaExpanded) {
                         itemView.quotedMediaLabel.visibility = View.GONE
                         itemView.quotedMediaPreview.visibility = View.VISIBLE
-                        itemView.quotedMediaPreview.displayMedia(adapter.getRequestManager,
+                        itemView.quotedMediaPreview.displayMedia(adapter.requestManager,
                                 media = quotedMedia, accountId = status.account_key,
                                 mediaClickListener = adapter.fragment)
                     } else {
@@ -897,7 +897,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
-            adapter.getRequestManager().loadProfileImage(context, status).into(itemView.profileImage)
+            adapter.requestManager.loadProfileImage(context, status).into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)
@@ -989,7 +989,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.mediaPreviewContainer.visibility = View.VISIBLE
                 itemView.mediaPreview.visibility = View.VISIBLE
                 itemView.mediaPreviewLoad.visibility = View.GONE
-                itemView.mediaPreview.displayMedia(adapter.getRequestManager, media = media,
+                itemView.mediaPreview.displayMedia(adapter.requestManager, media = media,
                         accountId = status.account_key, mediaClickListener = adapter.fragment,
                         loadingHandler = adapter.mediaLoadingHandler)
             } else {
@@ -1187,7 +1187,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private class CountsUsersAdapter(
                 private val fragment: StatusFragment,
                 private val statusAdapter: StatusAdapter
-        ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context, { Glide.with(fragment) }) {
+        ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context, Glide.with(fragment)) {
 
             private val inflater = LayoutInflater.from(statusAdapter.context)
 
@@ -1344,7 +1344,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                 fun displayUser(item: ParcelableUser) {
                     val context = adapter.context
-                    adapter.getRequestManager().loadProfileImage(context, item).into(profileImageView)
+                    adapter.requestManager.loadProfileImage(context, item).into(profileImageView)
                 }
 
                 override fun onClick(v: View) {
@@ -1455,7 +1455,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     class StatusAdapter(
             val fragment: StatusFragment
-    ) : LoadMoreSupportAdapter<ViewHolder>(fragment.context, { Glide.with(fragment) }), IStatusesAdapter<List<ParcelableStatus>> {
+    ) : LoadMoreSupportAdapter<ViewHolder>(fragment.context, Glide.with(fragment)), IStatusesAdapter<List<ParcelableStatus>> {
         private val inflater: LayoutInflater
         override val mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
         override val twidereLinkify: TwidereLinkify

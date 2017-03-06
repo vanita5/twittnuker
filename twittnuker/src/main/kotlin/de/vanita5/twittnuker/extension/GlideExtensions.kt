@@ -23,42 +23,88 @@
 package de.vanita5.twittnuker.extension
 
 import android.content.Context
-import android.text.TextUtils
 import com.bumptech.glide.DrawableRequestBuilder
+import com.bumptech.glide.DrawableTypeRequest
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import jp.wasabeef.glide.transformations.CropCircleTransformation
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.extension.model.user
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.view.ShapedImageView
 
-fun RequestManager.loadProfileImage(context: Context, url: String?): DrawableRequestBuilder<String?> {
+fun RequestManager.loadProfileImage(context: Context, url: String?,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
     val size = context.getString(R.string.profile_image_size)
-    return load(Utils.getTwitterProfileImageOfSize(url, size)).bitmapTransform(CropCircleTransformation(context))
+    return configureLoadProfileImage(context, shapeStyle) { load(Utils.getTwitterProfileImageOfSize(url, size)) }
 }
 
-fun RequestManager.loadProfileImage(context: Context, resourceId: Int): DrawableRequestBuilder<Int> {
-    return load(resourceId).bitmapTransform(CropCircleTransformation(context))
+fun RequestManager.loadProfileImage(context: Context, resourceId: Int,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<Int> {
+    return configureLoadProfileImage(context, shapeStyle) { load(resourceId) }
 }
 
-fun RequestManager.loadProfileImage(context: Context, account: AccountDetails): DrawableRequestBuilder<String?> {
-    return loadProfileImage(context, account.user)
+fun RequestManager.loadProfileImage(context: Context, account: AccountDetails,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
+    return loadProfileImage(context, account.user, shapeStyle)
 }
 
-fun RequestManager.loadProfileImage(context: Context, user: ParcelableUser): DrawableRequestBuilder<String?> {
-    if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
-        return load(user.extras.profile_image_url_profile_size)
-    } else {
-        return load(user.profile_image_url)
+fun RequestManager.loadProfileImage(context: Context, user: ParcelableUser,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
+    if (user.extras != null && user.extras.profile_image_url_fallback == null) {
+        // No fallback image, use compatible logic
+        return loadProfileImage(context, user.profile_image_url)
     }
+    return configureLoadProfileImage(context, shapeStyle) { load(user.profile_image_url) }
 }
 
+fun RequestManager.loadProfileImage(context: Context, userList: ParcelableUserList,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
+    return configureLoadProfileImage(context, shapeStyle) { load(userList.user_profile_image_url) }
+}
 
-fun RequestManager.loadProfileImage(context: Context, status: ParcelableStatus): DrawableRequestBuilder<String?> {
+fun RequestManager.loadProfileImage(context: Context, group: ParcelableGroup,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
+    return configureLoadProfileImage(context, shapeStyle) { load(group.homepage_logo) }
+}
+
+fun RequestManager.loadProfileImage(context: Context, status: ParcelableStatus,
+        @ShapedImageView.ShapeStyle shapeStyle: Int = ShapedImageView.SHAPE_CIRCLE): DrawableRequestBuilder<String?> {
     if (status.extras != null && status.extras.user_profile_image_url_fallback == null) {
         // No fallback image, use compatible logic
         return loadProfileImage(context, status.user_profile_image_url)
     }
-    return load(status.user_profile_image_url).bitmapTransform(CropCircleTransformation(context))
+    return configureLoadProfileImage(context, shapeStyle) { load(status.user_profile_image_url) }
+}
+
+fun RequestManager.loadProfileImage(context: Context, conversation: ParcelableMessageConversation): DrawableRequestBuilder<*> {
+    if (conversation.conversation_type == ParcelableMessageConversation.ConversationType.ONE_TO_ONE) {
+        val user = conversation.user
+        if (user != null) {
+            return loadProfileImage(context, user)
+        } else {
+            // TODO: show default conversation icon
+            return loadProfileImage(context, de.vanita5.twittnuker.R.drawable.ic_profile_image_default_group)
+        }
+    } else {
+        return loadProfileImage(context, conversation.conversation_avatar).placeholder(R.drawable.ic_profile_image_default_group)
+    }
+}
+
+internal inline fun <T> configureLoadProfileImage(context: Context, shapeStyle: Int,
+        create: () -> DrawableTypeRequest<T>): DrawableRequestBuilder<T> {
+    val builder = create()
+    builder.diskCacheStrategy(DiskCacheStrategy.RESULT)
+    builder.dontAnimate()
+    if (!ShapedImageView.OUTLINE_DRAW) {
+        when (shapeStyle) {
+            ShapedImageView.SHAPE_CIRCLE -> {
+                builder.bitmapTransform(CropCircleTransformation(context))
+            }
+            ShapedImageView.SHAPE_RECTANGLE -> {
+            }
+        }
+    }
+    return builder
 }
