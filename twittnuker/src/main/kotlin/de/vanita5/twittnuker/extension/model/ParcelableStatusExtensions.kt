@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.extension.model
 
-import android.content.Context
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 
@@ -49,7 +48,3 @@ val ParcelableStatus.referenced_users: Array<ParcelableUser>
         }
         return resultList.toTypedArray()
     }
-
-fun ParcelableStatus.getBestProfileImage(context: Context): String? {
-    return user_profile_image_url
-}

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.task
 import android.content.ContentValues
 import android.content.Context
 import com.twitter.Extractor
+import de.vanita5.twittnuker.R
 import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
@@ -37,6 +38,8 @@ import java.util.*
 class CacheUsersStatusesTask(
         private val context: Context
 ) : AbstractTask<TwitterListResponse<Status>, Unit?, Unit?>() {
+
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     override fun doLongOperation(params: TwitterListResponse<Status>) {
         val resolver = context.contentResolver
@@ -55,7 +58,7 @@ class CacheUsersStatusesTask(
                 val hashTagValues = HashSet<ContentValues>()
 
                 val accountKey = params.accountKey
-                statusesValues.add(ContentValuesCreator.createStatus(status, accountKey))
+                statusesValues.add(ContentValuesCreator.createStatus(status, accountKey, profileImageSize))
                 val text = InternalTwitterContentUtils.unescapeTwitterStatusText(status.extendedText)
                 for (hashtag in extractor.extractHashtags(text)) {
                     val values = ContentValues()
@@ -66,7 +69,8 @@ class CacheUsersStatusesTask(
                 cachedUser.put(CachedUsers.LAST_SEEN, System.currentTimeMillis())
                 usersValues.add(cachedUser)
                 if (status.isRetweet) {
-                    val cachedRetweetedUser = ContentValuesCreator.createCachedUser(status.retweetedStatus.user)
+                    val cachedRetweetedUser = ContentValuesCreator.createCachedUser(status.retweetedStatus.user,
+                            profileImageSize)
                     cachedRetweetedUser.put(CachedUsers.LAST_SEEN, System.currentTimeMillis())
                     usersValues.add(cachedRetweetedUser)
                 }

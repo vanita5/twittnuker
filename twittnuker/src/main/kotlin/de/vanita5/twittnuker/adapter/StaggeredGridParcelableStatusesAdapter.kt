@@ -33,7 +33,6 @@ import com.commonsware.cwac.layouts.AspectLockedFrameLayout
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -94,7 +93,7 @@ class StaggeredGridParcelableStatusesAdapter(
 
             mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type))
             val context = itemView.context
-            adapter.getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(profileImageView)
+            adapter.getRequestManager().loadProfileImage(context, status).into(profileImageView)
             // TODO image loaded event and credentials
             adapter.getRequestManager().load(firstMedia.preview_url).into(mediaImageView)
         }

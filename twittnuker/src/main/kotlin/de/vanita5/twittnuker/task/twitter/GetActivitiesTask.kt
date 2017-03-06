@@ -28,6 +28,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
+import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -55,6 +56,8 @@ import java.util.*
 abstract class GetActivitiesTask(
         context: Context
 ) : BaseAbstractTask<RefreshTaskParam, List<TwitterListResponse<Activity>>, (Boolean) -> Unit>(context) {
+
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     protected abstract val errorInfoKey: String
 
@@ -147,7 +150,8 @@ abstract class GetActivitiesTask(
             val sortDiff = firstSortId - lastSortId
             for (i in activities.indices) {
                 val item = activities[i]
-                val activity = ParcelableActivityUtils.fromActivity(item, details.key, false)
+                val activity = ParcelableActivityUtils.fromActivity(item, details.key, false,
+                        profileImageSize)
                 mediaLoader.preloadActivity(activity)
                 activity.position_key = GetStatusesTask.getPositionKey(activity.timestamp,
                         activity.timestamp, lastSortId, sortDiff, i, activities.size)

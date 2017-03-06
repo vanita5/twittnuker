@@ -61,6 +61,8 @@ abstract class GetStatusesTask(
         context: Context
 ) : BaseAbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, (Boolean) -> Unit>(context) {
 
+    private val profileImageSize = context.getString(R.string.profile_image_size)
+
     @Throws(MicroBlogException::class)
     abstract fun getStatuses(twitter: MicroBlog, paging: Paging): ResponseList<Status>
 
@@ -180,8 +182,7 @@ abstract class GetStatusesTask(
 
             for (i in 0 until statuses.size) {
                 val item = statuses[i]
-                val status = ParcelableStatusUtils.fromStatus(item, accountKey,
-                        false)
+                val status = ParcelableStatusUtils.fromStatus(item, accountKey, false, profileImageSize)
                 ParcelableStatusUtils.updateExtraInformation(status, details)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)

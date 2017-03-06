@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableLocation
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -315,7 +314,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(profileImageView)
+            getRequestManager().loadProfileImage(context, status).into(profileImageView)
 
             profileTypeView.setImageResource(getUserTypeIconRes(status.user_is_verified, status.user_is_protected))
             profileTypeView.visibility = View.VISIBLE

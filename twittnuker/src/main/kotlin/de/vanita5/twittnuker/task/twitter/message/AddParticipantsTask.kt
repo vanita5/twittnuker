@@ -26,6 +26,7 @@ import android.accounts.AccountManager
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.addParticipants
 import de.vanita5.twittnuker.extension.model.isOfficial
@@ -45,6 +46,9 @@ class AddParticipantsTask(
         val conversationId: String,
         val participants: Collection<ParcelableUser>
 ) : ExceptionHandlingAbstractTask<Unit?, Boolean, MicroBlogException, ((Boolean) -> Unit)?>(context) {
+
+    private val profileImageSize: String = context.getString(R.string.profile_image_size)
+
     override fun onExecute(params: Unit?): Boolean {
         val account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?:
                 throw MicroBlogException("No account")
@@ -78,7 +82,8 @@ class AddParticipantsTask(
                         conversation.addParticipants(participants)
                         return GetMessagesTask.DatabaseUpdateData(listOf(conversation), emptyList())
                     }
-                    return GetMessagesTask.createDatabaseUpdateData(context, account, response)
+                    return GetMessagesTask.createDatabaseUpdateData(context, account, response,
+                            profileImageSize)
                 }
             }
 

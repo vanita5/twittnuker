@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -118,31 +117,31 @@ class ActivityTitleSummaryViewHolder(
         }
     }
 
-    private fun displayUserProfileImages(statuses: Array<ParcelableUser>?) {
+    private fun displayUserProfileImages(users: Array<ParcelableUser>?) {
         val shouldDisplayImages = adapter.profileImageEnabled
         profileImagesContainer.visibility = if (shouldDisplayImages) View.VISIBLE else View.GONE
         profileImageSpace.visibility = if (shouldDisplayImages) View.VISIBLE else View.GONE
         if (!shouldDisplayImages) return
-        if (statuses == null) {
+        if (users == null) {
             for (view in profileImageViews) {
                 view.visibility = View.GONE
             }
             return
         }
-        val length = Math.min(profileImageViews.size, statuses.size)
+        val length = Math.min(profileImageViews.size, users.size)
         for (i in 0 until profileImageViews.size) {
             val view = profileImageViews[i]
             view.setImageDrawable(null)
             if (i < length) {
                 view.visibility = View.VISIBLE
                 val context = adapter.context
-                adapter.getRequestManager().loadProfileImage(context, statuses[i].getBestProfileImage(context)).into(view)
+                adapter.getRequestManager().loadProfileImage(context, users[i]).into(view)
             } else {
                 view.visibility = View.GONE
             }
         }
-        if (statuses.size > profileImageViews.size) {
-            val moreNumber = statuses.size - profileImageViews.size
+        if (users.size > profileImageViews.size) {
+            val moreNumber = users.size - profileImageViews.size
             profileImageMoreNumber.visibility = View.VISIBLE
             profileImageMoreNumber.setText(moreNumber.toString())
         } else {

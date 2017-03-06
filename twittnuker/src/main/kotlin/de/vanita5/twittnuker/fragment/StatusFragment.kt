@@ -92,7 +92,6 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
@@ -898,7 +897,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
-            adapter.getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(itemView.profileImage)
+            adapter.getRequestManager().loadProfileImage(context, status).into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)
@@ -1345,7 +1344,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                 fun displayUser(item: ParcelableUser) {
                     val context = adapter.context
-                    adapter.getRequestManager().loadProfileImage(context, item.getBestProfileImage(context)).into(profileImageView)
+                    adapter.getRequestManager().loadProfileImage(context, item).into(profileImageView)
                 }
 
                 override fun onClick(v: View) {

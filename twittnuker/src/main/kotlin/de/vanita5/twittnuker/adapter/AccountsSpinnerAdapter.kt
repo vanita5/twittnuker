@@ -30,7 +30,6 @@ import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 
@@ -73,7 +72,7 @@ class AccountsSpinnerAdapter(
                 if (profileImageEnabled) {
                     icon.visibility = View.VISIBLE
                     icon.style = profileImageStyle
-                    getRequestManager().loadProfileImage(context, item.user.getBestProfileImage(context)).into(icon)
+                    getRequestManager().loadProfileImage(context, item.user).into(icon)
                 } else {
                     icon.visibility = View.GONE
                 }

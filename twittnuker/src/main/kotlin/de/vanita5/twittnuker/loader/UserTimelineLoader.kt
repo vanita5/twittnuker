@@ -26,6 +26,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
+import de.vanita5.twittnuker.R
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -56,6 +57,7 @@ class UserTimelineLoader(
         tabPosition, fromUser, loadingMore) {
 
     private val pinnedStatusesRef = AtomicReference<List<ParcelableStatus>>()
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     var pinnedStatuses: List<ParcelableStatus>?
         get() = pinnedStatusesRef.get()
@@ -68,14 +70,15 @@ class UserTimelineLoader(
                              details: AccountDetails,
                              paging: Paging): ResponseList<Status> {
         if (pinnedStatusIds != null) {
-            try {
-                pinnedStatuses = microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
-                    val created = ParcelableStatusUtils.fromStatus(status, details.key, false)
+            pinnedStatuses = try {
+                microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
+                    val created = ParcelableStatusUtils.fromStatus(status, details.key,
+                            profileImageSize = profileImageSize)
                     created.sort_id = idx.toLong()
                     return@mapIndexed created
                 }
             } catch (e: MicroBlogException) {
-                // Ignore
+                null
             }
         }
         if (userId != null) {

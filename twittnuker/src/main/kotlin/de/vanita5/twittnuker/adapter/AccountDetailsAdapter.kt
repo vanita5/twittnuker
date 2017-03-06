@@ -29,7 +29,6 @@ import android.widget.CompoundButton
 import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -66,7 +65,7 @@ class AccountDetailsAdapter(
         holder.screenName.text = String.format("@%s", details.user.screen_name)
         holder.setAccountColor(details.color)
         if (profileImageEnabled) {
-            getRequestManager().loadProfileImage(context, details.user.getBestProfileImage(context)).into(holder.profileImage)
+            getRequestManager().loadProfileImage(context, details).into(holder.profileImage)
         } else {
             // TODO: display stub image?
         }

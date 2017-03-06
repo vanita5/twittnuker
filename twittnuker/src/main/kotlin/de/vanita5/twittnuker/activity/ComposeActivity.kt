@@ -75,7 +75,6 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountUser
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -1415,7 +1414,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             if (account != iconView.tag || iconView.drawable == null) {
                 iconView.tag = account
                 val context = adapter.context
-                adapter.getRequestManager().loadProfileImage(context, account.user.getBestProfileImage(context)).into(iconView)
+                adapter.getRequestManager().loadProfileImage(context, account).into(iconView)
             }
             iconView.setBorderColor(account.color)
             nameView.text = if (adapter.isNameFirst) account.user.name else "@" + account.user.screen_name

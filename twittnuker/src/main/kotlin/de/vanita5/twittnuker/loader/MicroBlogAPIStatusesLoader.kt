@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.BuildConfig
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -44,7 +45,10 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper
+import de.vanita5.twittnuker.util.TwidereArrayUtils
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.cache.JsonCache
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.io.IOException
@@ -69,6 +73,7 @@ abstract class MicroBlogAPIStatusesLoader(
     // Statuses sorted descending by default
     var comparator: Comparator<ParcelableStatus>? = ParcelableStatus.REVERSE_COMPARATOR
     private val exceptionRef = AtomicReference<MicroBlogException?>()
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     var exception: MicroBlogException?
         get() = exceptionRef.get()
@@ -154,7 +159,8 @@ abstract class MicroBlogAPIStatusesLoader(
             val sortDiff = firstSortId - lastSortId
             for (i in 0 until statuses.size) {
                 val status = statuses[i]
-                val item = ParcelableStatusUtils.fromStatus(status, accountKey, insertGap && isGapEnabled && minIdx == i)
+                val isGap = insertGap && isGapEnabled && minIdx == i
+                val item = ParcelableStatusUtils.fromStatus(status, accountKey, isGap, profileImageSize)
                 item.position_key = GetStatusesTask.getPositionKey(item.timestamp, item.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
                 ParcelableStatusUtils.updateExtraInformation(item, details)

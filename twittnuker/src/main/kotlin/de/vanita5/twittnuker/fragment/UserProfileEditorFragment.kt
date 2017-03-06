@@ -53,8 +53,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileBanner
-import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -292,7 +292,7 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             editLocation.setText(user.location)
             editUrl.setText(if (isEmpty(user.url_expanded)) user.url else user.url_expanded)
 
-            Glide.with(this).load(user.getBestProfileImage(context)).into(profileImage)
+            Glide.with(this).loadProfileImage(context, user).into(profileImage)
             Glide.with(this).load(user.getBestProfileBanner(resources.displayMetrics.widthPixels)).into(profileBanner)
             Glide.with(this).load(user.profile_background_url).into(profileBackground)
 
@@ -363,6 +363,7 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             private val backgroundColor: Int
     ) : AbstractTask<Context, SingleResponse<ParcelableUser>, UserProfileEditorFragment>() {
 
+
         override fun doLongOperation(context: Context): SingleResponse<ParcelableUser> {
             val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?: return SingleResponse.getInstance()
             val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
@@ -382,8 +383,9 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
                     // User profile unchanged
                     return SingleResponse.Companion.getInstance<ParcelableUser>()
                 }
-                val response = SingleResponse.Companion.getInstance(
-                        ParcelableUserUtils.fromUser(user, accountKey))
+                val profileImageSize = context.getString(R.string.profile_image_size)
+                val response = SingleResponse(ParcelableUserUtils.fromUser(user, accountKey,
+                        profileImageSize = profileImageSize))
                 response.extras.putParcelable(EXTRA_ACCOUNT, details)
                 return response
             } catch (e: MicroBlogException) {

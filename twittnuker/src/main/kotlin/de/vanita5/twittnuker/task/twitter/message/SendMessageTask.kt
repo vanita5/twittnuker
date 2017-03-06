@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.task.twitter.message
 
 import android.content.Context
+import de.vanita5.twittnuker.R
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -50,6 +51,8 @@ class SendMessageTask(
         context: Context
 ) : ExceptionHandlingAbstractTask<ParcelableNewMessage, SendMessageTask.SendMessageResult,
         MicroBlogException, Unit>(context) {
+
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     override fun onExecute(params: ParcelableNewMessage): SendMessageResult {
         val account = params.account
@@ -128,7 +131,7 @@ class SendMessageTask(
             it.message != null
         }?.message?.conversationId
         val response = microBlog.getDmConversation(conversationId, null).conversationTimeline
-        return GetMessagesTask.createDatabaseUpdateData(context, account, response)
+        return GetMessagesTask.createDatabaseUpdateData(context, account, response, profileImageSize)
     }
 
     private fun sendFanfouDM(microBlog: MicroBlog, account: AccountDetails, message: ParcelableNewMessage): GetMessagesTask.DatabaseUpdateData {
@@ -174,8 +177,10 @@ class SendMessageTask(
         val conversations = hashMapOf<String, ParcelableMessageConversation>()
         conversations.addLocalConversations(context, accountKey, conversationIds)
         val message = ParcelableMessageUtils.fromMessage(accountKey, dm, true)
-        val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey)
-        val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey)
+        val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey,
+                profileImageSize = profileImageSize)
+        val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey,
+                profileImageSize = profileImageSize)
         conversations.addConversation(message.conversation_id, details, message, setOf(sender, recipient), true)
         return GetMessagesTask.DatabaseUpdateData(conversations.values, listOf(message))
     }

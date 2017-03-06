@@ -25,18 +25,19 @@ package de.vanita5.twittnuker.task.twitter.message
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import de.vanita5.twittnuker.R
 import org.mariotaku.ktextension.toInt
 import org.mariotaku.ktextension.toLong
 import org.mariotaku.ktextension.useCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.*
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
@@ -58,6 +59,9 @@ import java.util.*
 class GetMessagesTask(
         context: Context
 ) : BaseAbstractTask<GetMessagesTask.RefreshMessagesTaskParam, Unit, (Boolean) -> Unit>(context) {
+
+    private val profileImageSize = context.getString(R.string.profile_image_size)
+
     override fun doLongOperation(param: RefreshMessagesTaskParam) {
         val accountKeys = param.accountKeys
         val am = android.accounts.AccountManager.get(context)
@@ -176,7 +180,7 @@ class GetMessagesTask(
         }
 
         val response = microBlog.getDmConversation(conversationId, paging).conversationTimeline
-        return Companion.createDatabaseUpdateData(context, details, response)
+        return createDatabaseUpdateData(context, details, response, profileImageSize)
     }
 
     private fun getTwitterOfficialUserInbox(microBlog: MicroBlog, details: AccountDetails,
@@ -192,7 +196,7 @@ class GetMessagesTask(
                 }
             }).userInbox
         }
-        return Companion.createDatabaseUpdateData(context, details, response)
+        return createDatabaseUpdateData(context, details, response, profileImageSize)
     }
 
 
@@ -338,8 +342,8 @@ class GetMessagesTask(
 
     companion object {
 
-        fun createDatabaseUpdateData(context: Context, account: AccountDetails, response: DMResponse):
-                DatabaseUpdateData {
+        fun createDatabaseUpdateData(context: Context, account: AccountDetails,
+                response: DMResponse, profileImageSize: String = "normal"): DatabaseUpdateData {
             val accountKey = account.key
 
             val respConversations = response.conversations.orEmpty()
@@ -366,7 +370,8 @@ class GetMessagesTask(
                         return@mapNotNullTo null
                     }
                     else -> {
-                        return@mapNotNullTo ParcelableMessageUtils.fromEntry(accountKey, entry, respUsers)
+                        return@mapNotNullTo ParcelableMessageUtils.fromEntry(accountKey, entry,
+                                respUsers, profileImageSize)
                     }
                 }
             }

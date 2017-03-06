@@ -20,11 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.extension.model.api
 
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.util.Utils
 
-fun ParcelableUser.getBestProfileBanner(width: Int): String? {
-    return InternalTwitterContentUtils.getBestBannerUrl(profile_banner_url, width)
+fun User.getProfileImageOfSize(size: String): String {
+    val profileImage = profileImageUrlHttps ?: profileImageUrl
+    return Utils.getTwitterProfileImageOfSize(profileImage, size) ?: profileImage
 }
