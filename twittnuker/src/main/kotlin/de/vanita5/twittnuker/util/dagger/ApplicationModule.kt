@@ -54,8 +54,8 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_L
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.cache.DiskLRUFileCache
 import de.vanita5.twittnuker.util.cache.JsonCache
-import de.vanita5.twittnuker.util.cache.NoOpFileCache
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -307,7 +307,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun fileCache(): FileCache {
-        return NoOpFileCache()
+        return DiskLRUFileCache(getCacheDir("media"))
     }
 
     private fun getCacheDir(dirName: String): File {
