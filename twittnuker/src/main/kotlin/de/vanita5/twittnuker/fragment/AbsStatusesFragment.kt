@@ -35,6 +35,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.OnScrollListener
 import android.view.*
+import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
@@ -124,7 +125,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         adapter.statusClickListener = this
         registerForContextMenu(recyclerView)
         navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter, this)
-        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(false, true)
+        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(false, true, Glide.with(this))
 
         if (shouldInitLoader) {
             initLoaderIfNeeded()

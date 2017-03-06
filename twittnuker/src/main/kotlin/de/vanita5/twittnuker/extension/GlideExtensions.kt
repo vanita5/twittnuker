@@ -30,6 +30,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import jp.wasabeef.glide.transformations.CropCircleTransformation
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
+import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.Utils
@@ -101,6 +102,10 @@ fun RequestManager.loadOriginalProfileImage(context: Context, user: ParcelableUs
     val original = user.extras.profile_image_url_original?.takeUnless(String::isEmpty)
             ?: Utils.getOriginalTwitterProfileImage(user.profile_image_url)
     return configureLoadProfileImage(context, shapeStyle) { load(original) }
+}
+
+fun RequestManager.loadProfileBanner(context: Context, user: ParcelableUser, width: Int): DrawableTypeRequest<String?> {
+    return load(user.getBestProfileBanner(width))
 }
 
 internal inline fun <T> configureLoadProfileImage(context: Context, shapeStyle: Int,

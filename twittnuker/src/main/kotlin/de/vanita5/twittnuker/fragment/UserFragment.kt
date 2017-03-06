@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadOriginalProfileImage
+import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
@@ -519,9 +520,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
         val defWidth = resources.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
-        val bannerUrl = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(user), width)
         val requestManager = Glide.with(this)
-        requestManager.load(bannerUrl).into(profileBanner)
+        requestManager.loadProfileBanner(context, user, width).into(profileBanner)
         requestManager.loadOriginalProfileImage(context, user, profileImage.style).into(profileImage)
         val relationship = relationship
         if (relationship == null) {

@@ -26,40 +26,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/list_item_status">
 
-    <com.commonsware.cwac.layouts.AspectLockedFrameLayout
-        android:id="@+id/media_preview_item_0"
+    <de.vanita5.twittnuker.view.MediaPreviewImageView
+        android:id="@+id/mediaPreviewItem0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:contentDescription="@string/media"
+        android:foreground="?selectableItemBackground"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        tools:ignore="DuplicateIncludedIds"
+        tools:src="@drawable/twittnuker_feature_graphic"/>
 
-        <include layout="@layout/layout_card_media_preview_item"/>
-    </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
-
-    <com.commonsware.cwac.layouts.AspectLockedFrameLayout
-        android:id="@+id/media_preview_item_1"
+    <de.vanita5.twittnuker.view.MediaPreviewImageView
+        android:id="@+id/mediaPreviewItem1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:contentDescription="@string/media"
+        android:foreground="?selectableItemBackground"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        tools:ignore="DuplicateIncludedIds"
+        tools:src="@drawable/twittnuker_feature_graphic"/>
 
-        <include layout="@layout/layout_card_media_preview_item"/>
-    </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
-
-    <com.commonsware.cwac.layouts.AspectLockedFrameLayout
-        android:id="@+id/media_preview_item_2"
+    <de.vanita5.twittnuker.view.MediaPreviewImageView
+        android:id="@+id/mediaPreviewItem2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:contentDescription="@string/media"
+        android:foreground="?selectableItemBackground"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        tools:ignore="DuplicateIncludedIds"
+        tools:src="@drawable/twittnuker_feature_graphic"/>
 
-        <include layout="@layout/layout_card_media_preview_item"/>
-    </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
-
-    <com.commonsware.cwac.layouts.AspectLockedFrameLayout
-        android:id="@+id/media_preview_item_3"
+    <de.vanita5.twittnuker.view.MediaPreviewImageView
+        android:id="@+id/mediaPreviewItem3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:contentDescription="@string/media"
+        android:foreground="?selectableItemBackground"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        tools:ignore="DuplicateIncludedIds"
+        tools:src="@drawable/twittnuker_feature_graphic"/>
 
-        <include layout="@layout/layout_card_media_preview_item"/>
-
-    </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
 </merge>

@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
@@ -83,10 +84,8 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.ShapedImageView
 import java.lang.ref.WeakReference
@@ -505,8 +504,8 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         val defWidth = res.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
         val bannerView = accountProfileBanner.nextView as ImageView
-        val url = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(account.user), width)
-        Glide.with(this).load(url).into(bannerView)
+
+        Glide.with(this).loadProfileBanner(context, account.user, width).into(bannerView)
     }
 
     private fun displayCurrentAccount(profileImageSnapshot: Drawable?) {

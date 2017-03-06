@@ -53,8 +53,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
+import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -293,7 +293,7 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             editUrl.setText(if (isEmpty(user.url_expanded)) user.url else user.url_expanded)
 
             Glide.with(this).loadProfileImage(context, user).into(profileImage)
-            Glide.with(this).load(user.getBestProfileBanner(resources.displayMetrics.widthPixels)).into(profileBanner)
+            Glide.with(this).loadProfileBanner(context, user, resources.displayMetrics.widthPixels).into(profileBanner)
             Glide.with(this).load(user.profile_background_url).into(profileBackground)
 
             linkColor.color = user.link_color

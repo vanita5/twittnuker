@@ -23,22 +23,10 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.RequestManager
-import com.commonsware.cwac.layouts.AspectLockedFrameLayout
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
-import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
-import de.vanita5.twittnuker.model.ParcelableMedia
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.view.MediaPreviewImageView
+import de.vanita5.twittnuker.view.holder.MediaStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 class StaggeredGridParcelableStatusesAdapter(
@@ -47,7 +35,7 @@ class StaggeredGridParcelableStatusesAdapter(
 ) : ParcelableStatusesAdapter(context, requestManager) {
 
     override val progressViewIds: IntArray
-        get() = intArrayOf(R.id.media_image_progress)
+        get() = intArrayOf(R.id.mediaImageProgress)
 
     override fun onCreateStatusViewHolder(parent: ViewGroup): IStatusViewHolder {
         val view = inflater.inflate(R.layout.adapter_item_media_status, parent, false)
@@ -57,104 +45,4 @@ class StaggeredGridParcelableStatusesAdapter(
         return holder
     }
 
-    class MediaStatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : RecyclerView.ViewHolder(itemView), IStatusViewHolder, View.OnClickListener, View.OnLongClickListener {
-        private val aspectRatioSource = SimpleAspectRatioSource().apply {
-            setSize(100, 100)
-        }
-
-        private val mediaImageContainer: AspectLockedFrameLayout
-        private val mediaImageView: MediaPreviewImageView
-        override val profileImageView: ImageView
-        private val mediaTextView: TextView
-        private var listener: IStatusViewHolder.StatusClickListener? = null
-
-        init {
-            mediaImageContainer = itemView.findViewById(R.id.media_image_container) as AspectLockedFrameLayout
-            mediaImageContainer.setAspectRatioSource(aspectRatioSource)
-            mediaImageView = itemView.findViewById(R.id.media_image) as MediaPreviewImageView
-            profileImageView = itemView.findViewById(R.id.media_profile_image) as ImageView
-            mediaTextView = itemView.findViewById(R.id.media_text) as TextView
-        }
-
-
-        override fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean,
-                displayExtraType: Boolean, displayPinned: Boolean) {
-            val media = status.media ?: return
-            if (media.isEmpty()) return
-            val firstMedia = media[0]
-            mediaTextView.text = status.text_unescaped
-            if (firstMedia.width > 0 && firstMedia.height > 0) {
-                aspectRatioSource.setSize(firstMedia.width, firstMedia.height)
-            } else {
-                aspectRatioSource.setSize(100, 100)
-            }
-            mediaImageContainer.tag = firstMedia
-            mediaImageContainer.requestLayout()
-
-            mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type))
-            val context = itemView.context
-            adapter.requestManager.loadProfileImage(context, status).into(profileImageView)
-            // TODO image loaded event and credentials
-            adapter.requestManager.load(firstMedia.preview_url).into(mediaImageView)
-        }
-
-        override val profileTypeView: ImageView?
-            get() = null
-
-        override fun onClick(v: View) {
-            when (v.id) {
-                R.id.itemContent -> {
-                    listener?.onStatusClick(this, layoutPosition)
-                }
-            }
-        }
-
-        override fun onLongClick(v: View): Boolean {
-            return false
-        }
-
-        override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
-        }
-
-        override fun setStatusClickListener(listener: IStatusViewHolder.StatusClickListener?) {
-            this.listener = listener
-            itemView.findViewById(R.id.itemContent).setOnClickListener(this)
-        }
-
-        override fun setTextSize(textSize: Float) {
-
-        }
-
-        override fun playLikeAnimation(listener: LikeAnimationDrawable.OnLikedListener) {
-
-        }
-
-        fun setOnClickListeners() {
-            setStatusClickListener(adapter.statusClickListener)
-        }
-
-        fun setupViewOptions() {
-            setTextSize(adapter.textSize)
-        }
-
-
-        private class SimpleAspectRatioSource : AspectLockedFrameLayout.AspectRatioSource {
-            private var width: Int = 0
-            private var height: Int = 0
-
-            override fun getWidth(): Int {
-                return width
-            }
-
-            override fun getHeight(): Int {
-                return height
-            }
-
-            fun setSize(width: Int, height: Int) {
-                this.width = width
-                this.height = height
-            }
-
-        }
-    }
 }
