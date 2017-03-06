@@ -127,7 +127,7 @@ import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener
@@ -522,10 +522,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val defWidth = resources.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
         val bannerUrl = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(user), width)
-        if (ObjectUtils.notEqual(profileBanner.tag, bannerUrl) || profileBanner.drawable == null) {
-            profileBanner.tag = bannerUrl
-            Glide.with(this).load(bannerUrl).into(profileBanner)
-        }
+        Glide.with(this).load(bannerUrl).into(profileBanner)
         val relationship = relationship
         if (relationship == null) {
             getFriendship()

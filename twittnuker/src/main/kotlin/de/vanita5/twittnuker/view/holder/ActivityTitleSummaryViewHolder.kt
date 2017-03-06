@@ -32,6 +32,7 @@ import org.mariotaku.ktextension.applyFontFamily
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage
 import de.vanita5.twittnuker.model.ParcelableActivity
@@ -134,7 +135,8 @@ class ActivityTitleSummaryViewHolder(
             view.setImageDrawable(null)
             if (i < length) {
                 view.visibility = View.VISIBLE
-                adapter.getRequestManager().load(statuses[i].getBestProfileImage(adapter.context)).into(view)
+                val context = adapter.context
+                adapter.getRequestManager().loadProfileImage(context, statuses[i].getBestProfileImage(context)).into(view)
             } else {
                 view.visibility = View.GONE
             }

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.extension.view.holder
 import android.view.View
 import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.util.UserColorNameManager
@@ -37,7 +38,8 @@ fun SimpleUserListViewHolder.display(userList: ParcelableUserList, getRequestMan
             userColorNameManager.getDisplayName(userList, false))
     if (displayProfileImage) {
         profileImageView.visibility = View.VISIBLE
-        getRequestManager().load(userList.getBestProfileImage(itemView.context)).into(profileImageView)
+        val context = itemView.context
+        getRequestManager().loadProfileImage(context, userList.getBestProfileImage(context)).into(profileImageView)
     } else {
         profileImageView.visibility = View.GONE
     }

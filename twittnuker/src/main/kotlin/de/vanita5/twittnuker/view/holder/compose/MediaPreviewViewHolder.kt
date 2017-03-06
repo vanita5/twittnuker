@@ -27,6 +27,7 @@ import android.view.View
 import android.widget.ImageView
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate
 
@@ -46,7 +47,7 @@ class MediaPreviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun displayMedia(adapter: MediaPreviewAdapter, media: ParcelableMediaUpdate) {
-        adapter.getRequestManager().load(media.uri).into(imageView)
+        adapter.getRequestManager().loadProfileImage(imageView.context, media.uri).into(imageView)
         videoIndicatorView.visibility = if (media.type == ParcelableMedia.Type.VIDEO) {
             View.VISIBLE
         } else {

@@ -29,7 +29,10 @@ import android.widget.ImageView
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.mediaPreloadKey
 import de.vanita5.twittnuker.constant.mediaPreloadOnWifiOnlyKey
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParcelableActivity
+import de.vanita5.twittnuker.model.ParcelableMedia
+import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.getActivityStatus
 
 class MediaLoaderWrapper() {
@@ -60,15 +63,6 @@ class MediaLoaderWrapper() {
     }
 
     fun displayProfileImage(view: ImageView, url: String?) {
-    }
-
-    fun displayDashboardProfileImage(view: ImageView, account: AccountDetails, drawableOnLoading: Drawable?) {
-        if (account.user.extras != null && !TextUtils.isEmpty(account.user.extras.profile_image_url_profile_size)) {
-            displayDashboardProfileImage(view, account.user.extras.profile_image_url_profile_size,
-                    drawableOnLoading)
-        } else {
-            displayDashboardProfileImage(view, account.user.profile_image_url, drawableOnLoading)
-        }
     }
 
 

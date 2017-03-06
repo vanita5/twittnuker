@@ -7,6 +7,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.view.ProfileImageView
@@ -30,7 +31,8 @@ open class SimpleUserViewHolder<out A : IContentAdapter>(
         nameView.text = user.name
         secondaryNameView.text = "@${user.screen_name}"
         if (adapter.profileImageEnabled) {
-            adapter.getRequestManager().load(user.getBestProfileImage(itemView.context)).into(profileImageView)
+            val context = itemView.context
+            adapter.getRequestManager().loadProfileImage(context, user.getBestProfileImage(context)).into(profileImageView)
             profileImageView.visibility = View.VISIBLE
         } else {
             profileImageView.visibility = View.GONE

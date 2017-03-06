@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
@@ -57,13 +58,12 @@ import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
-import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.lang.ref.WeakReference
 
 class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), IStatusViewHolder {
 
-    override val profileImageView: ProfileImageView by lazy { itemView.profileImage }
+    override val profileImageView: ImageView by lazy { itemView.profileImage }
     override val profileTypeView: ImageView by lazy { itemView.profileType }
 
     private val itemContent by lazy { itemView.itemContent }
@@ -315,7 +315,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            getRequestManager().load(status.getBestProfileImage(context)).into(profileImageView)
+            getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(profileImageView)
 
             profileTypeView.setImageResource(getUserTypeIconRes(status.user_is_verified, status.user_is_protected))
             profileTypeView.visibility = View.VISIBLE
@@ -518,7 +518,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
     fun setupViewOptions() {
         setTextSize(adapter.textSize)
-        profileImageView.style = adapter.profileImageStyle
 
         mediaPreview.style = adapter.mediaPreviewStyle
         quotedMediaPreview.style = adapter.mediaPreviewStyle

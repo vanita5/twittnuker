@@ -29,6 +29,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.card_item_group_compact.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGroupsAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.Utils
@@ -77,7 +78,7 @@ class GroupViewHolder(private val adapter: IGroupsAdapter<*>, itemView: View) : 
         }
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            adapter.getRequestManager().load(group.homepage_logo).into(profileImageView)
+            adapter.getRequestManager().loadProfileImage(context, group.homepage_logo).into(profileImageView)
         } else {
             profileImageView.visibility = View.GONE
         }

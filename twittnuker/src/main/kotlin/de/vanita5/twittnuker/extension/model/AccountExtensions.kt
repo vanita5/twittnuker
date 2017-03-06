@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.util.ParseUtils
 import java.io.IOException
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
 
 fun Account.getCredentials(am: AccountManager): Credentials {
@@ -191,7 +192,11 @@ internal object AccountDataQueue {
         } else handler.post {
             future.run()
         }
-        return future.get(1, TimeUnit.SECONDS)
+        try {
+            return future.get(5, TimeUnit.SECONDS)
+        } catch (e: TimeoutException) {
+            return manager.getUserData(account, key)
+        }
     }
 
     fun peekAuthToken(manager: AccountManager, account: Account, authTokenType: String): String? {
@@ -201,7 +206,11 @@ internal object AccountDataQueue {
         } else handler.post {
             future.run()
         }
-        return future.get(1, TimeUnit.SECONDS)
+        try {
+            return future.get(5, TimeUnit.SECONDS)
+        } catch (e: TimeoutException) {
+            return manager.peekAuthToken(account, authTokenType)
+        }
     }
 }
 

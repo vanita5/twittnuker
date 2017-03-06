@@ -89,6 +89,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
@@ -897,7 +898,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
-            adapter.getRequestManager().load(status.getBestProfileImage(context)).into(itemView.profileImage)
+            adapter.getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)
@@ -1343,7 +1344,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 }
 
                 fun displayUser(item: ParcelableUser) {
-                    adapter.getRequestManager().load(item.getBestProfileImage(adapter.context)).into(profileImageView)
+                    val context = adapter.context
+                    adapter.getRequestManager().loadProfileImage(context, item.getBestProfileImage(context)).into(profileImageView)
                 }
 
                 override fun onClick(v: View) {

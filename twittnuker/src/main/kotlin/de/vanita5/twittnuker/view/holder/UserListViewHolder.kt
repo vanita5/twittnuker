@@ -29,6 +29,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_user_list.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout
@@ -72,7 +73,7 @@ class UserListViewHolder(
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            adapter.getRequestManager().load(userList.user_profile_image_url).into(profileImageView)
+            adapter.getRequestManager().loadProfileImage(context, userList.user_profile_image_url).into(profileImageView)
         } else {
             profileImageView.visibility = View.GONE
         }

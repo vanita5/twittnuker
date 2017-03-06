@@ -107,18 +107,15 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
                     if (video) return@run null
                     item.media_url
                 }
-                if (url != imageView.tag || imageView.drawable == null) {
-                    if (withCredentials) {
-                        getRequestManager().load(url).into(imageView)
-                        // TODO handle load progress w/ authentication
-                        // loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler, video)
-                    } else {
-                        getRequestManager().load(url).into(imageView)
-                        // TODO handle load progress
-                        // loader.displayPreviewImage(imageView, url, loadingHandler, video)
-                    }
+                if (withCredentials) {
+                    getRequestManager().load(url).into(imageView)
+                    // TODO handle load progress w/ authentication
+                    // loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler, video)
+                } else {
+                    getRequestManager().load(url).into(imageView)
+                    // TODO handle load progress
+                    // loader.displayPreviewImage(imageView, url, loadingHandler, video)
                 }
-                imageView.tag = url
                 if (imageView is MediaPreviewImageView) {
                     imageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(item.type))
                 }
@@ -131,7 +128,6 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
                 child.visibility = View.VISIBLE
             } else {
                 // TODO cancel image load task
-                imageView.tag = null
                 child.visibility = View.GONE
             }
         }

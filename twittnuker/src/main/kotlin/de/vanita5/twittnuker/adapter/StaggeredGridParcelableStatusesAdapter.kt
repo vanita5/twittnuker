@@ -32,6 +32,7 @@ import com.bumptech.glide.RequestManager
 import com.commonsware.cwac.layouts.AspectLockedFrameLayout
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -92,7 +93,8 @@ class StaggeredGridParcelableStatusesAdapter(
             mediaImageContainer.requestLayout()
 
             mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type))
-            adapter.getRequestManager().load(status.getBestProfileImage(itemView.context)).into(profileImageView)
+            val context = itemView.context
+            adapter.getRequestManager().loadProfileImage(context, status.getBestProfileImage(context)).into(profileImageView)
             // TODO image loaded event and credentials
             adapter.getRequestManager().load(firstMedia.preview_url).into(mediaImageView)
         }

@@ -60,7 +60,6 @@ import com.twitter.Extractor
 import com.twitter.Validator
 import kotlinx.android.synthetic.main.activity_compose.*
 import org.apache.commons.lang3.ArrayUtils
-import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
@@ -74,6 +73,7 @@ import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.extension.model.textLimit
@@ -442,7 +442,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (accounts.size == 1) {
             accountsCount.setText(null)
             val account = accounts[0]
-            mediaLoader.displayProfileImage(accountProfileImage, account.user)
+            Glide.with(this).loadProfileImage(this, account).into(accountProfileImage)
             accountProfileImage.setBorderColor(account.color)
         } else {
             accountsCount.setText(accounts.size.toString())
@@ -1414,7 +1414,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             (itemView as CheckableLinearLayout).isChecked = isSelected
             if (account != iconView.tag || iconView.drawable == null) {
                 iconView.tag = account
-                adapter.getRequestManager().load(account.user.getBestProfileImage(adapter.context)).into(iconView)
+                val context = adapter.context
+                adapter.getRequestManager().loadProfileImage(context, account.user.getBestProfileImage(context)).into(iconView)
             }
             iconView.setBorderColor(account.color)
             nameView.text = if (adapter.isNameFirst) account.user.name else "@" + account.user.screen_name

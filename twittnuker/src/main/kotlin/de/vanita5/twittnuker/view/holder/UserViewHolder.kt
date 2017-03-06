@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.list_item_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.*
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getBestProfileImage
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.UserKeyUtils
@@ -138,7 +139,7 @@ class UserViewHolder(
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
-            adapter.getRequestManager().load(user.getBestProfileImage(context)).into(profileImageView)
+            adapter.getRequestManager().loadProfileImage(context, user.getBestProfileImage(context)).into(profileImageView)
         } else {
             profileImageView.visibility = View.GONE
         }
