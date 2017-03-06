@@ -65,7 +65,7 @@ before_install:
   # #- adb shell input keyevent 82 &
 
 script:
-  - GRADLE_OPTS="-Dkotlin.incremental=false" ./gradlew assembleDebug --no-daemon --stacktrace
+  - ./gradlew assembleDebug --no-daemon --stacktrace
   # #- ./gradlew assembleDebugAndroidTest
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
