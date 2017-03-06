@@ -78,6 +78,7 @@ import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.extension.model.getColor
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
