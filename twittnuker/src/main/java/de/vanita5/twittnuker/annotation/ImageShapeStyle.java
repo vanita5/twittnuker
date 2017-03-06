@@ -20,33 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface
+package de.vanita5.twittnuker.annotation;
 
-import android.support.v4.text.BidiFormatter
-import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.annotation.ImageShapeStyle
+import android.support.annotation.IntDef;
 
-interface IContentAdapter {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    val userColorNameManager: UserColorNameManager
-
-    fun getItemCount(): Int
-
-    @ImageShapeStyle
-    val profileImageStyle: Int
-
-    val profileImageEnabled: Boolean
-
-    val textSize: Float
-
-    val twitterWrapper: AsyncTwitterWrapper
-
-    val requestManager: RequestManager
-
-    val bidiFormatter: BidiFormatter
-
-    val showAbsoluteTime: Boolean
-
+@IntDef({ImageShapeStyle.SHAPE_CIRCLE, ImageShapeStyle.SHAPE_RECTANGLE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface ImageShapeStyle {
+    int SHAPE_CIRCLE = 0x1;
+    int SHAPE_RECTANGLE = 0x2;
 }

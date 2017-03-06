@@ -80,7 +80,6 @@ import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.promiseOnUi
 import nl.komponents.kovenant.ui.successUi
-import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
@@ -90,7 +89,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -107,6 +105,7 @@ import de.vanita5.twittnuker.constant.lightFontKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
@@ -127,7 +126,7 @@ import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils.*
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener
@@ -510,7 +509,6 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         tweetsContainer.visibility = if (user.statuses_count < 0) View.GONE else View.VISIBLE
         groupsContainer.visibility = if (groupsCount < 0) View.GONE else View.VISIBLE
 
-        mediaLoader.displayOriginalProfileImage(profileImage, user)
         if (user.color != 0) {
             setUiColor(user.color)
         } else if (user.link_color != 0) {
@@ -522,7 +520,9 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val defWidth = resources.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
         val bannerUrl = getBestBannerUrl(ParcelableUserUtils.getProfileBannerUrl(user), width)
-        Glide.with(this).load(bannerUrl).into(profileBanner)
+        val requestManager = Glide.with(this)
+        requestManager.load(bannerUrl).into(profileBanner)
+        requestManager.loadOriginalProfileImage(context, user, profileImage.style).into(profileImage)
         val relationship = relationship
         if (relationship == null) {
             getFriendship()

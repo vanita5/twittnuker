@@ -29,8 +29,8 @@ import org.mariotaku.kpreferences.*
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
-import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
@@ -100,14 +100,14 @@ object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xF
     }
 }
 
-object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ProfileImageView.SHAPE_RECTANGLE) {
+object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ImageShapeStyle.SHAPE_RECTANGLE) {
     override fun read(preferences: SharedPreferences): Int {
-        if (preferences.getString(key, null) == VALUE_PROFILE_IMAGE_STYLE_ROUND) return ProfileImageView.SHAPE_CIRCLE
-        return ProfileImageView.SHAPE_RECTANGLE
+        if (preferences.getString(key, null) == VALUE_PROFILE_IMAGE_STYLE_ROUND) return ImageShapeStyle.SHAPE_CIRCLE
+        return ImageShapeStyle.SHAPE_RECTANGLE
     }
 
     override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
-        editor.putString(key, if (value == ProfileImageView.SHAPE_CIRCLE) VALUE_PROFILE_IMAGE_STYLE_ROUND else VALUE_PROFILE_IMAGE_STYLE_SQUARE)
+        editor.putString(key, if (value == ImageShapeStyle.SHAPE_CIRCLE) VALUE_PROFILE_IMAGE_STYLE_ROUND else VALUE_PROFILE_IMAGE_STYLE_SQUARE)
         return true
     }
 

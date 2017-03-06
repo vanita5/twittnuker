@@ -36,7 +36,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.os.Build;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -44,12 +43,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.annotation.ImageShapeStyle;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.graphics.OutlineCompat;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 /**
  * An ImageView class with a circle mask so that all images are drawn in a
@@ -57,10 +54,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class ShapedImageView extends ImageView {
 
-    @ShapeStyle
-    public static final int SHAPE_CIRCLE = 0x1;
-    @ShapeStyle
-    public static final int SHAPE_RECTANGLE = 0x2;
     private static final int SHADOW_START_COLOR = 0x37000000;
 
     public static final boolean OUTLINE_DRAW = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -103,8 +96,8 @@ public class ShapedImageView extends ImageView {
         }
         setBorderColor(a.getColor(R.styleable.ShapedImageView_sivBorderColor, Color.TRANSPARENT));
         setBorderWidth(a.getDimensionPixelSize(R.styleable.ShapedImageView_sivBorderWidth, 0));
-        @ShapeStyle
-        final int shapeStyle = a.getInt(R.styleable.ShapedImageView_sivShape, SHAPE_RECTANGLE);
+        @ImageShapeStyle
+        final int shapeStyle = a.getInt(R.styleable.ShapedImageView_sivShape, ImageShapeStyle.SHAPE_RECTANGLE);
         setStyle(shapeStyle);
         setCornerRadius(a.getDimension(R.styleable.ShapedImageView_sivCornerRadius, 0));
         setCornerRadiusRatio(a.getFraction(R.styleable.ShapedImageView_sivCornerRadiusRatio, 1, 1, -1));
@@ -128,12 +121,12 @@ public class ShapedImageView extends ImageView {
         return mBorderColors;
     }
 
-    @ShapeStyle
+    @ImageShapeStyle
     public int getStyle() {
         return mStyle;
     }
 
-    public void setStyle(@ShapeStyle final int style) {
+    public void setStyle(@ImageShapeStyle final int style) {
         mStyle = style;
     }
 
@@ -247,7 +240,7 @@ public class ShapedImageView extends ImageView {
             ViewCompat.setTranslationZ(this, 0);
         }
         mBorderPaint.setStrokeWidth(strokeWidth);
-        if (getStyle() == SHAPE_CIRCLE) {
+        if (getStyle() == ImageShapeStyle.SHAPE_CIRCLE) {
             final float circleRadius = Math.min(dest.width(), dest.height()) / 2f - strokeWidth / 2;
             canvas.drawCircle(dest.centerX(), dest.centerY(), circleRadius, mBorderPaint);
         } else {
@@ -327,7 +320,7 @@ public class ShapedImageView extends ImageView {
         paint.setColor(0xFF000000);
         paint.setShadowLayer(radius, 0, radius * 1.5f / 2, SHADOW_START_COLOR);
         final RectF rect = new RectF(radius, radius, size - radius, size - radius);
-        if (getStyle() == SHAPE_CIRCLE) {
+        if (getStyle() == ImageShapeStyle.SHAPE_CIRCLE) {
             canvas.drawOval(rect, paint);
             paint.setShadowLayer(0, 0, 0, 0);
             paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
@@ -346,11 +339,6 @@ public class ShapedImageView extends ImageView {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && !isInEditMode();
     }
 
-    @IntDef({SHAPE_CIRCLE, SHAPE_RECTANGLE})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface ShapeStyle {
-    }
-
     private static class CircularOutlineProvider extends ViewOutlineProviderCompat {
         boolean drawShadow;
 
@@ -365,7 +353,7 @@ public class ShapedImageView extends ImageView {
                     contentRight = viewWidth - view.getPaddingRight(),
                     contentBottom = viewHeight - view.getPaddingBottom();
             final ShapedImageView imageView = (ShapedImageView) view;
-            if (imageView.getStyle() == SHAPE_CIRCLE) {
+            if (imageView.getStyle() == ImageShapeStyle.SHAPE_CIRCLE) {
                 final int contentWidth = contentRight - contentLeft,
                         contentHeight = contentBottom - contentTop;
                 final int size = Math.min(contentWidth, contentHeight);
