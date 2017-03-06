@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.util.Utils
@@ -63,7 +62,6 @@ abstract class ParcelableStatusesAdapter(
 
     protected val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    override final val mediaLoadingHandler: MediaLoadingHandler
     final override val twidereLinkify: TwidereLinkify
     @PreviewStyle
     final override val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
@@ -117,8 +115,6 @@ abstract class ParcelableStatusesAdapter(
 
     override val itemCounts = ItemCounts(4)
 
-    protected abstract val progressViewIds: IntArray
-
     val statusStartIndex: Int
         get() = getItemStartPosition(ITEM_INDEX_STATUS)
 
@@ -137,7 +133,6 @@ abstract class ParcelableStatusesAdapter(
         }
 
     init {
-        mediaLoadingHandler = MediaLoadingHandler(*progressViewIds)
         val handler = StatusAdapterLinkClickHandler<List<ParcelableStatus>>(context, preferences)
         twidereLinkify = TwidereLinkify(handler)
         handler.setAdapter(this)

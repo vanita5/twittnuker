@@ -457,12 +457,12 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
     private fun setDefaultAPI() {
         val apiLastChange = preferences.getLong(KEY_API_LAST_CHANGE, apiChangeTimestamp)
         val defaultApiChanged = apiLastChange != apiChangeTimestamp
-        val apiUrlFormat = Utils.getNonEmptyString(preferences, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
+        val apiUrlFormat = preferences.getNonEmptyString(KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
         val authType = preferences.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH)
         val sameOAuthSigningUrl = preferences.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false)
         val noVersionSuffix = preferences.getBoolean(KEY_NO_VERSION_SUFFIX, false)
-        val consumerKey = Utils.getNonEmptyString(preferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
-        val consumerSecret = Utils.getNonEmptyString(preferences, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET)
+        val consumerKey = preferences.getNonEmptyString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
+        val consumerSecret = preferences.getNonEmptyString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET)
         if (TextUtils.isEmpty(apiConfig.apiUrlFormat) || defaultApiChanged) {
             apiConfig.apiUrlFormat = apiUrlFormat
         }

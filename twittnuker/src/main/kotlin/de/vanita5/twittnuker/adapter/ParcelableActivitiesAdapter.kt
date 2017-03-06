@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.OnLinkClickHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.holder.*
@@ -60,8 +59,6 @@ class ParcelableActivitiesAdapter(
         context: Context,
         requestManager: RequestManager
 ) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context, requestManager), IActivitiesAdapter<List<ParcelableActivity>> {
-
-    override val mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
 
     private val inflater = LayoutInflater.from(context)
     private val twidereLinkify = TwidereLinkify(OnLinkClickHandler(context, null, preferences))
@@ -230,8 +227,7 @@ class ParcelableActivitiesAdapter(
             ITEM_VIEW_TYPE_STATUS -> {
                 val status = getActivity(position)?.getActivityStatus() ?: return
                 val statusViewHolder = holder as IStatusViewHolder
-                statusViewHolder.displayStatus(status = status, displayInReplyTo = true,
-                        displayExtraType = true)
+                statusViewHolder.displayStatus(status = status, displayInReplyTo = true)
             }
             ITEM_VIEW_TYPE_TITLE_SUMMARY -> {
                 bindTitleSummaryViewHolder(holder as ActivityTitleSummaryViewHolder, position)

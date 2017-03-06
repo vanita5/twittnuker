@@ -26,6 +26,5 @@ import android.content.SharedPreferences
 import android.text.TextUtils
 
 fun SharedPreferences.getNonEmptyString(key: String, def: String): String {
-    val v = getString(key, def)
-    return if (TextUtils.isEmpty(v)) def else v
+    return getString(key, def)?.takeUnless(String::isEmpty) ?: def
 }

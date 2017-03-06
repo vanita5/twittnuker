@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.view.CardMediaContainer
 interface IStatusViewHolder : CardMediaContainer.OnMediaClickListener {
 
     fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean = true,
-            displayExtraType: Boolean = true, displayPinned: Boolean = false)
+            displayPinned: Boolean = false)
 
     val profileImageView: ImageView?
 

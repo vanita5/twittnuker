@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.extension.model.aspect_ratio
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import java.lang.ref.WeakReference
 
 /**
@@ -73,7 +72,7 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
 
     fun displayMedia(requestManager: RequestManager, media: Array<ParcelableMedia>?, accountId: UserKey? = null,
                      extraId: Long = -1, withCredentials: Boolean = false,
-                     mediaClickListener: OnMediaClickListener? = null, loadingHandler: MediaLoadingHandler? = null) {
+            mediaClickListener: OnMediaClickListener? = null) {
         if (media == null || style == PreviewStyle.NONE) {
             for (i in 0 until childCount) {
                 val child = getChildAt(i)

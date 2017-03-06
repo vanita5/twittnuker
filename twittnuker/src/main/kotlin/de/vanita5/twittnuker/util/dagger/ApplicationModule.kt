@@ -301,7 +301,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun jsonCache(): JsonCache {
-        return JsonCache()
+        return JsonCache(getCacheDir("json"))
     }
 
     @Provides

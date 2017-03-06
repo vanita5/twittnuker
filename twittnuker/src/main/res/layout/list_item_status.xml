@@ -115,52 +115,40 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/statusContentUpperSpace"
         android:layout_toEndOf="@+id/profileImage"
-        android:layout_toRightOf="@+id/profileImage"
-        android:orientation="vertical">
+        android:layout_toRightOf="@+id/profileImage">
 
-        <LinearLayout
-            android:id="@+id/profileContainer"
-            android:layout_width="match_parent"
+        <de.vanita5.twittnuker.view.NameView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|start"
-            android:orientation="horizontal">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/time"
+            android:layout_toStartOf="@+id/time"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:nv_primaryTextColor="?android:textColorPrimary"
+            app:nv_primaryTextStyle="bold"
+            app:nv_secondaryTextColor="?android:textColorSecondary"/>
 
-            <de.vanita5.twittnuker.view.NameView
-                android:id="@+id/name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:nv_primaryTextColor="?android:textColorPrimary"
-                app:nv_primaryTextStyle="bold"
-                app:nv_secondaryTextColor="?android:textColorSecondary"/>
-
-            <de.vanita5.twittnuker.view.ShortTimeView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:textAppearance="?android:textAppearanceSmall"
-                tools:text="42 mins ago"
-                tools:textSize="@dimen/text_size_extra_small" />
-
-            <de.vanita5.twittnuker.view.IconActionView
-                android:id="@+id/extraType"
-                android:layout_width="@dimen/element_size_small"
-                android:layout_height="@dimen/element_size_small"
-                android:layout_weight="0"
-                android:color="?android:textColorSecondary"
-                tools:src="@drawable/ic_action_gallery"
-                tools:tint="?android:textColorSecondary"/>
-
-        </LinearLayout>
+        <de.vanita5.twittnuker.view.ShortTimeView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/name"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:textAppearance="?android:textAppearanceSmall"
+            tools:text="42 mins ago"
+            tools:textSize="@dimen/text_size_extra_small" />
 
         <de.vanita5.twittnuker.view.TimelineContentTextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/profileContainer"
-            android:layout_alignStart="@+id/profileContainer"
-            android:layout_below="@+id/profileContainer"
+            android:layout_alignLeft="@+id/name"
+            android:layout_alignStart="@+id/name"
+            android:layout_below="@+id/name"
             android:paddingTop="@dimen/element_spacing_small"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
@@ -168,7 +156,7 @@
             tools:text="@string/sample_status_text"
             tools:visibility="visible"/>
 
-        <LinearLayout
+        <de.vanita5.twittnuker.view.ActionIconThemedTextView
             android:id="@+id/mediaLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -179,28 +167,14 @@
             android:layout_below="@+id/text"
             android:layout_marginTop="@dimen/element_spacing_xsmall"
             android:background="?selectableItemBackground"
+            android:drawableLeft="@drawable/ic_label_gallery"
+            android:drawableStart="@drawable/ic_label_gallery"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <de.vanita5.twittnuker.view.IconActionView
-                android:layout_width="@dimen/element_size_small"
-                android:layout_height="@dimen/element_size_small"
-                android:layout_weight="0"
-                android:color="?android:textColorSecondary"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_action_gallery"
-                tools:tint="?android:textColorSecondary"/>
-
-            <de.vanita5.twittnuker.view.FixedTextView
-                android:id="@+id/mediaLabelText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/media"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textStyle="bold"/>
-
-        </LinearLayout>
+            android:minHeight="@dimen/element_size_small"
+            android:text="@string/media"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textStyle="bold"
+            app:iabColor="?android:textColorSecondary"/>
 
         <de.vanita5.twittnuker.view.CardMediaContainer
             android:id="@+id/mediaPreview"
@@ -282,7 +256,7 @@
                 tools:text="@string/sample_status_text"
                 tools:visibility="visible" />
 
-            <LinearLayout
+            <de.vanita5.twittnuker.view.ActionIconThemedTextView
                 android:id="@+id/quotedMediaLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -292,29 +266,14 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/quotedText"
                 android:layout_marginTop="@dimen/element_spacing_small"
+                android:drawableLeft="@drawable/ic_label_gallery"
+                android:drawableStart="@drawable/ic_label_gallery"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                tools:visibility="gone">
-
-                <de.vanita5.twittnuker.view.IconActionView
-                    android:layout_width="@dimen/element_size_small"
-                    android:layout_height="@dimen/element_size_small"
-                    android:layout_weight="0"
-                    android:color="?android:textColorSecondary"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_gallery"
-                    tools:tint="?android:textColorSecondary"/>
-
-                <de.vanita5.twittnuker.view.FixedTextView
-                    android:id="@+id/quotedMediaLabelText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/media"
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
+                android:text="@string/media"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                app:iabColor="?android:textColorSecondary"
+                tools:visibility="gone"/>
 
             <de.vanita5.twittnuker.view.CardMediaContainer
                 android:id="@+id/quotedMediaPreview"

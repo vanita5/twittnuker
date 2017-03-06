@@ -56,7 +56,6 @@ class DummyItemAdapter(
     override lateinit var userColorNameManager: UserColorNameManager
     @Inject
     override lateinit var bidiFormatter: BidiFormatter
-    override val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
 
     override var profileImageStyle: Int = 0
     override var mediaPreviewStyle: Int = 0

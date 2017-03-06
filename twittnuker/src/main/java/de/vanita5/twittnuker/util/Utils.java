@@ -438,13 +438,6 @@ public final class Utils implements Constants {
         return nf.format(number);
     }
 
-    @NonNull
-    public static String getNonEmptyString(final SharedPreferences pref, final String key, final String def) {
-        if (pref == null) return def;
-        final String val = pref.getString(key, def);
-        return TextUtils.isEmpty(val) ? def : val;
-    }
-
     public static String getNormalTwitterProfileImage(final String url) {
         return getTwitterProfileImageOfSize(url, "normal");
     }

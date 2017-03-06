@@ -23,12 +23,12 @@
 package de.vanita5.twittnuker.view.holder
 
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.View.OnClickListener
@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.model.ParcelableLocation
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
@@ -74,7 +73,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     private val itemMenu by lazy { itemView.itemMenu }
     private val statusInfoLabel by lazy { itemView.statusInfoLabel }
     private val statusInfoIcon by lazy { itemView.statusInfoIcon }
-    private val extraTypeView by lazy { itemView.extraType }
     private val quotedNameView by lazy { itemView.quotedName }
     private val timeView by lazy { itemView.time }
     private val replyCountView by lazy { itemView.replyCount }
@@ -89,8 +87,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     private val favoriteIcon by lazy { itemView.favoriteIcon }
     private val retweetIcon by lazy { itemView.retweetIcon }
     private val favoriteCountView by lazy { itemView.favoriteCount }
-    private val mediaLabelTextView by lazy { itemView.mediaLabelText }
-    private val quotedMediaLabelTextView by lazy { itemView.quotedMediaLabelText }
     private val replyButton by lazy { itemView.reply }
     private val retweetButton by lazy { itemView.retweet }
     private val favoriteButton by lazy { itemView.favorite }
@@ -147,11 +143,10 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         quotedMediaPreview.visibility = View.GONE
         quotedMediaLabel.visibility = View.GONE
         mediaPreview.displayMedia(R.drawable.twittnuker_feature_graphic)
-        extraTypeView.setImageResource(R.drawable.ic_action_gallery)
     }
 
     override fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean,
-            displayExtraType: Boolean, displayPinned: Boolean) {
+            displayPinned: Boolean) {
 
         val context = itemView.context
         val requestManager = adapter.requestManager
@@ -352,14 +347,13 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
                 mediaPreview.displayMedia(requestManager = requestManager,
                         media = status.media, accountId = status.account_key,
-                        mediaClickListener = this, loadingHandler = adapter.mediaLoadingHandler)
+                        mediaClickListener = this)
             }
         } else {
             // No media, hide all related views
             mediaLabel.visibility = View.GONE
             mediaPreview.visibility = View.GONE
         }
-
 
         var displayEnd = -1
         if (status.extras.display_text_range != null) {
@@ -431,12 +425,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             favoriteCountView.text = null
             favoriteCountView.visibility = View.GONE
         }
-        if (displayExtraType) {
-            displayExtraTypeIcon(status.card_name, status.media, status.location,
-                    status.place_full_name, status.is_possibly_sensitive)
-        } else {
-            extraTypeView.visibility = View.GONE
-        }
 
         nameView.updateText(formatter)
         quotedNameView.updateText(formatter)
@@ -461,7 +449,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
                 quotedMediaPreview.displayMedia(requestManager = requestManager,
                         media = status.quoted_media, accountId = status.account_key,
-                        mediaClickListener = this, loadingHandler = adapter.mediaLoadingHandler)
+                        mediaClickListener = this)
             }
         } else {
             // No media, hide all related views
@@ -511,7 +499,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         timeView.textSize = textSize * 0.85f
         statusInfoLabel.textSize = textSize * 0.75f
 
-        mediaLabelTextView.textSize = textSize * 0.95f
+        mediaLabel.textSize = textSize * 0.95f
+        quotedMediaLabel.textSize = textSize * 0.95f
 
         replyCountView.textSize = textSize
         retweetCountView.textSize = textSize
@@ -554,11 +543,11 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         nameView.applyFontFamily(adapter.lightFont)
         timeView.applyFontFamily(adapter.lightFont)
         textView.applyFontFamily(adapter.lightFont)
-        mediaLabelTextView.applyFontFamily(adapter.lightFont)
+        mediaLabel.applyFontFamily(adapter.lightFont)
 
         quotedNameView.applyFontFamily(adapter.lightFont)
         quotedTextView.applyFontFamily(adapter.lightFont)
-        quotedMediaLabelTextView.applyFontFamily(adapter.lightFont)
+        quotedMediaLabel.applyFontFamily(adapter.lightFont)
     }
 
     override fun playLikeAnimation(listener: LikeAnimationDrawable.OnLikedListener) {
@@ -589,28 +578,13 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     private fun displayExtraTypeIcon(cardName: String?, media: Array<ParcelableMedia?>?,
                                      location: ParcelableLocation?, placeFullName: String?,
                                      sensitive: Boolean) {
-        if (TwitterCardUtils.CARD_NAME_AUDIO == cardName) {
-            extraTypeView.setImageResource(if (sensitive) R.drawable.ic_action_warning else R.drawable.ic_action_music)
-            extraTypeView.visibility = View.VISIBLE
-        } else if (TwitterCardUtils.CARD_NAME_ANIMATED_GIF == cardName) {
-            extraTypeView.setImageResource(if (sensitive) R.drawable.ic_action_warning else R.drawable.ic_action_movie)
-            extraTypeView.visibility = View.VISIBLE
-        } else if (TwitterCardUtils.CARD_NAME_PLAYER == cardName) {
-            extraTypeView.setImageResource(if (sensitive) R.drawable.ic_action_warning else R.drawable.ic_action_play_circle)
-            extraTypeView.visibility = View.VISIBLE
-        } else if (media?.isNotEmpty() ?: false) {
-            if (hasVideo(media)) {
-                extraTypeView.setImageResource(if (sensitive) R.drawable.ic_action_warning else R.drawable.ic_action_movie)
-            } else {
-                extraTypeView.setImageResource(if (sensitive) R.drawable.ic_action_warning else R.drawable.ic_action_gallery)
-            }
-            extraTypeView.visibility = View.VISIBLE
-        } else if (ParcelableLocationUtils.isValidLocation(location) || !TextUtils.isEmpty(placeFullName)) {
-            extraTypeView.setImageResource(R.drawable.ic_action_location)
-            extraTypeView.visibility = View.VISIBLE
+        val icon = if (sensitive) {
+            R.drawable.ic_label_warning
         } else {
-            extraTypeView.visibility = View.GONE
+            R.drawable.ic_label_gallery
         }
+        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(mediaLabel, icon, 0, 0, 0)
+        mediaLabel.refreshDrawableState()
     }
 
     private fun hasVideo(media: Array<ParcelableMedia?>?): Boolean {

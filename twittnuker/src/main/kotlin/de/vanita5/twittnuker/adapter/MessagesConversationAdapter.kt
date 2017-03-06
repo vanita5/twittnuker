@@ -40,7 +40,6 @@ import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -63,7 +62,6 @@ class MessagesConversationAdapter(
     val linkHighlightingStyle: Int = preferences[linkHighlightOptionKey]
     val nameFirst: Boolean = preferences[nameFirstKey]
     val linkify: TwidereLinkify = TwidereLinkify(DirectMessageOnLinkClickHandler(context, null, preferences))
-    val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler()
     val mediaClickListener: OnMediaClickListener = object : OnMediaClickListener {
         override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
             listener?.onMediaClick(id.toInt(), media, accountKey)

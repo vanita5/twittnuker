@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.adapter.iface
 
 import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder
 
 interface IActivitiesAdapter<in Data> : IContentAdapter, IGapSupportedAdapter {
@@ -31,8 +30,6 @@ interface IActivitiesAdapter<in Data> : IContentAdapter, IGapSupportedAdapter {
     val activityCount: Int
 
     val mediaPreviewStyle: Int
-
-    val mediaLoadingHandler: MediaLoadingHandler
 
     val mediaPreviewEnabled: Boolean
 

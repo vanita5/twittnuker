@@ -25,9 +25,7 @@ package de.vanita5.twittnuker.adapter.iface
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
-import de.vanita5.twittnuker.view.CardMediaContainer
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 
@@ -56,8 +54,6 @@ interface IStatusesAdapter<in Data> : IContentAdapter, IGapSupportedAdapter {
     val showAccountsColor: Boolean
 
     val useStarsForLikes: Boolean
-
-    val mediaLoadingHandler: MediaLoadingHandler
 
     val statusClickListener: IStatusViewHolder.StatusClickListener?
 
