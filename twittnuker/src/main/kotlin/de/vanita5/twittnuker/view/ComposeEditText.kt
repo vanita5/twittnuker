@@ -29,6 +29,7 @@ import android.text.method.ArrowKeyMovementMethod
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.widget.AdapterView
+import com.bumptech.glide.Glide
 import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.model.UserKey
@@ -64,7 +65,7 @@ class ComposeEditText(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!isInEditMode && adapter == null) {
-            adapter = ComposeAutoCompleteAdapter(context)
+            adapter = ComposeAutoCompleteAdapter(context, Glide.with(context))
         }
         setAdapter(adapter)
         updateAccountKey()

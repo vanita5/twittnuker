@@ -23,14 +23,12 @@
 package de.vanita5.twittnuker.util
 
 import android.content.SharedPreferences
-import android.widget.ImageView
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.mediaPreloadKey
 import de.vanita5.twittnuker.constant.mediaPreloadOnWifiOnlyKey
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.getActivityStatus
 
 class MediaLoaderWrapper {
@@ -40,13 +38,6 @@ class MediaLoaderWrapper {
     private var preloadOnWifiOnly: Boolean = true
 
     private val shouldPreload: Boolean get() = preloadEnabled && (!preloadOnWifiOnly || !isNetworkMetered)
-
-
-    fun displayOriginalProfileImage(view: ImageView, user: ParcelableUser) {
-    }
-
-    fun displayProfileImage(view: ImageView, url: String?) {
-    }
 
 
     fun preloadStatus(status: ParcelableStatus) {

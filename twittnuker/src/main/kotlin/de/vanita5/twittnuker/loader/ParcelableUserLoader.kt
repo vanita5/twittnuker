@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.ktextension.set
 import javax.inject.Inject
 
 class ParcelableUserLoader(
@@ -90,9 +91,9 @@ class ParcelableUserLoader(
                 val values = ParcelableUserValuesCreator.create(user)
                 resolver.insert(CachedUsers.CONTENT_URI, values)
                 ParcelableUserUtils.updateExtraInformation(user, details, userColorNameManager)
-                val response = SingleResponse(user)
-                response.extras.putParcelable(EXTRA_ACCOUNT, details)
-                return response
+                return SingleResponse(user).apply {
+                    extras[EXTRA_ACCOUNT] = details
+                }
             }
         }
         val twitter = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
@@ -126,9 +127,9 @@ class ParcelableUserLoader(
                         if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.host)) {
                             user.account_key = accountKey
                             user.account_color = details.color
-                            val response = SingleResponse(user)
-                            response.extras.putParcelable(EXTRA_ACCOUNT, details)
-                            return response
+                            return SingleResponse(user).apply {
+                                extras[EXTRA_ACCOUNT] = details
+                            }
                         }
                         cur.moveToNext()
                     }
@@ -151,8 +152,7 @@ class ParcelableUserLoader(
                     twitterUser = twitter.showExternalProfile(profileUrl)
                 } else {
                     val id = userKey?.id
-                    twitterUser = TwitterWrapper.tryShowUser(twitter, id, screenName,
-                            details.type)
+                    twitterUser = TwitterWrapper.tryShowUser(twitter, id, screenName, details.type)
                 }
             }
             val cachedUserValues = createCachedUser(twitterUser, profileImageSize)
@@ -160,9 +160,9 @@ class ParcelableUserLoader(
             val user = ParcelableUserUtils.fromUser(twitterUser, accountKey,
                     profileImageSize = profileImageSize)
             ParcelableUserUtils.updateExtraInformation(user, details, userColorNameManager)
-            val response = SingleResponse.Companion.getInstance(user)
-            response.extras.putParcelable(EXTRA_ACCOUNT, details)
-            return response
+            return SingleResponse(user).apply {
+                extras[EXTRA_ACCOUNT] = details
+            }
         } catch (e: MicroBlogException) {
             Log.w(LOGTAG, e)
             return SingleResponse(exception = e)

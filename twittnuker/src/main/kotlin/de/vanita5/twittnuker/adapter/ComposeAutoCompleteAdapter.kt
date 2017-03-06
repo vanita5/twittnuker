@@ -28,11 +28,13 @@ import android.graphics.PorterDuff.Mode
 import android.support.v4.widget.SimpleCursorAdapter
 import android.view.View
 import android.widget.TextView
+import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.SuggestionItem
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions
@@ -44,7 +46,7 @@ import de.vanita5.twittnuker.view.ProfileImageView
 
 import javax.inject.Inject
 
-class ComposeAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context,
+class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestManager) : SimpleCursorAdapter(context,
         R.layout.list_item_auto_complete, null, emptyArray(), intArrayOf(), 0) {
 
     @Inject
@@ -67,7 +69,7 @@ class ComposeAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context
         profileImageStyle = preferences[profileImageStyleKey]
     }
 
-    override fun bindView(view: View, context: Context?, cursor: Cursor) {
+    override fun bindView(view: View, context: Context, cursor: Cursor) {
         val indices = this.indices!!
         val text1 = view.findViewById(android.R.id.text1) as TextView
         val text2 = view.findViewById(android.R.id.text2) as TextView
@@ -80,7 +82,7 @@ class ComposeAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context
             text2.text = String.format("@%s", cursor.getString(indices.summary))
             if (displayProfileImage) {
                 val profileImageUrl = cursor.getString(indices.icon)
-                mediaLoader.displayProfileImage(icon, profileImageUrl)
+                requestManager.loadProfileImage(context, profileImageUrl).into(icon)
             } else {
                 //TODO cancel image load
             }

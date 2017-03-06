@@ -34,7 +34,9 @@ import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.text.style.EmojiSpan
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.Analyzer
+import de.vanita5.twittnuker.util.ThemeUtils
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -170,7 +172,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
             nameFirst = preferences[nameFirstKey]
         }
 
-        override fun bindView(view: View, context: Context?, cursor: Cursor) {
+        override fun bindView(view: View, context: Context, cursor: Cursor) {
             super.bindView(view, context, cursor)
             val indices = this.indices!!
             val icon = view.findViewById(android.R.id.icon)
