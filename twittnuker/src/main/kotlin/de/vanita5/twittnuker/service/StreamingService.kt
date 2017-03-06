@@ -239,11 +239,9 @@ class StreamingService : Service() {
         private var statusStreamStarted: Boolean = false
         private val mentionsStreamStarted: Boolean = false
 
-        private val mNotificationHelper: NotificationHelper
+        private val mNotificationHelper: NotificationHelper = NotificationHelper(context)
 
-        init {
-            mNotificationHelper = NotificationHelper(context)
-        }
+        protected val profileImageSize = context.getString(R.string.profile_image_size)
 
         private fun createNotification(fromUser: String, type: String, msg: String?,
                                        status: ParcelableStatus?, sourceUser: User?) {
@@ -386,7 +384,7 @@ class StreamingService : Service() {
         override fun onStatus(status: Status) {
             val resolver = context.contentResolver
 
-            val values = ContentValuesCreator.createStatus(status, account.key)
+            val values = ContentValuesCreator.createStatus(status, account.key, profileImageSize)
             if (!statusStreamStarted && !mPreferences.getBoolean(SharedPreferenceConstants.KEY_REFRESH_BEFORE_STREAMING, true)) {
                 statusStreamStarted = true
                 values.put(Statuses.IS_GAP, true)
