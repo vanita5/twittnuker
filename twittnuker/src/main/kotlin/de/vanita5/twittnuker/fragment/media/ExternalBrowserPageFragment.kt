@@ -29,11 +29,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.layout_media_viewer_browser_fragment.*
-import kotlinx.android.synthetic.main.layout_media_viewer_texture_video_view.*
 import org.mariotaku.mediaviewer.library.MediaViewerFragment
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_MEDIA
-import de.vanita5.twittnuker.fragment.media.VideoPageFragment
 import de.vanita5.twittnuker.model.ParcelableMedia
 
 class ExternalBrowserPageFragment : MediaViewerFragment() {
@@ -51,7 +49,7 @@ class ExternalBrowserPageFragment : MediaViewerFragment() {
         webSettings.loadsImagesAutomatically = true
         val media = arguments.getParcelable<ParcelableMedia>(EXTRA_MEDIA) ?: throw NullPointerException()
         webView.loadUrl(if (TextUtils.isEmpty(media.media_url)) media.url else media.media_url)
-        videoContainer.setAspectRatioSource(VideoPageFragment.MediaAspectRatioSource(media, this))
+        webViewContainer.setAspectRatioSource(VideoPageFragment.MediaAspectRatioSource(media, this))
     }
 
     override fun onResume() {
