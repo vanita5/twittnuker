@@ -26,6 +26,7 @@ import android.content.Context
 import android.support.v7.widget.FixedLinearLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import org.mariotaku.ktextension.contains
 
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
@@ -35,8 +36,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 abstract class AbsContentListRecyclerViewFragment<A : LoadMoreSupportAdapter<RecyclerView.ViewHolder>>
     : AbsContentRecyclerViewFragment<A, LinearLayoutManager>() {
 
-    override fun createItemDecoration(context: Context,
-                                      recyclerView: RecyclerView,
+    override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
                                       layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
         return DividerItemDecoration(context, layoutManager.orientation)
     }
@@ -44,8 +44,8 @@ abstract class AbsContentListRecyclerViewFragment<A : LoadMoreSupportAdapter<Rec
     override fun setLoadMoreIndicatorPosition(@IndicatorPosition position: Long) {
         val decor = itemDecoration
         if (decor is DividerItemDecoration) {
-            decor.setDecorationStart(if (position and ILoadMoreSupportAdapter.START != 0L) 1 else 0)
-            decor.setDecorationEndOffset(if (position and ILoadMoreSupportAdapter.END != 0L) 1 else 0)
+            decor.setDecorationStart(if (ILoadMoreSupportAdapter.START in position) 1 else 0)
+            decor.setDecorationEndOffset(if (ILoadMoreSupportAdapter.END in position) 1 else 0)
         }
         super.setLoadMoreIndicatorPosition(position)
     }

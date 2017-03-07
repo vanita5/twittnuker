@@ -50,7 +50,6 @@ class ClearDatabasesPreference(
             resolver.delete(uri, null, null)
         }
         resolver.delete(Activities.AboutMe.CONTENT_URI, null, null)
-        resolver.delete(Activities.ByFriends.CONTENT_URI, null, null)
         resolver.delete(SavedSearches.CONTENT_URI, null, null)
         resolver.delete(PushNotifications.CONTENT_URI, null, null)
         // TODO clear all notifications

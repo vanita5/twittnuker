@@ -28,6 +28,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.contains
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
@@ -113,7 +114,7 @@ class ParcelableUserListsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (loadMoreIndicatorPosition and ILoadMoreSupportAdapter.START != 0L && position == 0) {
+        if (position == 0 && ILoadMoreSupportAdapter.START in loadMoreIndicatorPosition) {
             return ITEM_VIEW_TYPE_LOAD_INDICATOR
         }
         if (position == userListsCount) {

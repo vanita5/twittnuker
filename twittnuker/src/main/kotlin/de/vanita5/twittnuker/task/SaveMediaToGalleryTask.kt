@@ -24,22 +24,16 @@ package de.vanita5.twittnuker.task
 
 import android.app.Activity
 import android.media.MediaScannerConnection
-import android.net.Uri
-import android.os.Environment
 import android.widget.Toast
 
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.annotation.CacheFileType
-import de.vanita5.twittnuker.provider.CacheProvider
-
 import java.io.File
 
 class SaveMediaToGalleryTask(
         activity: Activity,
-        source: Uri,
-        destination: File,
-        type: String
-) : ProgressSaveFileTask(activity, source, destination, CacheProvider.CacheFileTypeCallback(activity, type)) {
+        fileInfo: FileInfo,
+        destination: File
+) : ProgressSaveFileTask(activity, destination, fileInfo) {
 
     override fun onFileSaved(savedFile: File, mimeType: String?) {
         val context = context ?: return
@@ -51,26 +45,6 @@ class SaveMediaToGalleryTask(
     override fun onFileSaveFailed() {
         val context = context ?: return
         Toast.makeText(context, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
-
-        fun create(activity: Activity, source: Uri, @CacheFileType type: String): SaveFileTask {
-            val pubDir: File
-            when (type) {
-                CacheFileType.VIDEO -> {
-                    pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-                }
-                CacheFileType.IMAGE -> {
-                    pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                }
-                else -> {
-                    pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                }
-            }
-            val saveDir = File(pubDir, "Twittnuker")
-            return SaveMediaToGalleryTask(activity, source, saveDir, type)
-        }
     }
 
 }

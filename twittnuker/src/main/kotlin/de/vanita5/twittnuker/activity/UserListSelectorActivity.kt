@@ -34,6 +34,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_list_with_empty_view.*
 import org.mariotaku.ktextension.Bundle
+import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_SELECT_USER
@@ -178,7 +179,7 @@ class UserListSelectorActivity : BaseActivity(),
     override fun onLoadMoreContents(@IndicatorPosition position: Long) {
         val accountKey = this.accountKey ?: return
         val userKey = this.userKey ?: return
-        if (refreshing || position and adapter.loadMoreSupportedPosition == 0L) {
+        if (refreshing || position !in adapter.loadMoreSupportedPosition) {
             return
         }
         adapter.loadMoreIndicatorPosition = position

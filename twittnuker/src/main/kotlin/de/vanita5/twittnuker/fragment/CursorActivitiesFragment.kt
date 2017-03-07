@@ -34,6 +34,7 @@ import android.support.v4.content.Loader
 import android.widget.Toast
 import com.squareup.otto.Subscribe
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.toNulls
 import org.mariotaku.library.objectcursor.ObjectCursor
@@ -139,7 +140,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
     override fun onLoadMoreContents(@IndicatorPosition position: Long) {
         // Only supports load from end, skip START flag
-        if (position and ILoadMoreSupportAdapter.START != 0L || refreshing) return
+        if (ILoadMoreSupportAdapter.START in position || refreshing) return
         super.onLoadMoreContents(position)
         if (position == 0L) return
         getActivities(object : SimpleRefreshTaskParam() {

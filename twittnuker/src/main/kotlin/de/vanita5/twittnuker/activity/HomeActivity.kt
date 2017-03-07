@@ -242,7 +242,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             tabDisplayOptionInt = TabPagerIndicator.DisplayOption.ICON
         }
         mainTabs.setTabDisplayOption(tabDisplayOptionInt)
-        mainTabs.setTabExpandEnabled(tabDisplayOptionInt and TabPagerIndicator.DisplayOption.LABEL == 0)
+        mainTabs.setTabExpandEnabled(TabPagerIndicator.DisplayOption.LABEL !in tabDisplayOptionInt)
         mainTabs.setDisplayBadge(preferences[unreadCountKey])
         mainTabs.updateAppearance()
 

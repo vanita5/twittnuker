@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import android.net.Uri
 import android.support.v4.app.DialogFragment
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
@@ -32,10 +31,9 @@ import java.io.File
 
 abstract class ProgressSaveFileTask(
         context: Context,
-        source: Uri,
         destination: File,
-        getMimeType: SaveFileTask.FileInfoCallback
-) : SaveFileTask(context, source, destination, getMimeType) {
+        fileInfo: FileInfo
+) : SaveFileTask(context, destination, fileInfo) {
 
     override fun showProgress() {
         (context as IBaseActivity<*>).executeAfterFragmentResumed { activity ->
