@@ -29,6 +29,7 @@ addons:
   apt:
     packages:
       - sshpass
+      - oracle-java8-installer
 
 licenses:
     - 'android-sdk-preview-license-.+'
