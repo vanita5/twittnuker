@@ -52,8 +52,7 @@ before_install:
   # #- adb shell input keyevent 82 &
 
 script:
-  - ./gradlew clean
-  - ./gradlew assembleDebug --debug
+  - ./gradlew clean assembleDebug
   # #- ./gradlew assembleDebugAndroidTest
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
