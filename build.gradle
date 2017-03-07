@@ -8,9 +8,9 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
-        classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.14.0'
         classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath('fr.avianey.androidsvgdrawable:gradle-plugin:3.0.0') {
             // should be excluded to avoid conflict
@@ -52,6 +52,7 @@ subprojects {
                     Mime4J          : '0.7.2'
             ]
         }
+
     }
     afterEvaluate { project ->
 
@@ -75,6 +76,12 @@ subprojects {
                     exclude 'META-INF/notice.txt'
                     exclude 'META-INF/ASL2.0'
                     exclude '.readme'
+                }
+
+                if (System.getenv('TRAVIS') == 'true') {
+                    compileOptions {
+                        incremental = false
+                    }
                 }
 
             }
