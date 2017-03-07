@@ -31,58 +31,60 @@ import android.support.v4.util.ArraySet
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Trends
-import org.mariotaku.sqliteqb.library.Expression
+import org.mariotaku.sqliteqb.library.Expression.and
+import org.mariotaku.sqliteqb.library.Expression.equalsArgs
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.AccountType.FANFOU
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableTrend
-import de.vanita5.twittnuker.model.ParcelableTrendValuesCreator
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.TrendsRefreshedEvent
-import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.AccountUtils.getAccountDetails
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
-import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.task.BaseAbstractTask
+import de.vanita5.twittnuker.util.DebugLog.w
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 class GetTrendsTask(
-        context: android.content.Context,
-        private val accountKey: de.vanita5.twittnuker.model.UserKey,
+        context: Context,
+        private val accountKey: UserKey,
         private val woeId: Int
-) : de.vanita5.twittnuker.task.BaseAbstractTask<Any?, Unit, Any?>(context) {
+) : BaseAbstractTask<Any?, Unit, Any?>(context) {
 
     override fun doLongOperation(param: Any?) {
-        val details = de.vanita5.twittnuker.model.util.AccountUtils.getAccountDetails(android.accounts.AccountManager.get(context), accountKey, true) ?: return
-        val twitter = details.newMicroBlogInstance(context, cls = de.vanita5.twittnuker.library.MicroBlog::class.java)
+        val details = getAccountDetails(AccountManager.get(context), accountKey, true) ?: return
+        val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         try {
             val trends = when {
-                details.type == de.vanita5.twittnuker.annotation.AccountType.FANFOU -> twitter.fanfouTrends
+                details.type == FANFOU -> twitter.fanfouTrends
                 else -> twitter.getLocationTrends(woeId).firstOrNull()
             } ?: return
-            storeTrends(context.contentResolver, de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends.Local.CONTENT_URI, trends)
-        } catch (e: de.vanita5.twittnuker.library.MicroBlogException) {
-            de.vanita5.twittnuker.util.DebugLog.w(LOGTAG, tr = e)
+            storeTrends(context.contentResolver, CachedTrends.Local.CONTENT_URI, trends)
+        } catch (e: MicroBlogException) {
+            w(LOGTAG, tr = e)
         }
     }
 
     override fun afterExecute(handler: Any?, result: Unit) {
-        bus.post(de.vanita5.twittnuker.model.event.TrendsRefreshedEvent())
+        bus.post(TrendsRefreshedEvent())
     }
 
-    private fun storeTrends(cr: android.content.ContentResolver, uri: android.net.Uri, trends: de.vanita5.twittnuker.library.twitter.model.Trends) {
-        val hashtags = android.support.v4.util.ArraySet<String>()
-        val deleteWhere = org.mariotaku.sqliteqb.library.Expression.and(org.mariotaku.sqliteqb.library.Expression.equalsArgs(de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends.ACCOUNT_KEY),
-                org.mariotaku.sqliteqb.library.Expression.equalsArgs(de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends.WOEID)).sql
+    private fun storeTrends(cr: ContentResolver, uri: Uri, trends: Trends) {
+        val hashtags = ArraySet<String>()
+        val deleteWhere = and(equalsArgs(CachedTrends.ACCOUNT_KEY), equalsArgs(CachedTrends.WOEID)).sql
         val deleteWhereArgs = arrayOf(accountKey.toString(), woeId.toString())
-        cr.delete(de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends.Local.CONTENT_URI, deleteWhere, deleteWhereArgs)
+        cr.delete(CachedTrends.Local.CONTENT_URI, deleteWhere, deleteWhereArgs)
 
-        val allTrends = java.util.ArrayList<de.vanita5.twittnuker.model.ParcelableTrend>()
+        val allTrends = ArrayList<ParcelableTrend>()
 
         trends.trends.forEachIndexed { idx, trend ->
             val hashtag = trend.name.replaceFirst("#", "")
             hashtags.add(hashtag)
-            allTrends.add(de.vanita5.twittnuker.model.ParcelableTrend().apply {
+            allTrends.add(ParcelableTrend().apply {
                 this.account_key = accountKey
                 this.woe_id = woeId
                 this.name = trend.name
@@ -90,10 +92,11 @@ class GetTrendsTask(
                 this.trend_order = idx
             })
         }
-        de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert(cr, uri, allTrends.map(de.vanita5.twittnuker.model.ParcelableTrendValuesCreator::create))
+        val creator = ObjectCursor.valuesCreatorFrom(ParcelableTrend::class.java)
+        bulkInsert(cr, uri, allTrends.map(creator::create))
         ContentResolverUtils.bulkDelete(cr, CachedHashtags.CONTENT_URI, CachedHashtags.NAME, false,
                 hashtags, null, null)
-        ContentResolverUtils.bulkInsert(cr, CachedHashtags.CONTENT_URI, hashtags.map {
+        bulkInsert(cr, CachedHashtags.CONTENT_URI, hashtags.map {
             val values = ContentValues()
             values.put(CachedHashtags.NAME, it)
             return@map values

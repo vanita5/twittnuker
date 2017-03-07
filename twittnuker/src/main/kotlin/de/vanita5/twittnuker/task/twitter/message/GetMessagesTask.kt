@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.task.twitter.message
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import de.vanita5.twittnuker.R
 import org.mariotaku.ktextension.toInt
 import org.mariotaku.ktextension.toLong
 import org.mariotaku.ktextension.useCursor
@@ -35,6 +34,7 @@ import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.*
@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 
@@ -429,18 +430,20 @@ class GetMessagesTask(
         fun storeMessages(context: Context, data: DatabaseUpdateData, details: AccountDetails,
                 showNotification: Boolean = false) {
             val resolver = context.contentResolver
+            val conversationCreator = ObjectCursor.valuesCreatorFrom(ParcelableMessageConversation::class.java)
             val conversationsValues = data.conversations.filterNot {
                 it.id in data.deleteConversations
             }.map {
-                val values = ParcelableMessageConversationValuesCreator.create(it)
+                val values = conversationCreator.create(it)
                 if (it._id > 0) {
                     values.put(Conversations._ID, it._id)
                 }
                 return@map values
             }
+            val messageCreator = ObjectCursor.valuesCreatorFrom(ParcelableMessage::class.java)
             val messagesValues = data.messages.filterNot {
                 data.deleteMessages[it.conversation_id]?.contains(it.id) ?: false
-            }.map(ParcelableMessageValuesCreator::create)
+            }.map(messageCreator::create)
 
             for ((conversationId, messageIds) in data.deleteMessages) {
                 val where = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
@@ -480,11 +483,11 @@ class GetMessagesTask(
             val whereArgs = newIds.toTypedArray() + accountKey.toString()
             return context.contentResolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS,
                     where, whereArgs, null).useCursor { cur ->
-                val indices = ParcelableMessageConversationCursorIndices(cur)
+                val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
                 cur.moveToFirst()
                 while (!cur.isAfterLast) {
-                    val conversationId = cur.getString(indices.id)
-                    val timestamp = cur.getLong(indices.local_timestamp)
+                    val conversationId = cur.getString(indices[Conversations.CONVERSATION_ID])
+                    val timestamp = cur.getLong(indices[Conversations.LOCAL_TIMESTAMP])
                     val conversation = this[conversationId] ?: run {
                         val obj = indices.newObject(cur)
                         this[conversationId] = obj

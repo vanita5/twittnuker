@@ -28,12 +28,11 @@ import android.content.Context
 import android.net.Uri
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.ktextension.useCursor
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.instantiateComponent
 import de.vanita5.twittnuker.model.FiltersData
-import de.vanita5.twittnuker.model.FiltersSubscriptionCursorIndices
-import de.vanita5.twittnuker.model.`FiltersData$BaseItemValuesCreator`
-import de.vanita5.twittnuker.model.`FiltersData$UserItemValuesCreator`
+import de.vanita5.twittnuker.model.FiltersSubscription
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
@@ -48,7 +47,7 @@ class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?
         val resolver = context.contentResolver
         val sourceIds = ArrayList<Long>()
         resolver.query(Filters.Subscriptions.CONTENT_URI, Filters.Subscriptions.COLUMNS, null, null, null)?.useCursor { cursor ->
-            val indices = FiltersSubscriptionCursorIndices(cursor)
+            val indices = ObjectCursor.indicesFrom(cursor, FiltersSubscription::class.java)
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
                 val subscription = indices.newObject(cursor)
@@ -94,9 +93,10 @@ class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?
     private fun updateUserItems(resolver: ContentResolver, items: List<FiltersData.UserItem>?, sourceId: Long) {
         resolver.delete(Filters.Users.CONTENT_URI, Expression.equalsArgs(Filters.Users.SOURCE).sql,
                 arrayOf(sourceId.toString()))
+        val creator = ObjectCursor.valuesCreatorFrom(FiltersData.UserItem::class.java)
         items?.map { item ->
             item.source = sourceId
-            return@map `FiltersData$UserItemValuesCreator`.create(item)
+            return@map creator.create(item)
         }?.let { items ->
             ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, items)
         }
@@ -105,9 +105,10 @@ class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?
     private fun updateBaseItems(resolver: ContentResolver, items: List<FiltersData.BaseItem>?, uri: Uri, sourceId: Long) {
         resolver.delete(uri, Expression.equalsArgs(Filters.SOURCE).sql,
                 arrayOf(sourceId.toString()))
+        val creator = ObjectCursor.valuesCreatorFrom(FiltersData.BaseItem::class.java)
         items?.map { item ->
             item.source = sourceId
-            return@map `FiltersData$BaseItemValuesCreator`.create(item)
+            return@map creator.create(item)
         }?.let { items ->
             ContentResolverUtils.bulkInsert(resolver, uri, items)
         }

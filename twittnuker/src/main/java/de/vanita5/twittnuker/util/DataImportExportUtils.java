@@ -47,13 +47,7 @@ import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.annotation.PreferenceType;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.FiltersData;
-import de.vanita5.twittnuker.model.FiltersData$BaseItemCursorIndices;
-import de.vanita5.twittnuker.model.FiltersData$BaseItemValuesCreator;
-import de.vanita5.twittnuker.model.FiltersData$UserItemCursorIndices;
-import de.vanita5.twittnuker.model.FiltersData$UserItemValuesCreator;
 import de.vanita5.twittnuker.model.Tab;
-import de.vanita5.twittnuker.model.TabCursorIndices;
-import de.vanita5.twittnuker.model.TabValuesCreator;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -114,13 +108,13 @@ public class DataImportExportUtils implements Constants {
 
                 final ContentResolver cr = context.getContentResolver();
                 data.setUsers(queryAll(cr, Filters.Users.CONTENT_URI, Filters.Users.COLUMNS,
-                        FiltersData$UserItemCursorIndices.class));
+                        FiltersData.UserItem.class));
                 data.setKeywords(queryAll(cr, Filters.Keywords.CONTENT_URI, Filters.Keywords.COLUMNS,
-                        FiltersData$BaseItemCursorIndices.class));
+                        FiltersData.BaseItem.class));
                 data.setSources(queryAll(cr, Filters.Sources.CONTENT_URI, Filters.Sources.COLUMNS,
-                        FiltersData$BaseItemCursorIndices.class));
+                        FiltersData.BaseItem.class));
                 data.setLinks(queryAll(cr, Filters.Links.CONTENT_URI, Filters.Links.COLUMNS,
-                        FiltersData$BaseItemCursorIndices.class));
+                        FiltersData.BaseItem.class));
                 exportItem(zos, ENTRY_FILTERS, FiltersData.class, data);
             }
             if (hasFlag(flags, FLAG_TABS)) {
@@ -130,7 +124,7 @@ public class DataImportExportUtils implements Constants {
                 if (c != null) {
                     final List<Tab> tabs = new ArrayList<>(c.getCount());
                     try {
-                        TabCursorIndices ci = new TabCursorIndices(c);
+                        final ObjectCursor.CursorIndices<Tab> ci = ObjectCursor.indicesFrom(c, Tab.class);
                         c.moveToFirst();
                         while (!c.isAfterLast()) {
                             tabs.add(ci.newObject(c));
@@ -151,16 +145,11 @@ public class DataImportExportUtils implements Constants {
     }
 
     private static <T> List<T> queryAll(ContentResolver cr, Uri uri, String[] projection,
-                                        Class<? extends ObjectCursor.CursorIndices<T>> cls) throws IOException {
+            Class<T> cls) throws IOException {
         Cursor c = cr.query(uri, projection, null, null, null);
         if (c == null) return null;
         try {
-            final ObjectCursor.CursorIndices<T> ci;
-            try {
-                ci = cls.getConstructor(Cursor.class).newInstance(c);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            final ObjectCursor.CursorIndices<T> ci = ObjectCursor.indicesFrom(c, cls);
             List<T> items = new ArrayList<>(c.getCount());
             c.moveToFirst();
             while (!c.isAfterLast()) {
@@ -245,31 +234,36 @@ public class DataImportExportUtils implements Constants {
 
                 void insertBase(ContentResolver cr, Uri uri, List<FiltersData.BaseItem> items) throws IOException {
                     if (items == null) return;
+                    final ObjectCursor.ValuesCreator<FiltersData.BaseItem> baseItemCreator =
+                            ObjectCursor.valuesCreatorFrom(FiltersData.BaseItem.class);
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (FiltersData.BaseItem item : items) {
-                        values.add(FiltersData$BaseItemValuesCreator.create(item));
+                        values.add(baseItemCreator.create(item));
                     }
                     ContentResolverUtils.bulkInsert(cr, uri, values);
                 }
 
                 void insertUser(ContentResolver cr, Uri uri, List<FiltersData.UserItem> items) throws IOException {
                     if (items == null) return;
+                    final ObjectCursor.ValuesCreator<FiltersData.UserItem> userItemCreator =
+                            ObjectCursor.valuesCreatorFrom(FiltersData.UserItem.class);
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (FiltersData.UserItem item : items) {
-                        values.add(FiltersData$UserItemValuesCreator.create(item));
+                        values.add(userItemCreator.create(item));
                     }
                     ContentResolverUtils.bulkInsert(cr, uri, values);
                 }
             });
         }
         if (hasFlag(flags, FLAG_TABS)) {
+            final ObjectCursor.ValuesCreator<Tab> creator = ObjectCursor.valuesCreatorFrom(Tab.class);
             importItemsList(context, zipFile, ENTRY_TABS, Tab.class, new ContentResolverProcessStrategy<List<Tab>>() {
                 @Override
                 public boolean importItem(ContentResolver cr, List<Tab> items) throws IOException {
                     if (items == null) return false;
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (Tab item : items) {
-                        values.add(TabValuesCreator.create(item));
+                        values.add(creator.create(item));
                     }
                     cr.delete(Tabs.CONTENT_URI, null, null);
                     ContentResolverUtils.bulkInsert(cr, Tabs.CONTENT_URI, values);

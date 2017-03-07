@@ -29,12 +29,12 @@ import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.ParcelableUserCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.text.Collator
 import java.util.*
 import javax.inject.Inject
@@ -67,10 +67,10 @@ class CacheUserSearchLoader(
         val selectionArgs = arrayOf(queryEscaped, queryEscaped)
         val c = context.contentResolver.query(CachedUsers.CONTENT_URI, CachedUsers.BASIC_COLUMNS,
                 selection.sql, selectionArgs, null)!!
-        val i = ParcelableUserCursorIndices(c)
+        val i = ObjectCursor.indicesFrom(c, ParcelableUser::class.java)
         c.moveToFirst()
         while (!c.isAfterLast) {
-        if (list.none { it.key.toString() == c.getString(i.key) }) {
+            if (list.none { it.key.toString() == c.getString(i[CachedUsers.USER_KEY]) }) {
             list.add(i.newObject(c))
         }
             c.moveToNext()

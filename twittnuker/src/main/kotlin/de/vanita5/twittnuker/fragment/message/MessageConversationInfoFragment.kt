@@ -97,6 +97,7 @@ import de.vanita5.twittnuker.task.twitter.message.DestroyConversationTask
 import de.vanita5.twittnuker.task.twitter.message.SetConversationNotificationDisabledTask
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.lang.ref.WeakReference
 
 
@@ -455,7 +456,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
             context.contentResolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where,
                     whereArgs, null).useCursor { cur ->
                 if (cur.moveToFirst()) {
-                    return ParcelableMessageConversationCursorIndices.fromCursor(cur)
+                    val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
+                    return indices.newObject(cur)
                 }
             }
             return null

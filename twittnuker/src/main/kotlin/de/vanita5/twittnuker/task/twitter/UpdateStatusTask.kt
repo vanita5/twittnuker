@@ -69,6 +69,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.io.Closeable
 import java.io.File
 import java.io.FileNotFoundException
@@ -940,7 +941,8 @@ class UpdateStatusTask(
             draft.timestamp = System.currentTimeMillis()
             config(draft)
             val resolver = context.contentResolver
-            val draftUri = resolver.insert(Drafts.CONTENT_URI, DraftValuesCreator.create(draft)) ?: return -1
+            val creator = ObjectCursor.valuesCreatorFrom(Draft::class.java)
+            val draftUri = resolver.insert(Drafts.CONTENT_URI, creator.create(draft)) ?: return -1
             return NumberUtils.toLong(draftUri.lastPathSegment, -1)
         }
 

@@ -44,6 +44,7 @@ import okhttp3.Dns
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.toNulls
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
@@ -55,7 +56,6 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.AccountPreferences
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
@@ -341,7 +341,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         val draftId = values.getAsLong(BaseColumns._ID) ?: return -1
         val where = Expression.equals(Drafts._ID, draftId)
         val c = context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null) ?: return -1
-        val i = DraftCursorIndices(c)
+        val i = ObjectCursor.indicesFrom(c, Draft::class.java)
         val item: Draft
         try {
             if (!c.moveToFirst()) return -1

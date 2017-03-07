@@ -118,6 +118,7 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 /**
@@ -2104,13 +2105,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                 val pStatus = ParcelableStatusUtils.fromStatus(status,
                         accountKey, false)
-                cr.insert(CachedStatuses.CONTENT_URI, ParcelableStatusValuesCreator.create(pStatus))
+                cr.insert(CachedStatuses.CONTENT_URI, ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java).create(pStatus))
 
                 val activityCursor = cr.query(Activities.AboutMe.CONTENT_URI,
                         Activities.COLUMNS, activityWhere.sql, statusWhereArgs, null)!!
                 try {
                     activityCursor.moveToFirst()
-                    val ci = ParcelableActivityCursorIndices(activityCursor)
+                    val ci = ObjectCursor.indicesFrom(activityCursor, ParcelableActivity::class.java)
+                    val vc = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
                     while (!activityCursor.isAfterLast) {
                         val activity = ci.newObject(activityCursor)
                         val activityStatus = activity.getActivityStatus()
@@ -2119,7 +2121,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                             activityStatus.reply_count = activitySummary.replyCount
                             activityStatus.retweet_count = activitySummary.retweetCount
                         }
-                        cr.update(Activities.AboutMe.CONTENT_URI, ParcelableActivityValuesCreator.create(activity),
+                        cr.update(Activities.AboutMe.CONTENT_URI, vc.create(activity),
                                 Expression.equals(Activities._ID, activity._id).sql, null)
                         activityCursor.moveToNext()
                     }

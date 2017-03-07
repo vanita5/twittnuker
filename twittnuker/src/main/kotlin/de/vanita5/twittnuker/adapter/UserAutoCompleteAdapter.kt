@@ -32,6 +32,7 @@ import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
@@ -39,10 +40,9 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.model.ParcelableUserCursorIndices
+import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
@@ -65,7 +65,7 @@ class UserAutoCompleteAdapter(
     private val displayProfileImage: Boolean
     private var profileImageStyle: Int
 
-    private var indices: ParcelableUserCursorIndices? = null
+    private var indices: ObjectCursor.CursorIndices<ParcelableUser>? = null
 
     var accountKey: UserKey? = null
 
@@ -83,11 +83,11 @@ class UserAutoCompleteAdapter(
 
         icon.style = profileImageStyle
 
-        text1.text = cursor.getString(indices.name)
+        text1.text = cursor.getString(indices[CachedUsers.NAME])
         @SuppressLint("SetTextI18n")
-        text2.text = "@${cursor.getString(indices.screen_name)}"
+        text2.text = "@${cursor.getString(indices[CachedUsers.SCREEN_NAME])}"
         if (displayProfileImage) {
-            val profileImageUrl = cursor.getString(indices.profile_image_url)
+            val profileImageUrl = cursor.getString(indices[CachedUsers.PROFILE_IMAGE_URL])
             requestManager.loadProfileImage(context, profileImageUrl, profileImageStyle).into(icon)
         } else {
             //TODO cancel image load
@@ -105,7 +105,7 @@ class UserAutoCompleteAdapter(
     }
 
     override fun convertToString(cursor: Cursor?): CharSequence {
-        return cursor!!.getString(indices!!.screen_name)
+        return cursor!!.getString(indices!![CachedUsers.SCREEN_NAME])
     }
 
     override fun runQueryOnBackgroundThread(constraint: CharSequence): Cursor? {
@@ -129,9 +129,7 @@ class UserAutoCompleteAdapter(
     }
 
     override fun swapCursor(cursor: Cursor?): Cursor? {
-        if (cursor != null) {
-            indices = ParcelableUserCursorIndices(cursor)
-        }
+        indices = cursor?.let { ObjectCursor.indicesFrom(it, ParcelableUser::class.java) }
         return super.swapCursor(cursor)
     }
 

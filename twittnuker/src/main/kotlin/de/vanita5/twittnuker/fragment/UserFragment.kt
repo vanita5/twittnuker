@@ -139,6 +139,7 @@ import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -324,8 +325,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
 
         val resolver = context.applicationContext.contentResolver
         task {
-            resolver.insert(CachedUsers.CONTENT_URI, ParcelableUserValuesCreator.create(user))
-            resolver.insert(CachedRelationships.CONTENT_URI, ParcelableRelationshipValuesCreator.create(userRelationship))
+            resolver.insert(CachedUsers.CONTENT_URI, ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java).create(user))
+            resolver.insert(CachedRelationships.CONTENT_URI, ObjectCursor.valuesCreatorFrom(ParcelableRelationship::class.java).create(userRelationship))
         }
         followContainer.follow.visibility = View.VISIBLE
     }
@@ -1565,7 +1566,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 val data = ParcelableRelationshipUtils.create(accountKey, userKey, relationship,
                         isFiltering)
                 val resolver = context.contentResolver
-                val values = ParcelableRelationshipValuesCreator.create(data)
+                val values = ObjectCursor.valuesCreatorFrom(ParcelableRelationship::class.java).create(data)
                 resolver.insert(CachedRelationships.CONTENT_URI, values)
                 return SingleResponse.getInstance(data)
             } catch (e: MicroBlogException) {

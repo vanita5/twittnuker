@@ -34,7 +34,10 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.timestamp
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.model.ParcelableMessageConversation
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
@@ -42,6 +45,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 import de.vanita5.twittnuker.task.twitter.message.SendMessageTask.Companion.TEMP_CONVERSATION_ID_PREFIX
 import de.vanita5.twittnuker.util.DataStoreUtils
+import org.mariotaku.library.objectcursor.ObjectCursor
 
 
 class MarkMessageReadTask(
@@ -103,7 +107,8 @@ class MarkMessageReadTask(
                 where, whereArgs, OrderBy(Messages.LOCAL_TIMESTAMP, false).sql) ?: return null
         try {
             if (cur.moveToFirst()) {
-                return ParcelableMessageCursorIndices.fromCursor(cur)
+                val indices = ObjectCursor.indicesFrom(cur, ParcelableMessage::class.java)
+                return indices.newObject(cur)
             }
         } finally {
             cur.close()

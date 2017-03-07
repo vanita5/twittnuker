@@ -29,6 +29,8 @@ import android.support.v4.content.FixedAsyncTaskLoader
 import android.text.TextUtils
 import android.util.Log
 import org.mariotaku.abstask.library.TaskStarter
+import org.mariotaku.ktextension.set
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -40,17 +42,19 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.SingleResponse
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
-import de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser
+import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import org.mariotaku.ktextension.set
 import javax.inject.Inject
 
 class ParcelableUserLoader(
@@ -88,7 +92,7 @@ class ParcelableUserLoader(
         if (!omitIntentExtra && extras != null) {
             val user = extras.getParcelable<ParcelableUser>(EXTRA_USER)
             if (user != null) {
-                val values = ParcelableUserValuesCreator.create(user)
+                val values = ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java).create(user)
                 resolver.insert(CachedUsers.CONTENT_URI, values)
                 ParcelableUserUtils.updateExtraInformation(user, details, userColorNameManager)
                 return SingleResponse(user).apply {
@@ -121,7 +125,7 @@ class ParcelableUserLoader(
                     whereArgs, null)?.let { cur ->
                 try {
                     cur.moveToFirst()
-                    val indices = ParcelableUserCursorIndices(cur)
+                    val indices = ObjectCursor.indicesFrom(cur, ParcelableUser::class.java)
                     while (!cur.isAfterLast) {
                         val user = indices.newObject(cur)
                         if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.host)) {
@@ -155,7 +159,7 @@ class ParcelableUserLoader(
                     twitterUser = TwitterWrapper.tryShowUser(twitter, id, screenName, details.type)
                 }
             }
-            val cachedUserValues = createCachedUser(twitterUser, profileImageSize)
+            val cachedUserValues = ContentValuesCreator.createCachedUser(twitterUser, profileImageSize)
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues)
             val user = ParcelableUserUtils.fromUser(twitterUser, accountKey,
                     profileImageSize = profileImageSize)

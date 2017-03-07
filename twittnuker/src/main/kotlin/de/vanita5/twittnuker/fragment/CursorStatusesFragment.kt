@@ -46,7 +46,10 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParameterizedExpression
+import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
@@ -98,8 +101,8 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
             accountKeys[it].toString()
         }
         val expression = processWhere(where, selectionArgs)
-        return ExtendedObjectCursorLoader(context, ParcelableStatusCursorIndices::class.java, uri,
-                projection, expression.sql, expression.parameters, sortOrder, fromUser)
+        return ExtendedObjectCursorLoader(context, ParcelableStatus::class.java, uri, projection,
+                expression.sql, expression.parameters, sortOrder, fromUser)
     }
 
     override fun createMessageBusCallback(): Any {

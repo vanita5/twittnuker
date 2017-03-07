@@ -43,6 +43,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.setItemAvailability
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
@@ -51,8 +52,10 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.loader.CacheUserSearchLoader
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
+import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
@@ -247,7 +250,7 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
             }
         }
 
-        val values = ParcelableMessageConversationValuesCreator.create(conversation)
+        val values = ObjectCursor.valuesCreatorFrom(ParcelableMessageConversation::class.java).create(conversation)
         context.contentResolver.insert(Conversations.CONTENT_URI, values)
         activity.startActivity(IntentUtils.messageConversation(accountKey, conversation.id))
         activity.finish()
@@ -301,7 +304,8 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         val cur = resolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where, whereArgs, null) ?: return null
         try {
             if (cur.moveToFirst()) {
-                return ParcelableMessageConversationCursorIndices.fromCursor(cur)
+                val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
+                return indices.newObject(cur)
             }
         } finally {
             cur.close()

@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import org.mariotaku.kpreferences.get
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.query.SQLCreateTriggerQuery.Event
@@ -37,7 +38,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.model.Tab
-import de.vanita5.twittnuker.model.TabValuesCreator
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
@@ -108,6 +108,7 @@ class TwidereSQLiteOpenHelper(
 
 
     private fun setupDefaultTabs(db: SQLiteDatabase) {
+        val creator = ObjectCursor.valuesCreatorFrom(Tab::class.java)
         db.beginTransaction()
         @CustomTabType
         val tabTypes = arrayOf(CustomTabType.HOME_TIMELINE, CustomTabType.NOTIFICATIONS_TIMELINE,
@@ -121,7 +122,7 @@ class TwidereSQLiteOpenHelper(
                 this.icon = conf!!.icon.persistentKey
                 this.position = i
             }
-            db.insert(Tabs.TABLE_NAME, null, TabValuesCreator.create(tab))
+            db.insert(Tabs.TABLE_NAME, null, creator.create(tab))
         }
         db.setTransactionSuccessful()
         db.endTransaction()

@@ -337,8 +337,10 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     }
 
     class CursorActivitiesLoader(context: Context, uri: Uri, projection: Array<String>,
-                                 selection: String, selectionArgs: Array<String>,
-                                 sortOrder: String, fromUser: Boolean) : ExtendedObjectCursorLoader<ParcelableActivity>(context, ParcelableActivityCursorIndices::class.java, uri, projection, selection, selectionArgs, sortOrder, fromUser) {
+            selection: String, selectionArgs: Array<String>,
+            sortOrder: String, fromUser: Boolean
+    ) : ExtendedObjectCursorLoader<ParcelableActivity>(context, ParcelableActivity::class.java, uri,
+            projection, selection, selectionArgs, sortOrder, fromUser) {
 
         override fun createObjectCursor(cursor: Cursor, indices: ObjectCursor.CursorIndices<ParcelableActivity>): ObjectCursor<ParcelableActivity> {
             val filteredUserIds = DataStoreUtils.getFilteredUserIds(context)

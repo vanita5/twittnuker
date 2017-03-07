@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment.ActionInfo
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
-import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
@@ -84,7 +83,7 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessageConversation>?> {
-        val loader = ObjectCursorLoader(context, ParcelableMessageConversationCursorIndices::class.java)
+        val loader = ObjectCursorLoader(context, ParcelableMessageConversation::class.java)
         val projection = (Conversations.COLUMNS + Conversations.UNREAD_COUNT).map {
             TwidereQueryBuilder.mapConversationsProjection(it)
         }.toTypedArray()

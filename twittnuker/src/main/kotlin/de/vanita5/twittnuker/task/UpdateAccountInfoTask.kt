@@ -30,11 +30,15 @@ import android.content.Context
 import android.support.v4.util.LongSparseArray
 import android.text.TextUtils
 import org.mariotaku.abstask.library.AbstractTask
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
 import de.vanita5.twittnuker.extension.model.setAccountKey
 import de.vanita5.twittnuker.extension.model.setAccountUser
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.Tab
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import java.io.IOException
 
@@ -76,7 +80,8 @@ class UpdateAccountInfoTask(
     private fun updateTabs(resolver: ContentResolver, accountKey: UserKey) {
         val tabsCursor = resolver.query(Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, null) ?: return
         try {
-            val indices = TabCursorIndices(tabsCursor)
+            val indices = ObjectCursor.indicesFrom(tabsCursor, Tab::class.java)
+            val creator = ObjectCursor.valuesCreatorFrom(Tab::class.java)
             tabsCursor.moveToFirst()
             val values = LongSparseArray<ContentValues>()
             while (!tabsCursor.isAfterLast) {
@@ -87,7 +92,7 @@ class UpdateAccountInfoTask(
                     val keys = arguments.accountKeys
                     if (TextUtils.equals(accountKey.id, accountId) && keys == null) {
                         arguments.accountKeys = arrayOf(accountKey)
-                        values.put(tab.id, TabValuesCreator.create(tab))
+                        values.put(tab.id, creator.create(tab))
                     }
                 }
                 tabsCursor.moveToNext()

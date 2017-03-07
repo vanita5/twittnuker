@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator
+import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 abstract class GetStatusesTask(
@@ -180,6 +181,7 @@ abstract class GetStatusesTask(
             // Get id diff of first and last item
             val sortDiff = firstSortId - lastSortId
 
+            val creator = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
             for (i in 0 until statuses.size) {
                 val item = statuses[i]
                 val status = ParcelableStatusUtils.fromStatus(item, accountKey, false, profileImageSize)
@@ -188,7 +190,7 @@ abstract class GetStatusesTask(
                         sortDiff, i, statuses.size)
                 status.inserted_date = System.currentTimeMillis()
                 mediaLoader.preloadStatus(status)
-                values[i] = ParcelableStatusValuesCreator.create(status)
+                values[i] = creator.create(status)
                 if (minIdx == -1 || item < statuses[minIdx]) {
                     minIdx = i
                     minPositionKey = status.position_key

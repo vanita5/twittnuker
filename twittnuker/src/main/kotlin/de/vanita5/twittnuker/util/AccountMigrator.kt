@@ -31,7 +31,6 @@ import org.mariotaku.ktextension.toHexColor
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.model.ParcelableCredentials
-import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.BasicCredentials
@@ -40,6 +39,7 @@ import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
+import org.mariotaku.library.objectcursor.ObjectCursor
 
 /**
  * Migrate legacy credentials to system account framework
@@ -48,7 +48,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
     val cur = db.query(Accounts.TABLE_NAME, Accounts.COLUMNS, null, null, null, null, null) ?: return
     try {
-        val indices = ParcelableCredentialsCursorIndices(cur)
+        val indices = ObjectCursor.indicesFrom(cur, ParcelableCredentials::class.java)
         cur.moveToFirst()
         while (!cur.isAfterLast) {
             val credentials = indices.newObject(cur)

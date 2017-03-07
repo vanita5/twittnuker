@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.deleteDrafts
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
+import org.mariotaku.library.objectcursor.ObjectCursor
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -121,7 +122,7 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         val where = Expression.equals(Drafts._ID, draftId)
         @SuppressLint("Recycle")
         val draft: Draft = contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null)?.useCursor {
-            val i = DraftCursorIndices(it)
+            val i = ObjectCursor.indicesFrom(it, Draft::class.java)
             if (!it.moveToFirst()) return@useCursor null
             return@useCursor i.newObject(it)
         } ?: return

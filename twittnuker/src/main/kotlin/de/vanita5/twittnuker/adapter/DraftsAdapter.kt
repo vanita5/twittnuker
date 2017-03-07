@@ -29,14 +29,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
 import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.draft.StatusObjectExtras
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.DraftViewHolder
 
@@ -57,7 +59,7 @@ class DraftsAdapter(
             field = value
             notifyDataSetChanged()
         }
-    private var indices: DraftCursorIndices? = null
+    private var indices: ObjectCursor.CursorIndices<Draft>? = null
 
     init {
         GeneralComponentHelper.build(context).inject(this)
@@ -126,9 +128,7 @@ class DraftsAdapter(
 
     override fun swapCursor(c: Cursor?): Cursor? {
         val old = super.swapCursor(c)
-        if (c != null) {
-            indices = DraftCursorIndices(c)
-        }
+        indices = c?.let { ObjectCursor.indicesFrom(it, Draft::class.java) }
         return old
     }
 

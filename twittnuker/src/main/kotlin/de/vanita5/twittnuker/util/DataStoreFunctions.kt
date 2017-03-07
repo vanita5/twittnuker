@@ -10,11 +10,15 @@ import android.support.annotation.WorkerThread
 import android.support.v4.util.LongSparseArray
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.useCursor
+import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.constant.filterPossibilitySensitiveStatusesKey
 import de.vanita5.twittnuker.constant.filterUnavailableQuoteStatusesKey
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.Draft
+import de.vanita5.twittnuker.model.ParcelableActivity
+import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatus.FilterFlags
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils.ACTIVITIES_URIS
 import java.io.IOException
@@ -90,7 +94,7 @@ fun deleteDrafts(context: Context, draftIds: LongArray): Int {
 
     context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where, whereArgs,
             null).useCursor { cursor ->
-        val indices = DraftCursorIndices(cursor)
+        val indices = ObjectCursor.indicesFrom(cursor, Draft::class.java)
         cursor.moveToFirst()
         while (!cursor.isAfterLast) {
             val draft = indices.newObject(cursor)
@@ -190,12 +194,13 @@ fun updateActivity(cr: ContentResolver, uri: Uri,
     val c = cr.query(uri, Activities.COLUMNS, where, whereArgs, null) ?: return
     val values = LongSparseArray<ContentValues>()
     try {
-        val ci = ParcelableActivityCursorIndices(c)
+        val ci = ObjectCursor.indicesFrom(c, ParcelableActivity::class.java)
+        val vc = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
         c.moveToFirst()
         while (!c.isAfterLast) {
             val activity = ci.newObject(c)
             action(activity)
-            values.put(activity._id, ParcelableActivityValuesCreator.create(activity))
+            values.put(activity._id, vc.create(activity))
             c.moveToNext()
         }
     } catch (e: IOException) {
