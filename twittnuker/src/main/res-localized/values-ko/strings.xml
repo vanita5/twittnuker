@@ -146,7 +146,6 @@
     <string name="action_view_map">지도</string>
     <string name="activated_accounts">활성화된 계정</string>
     <string name="activities_about_me">내게 보인 반응</string>
-    <string name="activities_by_friends">친구의 반응</string>
     <string name="add_account">계정 추가</string>
     <string name="add_host_mapping">호스트 매핑 추가</string>
     <string name="add_image">이미지 추가</string>
