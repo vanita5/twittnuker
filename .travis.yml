@@ -1,8 +1,6 @@
 language: android
 
-dist: trusty
-
-sudo: required
+sudo: false
 
 android:
   components:
@@ -29,8 +27,6 @@ addons:
   apt:
     packages:
       - sshpass
-      - oracle-java8-installer
-      - oracle-java8-set-default
 
 licenses:
     - 'android-sdk-preview-license-.+'
@@ -52,9 +48,6 @@ before_install:
   # #- emulator -avd test -no-skin -no-audio -no-window &
   # #- android-wait-for-emulator
   # #- adb shell input keyevent 82 &
-
-before_script:
-  - free
 
 script:
   - ./gradlew clean assembleDebug --debug
