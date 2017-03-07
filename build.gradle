@@ -78,12 +78,6 @@ subprojects {
                     exclude '.readme'
                 }
 
-                if (System.getenv('TRAVIS') == 'true') {
-                    compileOptions {
-                        incremental = false
-                    }
-                }
-
             }
         }
 
