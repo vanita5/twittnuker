@@ -102,6 +102,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
+import org.mariotaku.ktextension.contains
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
