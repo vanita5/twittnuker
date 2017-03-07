@@ -155,22 +155,6 @@ public class ActivityTitleSummaryMessage {
                         nameFirst);
                 return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
             }
-            case Activity.Action.LIST_CREATED: {
-                int typeIcon = R.drawable.ic_activity_action_list_added;
-                CharSequence title = getTitleStringByFriends(resources, manager, R.string.activity_by_friends_list_created,
-                        R.string.activity_by_friends_list_created_multi, sources,
-                        activity.target_object_user_lists, nameFirst);
-                boolean firstLine = true;
-                StringBuilder sb = new StringBuilder();
-                for (ParcelableUserList item : activity.target_object_user_lists) {
-                    if (!firstLine) {
-                        sb.append("\n");
-                    }
-                    sb.append(item.description.replace('\n', ' '));
-                    firstLine = false;
-                }
-                return new ActivityTitleSummaryMessage(typeIcon, defaultColor, title, sb);
-            }
             case Activity.Action.LIST_MEMBER_ADDED: {
                 CharSequence title;
                 int icon = R.drawable.ic_activity_action_list_added;
