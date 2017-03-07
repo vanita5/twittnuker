@@ -25,14 +25,12 @@ env:
     - JAVA_OPTS="-Xmx2048m"
     - ADB_INSTALL_TIMEOUT=8
 
-jdk:
-  - oraclejdk8
-
 addons:
   apt:
     packages:
       - sshpass
       - oracle-java8-installer
+      - oracle-java8-set-default
 
 licenses:
     - 'android-sdk-preview-license-.+'
