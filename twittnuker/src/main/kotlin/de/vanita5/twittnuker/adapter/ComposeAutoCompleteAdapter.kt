@@ -50,8 +50,6 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
         R.layout.list_item_auto_complete, null, emptyArray(), intArrayOf(), 0) {
 
     @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-    @Inject
     lateinit var preferences: SharedPreferencesWrapper
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
@@ -78,7 +76,8 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
         icon.style = profileImageStyle
 
         if (Suggestions.AutoComplete.TYPE_USERS == cursor.getString(indices.type)) {
-            text1.text = cursor.getString(indices.title)
+            text1.text =
+                    cursor.getString(indices.title)
             text2.text = String.format("@%s", cursor.getString(indices.summary))
             if (displayProfileImage) {
                 val profileImageUrl = cursor.getString(indices.icon)

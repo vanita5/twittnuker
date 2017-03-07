@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.task.twitter.message
 
 import android.content.Context
-import de.vanita5.twittnuker.R
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -31,6 +30,7 @@ import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.NewDm
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
@@ -112,7 +112,7 @@ class SendMessageTask(
             if (message.media.isNotNullOrEmpty()) {
                 val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
                 val uploadResult = UpdateStatusTask.uploadAllMediaShared(context,
-                        mediaLoader, upload, account, message.media, null, true, null)
+                        upload, account, message.media, null, true, null)
                 newDm.setMediaId(uploadResult.ids[0])
                 deleteAlways = uploadResult.deleteAlways
                 deleteOnSuccess = uploadResult.deleteOnSuccess
@@ -149,7 +149,7 @@ class SendMessageTask(
             if (message.media.isNotNullOrEmpty()) {
                 val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
                 val uploadResult = UpdateStatusTask.uploadAllMediaShared(context,
-                        mediaLoader, upload, account, message.media, null, true, null)
+                        upload, account, message.media, null, true, null)
                 mediaId = uploadResult.ids[0]
                 deleteAlways = uploadResult.deleteAlways
                 deleteOnSuccess = uploadResult.deleteOnSuccess

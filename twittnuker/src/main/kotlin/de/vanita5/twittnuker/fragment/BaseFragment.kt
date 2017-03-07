@@ -43,8 +43,6 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     @Inject
     lateinit var readStateManager: ReadStateManager
     @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-    @Inject
     lateinit var bus: Bus
     @Inject
     lateinit var asyncTaskManager: AsyncTaskManager
