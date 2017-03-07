@@ -29,10 +29,10 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import de.vanita5.twittnuker.TwittnukerConstants.AUTHORITY_TWITTNUKER_CACHE
 import okio.ByteString
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.mediaviewer.library.FileCache
+import de.vanita5.twittnuker.TwittnukerConstants.AUTHORITY_TWITTNUKER_CACHE
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_TYPE
 import de.vanita5.twittnuker.annotation.CacheFileType
 import de.vanita5.twittnuker.model.CacheMetadata
@@ -82,9 +82,13 @@ class CacheProvider : ContentProvider() {
 
     fun getMetadata(uri: Uri): CacheMetadata? {
         val bytes = fileCache.getExtra(getCacheKey(uri)) ?: return null
-        return ByteArrayInputStream(bytes).use {
-            val mapper = LoganSquareMapperFinder.mapperFor(CacheMetadata::class.java)
-            return mapper.parse(it)
+        return try {
+            ByteArrayInputStream(bytes).use {
+                val mapper = LoganSquareMapperFinder.mapperFor(CacheMetadata::class.java)
+                return@use mapper.parse(it)
+            }
+        } catch (e: IOException) {
+            null
         }
     }
 

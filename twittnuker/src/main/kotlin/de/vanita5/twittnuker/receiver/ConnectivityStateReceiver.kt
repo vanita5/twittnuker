@@ -37,8 +37,6 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         DebugLog.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent), null)
         if (ConnectivityManager.CONNECTIVITY_ACTION != intent.action) return
-        val application = TwittnukerApplication.getInstance(context)
-        //        application.reloadConnectivitySettings();
         //TODO start streaming here?
 
         val appContext = context.applicationContext
@@ -49,6 +47,6 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
 
     companion object {
 
-        private val RECEIVER_LOGTAG = TwittnukerConstants.LOGTAG + "build/intermediates/exploded-aar/com.lnikkila/extendedtouchview/0.1.0/res" + "Connectivity"
+        private const val RECEIVER_LOGTAG = "TwidereConnectivity"
     }
 }
