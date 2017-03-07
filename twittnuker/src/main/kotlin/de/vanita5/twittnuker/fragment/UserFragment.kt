@@ -161,7 +161,6 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         private set
     private var account: AccountDetails? = null
     private var relationship: ParcelableRelationship? = null
-    private var locale: Locale? = null
     private var getUserInfoLoaderInitialized: Boolean = false
     private var getFriendShipLoaderInitialized: Boolean = false
     private var bannerWidth: Int = 0
@@ -501,6 +500,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         } else {
             createdAtContainer.visibility = View.GONE
         }
+        val locale = Locale.getDefault()
+
         tweetsContainer.statusesCount.text = Utils.getLocalizedNumber(locale, user.statuses_count)
         val groupsCount = if (user.extras != null) user.extras.groups_count else -1
         groupsContainer.groupsCount.text = Utils.getLocalizedNumber(locale, groupsCount)
@@ -665,7 +666,6 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val activity = activity
         userColorNameManager.registerColorChangedListener(this)
         nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
-        locale = resources.configuration.locale
         cardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
                 ThemeUtils.getThemeBackgroundOption(activity),
                 ThemeUtils.getUserThemeBackgroundAlpha(activity))
@@ -681,7 +681,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         })
 
 
-        userFragmentView.setWindowInsetsListener { left, top, right, bottom ->
+        userFragmentView.setWindowInsetsListener { _, top, _, _ ->
             profileContentContainer.setPadding(0, top, 0, 0)
             profileBannerSpace.statusBarHeight = top
 
@@ -693,7 +693,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 profileBannerSpace.toolbarHeight = toolbarHeight
             }
         }
-        profileContentContainer.setOnSizeChangedListener { view, w, h, oldw, oldh ->
+        profileContentContainer.setOnSizeChangedListener { _, _, _, _, _ ->
             val toolbarHeight = toolbar.measuredHeight
             userProfileDrawer.setPadding(0, toolbarHeight, 0, 0)
             profileBannerSpace.toolbarHeight = toolbarHeight
@@ -918,7 +918,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                         val paging = Paging()
                         paging.count(100)
                         do {
-                            val resp = getUserListMemberships(user.key.id, paging, true)
+                            val resp = getUserListMemberships(id, paging, true)
                             result.addAll(resp)
                             nextCursor = resp.nextCursor
                             paging.cursor(nextCursor)
@@ -1283,9 +1283,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         uiColor = color
         previousActionBarItemIsDark = 0
         previousTabItemIsDark = 0
-        if (actionBarBackground == null) {
-            setupBaseActionBar()
-        }
+        setupBaseActionBar()
         val activity = activity as BaseActivity
         val theme = Chameleon.getOverrideTheme(activity, activity)
         if (theme.isToolbarColored) {
@@ -1294,9 +1292,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             primaryColor = theme.colorToolbar
         }
         primaryColorDark = ChameleonUtils.darkenColor(primaryColor)
-        if (actionBarBackground != null) {
-            actionBarBackground!!.color = primaryColor
-        }
+        actionBarBackground.color = primaryColor
         val taskColor: Int
         if (theme.isToolbarColored) {
             taskColor = ColorUtils.setAlphaComponent(color, 0xFF)
@@ -1404,7 +1400,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             tabOutlineAlphaFactor = 1f
         }
 
-        actionBarBackground?.apply {
+        actionBarBackground.apply {
             this.factor = factor
             this.outlineAlphaFactor = tabOutlineAlphaFactor
         }
