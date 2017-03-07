@@ -25,5 +25,5 @@ package de.vanita5.twittnuker.extension
 import android.content.SharedPreferences
 
 fun SharedPreferences.getNonEmptyString(key: String, def: String): String {
-    return getString(key, def)?.let { if (it.isEmpty()) null else it } ?: def
+    return getString(key, def)?.takeUnless(String::isEmpty) ?: def
 }
