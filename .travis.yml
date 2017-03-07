@@ -2,6 +2,8 @@ language: android
 
 dist: trusty
 
+sudo: required
+
 android:
   components:
     - tools
@@ -15,8 +17,6 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-
-sudo: false
 
 env:
   global:
