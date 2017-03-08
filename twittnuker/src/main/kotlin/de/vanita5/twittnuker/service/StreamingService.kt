@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*
+import org.mariotaku.library.objectcursor.ObjectCursor
 
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -403,7 +404,8 @@ class StreamingService : Service() {
                 val parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
                         account.key, false)
                 parcelableActivity.timestamp = if (status.createdAt != null) status.createdAt.time else System.currentTimeMillis()
-                val activityValues = ParcelableActivityValuesCreator.create(parcelableActivity)
+                val vc = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
+                val activityValues = vc.create(parcelableActivity)
                 resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues)
             }
 
