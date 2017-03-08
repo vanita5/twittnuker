@@ -70,6 +70,7 @@ import de.vanita5.twittnuker.activity.*
 import de.vanita5.twittnuker.adapter.RecyclerPagerAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
@@ -453,8 +454,8 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 //TODO complete border color
                 clickedColors = clickedImageView.borderColors
                 val oldSelectedAccount = accountsAdapter.selectedAccount ?: return
-                Glide.with(this@AccountsDashboardFragment).loadProfileImage(context,
-                        oldSelectedAccount).into(clickedImageView).onLoadStarted(profileDrawable)
+                Glide.with(this@AccountsDashboardFragment).loadProfileImage(context, oldSelectedAccount)
+                        .into(clickedImageView).onLoadStarted(profileDrawable)
                 //TODO complete border color
                 clickedImageView.setBorderColors(*profileImageView.borderColors)
 
@@ -512,7 +513,8 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         val account = accountsAdapter.selectedAccount ?: return
         accountProfileNameView.text = account.user.name
         accountProfileScreenNameView.text = "@${account.user.screen_name}"
-        Glide.with(this).loadProfileImage(context, account).placeholder(profileImageSnapshot).into(accountProfileImageView)
+        Glide.with(this).loadProfileImage(context, account, size = ProfileImageSize.REASONABLY_SMALL)
+                .placeholder(profileImageSnapshot).into(accountProfileImageView)
         //TODO complete border color
         accountProfileImageView.setBorderColors(account.color)
         accountProfileBanner.showNext()
