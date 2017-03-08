@@ -30,6 +30,7 @@ import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -55,7 +56,6 @@ import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 abstract class GetStatusesTask(
@@ -189,7 +189,7 @@ abstract class GetStatusesTask(
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
                 status.inserted_date = System.currentTimeMillis()
-                mediaLoader.preloadStatus(status)
+                mediaPreloader.preloadStatus(status)
                 values[i] = creator.create(status)
                 if (minIdx == -1 || item < statuses[minIdx]) {
                     minIdx = i

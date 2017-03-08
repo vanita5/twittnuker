@@ -292,7 +292,7 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             editLocation.setText(user.location)
             editUrl.setText(if (isEmpty(user.url_expanded)) user.url else user.url_expanded)
 
-            Glide.with(this).loadProfileImage(context, user).into(profileImage)
+            Glide.with(this).loadProfileImage(context, user, 0).into(profileImage)
             Glide.with(this).loadProfileBanner(context, user, resources.displayMetrics.widthPixels).into(profileBanner)
             Glide.with(this).load(user.profile_background_url).into(profileBackground)
 

@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.util.AccountUtils;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.util.MediaPreloader;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
@@ -97,7 +97,7 @@ public abstract class AccountsListPreference extends TintedPreferenceCategory im
         private final SharedPreferences mSwitchPreference;
 
         @Inject
-        MediaLoaderWrapper mImageLoader;
+        MediaPreloader mediaPreloader;
 
         public AccountItemPreference(final Context context, final AccountDetails account,
                                      @Nullable final String switchKey, final boolean switchDefault) {
@@ -125,7 +125,7 @@ public abstract class AccountsListPreference extends TintedPreferenceCategory im
             super.onBindViewHolder(holder);
             final View iconView = holder.findViewById(android.R.id.icon);
             if (iconView instanceof PreferenceImageView) {
-                final PreferenceImageView imageView = (PreferenceImageView) iconView;
+                final ImageView imageView = (ImageView) iconView;
                 final int maxSize = getContext().getResources().getDimensionPixelSize(R.dimen.element_size_normal);
                 imageView.setMinimumWidth(maxSize);
                 imageView.setMinimumHeight(maxSize);

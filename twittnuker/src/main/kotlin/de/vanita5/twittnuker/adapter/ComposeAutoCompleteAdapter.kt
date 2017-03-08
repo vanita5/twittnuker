@@ -38,7 +38,6 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.SuggestionItem
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -81,7 +80,7 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
             text2.text = String.format("@%s", cursor.getString(indices.summary))
             if (displayProfileImage) {
                 val profileImageUrl = cursor.getString(indices.icon)
-                requestManager.loadProfileImage(context, profileImageUrl).into(icon)
+                requestManager.loadProfileImage(context, profileImageUrl, profileImageStyle).into(icon)
             } else {
                 //TODO cancel image load
             }

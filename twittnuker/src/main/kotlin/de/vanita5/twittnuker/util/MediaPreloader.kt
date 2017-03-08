@@ -22,16 +22,19 @@
 
 package de.vanita5.twittnuker.util
 
+import android.content.Context
 import android.content.SharedPreferences
+import com.bumptech.glide.Glide
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.mediaPreloadKey
 import de.vanita5.twittnuker.constant.mediaPreloadOnWifiOnlyKey
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.getActivityStatus
 
-class MediaLoaderWrapper {
+class MediaPreloader(val context: Context) {
 
     var isNetworkMetered: Boolean = true
     private var preloadEnabled: Boolean = true
@@ -42,8 +45,7 @@ class MediaLoaderWrapper {
 
     fun preloadStatus(status: ParcelableStatus) {
         if (!shouldPreload) return
-        preloadProfileImage(status.user_profile_image_url)
-        preloadProfileImage(status.quoted_user_profile_image)
+        Glide.with(context).loadProfileImage(context, status, 0).preload()
         preloadMedia(status.media)
         preloadMedia(status.quoted_media)
     }
@@ -60,15 +62,16 @@ class MediaLoaderWrapper {
 
     private fun preloadMedia(media: Array<ParcelableMedia>?) {
         media?.forEach { item ->
-            val url = item.preview_url ?: item.media_url ?: return@forEach
+            val url = item.preview_url ?: run {
+                if (item.type != ParcelableMedia.Type.IMAGE) return@run null
+                return@run item.media_url
+            } ?: return@forEach
             preloadPreviewImage(url)
         }
     }
 
-    private fun preloadProfileImage(url: String?) {
-    }
-
     private fun preloadPreviewImage(url: String?) {
+        Glide.with(context).load(url).preload()
     }
 
 }

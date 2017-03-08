@@ -65,7 +65,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var defaultFeatures: DefaultFeatures
         internal set
     @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
+    lateinit var mediaPreloader: MediaPreloader
         internal set
     @Inject
     lateinit var userColorNameManager: UserColorNameManager

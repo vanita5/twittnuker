@@ -42,7 +42,7 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
         val appContext = context.applicationContext
         val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
-        DependencyHolder.get(context).mediaLoader.isNetworkMetered = isNetworkMetered
+        DependencyHolder.get(context).mediaPreloader.isNetworkMetered = isNetworkMetered
     }
 
     companion object {

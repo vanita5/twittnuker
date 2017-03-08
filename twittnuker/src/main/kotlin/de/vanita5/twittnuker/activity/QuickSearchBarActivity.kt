@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SuggestionItem
@@ -264,6 +265,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
             private val activity: QuickSearchBarActivity
     ) : CursorAdapter(activity, null, 0), OnClickListener {
 
+        private val profileImageStyle = activity.preferences[profileImageStyleKey]
         private val requestManager = Glide.with(activity)
         private val inflater = LayoutInflater.from(activity)
         private val userColorNameManager = activity.userColorNameManager
@@ -320,7 +322,8 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
                     holder.text2.visibility = View.VISIBLE
                     holder.text2.text = "@${cursor.getString(indices.summary)}"
                     holder.icon.clearColorFilter()
-                    requestManager.loadProfileImage(context, cursor.getString(indices.icon)).into(holder.icon)
+                    requestManager.loadProfileImage(context, cursor.getString(indices.icon),
+                            profileImageStyle).into(holder.icon)
                 }
                 VIEW_TYPE_USER_SCREEN_NAME -> {
                     val holder = view.tag as UserViewHolder

@@ -84,6 +84,7 @@ import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
@@ -139,7 +140,6 @@ import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -524,7 +524,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val width = if (bannerWidth > 0) bannerWidth else defWidth
         val requestManager = Glide.with(this)
         requestManager.loadProfileBanner(context, user, width).into(profileBanner)
-        requestManager.loadOriginalProfileImage(context, user, profileImage.style).into(profileImage)
+        requestManager.loadOriginalProfileImage(context, user, profileImage.style,
+                profileImage.cornerRadius, profileImage.cornerRadiusRatio).into(profileImage)
         val relationship = relationship
         if (relationship == null) {
             getFriendship()

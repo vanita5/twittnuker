@@ -70,6 +70,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.findPositionByItemId
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.TranslationResult
@@ -118,7 +119,6 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 /**
@@ -899,7 +899,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
-            adapter.requestManager.loadProfileImage(context, status).into(itemView.profileImage)
+            adapter.requestManager.loadProfileImage(context, status, adapter.profileImageStyle,
+                    itemView.profileImage.cornerRadius, itemView.profileImage.cornerRadiusRatio)
+                    .into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)
@@ -1345,7 +1347,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                 fun displayUser(item: ParcelableUser) {
                     val context = adapter.context
-                    adapter.requestManager.loadProfileImage(context, item).into(profileImageView)
+                    adapter.requestManager.loadProfileImage(context, item, adapter.profileImageStyle).into(profileImageView)
                 }
 
                 override fun onClick(v: View) {
