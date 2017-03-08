@@ -37,8 +37,8 @@ import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.iface.IColorLabelView
 
 class AccountViewHolder(
-        itemView: View,
-        val adapter: AccountDetailsAdapter
+        val adapter: AccountDetailsAdapter,
+        itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val content = itemView as IColorLabelView

@@ -39,14 +39,17 @@ import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 class MediaStatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : RecyclerView.ViewHolder(itemView), IStatusViewHolder, View.OnClickListener, View.OnLongClickListener {
+    override val profileImageView: ProfileImageView = itemView.mediaProfileImage
+
+    private val mediaImageContainer = itemView.mediaImageContainer
+
+    private val mediaImageView = itemView.mediaImage
+    private val mediaTextView = itemView.mediaText
+
     private val aspectRatioSource = SimpleAspectRatioSource().apply {
         setSize(100, 100)
     }
 
-    private val mediaImageContainer = itemView.mediaImageContainer
-    private val mediaImageView = itemView.mediaImage
-    override val profileImageView: ProfileImageView = itemView.mediaProfileImage
-    private val mediaTextView = itemView.mediaText
     private var listener: IStatusViewHolder.StatusClickListener? = null
 
     override val profileTypeView: ImageView?

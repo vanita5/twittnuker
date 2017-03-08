@@ -54,13 +54,6 @@
                 android:scaleType="centerCrop"
                 tools:src="@drawable/twittnuker_feature_graphic"/>
 
-            <ProgressBar
-                android:id="@+id/mediaImageProgress"
-                style="?android:progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/element_spacing_small"/>
         </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
 
         <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
