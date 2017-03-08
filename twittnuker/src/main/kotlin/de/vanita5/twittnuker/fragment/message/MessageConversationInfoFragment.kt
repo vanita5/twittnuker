@@ -60,6 +60,7 @@ import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.ktextension.useCursor
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
@@ -71,6 +72,7 @@ import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
@@ -97,7 +99,6 @@ import de.vanita5.twittnuker.task.twitter.message.DestroyConversationTask
 import de.vanita5.twittnuker.task.twitter.message.SetConversationNotificationDisabledTask
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.lang.ref.WeakReference
 
 
@@ -160,11 +161,11 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         conversationAvatar.style = profileImageStyle
 
         val avatarBackground = ChameleonUtils.getColorDependent(theme.colorToolbar)
-        appBarIcon.setBackgroundColor(avatarBackground)
+        appBarIcon.setShapeBackground(avatarBackground)
         appBarTitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
         appBarSubtitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
 
-        conversationAvatar.setBackgroundColor(avatarBackground)
+        conversationAvatar.setShapeBackground(avatarBackground)
         conversationTitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
         conversationSubtitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
 
@@ -249,7 +250,7 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
 
         val requestManager = Glide.with(this)
         requestManager.loadProfileImage(context, data).into(conversationAvatar)
-        requestManager.loadProfileImage(context, data).into(appBarIcon)
+        requestManager.loadProfileImage(context, data, size = ProfileImageSize.REASONABLY_SMALL).into(appBarIcon)
         appBarTitle.text = name
         conversationTitle.text = name
         if (summary != null) {

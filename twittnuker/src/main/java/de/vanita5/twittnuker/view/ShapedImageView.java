@@ -36,6 +36,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
 import android.os.Build;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatImageView;
@@ -125,6 +126,7 @@ public class ShapedImageView extends AppCompatImageView {
             setBackgroundColor(color);
         } else {
             mBackgroundPaint.setColor(color);
+            invalidate();
         }
     }
 
@@ -182,7 +184,6 @@ public class ShapedImageView extends AppCompatImageView {
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-
         mDestination.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(),
                 getHeight() - getPaddingBottom());
 
@@ -235,6 +236,12 @@ public class ShapedImageView extends AppCompatImageView {
     public void setPaddingRelative(int start, int top, int end, int bottom) {
         super.setPaddingRelative(start, top, end, bottom);
         updateBounds();
+    }
+
+    @Override
+    public void setAlpha(@FloatRange(from = 0.0, to = 1.0) final float alpha) {
+        super.setAlpha(alpha);
+        mBackgroundPaint.setAlpha(Math.round(alpha * 255));
     }
 
     private void drawBorder(@NonNull final Canvas canvas, @NonNull final RectF dest) {

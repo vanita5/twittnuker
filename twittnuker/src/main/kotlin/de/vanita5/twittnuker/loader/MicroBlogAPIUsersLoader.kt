@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.content.Context
 import android.util.Log
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -44,6 +45,8 @@ abstract class MicroBlogAPIUsersLoader(
         data: List<ParcelableUser>?,
         fromUser: Boolean
 ) : ParcelableUsersLoader(context, data, fromUser) {
+
+    private val profileImageSize = context.getString(R.string.profile_image_size)
 
     override fun loadInBackground(): List<ParcelableUser> {
         if (accountKey == null) {
@@ -67,7 +70,8 @@ abstract class MicroBlogAPIUsersLoader(
             if (hasId(user.id)) {
                 continue
             }
-            val item = ParcelableUserUtils.fromUser(user, accountKey, pos.toLong())
+            val item = ParcelableUserUtils.fromUser(user, accountKey, pos.toLong(),
+                    profileImageSize = profileImageSize)
             processUser(item)
             data.add(item)
             pos++
