@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
+import android.net.Uri
 import android.text.TextUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -31,8 +32,10 @@ import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization
 import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory
 import org.mariotaku.restfu.RestAPIFactory
+import org.mariotaku.restfu.RestRequest
 import org.mariotaku.restfu.http.Authorization
 import org.mariotaku.restfu.http.Endpoint
+import org.mariotaku.restfu.http.MultiValueMap
 import org.mariotaku.restfu.oauth.OAuthAuthorization
 import org.mariotaku.restfu.oauth.OAuthEndpoint
 import org.mariotaku.restfu.oauth.OAuthToken
@@ -49,6 +52,7 @@ import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
 import de.vanita5.twittnuker.util.TwitterContentUtils
 import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 
 fun Credentials.getAuthorization(): Authorization {
     when (this) {
@@ -169,4 +173,26 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
     factory.setHttpRequestFactory(MicroBlogAPIFactory.TwidereHttpRequestFactory(extraHeaders))
     factory.setExceptionFactory(MicroBlogAPIFactory.TwidereExceptionFactory(converterFactory))
     return factory.build<T>(cls)
+}
+
+internal fun Credentials.authorizationHeader(
+        uri: Uri,
+        modifiedUri: Uri = TwidereMediaDownloader.getReplacedUri(uri, api_url_format) ?: uri
+): String {
+    val auth = getAuthorization()
+    val endpoint: Endpoint
+    if (auth is OAuthAuthorization) {
+        endpoint = OAuthEndpoint(TwidereMediaDownloader.getEndpoint(modifiedUri),
+                TwidereMediaDownloader.getEndpoint(uri))
+    } else {
+        endpoint = Endpoint(TwidereMediaDownloader.getEndpoint(modifiedUri))
+    }
+    val queries = MultiValueMap<String>()
+    for (name in uri.queryParameterNames) {
+        for (value in uri.getQueryParameters(name)) {
+            queries.add(name, value)
+        }
+    }
+    val info = RestRequest("GET", false, uri.path, null, queries, null, null, null, null)
+    return auth.getHeader(endpoint, info)
 }

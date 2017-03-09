@@ -23,17 +23,22 @@
 package de.vanita5.twittnuker.util.glide
 
 import android.content.Context
+import android.os.Build
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.GlideModule
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import de.vanita5.twittnuker.model.media.AuthenticatedUri
 import de.vanita5.twittnuker.util.HttpClientFactory
+import de.vanita5.twittnuker.util.UserAgentUtils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.okhttp.ModifyRequestInterceptor
 import java.io.InputStream
 
-class OkHttpGlideModule : GlideModule {
+class TwidereGlideModule : GlideModule {
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         // Do nothing.
     }
@@ -43,7 +48,19 @@ class OkHttpGlideModule : GlideModule {
         val builder = OkHttpClient.Builder()
         val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
         HttpClientFactory.initOkHttpClient(conf, builder, holder.dns, holder.connectionPool, holder.cache)
-        glide.register(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(builder.build()))
+        val userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context) ?: ""
+        builder.addInterceptor(ModifyRequestInterceptor(UserAgentModifier(userAgent)))
+        val client = builder.build()
+        glide.register(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client))
+        glide.register(AuthenticatedUri::class.java, InputStream::class.java, AuthenticatedUrlLoader.Factory(client))
     }
 
+
+    class UserAgentModifier(val userAgent: String) : ModifyRequestInterceptor.RequestModifier {
+        override fun modify(original: Request, builder: Request.Builder): Boolean {
+            builder.header("User-Agent", userAgent)
+            return true
+        }
+
+    }
 }

@@ -143,7 +143,7 @@
             tools:node="remove" />
 
         <meta-data
-            android:name="de.vanita5.twittnuker.util.glide.OkHttpGlideModule"
+            android:name="de.vanita5.twittnuker.util.glide.TwidereGlideModule"
             android:value="GlideModule" />
 
         <activity

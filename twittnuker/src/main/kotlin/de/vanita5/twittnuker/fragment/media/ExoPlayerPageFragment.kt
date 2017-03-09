@@ -52,15 +52,10 @@ import okhttp3.Request
 import okhttp3.Response
 import org.mariotaku.mediaviewer.library.MediaViewerFragment
 import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewerFragment
-import org.mariotaku.restfu.RestRequest
-import org.mariotaku.restfu.http.Endpoint
-import org.mariotaku.restfu.http.MultiValueMap
-import org.mariotaku.restfu.oauth.OAuthAuthorization
-import org.mariotaku.restfu.oauth.OAuthEndpoint
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.CacheFileType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
-import de.vanita5.twittnuker.extension.model.getAuthorization
+import de.vanita5.twittnuker.extension.model.authorizationHeader
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.media.VideoPageFragment.Companion.EXTRA_PAUSED_BY_USER
 import de.vanita5.twittnuker.fragment.media.VideoPageFragment.Companion.EXTRA_PLAY_AUDIO
@@ -336,8 +331,10 @@ class ExoPlayerPageFragment : MediaViewerFragment(), IBaseFragment<ExoPlayerPage
         }
 
         private fun setAuthorizationHeader(dataSource: HttpDataSource) {
-            val authorizationHeader = account?.authorizationHeader(uri) ?: return
-            dataSource.setRequestProperty("Authorization", authorizationHeader)
+            val credentials = account?.credentials
+            if (credentials != null && TwidereMediaDownloader.isAuthRequired(credentials, uri)) {
+                dataSource.setRequestProperty("Authorization", credentials.authorizationHeader(uri))
+            }
         }
     }
 
@@ -370,39 +367,12 @@ class ExoPlayerPageFragment : MediaViewerFragment(), IBaseFragment<ExoPlayerPage
             if (response != null) return response!!
             val builder = Request.Builder()
             builder.url(uri.toString())
-            val authHeader = account?.authorizationHeader(uri)
-            if (authHeader != null) {
-                builder.addHeader("Authorization", authHeader)
+            val credentials = account?.credentials
+            if (credentials != null && TwidereMediaDownloader.isAuthRequired(credentials, uri)) {
+                builder.addHeader("Authorization", credentials.authorizationHeader(uri))
             }
             response = okHttpClient.newCall(builder.build()).execute()
             return response!!
-        }
-
-    }
-
-    companion object {
-
-        internal fun AccountDetails.authorizationHeader(uri: Uri): String? {
-            val modifiedUri = TwidereMediaDownloader.getReplacedUri(uri, credentials.api_url_format) ?: uri
-            if (!TwidereMediaDownloader.isAuthRequired(this, uri)) {
-                return null
-            }
-            val auth = credentials.getAuthorization()
-            val endpoint: Endpoint
-            if (auth is OAuthAuthorization) {
-                endpoint = OAuthEndpoint(TwidereMediaDownloader.getEndpoint(modifiedUri),
-                        TwidereMediaDownloader.getEndpoint(uri))
-            } else {
-                endpoint = Endpoint(TwidereMediaDownloader.getEndpoint(modifiedUri))
-            }
-            val queries = MultiValueMap<String>()
-            for (name in uri.queryParameterNames) {
-                for (value in uri.getQueryParameters(name)) {
-                    queries.add(name, value)
-                }
-            }
-            val info = RestRequest("GET", false, uri.path, null, queries, null, null, null, null)
-            return auth.getHeader(endpoint, info)
         }
 
     }

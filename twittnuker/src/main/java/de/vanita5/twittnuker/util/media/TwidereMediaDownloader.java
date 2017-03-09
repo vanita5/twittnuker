@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.media;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.net.Uri;
@@ -32,22 +33,18 @@ import android.text.TextUtils;
 
 import org.mariotaku.mediaviewer.library.CacheDownloadLoader;
 import org.mariotaku.mediaviewer.library.MediaDownloader;
-import org.mariotaku.restfu.RestRequest;
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.MultiValueMap;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.Body;
-import org.mariotaku.restfu.oauth.OAuthAuthorization;
-import org.mariotaku.restfu.oauth.OAuthEndpoint;
+import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.extension.model.CredentialsExtensionsKt;
-import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
@@ -69,7 +66,7 @@ public class TwidereMediaDownloader implements MediaDownloader {
     public TwidereMediaDownloader(final Context context, final RestHttpClient client) {
         this.context = context;
         this.client = client;
-        userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context);
+        this.userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context);
     }
 
     @NonNull
@@ -107,38 +104,24 @@ public class TwidereMediaDownloader implements MediaDownloader {
     protected CacheDownloadLoader.DownloadResult getInternal(@NonNull String url,
                                                              @Nullable Object extra) throws IOException {
         final Uri uri = Uri.parse(url);
-        Authorization auth = null;
-        AccountDetails account = null;
+        Credentials credentials = null;
         if (extra instanceof MediaExtra) {
             UserKey accountKey = ((MediaExtra) extra).getAccountKey();
             if (accountKey != null) {
-                account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true);
+                final AccountManager am = AccountManager.get(context);
+                Account account = AccountUtils.findByAccountKey(am, accountKey);
                 if (account != null) {
-                    auth = CredentialsExtensionsKt.getAuthorization(account.credentials);
+                    credentials = AccountExtensionsKt.getCredentials(account, am);
                 }
             }
         }
-        final Uri modifiedUri = getReplacedUri(uri, account != null ? account.credentials.api_url_format : null);
+        final Uri modifiedUri = getReplacedUri(uri, credentials != null ? credentials.api_url_format : null);
         final MultiValueMap<String> additionalHeaders = new MultiValueMap<>();
         additionalHeaders.add("User-Agent", userAgent);
         final String method = GET.METHOD;
         final String requestUri;
-        if (isAuthRequired(account, uri) && auth != null && auth.hasAuthorization()) {
-            final Endpoint endpoint;
-            if (auth instanceof OAuthAuthorization) {
-                endpoint = new OAuthEndpoint(getEndpoint(modifiedUri), getEndpoint(uri));
-            } else {
-                endpoint = new Endpoint(getEndpoint(modifiedUri));
-            }
-            final MultiValueMap<String> queries = new MultiValueMap<>();
-            for (String name : uri.getQueryParameterNames()) {
-                for (String value : uri.getQueryParameters(name)) {
-                    queries.add(name, value);
-                }
-            }
-            final RestRequest info = new RestRequest(method, false, uri.getPath(), additionalHeaders,
-                    queries, null, null, null, null);
-            additionalHeaders.add("Authorization", auth.getHeader(endpoint, info));
+        if (isAuthRequired(credentials, uri)) {
+            additionalHeaders.add("Authorization", CredentialsExtensionsKt.authorizationHeader(credentials, uri, modifiedUri));
             requestUri = modifiedUri.toString();
         } else  {
             requestUri = modifiedUri.toString();
@@ -176,10 +159,10 @@ public class TwidereMediaDownloader implements MediaDownloader {
         return sb.toString();
     }
 
-    public static boolean isAuthRequired(@Nullable final AccountDetails details, @NonNull final Uri uri) {
-        if (details == null) return false;
+    public static boolean isAuthRequired(@Nullable final Credentials credentials, @NonNull final Uri uri) {
+        if (credentials == null) return false;
         final String host = uri.getHost();
-        if (details.credentials.api_url_format != null && details.credentials.api_url_format.contains(host)) {
+        if (credentials.api_url_format != null && credentials.api_url_format.contains(host)) {
             return true;
         }
         return "ton.twitter.com".equalsIgnoreCase(host);
