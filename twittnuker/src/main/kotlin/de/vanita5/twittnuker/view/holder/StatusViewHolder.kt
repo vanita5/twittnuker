@@ -107,8 +107,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     itemView.quotedMediaPreview)
         }
 
-        profileImageView.style = adapter.profileImageStyle
-
     }
 
 
@@ -521,6 +519,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
     fun setupViewOptions() {
         setTextSize(adapter.textSize)
+
+        profileImageView.style = adapter.profileImageStyle
 
         mediaPreview.style = adapter.mediaPreviewStyle
         quotedMediaPreview.style = adapter.mediaPreviewStyle
