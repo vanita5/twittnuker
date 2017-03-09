@@ -67,7 +67,7 @@ import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener
+import de.vanita5.twittnuker.util.glide.PauseRecyclerViewOnScrollListener
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder
 import de.vanita5.twittnuker.view.holder.GapViewHolder

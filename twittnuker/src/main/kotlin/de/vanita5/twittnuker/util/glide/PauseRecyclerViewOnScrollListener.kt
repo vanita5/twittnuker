@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.imageloader
+package de.vanita5.twittnuker.util.glide
 
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager

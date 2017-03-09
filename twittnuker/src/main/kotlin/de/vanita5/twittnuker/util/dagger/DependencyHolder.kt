@@ -31,6 +31,7 @@ import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.media.MediaPreloader
 import javax.inject.Inject
 
 class DependencyHolder internal constructor(context: Context) {

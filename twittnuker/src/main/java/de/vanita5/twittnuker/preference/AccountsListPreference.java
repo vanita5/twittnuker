@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.util.AccountUtils;
-import de.vanita5.twittnuker.util.MediaPreloader;
+import de.vanita5.twittnuker.util.media.MediaPreloader;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;

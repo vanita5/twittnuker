@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.cache.DiskLRUFileCache
 import de.vanita5.twittnuker.util.cache.JsonCache
+import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService

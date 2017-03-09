@@ -29,7 +29,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.webkit.URLUtil;
 
 import org.mariotaku.mediaviewer.library.CacheDownloadLoader;
 import org.mariotaku.mediaviewer.library.MediaDownloader;
@@ -67,15 +66,10 @@ public class TwidereMediaDownloader implements MediaDownloader {
     private final RestHttpClient client;
     private final String userAgent;
 
-    public TwidereMediaDownloader(final Context context,
-                                  RestHttpClient client) {
+    public TwidereMediaDownloader(final Context context, final RestHttpClient client) {
         this.context = context;
         this.client = client;
         userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context);
-        reloadConnectivitySettings();
-    }
-
-    public void reloadConnectivitySettings() {
     }
 
     @NonNull
