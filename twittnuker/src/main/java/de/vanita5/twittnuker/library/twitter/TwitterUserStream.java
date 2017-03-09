@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.library.twitter;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
 import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.callback.RawCallback;
 
 /**
  * Created by mariotaku on 15/5/26.
@@ -31,5 +33,8 @@ public interface TwitterUserStream {
 
     @GET("/user.json")
     void getUserStream(UserStreamCallback callback);
+
+    @GET("/user.json")
+    void getUserStreamRaw(RawCallback<MicroBlogException> callback);
 
 }
