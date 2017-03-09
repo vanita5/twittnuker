@@ -23,9 +23,9 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
@@ -39,9 +39,9 @@ class UpdateUserListDetailsTask(
         private val accountKey: UserKey,
         private val listId: String,
         private val update: UserListUpdate
-) : BaseAbstractTask<Any, SingleResponse<ParcelableUserList>, Any>(context) {
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableUserList>, Any>(context) {
 
-    override fun doLongOperation(o: Any): SingleResponse<ParcelableUserList> {
+    override fun doLongOperation(params: Any?): SingleResponse<ParcelableUserList> {
         val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey)
         if (microBlog != null) {
             try {

@@ -73,6 +73,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.coerceInOr
+import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -102,7 +103,6 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
-import org.mariotaku.ktextension.contains
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
@@ -362,7 +362,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
         val context = applicationContext
         TaskStarter.execute(object : AbstractTask<Any?, Any?, Any?>() {
-            override fun doLongOperation(o: Any?): Any? {
+            override fun doLongOperation(params: Any?): Any? {
                 DataStoreUtils.cleanDatabasesByItemLimit(context)
                 return null
             }
