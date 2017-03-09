@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util.glide
 
 import android.content.Context
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
@@ -32,7 +31,6 @@ import com.bumptech.glide.module.GlideModule
 import okhttp3.OkHttpClient
 import de.vanita5.twittnuker.util.HttpClientFactory
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
-
 import java.io.InputStream
 
 class OkHttpGlideModule : GlideModule {
@@ -47,4 +45,5 @@ class OkHttpGlideModule : GlideModule {
         HttpClientFactory.initOkHttpClient(conf, builder, holder.dns, holder.connectionPool, holder.cache)
         glide.register(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(builder.build()))
     }
+
 }
