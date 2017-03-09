@@ -24,14 +24,38 @@ package de.vanita5.twittnuker.view.holder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_simple_user_list.view.*
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
+import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.model.ParcelableUserList
+import de.vanita5.twittnuker.view.ProfileImageView
 
-class SimpleUserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SimpleUserListViewHolder(
+        val adapter: IUserListsAdapter<*>,
+        itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     val createdByView: TextView = itemView.createdBy
     val nameView: TextView = itemView.name
-    val profileImageView: ImageView = itemView.profileImage
+    val profileImageView: ProfileImageView = itemView.profileImage
 
+    init {
+        profileImageView.style = adapter.profileImageStyle
+    }
+
+    fun display(userList: ParcelableUserList) {
+        nameView.text = userList.name
+        createdByView.text = createdByView.context.getString(R.string.created_by,
+                adapter.userColorNameManager.getDisplayName(userList, false))
+        if (adapter.profileImageEnabled) {
+            profileImageView.visibility = View.VISIBLE
+            val context = itemView.context
+            adapter.requestManager.loadProfileImage(context, userList, adapter.profileImageStyle,
+                    profileImageView.cornerRadius, profileImageView.cornerRadiusRatio).into(profileImageView)
+        } else {
+            profileImageView.visibility = View.GONE
+        }
+    }
 }

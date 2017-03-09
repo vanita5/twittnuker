@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.extension.view.holder.display
+import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
@@ -37,14 +37,17 @@ class SimpleParcelableUserListsAdapter(
         context: Context,
         requestManager: RequestManager
 ) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_simple_user_list,
-        requestManager = requestManager) {
-
+        requestManager = requestManager), IUserListsAdapter<List<ParcelableUserList>> {
     override val itemCounts: ItemCounts = ItemCounts(2)
+
+    override val userListsCount: Int = itemCounts[0]
+    override val showAccountsColor: Boolean = false
+    override val userListClickListener: IUserListsAdapter.UserListClickListener? = null
 
     override fun getItemId(position: Int): Long {
         when (itemCounts.getItemCountIndex(position)) {
             0 -> {
-                return getItem(position - itemCounts.getItemStartPosition(0)).hashCode().toLong()
+                return getUserList(position)!!.hashCode().toLong()
             }
             1 -> {
                 return Integer.MAX_VALUE + 1L
@@ -58,12 +61,12 @@ class SimpleParcelableUserListsAdapter(
             0 -> {
                 val view = super.getView(position, convertView, parent)
                 val holder = view.tag as? SimpleUserListViewHolder ?: run {
-                    val h = SimpleUserListViewHolder(view)
+                    val h = SimpleUserListViewHolder(this, view)
                     view.tag = h
                     return@run h
                 }
                 val userList = getItem(position)
-                holder.display(userList, requestManager, userColorNameManager, profileImageEnabled)
+                holder.display(userList)
                 return view
             }
             1 -> {
@@ -72,6 +75,14 @@ class SimpleParcelableUserListsAdapter(
             }
         }
         throw UnsupportedOperationException()
+    }
+
+    override fun getUserList(position: Int): ParcelableUserList? {
+        return getItem(position - itemCounts.getItemStartPosition(0))
+    }
+
+    override fun getUserListId(position: Int): String? {
+        return getUserList(position)?.id
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -88,15 +99,14 @@ class SimpleParcelableUserListsAdapter(
         return itemCounts.itemCount
     }
 
-    fun setData(data: List<ParcelableUserList>?) {
+    override fun setData(data: List<ParcelableUserList>?): Boolean {
         clear()
-        if (data == null) return
-        for (user in data) {
+        if (data == null) return false
+        data.filter {
             //TODO improve compare
-            if (findItemPosition(user.hashCode().toLong()) < 0) {
-                add(user)
-            }
-        }
+            findItemPosition(it.hashCode().toLong()) < 0
+        }.forEach { add(it) }
+        return true
     }
 
 }

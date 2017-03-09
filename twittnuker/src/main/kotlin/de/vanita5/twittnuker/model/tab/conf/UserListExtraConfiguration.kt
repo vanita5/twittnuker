@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.list_item_simple_user_list.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.UserListSelectorActivity
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.extension.view.holder.display
+import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.tab.TabConfiguration
@@ -69,7 +69,8 @@ class UserListExtraConfiguration(key: String) : TabConfiguration.ExtraConfigurat
             fragment.startExtraConfigurationActivityForResult(this@UserListExtraConfiguration, intent, 1)
         }
         hintView = view.selectUserListHint
-        viewHolder = SimpleUserListViewHolder(view.listItem)
+        val adapter = DummyItemAdapter(context, requestManager = Glide.with(context))
+        viewHolder = SimpleUserListViewHolder(adapter, view.listItem)
 
         viewHolder.itemView.visibility = View.GONE
         hintView.visibility = View.VISIBLE
@@ -80,8 +81,7 @@ class UserListExtraConfiguration(key: String) : TabConfiguration.ExtraConfigurat
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val userList: ParcelableUserList = data!!.getParcelableExtra(EXTRA_USER_LIST)
-                    viewHolder.display(userList, Glide.with(context),
-                            dependencyHolder.userColorNameManager, true)
+                    viewHolder.display(userList)
                     viewHolder.itemView.visibility = View.VISIBLE
                     hintView.visibility = View.GONE
 
