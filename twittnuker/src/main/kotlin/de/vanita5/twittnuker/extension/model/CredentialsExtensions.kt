@@ -143,7 +143,7 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
     }
     val holder = DependencyHolder.get(context)
     when (cls) {
-        TwitterUpload::class -> {
+        TwitterUpload::class.java -> {
             val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
             // Use longer timeout for uploading
             conf.readTimeoutSecs = 30
@@ -153,13 +153,13 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
                     holder.connectionPool, holder.cache)
             factory.setHttpClient(uploadHttpClient)
         }
-        TwitterUserStream::class -> {
+        TwitterUserStream::class.java -> {
             val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
             // Use longer read timeout for streaming
             conf.readTimeoutSecs = 300
-            val uploadHttpClient = HttpClientFactory.createRestHttpClient(conf, holder.dns,
+            val streamHttpClient = HttpClientFactory.createRestHttpClient(conf, holder.dns,
                     holder.connectionPool, holder.cache)
-            factory.setHttpClient(uploadHttpClient)
+            factory.setHttpClient(streamHttpClient)
         }
         else -> {
             factory.setHttpClient(holder.restHttpClient)
