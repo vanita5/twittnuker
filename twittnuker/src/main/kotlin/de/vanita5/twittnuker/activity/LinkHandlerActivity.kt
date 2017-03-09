@@ -30,6 +30,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.BadParcelableException
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks
@@ -107,10 +108,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             return
         }
         val linkId = TwidereLinkMatcher.match(uri)
+        var transactionRequired = false
         intent.setExtrasClassLoader(classLoader)
-        val fragment: Fragment
-        try {
-            fragment = createFragmentForIntent(this, linkId, intent) ?: run {
+        val fragment: Fragment = currentVisibleFragment ?: try {
+            transactionRequired = true
+            createFragmentForIntent(this, linkId, intent) ?: run {
                 finish()
                 return
             }
@@ -155,9 +157,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         }
 
         setupActionBarOption()
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(contentFragmentId, fragment, "content_fragment")
-        ft.commit()
+        if (transactionRequired) {
+            val ft = supportFragmentManager.beginTransaction()
+            ft.replace(contentFragmentId, fragment, "content_fragment")
+            ft.commit()
+        }
         setTitle(linkId, uri)
         finishOnly = uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY)?.toBoolean() ?: false
 
@@ -509,7 +513,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
     }
 
     private fun updateActionsButton() {
-        val fab = this.actionsButton ?: return
+        val fab = window.findViewById(R.id.actionButtons) as? FloatingActionButton ?: return
         val fragment = currentVisibleFragment as? IFloatingActionButtonFragment
         val info = fragment?.getActionInfo("link_handler") ?: run {
             fab.visibility = View.GONE
