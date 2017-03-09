@@ -119,6 +119,7 @@ dependencies {
     compile "org.osmdroid:osmdroid-android:5.6.4"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:1.5"
+    debugCompile 'com.jayway.jsonpath:json-path:2.2.0'
 
     provided "javax.annotation:jsr250-api:1.0"
 

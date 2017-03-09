@@ -42,6 +42,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+import org.mariotaku.commons.logansquare.JsonStringConverter;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.account.AccountExtras;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
@@ -87,12 +88,13 @@ public class AccountDetails implements Parcelable, Comparable<AccountDetails> {
     @JsonField(name = "dummy")
     public boolean dummy;
 
-    @JsonField(name = "credentials")
+    @JsonField(name = "credentials", typeConverter = JsonStringConverter.class)
     @ParcelableNoThanks
     String credentials_json;
+
     public Credentials credentials;
 
-    @JsonField(name = "extras")
+    @JsonField(name = "extras", typeConverter = JsonStringConverter.class)
     @ParcelableNoThanks
     String extras_json;
     public AccountExtras extras;
