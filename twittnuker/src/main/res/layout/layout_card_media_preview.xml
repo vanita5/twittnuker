@@ -23,6 +23,7 @@
 
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/list_item_status">
 
@@ -34,6 +35,7 @@
         android:foreground="?selectableItemBackground"
         android:foregroundGravity="center"
         android:scaleType="centerCrop"
+        app:layout_isMediaItemView="true"
         tools:ignore="DuplicateIncludedIds"
         tools:src="@drawable/twittnuker_feature_graphic"/>
 
@@ -45,6 +47,7 @@
         android:foreground="?selectableItemBackground"
         android:foregroundGravity="center"
         android:scaleType="centerCrop"
+        app:layout_isMediaItemView="true"
         tools:ignore="DuplicateIncludedIds"
         tools:src="@drawable/twittnuker_feature_graphic"/>
 
@@ -56,6 +59,7 @@
         android:foreground="?selectableItemBackground"
         android:foregroundGravity="center"
         android:scaleType="centerCrop"
+        app:layout_isMediaItemView="true"
         tools:ignore="DuplicateIncludedIds"
         tools:src="@drawable/twittnuker_feature_graphic"/>
 
@@ -67,6 +71,7 @@
         android:foreground="?selectableItemBackground"
         android:foregroundGravity="center"
         android:scaleType="centerCrop"
+        app:layout_isMediaItemView="true"
         tools:ignore="DuplicateIncludedIds"
         tools:src="@drawable/twittnuker_feature_graphic"/>
 
