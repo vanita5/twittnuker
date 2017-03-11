@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import android.accounts.AccountManager
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -40,6 +41,7 @@ import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
@@ -57,6 +59,8 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.glide.PauseRecyclerViewOnScrollListener
@@ -178,7 +182,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
             position = recyclerView.getChildLayoutPosition(focusedChild)
         }
         if (position != -1) {
-            val status = adapter.getStatus(position) ?: return false
+            val status = adapter.getStatus(position)
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 IntentUtils.openStatus(activity, status, null)
                 return true
@@ -279,7 +283,8 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
             val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
             val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
             wasAtTop = firstVisibleItemPosition == 0
-            val statusRange = rangeOfSize(adapter.statusStartIndex, adapter.statusCount)
+            // Get display range of statuses
+            val statusRange = rangeOfSize(adapter.statusStartIndex, adapter.getStatusCount(raw = false))
             val lastReadPosition = if (loadMore || readFromBottom) {
                 lastVisibleItemPosition
             } else {
@@ -291,7 +296,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
                 adapter.getStatusPositionKey(lastReadPosition)
             }
             lastReadViewTop = layoutManager.findViewByPosition(lastReadPosition)?.top ?: 0
-            loadMore = statusRange.endInclusive >= 0 && lastVisibleItemPosition >= statusRange.endInclusive
+            loadMore = statusRange.endInclusive in 0..lastVisibleItemPosition
         } else if (rememberPosition && readPositionTag != null) {
             lastReadId = readStateManager.getPosition(readPositionTag)
             lastReadViewTop = 0
@@ -347,8 +352,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
 
 
     override fun onGapClick(holder: GapViewHolder, position: Int) {
-        val adapter = this.adapter
-        val status = adapter.getStatus(position) ?: return
+        val status = adapter.getStatus(position)
         DebugLog.v(msg = "Load activity gap $status")
         adapter.addGapLoadingId(ObjectId(status.account_key, status.id))
         val accountIds = arrayOf(status.account_key)
@@ -360,26 +364,26 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia,
             statusPosition: Int) {
-        val status = adapter.getStatus(statusPosition) ?: return
+        val status = adapter.getStatus(statusPosition)
         IntentUtils.openMedia(activity, status, current, preferences[newDocumentApiKey],
                 preferences[displaySensitiveContentsKey])
     }
 
     override fun onQuotedMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia,
             statusPosition: Int) {
-        val status = adapter.getStatus(statusPosition) ?: return
+        val status = adapter.getStatus(statusPosition)
         val quotedMedia = status.quoted_media ?: return
         IntentUtils.openMedia(activity, status.account_key, status.is_possibly_sensitive, status,
                 current, quotedMedia, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
     }
 
     override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
-        val status = adapter.getStatus(position) ?: return
+        val status = adapter.getStatus(position)
         handleActionClick(holder as StatusViewHolder, status, id)
     }
 
     override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {
-        val status = adapter.getStatus(position) ?: return false
+        val status = adapter.getStatus(position)
         return handleActionLongClick(this, status, adapter.getItemId(position), id)
     }
 
@@ -414,12 +418,12 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     }
 
     override fun onStatusClick(holder: IStatusViewHolder, position: Int) {
-        val status = adapter.getStatus(position) ?: return
+        val status = adapter.getStatus(position)
         IntentUtils.openStatus(activity, status, null)
     }
 
     override fun onQuotedStatusClick(holder: IStatusViewHolder, position: Int) {
-        val status = adapter.getStatus(position) ?: return
+        val status = adapter.getStatus(position)
         val quotedId = status.quoted_id ?: return
         IntentUtils.openStatus(activity, status.account_key, quotedId)
     }
@@ -436,7 +440,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     }
 
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
-        val status = adapter.getStatus(position)!!
+        val status = adapter.getStatus(position)
         val intent = IntentUtils.userProfile(status.account_key, status.user_key,
                 status.user_screen_name, Referral.TIMELINE_STATUS,
                 status.extras.user_statusnet_profile_url)
@@ -468,7 +472,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     protected fun saveReadPosition(position: Int) {
         if (host == null) return
         if (position == RecyclerView.NO_POSITION) return
-        val status = adapter.getStatus(position) ?: return
+        val status = adapter.getStatus(position)
         val positionKey = if (status.position_key > 0) status.position_key else status.timestamp
         readPositionTagWithArguments?.let {
             accountKeys.map { accountKey -> Utils.getReadPositionTagWithAccount(it, accountKey) }
@@ -494,26 +498,38 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
         val status = adapter.getStatus(contextMenuInfo!!.position)
         inflater.inflate(R.menu.action_status, menu)
-        MenuUtils.setupForStatus(context, preferences, menu, status!!, twitterWrapper,
+        MenuUtils.setupForStatus(context, preferences, menu, status, twitterWrapper,
                 userColorNameManager)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         if (!userVisibleHint) return false
         val contextMenuInfo = item.menuInfo as ExtendedRecyclerView.ContextMenuInfo
-        val status = adapter.getStatus(contextMenuInfo.position) ?: return false
-        if (item.itemId == R.id.share) {
-            val shareIntent = Utils.createStatusShareIntent(activity, status)
-            val chooser = Intent.createChooser(shareIntent, getString(R.string.share_status))
-            startActivity(chooser)
+        val status = adapter.getStatus(contextMenuInfo.position)
+        when (item.itemId) {
+            R.id.share -> {
+                val shareIntent = Utils.createStatusShareIntent(activity, status)
+                val chooser = Intent.createChooser(shareIntent, getString(R.string.share_status))
+                startActivity(chooser)
 
-            val am = AccountManager.get(context)
-            val accountType = AccountUtils.findByAccountKey(am, status.account_key)?.getAccountType(am)
-            Analyzer.log(Share.status(accountType, status))
-            return true
-        }
-        return MenuUtils.handleStatusClick(activity, this, fragmentManager,
+                val am = AccountManager.get(context)
+                val accountType = AccountUtils.findByAccountKey(am, status.account_key)?.getAccountType(am)
+                Analyzer.log(Share.status(accountType, status))
+                return true
+            }
+            R.id.make_gap -> {
+                if (this !is CursorStatusesFragment) return true
+                val resolver = context.contentResolver
+                val values = ContentValues()
+                values.put(Statuses.IS_GAP, 1)
+                val where = Expression.equalsArgs(Statuses._ID).sql
+                val whereArgs = arrayOf(status._id.toString())
+                resolver.update(contentUri, values, where, whereArgs)
+                return true
+            }
+            else -> return MenuUtils.handleStatusClick(activity, this, fragmentManager,
                 userColorNameManager, twitterWrapper, status, item)
+        }
     }
 
     class DefaultOnLikedListener(

@@ -27,7 +27,6 @@ import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
@@ -35,7 +34,10 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.getActivityStatus
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper
+import de.vanita5.twittnuker.util.TwidereLinkify
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
@@ -92,42 +94,28 @@ class DummyItemAdapter(
         return 0
     }
 
-    override fun getStatus(position: Int): ParcelableStatus? {
+    override fun getStatus(position: Int, raw: Boolean): ParcelableStatus {
         if (adapter is ParcelableStatusesAdapter) {
-            return adapter.getStatus(position)
+            return adapter.getStatus(position, raw)
         } else if (adapter is VariousItemsAdapter) {
             return adapter.getItem(position) as ParcelableStatus
         } else if (adapter is ParcelableActivitiesAdapter) {
-            return adapter.getActivity(position)?.getActivityStatus()
+            return adapter.getActivity(position)?.getActivityStatus()!!
         }
-        return null
+        throw IndexOutOfBoundsException()
     }
 
-    override val statusCount: Int
-        get() = 0
+    override fun getStatusCount(raw: Boolean) = 0
 
-    override val rawStatusCount: Int
-        get() = 0
+    override fun getStatusId(position: Int, raw: Boolean) = ""
 
-    override fun getStatusId(position: Int): String? {
-        return null
-    }
+    override fun getStatusTimestamp(position: Int, raw: Boolean) = -1L
 
-    override fun getStatusTimestamp(position: Int): Long {
-        return -1
-    }
+    override fun getStatusPositionKey(position: Int, raw: Boolean) = -1L
 
-    override fun getStatusPositionKey(position: Int): Long {
-        return -1
-    }
+    override fun getAccountKey(position: Int, raw: Boolean) = UserKey.INVALID
 
-    override fun getAccountKey(position: Int): UserKey? {
-        return null
-    }
-
-    override fun findStatusById(accountKey: UserKey, statusId: String): ParcelableStatus? {
-        return null
-    }
+    override fun findStatusById(accountKey: UserKey, statusId: String) = null
 
     override fun isCardActionsShown(position: Int): Boolean {
         if (position == RecyclerView.NO_POSITION) return showCardActions
