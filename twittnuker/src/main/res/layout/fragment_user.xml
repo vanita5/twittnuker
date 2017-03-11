@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <de.vanita5.twittnuker.view.ExtendedFrameLayout
+        <de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout
             android:id="@+id/detailsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -70,7 +70,7 @@
                 android:layout_height="match_parent"
                 app:hdl_contentLayout="@layout/fragment_content_pages"
                 app:hdl_headerLayout="@layout/header_user"/>
-        </de.vanita5.twittnuker.view.ExtendedFrameLayout>
+        </de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout>
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"

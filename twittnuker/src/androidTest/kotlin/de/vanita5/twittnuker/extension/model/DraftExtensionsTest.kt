@@ -31,6 +31,7 @@ import org.junit.runner.RunWith
 import de.vanita5.twittnuker.model.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
@@ -76,10 +77,25 @@ class DraftExtensionsTest {
             Assert.assertEquals(expected.type, actual.type)
             val stl = context.contentResolver.openInputStream(Uri.parse(expected.uri))
             val str = context.contentResolver.openInputStream(Uri.parse(actual.uri))
-            // TODO compare streams
-            // Assert.assertTrue(IOUtils.contentEquals(stl, str))
+            Assert.assertTrue(stl.contentEquals(str))
             stl.close()
             str.close()
         }
     }
+
+}
+
+private fun InputStream.contentEquals(that: InputStream): Boolean {
+    var len1 = 0
+    var len2 = 0
+    val buf1 = ByteArray(8192)
+    val buf2 = ByteArray(8192)
+    while (len1 != -1 && len2 != -1) {
+        len1 = this.read(buf1)
+        len2 = that.read(buf2)
+        if (!buf1.contentEquals(buf2)) {
+            return false
+        }
+    }
+    return len1 == len2
 }

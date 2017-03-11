@@ -53,7 +53,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.mariotaku.chameleon.ChameleonUtils;
 
 import de.vanita5.twittnuker.Constants;
@@ -580,7 +579,7 @@ public class ThemeUtils implements Constants {
     }
 
     @StyleRes
-    public static int getCurrentTheme(@NotNull final Context context, @StyleRes final int lightTheme,
+    public static int getCurrentTheme(@NonNull final Context context, @StyleRes final int lightTheme,
                                       @StyleRes final int darkTheme) {
         if (TwilightManagerAccessor.INSTANCE.isNight(context)) return darkTheme;
         return lightTheme;

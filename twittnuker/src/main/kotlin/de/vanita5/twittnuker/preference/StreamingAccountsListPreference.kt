@@ -20,26 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.Context;
-import android.os.Bundle;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
+import de.vanita5.twittnuker.fragment.AccountNotificationSettingsFragment
+import de.vanita5.twittnuker.model.AccountDetails
 
-import de.vanita5.twittnuker.fragment.AccountNotificationSettingsFragment;
-import de.vanita5.twittnuker.model.AccountDetails;
+class StreamingAccountsListPreference(context: Context, attrs: AttributeSet? = null) : AccountsListPreference(context, attrs) {
 
-public class NotificationAccountsListPreference extends AccountsListPreference {
-
-    public NotificationAccountsListPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected void setupPreference(final AccountItemPreference preference, final AccountDetails account) {
-        preference.setFragment(AccountNotificationSettingsFragment.class.getName());
-        final Bundle args = preference.getExtras();
-        args.putParcelable(EXTRA_ACCOUNT, account);
+    override fun setupPreference(preference: AccountsListPreference.AccountItemPreference, account: AccountDetails) {
+        preference.fragment = AccountNotificationSettingsFragment::class.java.name
+        val args = preference.extras
+        args.putParcelable(EXTRA_ACCOUNT, account)
     }
 
 }

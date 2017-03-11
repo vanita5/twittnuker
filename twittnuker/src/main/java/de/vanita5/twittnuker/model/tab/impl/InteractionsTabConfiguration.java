@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
@@ -99,7 +98,7 @@ public class InteractionsTabConfiguration extends TabConfiguration {
 
         private boolean valueBackup;
 
-        MentionsOnlyExtraConfiguration(@NotNull String key) {
+        MentionsOnlyExtraConfiguration(@NonNull String key) {
             super(key, new HasOfficialBooleanHolder());
         }
 
