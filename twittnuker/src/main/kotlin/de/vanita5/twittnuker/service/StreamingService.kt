@@ -27,46 +27,35 @@ import android.accounts.OnAccountsUpdateListener
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.util.SimpleArrayMap
-import android.text.TextUtils
 import android.util.Log
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
 import de.vanita5.twittnuker.library.twitter.UserStreamCallback
-import de.vanita5.twittnuker.library.twitter.model.DeletionEvent
-import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.library.twitter.model.User
-import de.vanita5.twittnuker.library.twitter.model.Warning
-import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.activity.SettingsActivity
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.AccountPreferences
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.util.*
-import java.io.IOException
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.TwidereArrayUtils
 
 class StreamingService : Service() {
 
     private val callbacks = SimpleArrayMap<UserKey, UserStreamCallback>()
 
     private var notificationManager: NotificationManager? = null
-
-    private var preferences: SharedPreferencesWrapper? = null
 
     private var accountKeys: Array<UserKey>? = null
 
@@ -78,7 +67,6 @@ class StreamingService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        preferences = SharedPreferencesWrapper.getInstance(this, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         DebugLog.d(LOGTAG, "Stream service started.")
         initStreaming()
@@ -127,11 +115,11 @@ class StreamingService : Service() {
                 return@forEachIndexed
             }
             val twitter = account.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
-            val callback = TwidereUserStreamCallback(this, account, this.preferences!!)
+            val callback = TwidereUserStreamCallback(this, account)
             callbacks.put(account.key, callback)
             object : Thread() {
                 override fun run() {
-                    twitter.getUserStream(callback)
+                    twitter.getUserStream("user", callback)
                     Log.d(LOGTAG, String.format("Stream %s disconnected", account.key))
                     callbacks.remove(account.key)
                     updateStreamState()
@@ -177,128 +165,11 @@ class StreamingService : Service() {
 
     internal class TwidereUserStreamCallback(
             private val context: Context,
-            private val account: AccountDetails,
-            private val mPreferences: SharedPreferences
+            private val account: AccountDetails
     ) : UserStreamCallback() {
 
         private var statusStreamStarted: Boolean = false
         private val mentionsStreamStarted: Boolean = false
-
-        private val mNotificationHelper: NotificationHelper = NotificationHelper(context)
-
-        private fun createNotification(fromUser: String, type: String, msg: String?,
-                                       status: ParcelableStatus?, sourceUser: User?) {
-            if (mPreferences.getBoolean(SharedPreferenceConstants.KEY_STREAMING_NOTIFICATIONS, true)) {
-                val pref = AccountPreferences(context,
-                        account.key)
-                val notification = NotificationContent()
-                notification.accountKey = account.key
-                notification.objectId = status?.id
-                notification.objectUserKey = status?.user_key
-                notification.fromUser = fromUser
-                notification.type = type
-                notification.message = msg
-                notification.timestamp = status?.timestamp ?: System.currentTimeMillis()
-                notification.originalStatus = status
-                notification.sourceUser = sourceUser
-                notification.profileImageUrl = if (sourceUser != null)
-                    sourceUser.profileImageUrl
-                else
-                    status?.user_profile_image_url
-
-                mNotificationHelper.cachePushNotification(notification)
-                mNotificationHelper.buildNotificationByType(notification, pref, false)
-            }
-        }
-
-        override fun onConnected() = true
-
-        override fun onBlock(source: User, blockedUser: User): Boolean {
-            val message = String.format("%s blocked %s", source.screenName, blockedUser.screenName)
-            Log.d(LOGTAG, message)
-            return true
-        }
-
-        override fun onDirectMessageDeleted(event: DeletionEvent): Boolean {
-            val where = Expression.equalsArgs(Messages.MESSAGE_ID).sql
-            val whereArgs = arrayOf(event.id)
-            context.contentResolver.delete(Messages.CONTENT_URI, where, whereArgs)
-            return true
-        }
-
-        override fun onStatusDeleted(event: DeletionEvent): Boolean {
-            val statusId = event.id
-            context.contentResolver.delete(Statuses.CONTENT_URI, Expression.equalsArgs(Statuses.STATUS_ID).sql,
-                    arrayOf(statusId))
-            context.contentResolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equalsArgs(Activities.STATUS_ID).sql,
-                    arrayOf(statusId))
-            return true
-        }
-
-        override fun onFavorite(source: User, target: User, targetStatus: Status): Boolean {
-            val message = String.format("%s favorited %s's tweet: %s", source.screenName,
-                    target.screenName, targetStatus.extendedText)
-            Log.d(LOGTAG, message)
-
-            if (TextUtils.equals(targetStatus.user.id, account.key.id)) {
-                createNotification(source.screenName, NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-                        Utils.parseURLEntities(targetStatus.extendedText, targetStatus.urlEntities),
-                        ParcelableStatusUtils.fromStatus(targetStatus,
-                                account.key, false),
-                        source)
-            }
-            return true
-        }
-
-        override fun onFollow(source: User, followedUser: User): Boolean {
-            val message = String
-                    .format("%s followed %s", source.screenName, followedUser.screenName)
-            Log.d(LOGTAG, message)
-            if (TextUtils.equals(followedUser.id, account.key.id)) {
-                createNotification(source.screenName, NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
-                        null, null, source)
-            }
-            return true
-        }
-
-        override fun onFriendList(friendIds: Array<String>): Boolean {
-            return true
-        }
-
-        override fun onScrubGeo(userId: String, upToStatusId: String): Boolean {
-            val resolver = context.contentResolver
-
-            val where = Expression.and(Expression.equalsArgs(Statuses.USER_KEY),
-                    Expression.greaterEqualsArgs(Statuses.SORT_ID)).sql
-            val whereArgs = arrayOf(userId, upToStatusId)
-            val values = ContentValues()
-            values.putNull(Statuses.LOCATION)
-            resolver.update(Statuses.CONTENT_URI, values, where, whereArgs)
-            return true
-        }
-
-        override fun onStallWarning(warn: Warning): Boolean {
-            return true
-        }
-
-        @Throws(IOException::class)
-        override fun onStatus(status: Status): Boolean {
-            return true
-        }
-
-        override fun onUnblock(source: User, unblockedUser: User): Boolean {
-            val message = String.format("%s unblocked %s", source.screenName,
-                    unblockedUser.screenName)
-            Log.d(LOGTAG, message)
-            return true
-        }
-
-        override fun onUnfavorite(source: User, target: User, targetStatus: Status): Boolean {
-            val message = String.format("%s unfavorited %s's tweet: %s", source.screenName,
-                    target.screenName, targetStatus.extendedText)
-            Log.d(LOGTAG, message)
-            return true
-        }
 
     }
 

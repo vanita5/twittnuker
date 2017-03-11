@@ -24,13 +24,10 @@ package de.vanita5.twittnuker.task.twitter
 
 import android.content.Context
 import android.net.Uri
-import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
@@ -73,7 +70,7 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                 statuses = twitter.getMentionsTimeline(paging)
             }
         }
-        statuses.mapTo(activities) { Activity.fromMention(details.key.id, it) }
+        statuses.mapTo(activities) { InternalActivityCreator.status(details.key.id, it) }
         return activities
     }
 

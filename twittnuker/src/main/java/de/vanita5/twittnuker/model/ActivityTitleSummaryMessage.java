@@ -60,7 +60,6 @@ public class ActivityTitleSummaryMessage {
                                                   boolean shouldUseStarsForLikes,
                                                   boolean nameFirst) {
         final Resources resources = context.getResources();
-        boolean byFriends = false;
         switch (activity.action) {
             case Activity.Action.FOLLOW: {
                 int typeIcon = R.drawable.ic_activity_action_follow;

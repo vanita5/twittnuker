@@ -26,23 +26,18 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-public class StatusFavoriteEvent {
-    @JsonField(name = "source")
-    User source;
-    @JsonField(name = "target")
-    User target;
+public class UserListTargetObjectEvent extends StreamEvent {
     @JsonField(name = "target_object")
-    Status targetObject;
+    UserList targetObject;
 
-    public User getSource() {
-        return source;
-    }
-
-    public User getTarget() {
-        return target;
-    }
-
-    public Status getTargetObject() {
+    public UserList getTargetObject() {
         return targetObject;
+    }
+
+    @Override
+    public String toString() {
+        return "StatusTargetObjectEvent{" +
+                "targetObject=" + targetObject +
+                "} " + super.toString();
     }
 }

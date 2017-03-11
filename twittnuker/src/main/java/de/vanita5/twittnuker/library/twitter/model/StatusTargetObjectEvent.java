@@ -20,16 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter;
+package de.vanita5.twittnuker.library.twitter.model;
 
-import org.mariotaku.restfu.annotation.method.GET;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-/**
- * Created by mariotaku on 15/5/26.
- */
-public interface TwitterUserStream {
+@JsonObject
+public class StatusTargetObjectEvent extends StreamEvent {
+    @JsonField(name = "target_object")
+    Status targetObject;
 
-    @GET("/user.json")
-    void getUserStream(String with, UserStreamCallback callback);
+    public Status getTargetObject() {
+        return targetObject;
+    }
 
+    @Override
+    public String toString() {
+        return "StatusTargetObjectEvent{" +
+                "targetObject=" + targetObject +
+                "} " + super.toString();
+    }
 }
