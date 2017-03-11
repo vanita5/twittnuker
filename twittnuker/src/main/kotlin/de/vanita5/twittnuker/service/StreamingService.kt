@@ -27,11 +27,9 @@ import android.accounts.OnAccountsUpdateListener
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
@@ -40,32 +38,27 @@ import android.text.TextUtils
 import android.util.Log
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
-import android.widget.Toast
-import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
 import de.vanita5.twittnuker.library.twitter.UserStreamCallback
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.twittnuker.library.twitter.model.DeletionEvent
+import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.library.twitter.model.Warning
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.activity.HomeActivity
-import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*
-import org.mariotaku.library.objectcursor.ObjectCursor
-
-import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.nio.charset.Charset
 
 class StreamingService : Service() {
 
@@ -74,36 +67,8 @@ class StreamingService : Service() {
     private var notificationManager: NotificationManager? = null
 
     private var preferences: SharedPreferencesWrapper? = null
-    private var twitterWrapper: AsyncTwitterWrapper? = null
 
     private var accountKeys: Array<UserKey>? = null
-
-    private val mStateReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-
-            //            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
-            //                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
-            //                NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            //
-            //                if ((wifi.isConnected() && !mNetworkOK) || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
-            //                    mNetworkOK = true;
-            //                    Log.d(LOGTAG, "Wifi OK");
-            //                    initStreaming();
-            //                } else {
-            //                    mNetworkOK = false;
-            //                    Log.d(LOGTAG, "Wifi BAD");
-            //                    clearTwitterInstances();
-            //                }
-            //            } else
-            if (IntentConstants.BROADCAST_REFRESH_STREAMING_SERVICE == action) {
-                Log.d(TwittnukerConstants.LOGTAG, "Refresh Streaming Service")
-                clearTwitterInstances()
-                initStreaming()
-            }
-        }
-    }
 
     private val accountChangeObserver = OnAccountsUpdateListener {
         if (!TwidereArrayUtils.contentMatch(accountKeys, DataStoreUtils.getActivatedAccountKeys(this@StreamingService))) {
@@ -116,23 +81,12 @@ class StreamingService : Service() {
         preferences = SharedPreferencesWrapper.getInstance(this, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         DebugLog.d(LOGTAG, "Stream service started.")
-
-        //        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        //        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        //        mNetworkOK = wifi.isConnected();
-
-        val filter = IntentFilter()
-        //        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(IntentConstants.BROADCAST_REFRESH_STREAMING_SERVICE)
-        registerReceiver(mStateReceiver, filter)
-
         initStreaming()
         AccountManager.get(this).addOnAccountsUpdatedListenerSafe(accountChangeObserver, updateImmediately = false)
     }
 
     override fun onDestroy() {
         clearTwitterInstances()
-        unregisterReceiver(mStateReceiver)
         AccountManager.get(this).removeOnAccountsUpdatedListenerSafe(accountChangeObserver)
         DebugLog.d(LOGTAG, "Stream service stopped.")
         super.onDestroy()
@@ -150,19 +104,13 @@ class StreamingService : Service() {
             i++
         }
         callbacks.clear()
-        updateStreamState()
+        notificationManager!!.cancel(NOTIFICATION_SERVICE_STARTED)
     }
 
     private fun initStreaming() {
-        //FIXME temporary fix for fc
-        Toast.makeText(this, "Streaming is broken. Disabling...", Toast.LENGTH_SHORT).show()
-        preferences!!.edit().putBoolean(SharedPreferenceConstants.KEY_STREAMING_ENABLED, false).apply()
-        //        if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
-        //
-        ////        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-        ////                || mNetworkOK) {
-        //            setTwitterInstances();
-        ////        }
+        if (!BuildConfig.DEBUG) return
+        setTwitterInstances()
+        updateStreamState()
     }
 
     private fun setTwitterInstances(): Boolean {
@@ -171,13 +119,16 @@ class StreamingService : Service() {
         val activatedPreferences = AccountPreferences.getAccountPreferences(this, accountKeys)
         DebugLog.d(LOGTAG, "Setting up twitter stream instances")
         this.accountKeys = accountKeys
-        //        clearTwitterInstances();
+        clearTwitterInstances()
         var result = false
         accountsList.forEachIndexed { i, account ->
+            val preferences = activatedPreferences[i]
+            if (!preferences.isStreamingEnabled) {
+                return@forEachIndexed
+            }
             val twitter = account.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
-            val callback = TwidereUserStreamCallback(this, account, preferences!!)
+            val callback = TwidereUserStreamCallback(this, account, this.preferences!!)
             callbacks.put(account.key, callback)
-            DebugLog.d(LOGTAG, String.format("Stream %s starts...", account.key))
             object : Thread() {
                 override fun run() {
                     twitter.getUserStream(callback)
@@ -191,33 +142,26 @@ class StreamingService : Service() {
         return result
     }
 
-    private fun refreshBefore(mAccountId: Array<UserKey>) {
-        if (preferences!!.getBoolean(SharedPreferenceConstants.KEY_REFRESH_BEFORE_STREAMING, true)) {
-            twitterWrapper!!.refreshAll(mAccountId)
-        }
-    }
-
     private fun updateStreamState() {
-        Log.d(LOGTAG, "updateStreamState()")
-        if (!preferences!!.getBoolean(SharedPreferenceConstants.KEY_STREAMING_NOTIFICATION, true)) {
-            notificationManager!!.cancel(TwittnukerConstants.NOTIFICATION_ID_STREAMING)
-            return
-        }
         if (callbacks.size() > 0) {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
+            val contentIntent = PendingIntent.getActivity(this, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+            val contentTitle = getString(R.string.app_name)
+            val contentText = getString(R.string.streaming_service_running)
             val builder = NotificationCompat.Builder(this)
             builder.setOngoing(true)
                     .setOnlyAlertOnce(true)
                     .setSmallIcon(R.drawable.ic_stat_twittnuker)
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText(getString(R.string.streaming_service_running))
+                    .setContentTitle(contentTitle)
+                    .setContentText(contentText)
                     .setTicker(getString(R.string.streaming_service_running))
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
-            notificationManager!!.notify(NOTIFICATION_ID_STREAMING, builder.build())
+                    .setContentIntent(contentIntent)
+            notificationManager!!.notify(NOTIFICATION_SERVICE_STARTED, builder.build())
         } else {
-            notificationManager!!.cancel(NOTIFICATION_ID_STREAMING)
+            notificationManager!!.cancel(NOTIFICATION_SERVICE_STARTED)
         }
     }
 
@@ -241,8 +185,6 @@ class StreamingService : Service() {
         private val mentionsStreamStarted: Boolean = false
 
         private val mNotificationHelper: NotificationHelper = NotificationHelper(context)
-
-        protected val profileImageSize = context.getString(R.string.profile_image_size)
 
         private fun createNotification(fromUser: String, type: String, msg: String?,
                                        status: ParcelableStatus?, sourceUser: User?) {
@@ -269,204 +211,95 @@ class StreamingService : Service() {
             }
         }
 
-        override fun onConnected() {
+        override fun onConnected() = true
 
-        }
-
-        override fun onBlock(source: User, blockedUser: User) {
+        override fun onBlock(source: User, blockedUser: User): Boolean {
             val message = String.format("%s blocked %s", source.screenName, blockedUser.screenName)
             Log.d(LOGTAG, message)
+            return true
         }
 
-        override fun onDirectMessageDeleted(event: DeletionEvent) {
+        override fun onDirectMessageDeleted(event: DeletionEvent): Boolean {
             val where = Expression.equalsArgs(Messages.MESSAGE_ID).sql
             val whereArgs = arrayOf(event.id)
             context.contentResolver.delete(Messages.CONTENT_URI, where, whereArgs)
+            return true
         }
 
-        override fun onStatusDeleted(event: DeletionEvent) {
+        override fun onStatusDeleted(event: DeletionEvent): Boolean {
             val statusId = event.id
             context.contentResolver.delete(Statuses.CONTENT_URI, Expression.equalsArgs(Statuses.STATUS_ID).sql,
                     arrayOf(statusId))
             context.contentResolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equalsArgs(Activities.STATUS_ID).sql,
                     arrayOf(statusId))
+            return true
         }
 
-        @Throws(IOException::class)
-        override fun onDirectMessage(directMessage: DirectMessage) {
-            if (directMessage.id == null) return
+        override fun onFavorite(source: User, target: User, targetStatus: Status): Boolean {
+            val message = String.format("%s favorited %s's tweet: %s", source.screenName,
+                    target.screenName, targetStatus.extendedText)
+            Log.d(LOGTAG, message)
 
-        }
-
-        override fun onException(ex: Throwable) {
-            if (ex is MicroBlogException) {
-                Log.w(LOGTAG, String.format("Error %d", ex.statusCode), ex)
-                val response = ex.httpResponse
-                if (response != null) {
-                    try {
-                        val body = response.body
-                        if (body != null) {
-                            val os = ByteArrayOutputStream()
-                            body.writeTo(os)
-                            val charsetName: String
-                            val contentType = body.contentType()
-                            if (contentType != null) {
-                                val charset = contentType.charset
-                                if (charset != null) {
-                                    charsetName = charset.name()
-                                } else {
-                                    charsetName = Charset.defaultCharset().name()
-                                }
-                            } else {
-                                charsetName = Charset.defaultCharset().name()
-                            }
-                            Log.w(LOGTAG, os.toString(charsetName))
-                        }
-                    } catch (e: IOException) {
-                        Log.w(LOGTAG, e)
-                    }
-
-                }
-            } else {
-                Log.w(LOGTAG, ex)
-            }
-        }
-
-        override fun onFavorite(source: User, target: User, favoritedStatus: Status) {
-            //            ParcelableActivity activity = new ParcelableActivity();
-            //            activity.account_id = account.account_id;
-            //            activity.timestamp = favoritedStatus.getCreatedAt() != null ? favoritedStatus.getCreatedAt().getTime() : System.currentTimeMillis();
-            //            activity.action = Activity.Action.FAVORITE.literal;
-            //            activity.sources = ParcelableUser.fromUsers(new User[]{source}, source.getId());
-            //            activity.target_users = ParcelableUser.fromUsers(new User[]{target}, target.getId());
-            //            activity.target_statuses = ParcelableStatus.fromStatuses(new Status[]{favoritedStatus}, favoritedStatus.getId());
-            //            activity.source_ids = new long[] { source.getId() };
-            //            activity.is_gap = false;
-            //
-            //            ContentValues values = ParcelableActivityValuesCreator.create(activity);
-            //            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
-
-            if (TextUtils.equals(favoritedStatus.user.id, account.key.id)) {
+            if (TextUtils.equals(targetStatus.user.id, account.key.id)) {
                 createNotification(source.screenName, NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-                        Utils.parseURLEntities(favoritedStatus.extendedText, favoritedStatus.urlEntities),
-                        ParcelableStatusUtils.fromStatus(favoritedStatus,
+                        Utils.parseURLEntities(targetStatus.extendedText, targetStatus.urlEntities),
+                        ParcelableStatusUtils.fromStatus(targetStatus,
                                 account.key, false),
                         source)
             }
+            return true
         }
 
-        override fun onFollow(source: User, followedUser: User) {
+        override fun onFollow(source: User, followedUser: User): Boolean {
+            val message = String
+                    .format("%s followed %s", source.screenName, followedUser.screenName)
+            Log.d(LOGTAG, message)
             if (TextUtils.equals(followedUser.id, account.key.id)) {
                 createNotification(source.screenName, NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
                         null, null, source)
             }
+            return true
         }
 
-        override fun onFriendList(friendIds: LongArray) {
-
+        override fun onFriendList(friendIds: Array<String>): Boolean {
+            return true
         }
 
-        override fun onScrubGeo(userId: Long, upToStatusId: Long) {
+        override fun onScrubGeo(userId: String, upToStatusId: String): Boolean {
             val resolver = context.contentResolver
 
             val where = Expression.and(Expression.equalsArgs(Statuses.USER_KEY),
                     Expression.greaterEqualsArgs(Statuses.SORT_ID)).sql
-            val whereArgs = arrayOf(userId.toString(), upToStatusId.toString())
+            val whereArgs = arrayOf(userId, upToStatusId)
             val values = ContentValues()
             values.putNull(Statuses.LOCATION)
             resolver.update(Statuses.CONTENT_URI, values, where, whereArgs)
+            return true
         }
 
-        override fun onStallWarning(warn: Warning) {
-
+        override fun onStallWarning(warn: Warning): Boolean {
+            return true
         }
 
         @Throws(IOException::class)
-        override fun onStatus(status: Status) {
-            val resolver = context.contentResolver
-
-            val values = ContentValuesCreator.createStatus(status, account.key, profileImageSize)
-            if (!statusStreamStarted && !mPreferences.getBoolean(SharedPreferenceConstants.KEY_REFRESH_BEFORE_STREAMING, true)) {
-                statusStreamStarted = true
-                values.put(Statuses.IS_GAP, true)
-            }
-            val where = Expression.and(Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
-                    Expression.equalsArgs(Statuses.STATUS_ID)).sql
-            val whereArgs = arrayOf(account.key.toString(), status.id.toString())
-            resolver.delete(Statuses.CONTENT_URI, where, whereArgs)
-            resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs)
-            resolver.insert(Statuses.CONTENT_URI, values)
-            val rt = status.retweetedStatus
-            if (rt != null && rt.extendedText.contains("@" + account.user.screen_name) ||
-                    rt == null && status.extendedText.contains("@" + account.user.screen_name)) {
-
-                val activity = Activity.fromMention(account.key.id, status)
-                val parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
-                        account.key, false)
-                parcelableActivity.timestamp = if (status.createdAt != null) status.createdAt.time else System.currentTimeMillis()
-                val vc = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
-                val activityValues = vc.create(parcelableActivity)
-                resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues)
-            }
-
-            //Retweet
-            if (rt != null && TextUtils.equals(rt.user.id, account.key.id)) {
-                createNotification(status.user.screenName,
-                        NotificationContent.NOTIFICATION_TYPE_RETWEET,
-                        Utils.parseURLEntities(rt.extendedText, rt.urlEntities),
-                        ParcelableStatusUtils.fromStatus(status,
-                                account.key, false), status.user)
-                //TODO insert retweet activity
-            }
+        override fun onStatus(status: Status): Boolean {
+            return true
         }
 
-        override fun onTrackLimitationNotice(numberOfLimitedStatuses: Int) {
-
-        }
-
-        override fun onUnblock(source: User, unblockedUser: User) {
+        override fun onUnblock(source: User, unblockedUser: User): Boolean {
             val message = String.format("%s unblocked %s", source.screenName,
                     unblockedUser.screenName)
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Log.d(LOGTAG, message)
+            return true
         }
 
-        override fun onUnfavorite(source: User, target: User, targetStatus: Status) {
+        override fun onUnfavorite(source: User, target: User, targetStatus: Status): Boolean {
             val message = String.format("%s unfavorited %s's tweet: %s", source.screenName,
                     target.screenName, targetStatus.extendedText)
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Log.d(LOGTAG, message)
+            return true
         }
 
-        override fun onUserListCreation(listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListDeletion(listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListMemberAddition(addedMember: User, listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListMemberDeletion(deletedMember: User, listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListSubscription(subscriber: User, listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListUnsubscription(subscriber: User, listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserListUpdate(listOwner: User, list: UserList) {
-
-        }
-
-        override fun onUserProfileUpdate(updatedUser: User) {
-
-        }
     }
 
     companion object {

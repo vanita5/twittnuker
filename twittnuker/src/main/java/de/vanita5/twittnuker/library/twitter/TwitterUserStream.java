@@ -34,7 +34,4 @@ public interface TwitterUserStream {
     @GET("/user.json")
     void getUserStream(UserStreamCallback callback);
 
-    @GET("/user.json")
-    void getUserStreamRaw(RawCallback<MicroBlogException> callback);
-
 }
