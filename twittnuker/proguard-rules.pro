@@ -241,3 +241,6 @@
 
 -keep class com.android.vending.billing.**
 -dontwarn com.anjlab.android.iab.v3.BillingProcessor
+
+-keep class com.jayway.jsonpath.spi.** { *; }
+-dontwarn com.jayway.jsonpath.spi.**
