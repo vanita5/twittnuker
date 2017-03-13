@@ -24,16 +24,18 @@ package de.vanita5.twittnuker.preference
 
 import android.content.Context
 import android.util.AttributeSet
+import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
+import de.vanita5.twittnuker.extension.model.isStreamingSupported
 import de.vanita5.twittnuker.fragment.AccountStreamingSettingsFragment
 import de.vanita5.twittnuker.model.AccountDetails
 
 class StreamingAccountsListPreference(context: Context, attrs: AttributeSet? = null) : AccountsListPreference(context, attrs) {
 
     override fun setupPreference(preference: AccountsListPreference.AccountItemPreference, account: AccountDetails) {
+        preference.isEnabled = account.isStreamingSupported
         preference.fragment = AccountStreamingSettingsFragment::class.java.name
-        val args = preference.extras
-        args.putParcelable(EXTRA_ACCOUNT, account)
+        preference.extras[EXTRA_ACCOUNT] = account
     }
 
 }

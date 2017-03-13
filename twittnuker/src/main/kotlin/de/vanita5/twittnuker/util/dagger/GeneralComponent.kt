@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.BaseIntentService
 import de.vanita5.twittnuker.service.JobTaskService
 import de.vanita5.twittnuker.service.LegacyTaskService
+import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.task.ManagedAsyncTask
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory
@@ -144,4 +145,6 @@ interface GeneralComponent {
     fun inject(controller: PremiumDashboardActivity.ExtraFeatureViewController)
 
     fun inject(fragment: ExoPlayerPageFragment)
+
+    fun inject(service: StreamingService)
 }

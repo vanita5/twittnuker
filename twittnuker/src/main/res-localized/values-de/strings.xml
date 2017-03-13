@@ -644,13 +644,17 @@
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
     <string name="preference_summary_auto_refresh_compatibility_mode">Aktivieren für kleinere Aktualisierungsintervalle. Erhöht den Energieverbrauch unter Android 5.0+</string>
     <string name="preference_summary_auto_refresh_power_saving">Autorefresh anhalten, wenn der Akkustand niedrig ist</string>
+    <string name="preference_summary_background_streaming">Drücke "Home" statt "Zurück", damit das Streaming weiter läuft</string>
     <string name="preference_summary_chrome_custom_tab">Links mit dem In-App Browser öffnen</string>
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
     <string name="preference_summary_media_preload_non_metered_network">Medien nur in nicht beschränkten Netzwerken wie WLAN vorladen.</string>
+    <string name="preference_summary_streaming_non_metered_network">Nur mit WLAN streamen</string>
+    <string name="preference_summary_streaming_power_saving">Nur streamen während der Akku geladen wird</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
     <string name="preference_title_auto_refresh_compatibility_mode">Kompatibilitätsmodus</string>
     <string name="preference_title_auto_refresh_power_saving">Energiesparmodus</string>
+    <string name="preference_title_background_streaming">Streaming im Hintergrund</string>
     <string name="preference_title_chrome_custom_tab">In-App Browser</string>
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
@@ -663,6 +667,8 @@
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Speicher</string>
+    <string name="preference_title_streaming_non_metered_network">Streaming in unbeschränkten Netzwerken</string>
+    <string name="preference_title_streaming_power_saving">Energiesparmodus</string>
     <string name="preference_title_tablet_mode">Tablet Modus</string>
     <string name="preference_title_text_size">Textgrösse</string>
     <string name="preference_title_translate">Übersetzen</string>

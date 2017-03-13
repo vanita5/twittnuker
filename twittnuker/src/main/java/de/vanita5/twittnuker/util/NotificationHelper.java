@@ -173,7 +173,7 @@ public class NotificationHelper implements Constants {
         //with the last notification from the db
         if (pendingNotifications != null && !pendingNotifications.isEmpty()) {
             NotificationContent notification = pendingNotifications.get(0);
-            AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(mContext, userKeys);
+            AccountPreferences[] prefs = AccountPreferences.Companion.getAccountPreferences(mContext, userKeys);
 
             //Should always contains just one pref
             if (prefs.length == 1) {
@@ -507,16 +507,16 @@ public class NotificationHelper implements Constants {
 
         int defaults = 0;
         if (isNotificationAudible()) {
-            if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
+            if (AccountPreferences.Companion.isNotificationHasRingtone(notificationType)) {
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone);
             }
-            if (AccountPreferences.isNotificationHasVibration(notificationType)) {
+            if (AccountPreferences.Companion.isNotificationHasVibration(notificationType)) {
                 defaults |= Notification.DEFAULT_VIBRATE;
             } else {
                 defaults &= ~Notification.DEFAULT_VIBRATE;
             }
-            if (AccountPreferences.isNotificationHasLight(notificationType)) {
+            if (AccountPreferences.Companion.isNotificationHasLight(notificationType)) {
                 final int color = pref.getNotificationLightColor();
                 builder.setLights(color, 1000, 2000);
             }
@@ -543,16 +543,16 @@ public class NotificationHelper implements Constants {
         builder.setWhen(System.currentTimeMillis());
         int defaults = 0;
         if (isNotificationAudible()) {
-            if (AccountPreferences.isNotificationHasRingtone(pref.getMentionsNotificationType())) { //TODO Settings for error messages
+            if (AccountPreferences.Companion.isNotificationHasRingtone(pref.getMentionsNotificationType())) { //TODO Settings for error messages
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone, Notification.STREAM_DEFAULT);
             }
-            if (AccountPreferences.isNotificationHasVibration(pref.getMentionsNotificationType())) {
+            if (AccountPreferences.Companion.isNotificationHasVibration(pref.getMentionsNotificationType())) {
                 defaults |= Notification.DEFAULT_VIBRATE;
             } else {
                 defaults &= ~Notification.DEFAULT_VIBRATE;
             }
-            if (AccountPreferences.isNotificationHasLight(pref.getMentionsNotificationType())) {
+            if (AccountPreferences.Companion.isNotificationHasLight(pref.getMentionsNotificationType())) {
                 final int color = pref.getNotificationLightColor();
                 builder.setLights(color, 1000, 2000);
             }

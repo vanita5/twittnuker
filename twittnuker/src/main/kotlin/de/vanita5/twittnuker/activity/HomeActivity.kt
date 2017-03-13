@@ -115,8 +115,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
     private var mGCMRegistrationReceiver: BroadcastReceiver? = null
 
-    private var isStreamingServiceRunning = false
-
     private lateinit var pagerAdapter: SupportTabsAdapter
     private lateinit var drawerToggle: ActionBarDrawerToggle
 
@@ -291,6 +289,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         val initialTabPosition = handleIntent(intent, savedInstanceState == null)
         setTabPosition(initialTabPosition)
 
+        startService(Intent(this, StreamingService::class.java))
+
         if (!showDrawerTutorial() && !kPreferences[defaultAutoRefreshAskedKey]) {
             showAutoRefreshConfirm()
         }
@@ -313,11 +313,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
         registerReceiver(mGCMRegistrationReceiver, IntentFilter(GCM_REGISTRATION_COMPLETE))
 
-        if (preferences.getBoolean(SharedPreferenceConstants.KEY_STREAMING_ENABLED, true)) {
-            startStreamingService()
-        } else {
-            stopStreamingService()
-        }
         registerGCMIfNeeded()
     }
 
@@ -336,12 +331,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         super.onResume()
         invalidateOptionsMenu()
         updateActionsButton()
-
-        if (preferences.getBoolean(SharedPreferenceConstants.KEY_STREAMING_ENABLED, true)) {
-            startStreamingService()
-        } else {
-            stopStreamingService()
-        }
     }
 
     override fun onStop() {
@@ -356,10 +345,12 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     }
 
     override fun onDestroy() {
-        stopStreamingService()
+        if (isFinishing) {
+            // Stop only when exiting explicitly
+            stopService(Intent(this, StreamingService::class.java))
+        }
 
         // Delete unused items in databases.
-
         val context = applicationContext
         TaskStarter.execute(object : AbstractTask<Any?, Any?, Any?>() {
             override fun doLongOperation(params: Any?): Any? {
@@ -900,15 +891,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         actionsButton.contentDescription = info.title
     }
 
-    private fun startStreamingService() {
-        if (!isStreamingServiceRunning) {
-            val serviceIntent = Intent(this, StreamingService::class.java)
-            startService(serviceIntent)
-            isStreamingServiceRunning = true
-        } else {
-            sendBroadcast(Intent(BROADCAST_REFRESH_STREAMING_SERVICE))
-        }
-    }
 
     fun hasMultiColumns(): Boolean {
         if (!Utils.isDeviceTablet(this) || !Utils.isScreenTablet(this)) return false
@@ -918,13 +900,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         return preferences.getBoolean("multi_column_tabs_portrait", resources.getBoolean(R.bool.default_multi_column_tabs_port))
     }
 
-    private fun stopStreamingService() {
-        if (isStreamingServiceRunning) {
-            val serviceIntent = Intent(this, StreamingService::class.java)
-            stopService(serviceIntent)
-            isStreamingServiceRunning = false
-        }
-    }
 
     private class AccountUpdatedListener(private val activity: HomeActivity) : OnAccountsUpdateListener {
 

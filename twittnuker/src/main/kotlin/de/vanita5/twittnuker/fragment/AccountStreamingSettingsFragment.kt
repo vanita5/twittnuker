@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment
 
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_ENABLE_STREAMING
 
 class AccountStreamingSettingsFragment : BaseAccountPreferenceFragment() {
 
@@ -31,6 +32,6 @@ class AccountStreamingSettingsFragment : BaseAccountPreferenceFragment() {
 
     override val switchPreferenceDefault: Boolean = false
 
-    override val switchPreferenceKey: String? = "streaming"
+    override val switchPreferenceKey: String? = KEY_ENABLE_STREAMING
 
 }

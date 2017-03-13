@@ -24,161 +24,278 @@ package de.vanita5.twittnuker.service
 
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.IBinder
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.NotificationCompat
-import android.support.v4.util.SimpleArrayMap
-import android.util.Log
+import org.apache.commons.lang3.concurrent.BasicThreadFactory
+import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
+import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
 import de.vanita5.twittnuker.library.twitter.annotation.StreamWith
-import de.vanita5.twittnuker.library.twitter.callback.UserStreamCallback
 import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.activity.SettingsActivity
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.model.isStreamingSupported
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.AccountPreferences
-import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.DebugLog
-import de.vanita5.twittnuker.util.TwidereArrayUtils
+import de.vanita5.twittnuker.util.NotificationManagerWrapper
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
+import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class StreamingService : Service() {
 
-    private val callbacks = SimpleArrayMap<UserKey, UserStreamCallback>()
+    @Inject
+    internal lateinit var notificationManager: NotificationManagerWrapper
+    internal lateinit var threadPoolExecutor: ExecutorService
+    internal lateinit var handler: Handler
 
-    private var notificationManager: NotificationManager? = null
-
-    private var accountKeys: Array<UserKey>? = null
+    private val stateMap = WeakHashMap<UserKey, Future<*>>()
 
     private val accountChangeObserver = OnAccountsUpdateListener {
-        if (!TwidereArrayUtils.contentMatch(accountKeys, DataStoreUtils.getActivatedAccountKeys(this@StreamingService))) {
-            initStreaming()
-        }
+        setupStreaming()
     }
 
     override fun onCreate() {
         super.onCreate()
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        DebugLog.d(LOGTAG, "Stream service started.")
-        initStreaming()
+        GeneralComponentHelper.build(this).inject(this)
+        threadPoolExecutor = Executors.newCachedThreadPool(BasicThreadFactory.Builder().priority(Thread.NORM_PRIORITY - 1).build())
+        handler = Handler(Looper.getMainLooper())
         AccountManager.get(this).addOnAccountsUpdatedListenerSafe(accountChangeObserver, updateImmediately = false)
     }
 
     override fun onDestroy() {
-        clearTwitterInstances()
+        threadPoolExecutor.shutdown()
+        stateMap.clear()
+        removeNotification()
         AccountManager.get(this).removeOnAccountsUpdatedListenerSafe(accountChangeObserver)
-        DebugLog.d(LOGTAG, "Stream service stopped.")
         super.onDestroy()
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (setupStreaming()) {
+            return START_STICKY
+        }
+        return START_NOT_STICKY
+    }
+
+    override fun onBind(intent: Intent) = throw UnsupportedOperationException()
+
+    private fun setupStreaming(): Boolean {
+        if (updateStreamingInstances()) {
+            showNotification()
+            return true
+        } else {
+            stopSelf()
+            return false
+        }
+    }
+
+    private val Future<*>.isRunning: Boolean
+        get() = !isCancelled && !isDone
+
+    private fun updateStreamingInstances(): Boolean {
+        val am = AccountManager.get(this)
+        val supportedAccounts = AccountUtils.getAllAccountDetails(am, true).filter { it.isStreamingSupported }
+        val enabledPrefs = supportedAccounts.map { AccountPreferences(this, it.key) }
+        val enabledAccounts = supportedAccounts.filter { account ->
+            return@filter enabledPrefs.any {
+                account.key == it.accountKey
+            }
+        }
+
+        if (enabledAccounts.isEmpty()) return false
+
+        // Remove all disabled instances
+        stateMap.forEach { k, v ->
+            if (enabledAccounts.none { k == it.key } && v.isRunning) {
+                v.cancel(true)
+            }
+        }
+        // Add instances if not running
+        enabledAccounts.forEach { account ->
+            val existing = stateMap[account.key]
+            if (existing == null || !existing.isRunning) {
+                val runnable = account.newStreamingRunnable() ?: return@forEach
+                stateMap[account.key] = threadPoolExecutor.submit(runnable)
+            }
+        }
+        return true
+    }
+
+    private fun showNotification() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val contentTitle = getString(R.string.app_name)
+        val contentText = getString(R.string.timeline_streaming_running)
+        val builder = NotificationCompat.Builder(this)
+        builder.setOngoing(true)
+        builder.setSmallIcon(R.drawable.ic_stat_twittnuker)
+        builder.setContentTitle(contentTitle)
+        builder.setContentText(contentText)
+//            builder.setTicker(getString(R.string.streaming_service_running))
+        builder.setContentIntent(contentIntent)
+        builder.setCategory(NotificationCompat.CATEGORY_STATUS)
+        builder.priority = NotificationCompat.PRIORITY_MIN
+        startForeground(NOTIFICATION_SERVICE_STARTED, builder.build())
+    }
+
+    private fun removeNotification() {
+        stopForeground(true)
+    }
+
+    private fun AccountDetails.newStreamingRunnable(): StreamingRunnable<*>? {
+        when (type) {
+            AccountType.TWITTER -> {
+                return TwitterStreamingRunnable(this@StreamingService, handler, this)
+            }
+        }
         return null
     }
 
-    private fun clearTwitterInstances() {
-        var i = 0
-        val j = callbacks.size()
-        while (i < j) {
-            Thread(ShutdownStreamTwitterRunnable(callbacks.valueAt(i))).start()
-            i++
-        }
-        callbacks.clear()
-        notificationManager!!.cancel(NOTIFICATION_SERVICE_STARTED)
-    }
-
-    private fun initStreaming() {
-        if (!BuildConfig.DEBUG) return
-        setTwitterInstances()
-        updateStreamState()
-    }
-
-    private fun setTwitterInstances(): Boolean {
-        val accountsList = AccountUtils.getAllAccountDetails(AccountManager.get(this), true).filter { it.credentials is OAuthCredentials }
-        val accountKeys = accountsList.map { it.key }.toTypedArray()
-        val activatedPreferences = AccountPreferences.getAccountPreferences(this, accountKeys)
-        DebugLog.d(LOGTAG, "Setting up twitter stream instances")
-        this.accountKeys = accountKeys
-        clearTwitterInstances()
-        var result = false
-        accountsList.forEachIndexed { i, account ->
-            val preferences = activatedPreferences[i]
-            if (!preferences.isStreamingEnabled) {
-                return@forEachIndexed
-            }
-            val twitter = account.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
-            val callback = TwidereUserStreamCallback(this, account)
-            callbacks.put(account.key, callback)
-            object : Thread() {
-                override fun run() {
-                    twitter.getUserStream(StreamWith.USER, callback)
-                    Log.d(LOGTAG, String.format("Stream %s disconnected", account.key))
-                    callbacks.remove(account.key)
-                    updateStreamState()
-                }
-            }.start()
-            result = result or true
-        }
-        return result
-    }
-
-    private fun updateStreamState() {
-        if (callbacks.size() > 0) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            val contentIntent = PendingIntent.getActivity(this, 0, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-            val contentTitle = getString(R.string.app_name)
-            val contentText = getString(R.string.timeline_streaming_running)
-            val builder = NotificationCompat.Builder(this)
-            builder.setOngoing(true)
-            builder.setSmallIcon(R.drawable.ic_stat_twittnuker)
-            builder.setContentTitle(contentTitle)
-            builder.setContentText(contentText)
-//            builder.setTicker(getString(R.string.streaming_service_running))
-//            builder.setPriority(NotificationCompat.PRIORITY_MIN)
-//            builder.setCategory(NotificationCompat.CATEGORY_SERVICE)
-            builder.setContentIntent(contentIntent)
-            notificationManager!!.notify(NOTIFICATION_SERVICE_STARTED, builder.build())
-        } else {
-            notificationManager!!.cancel(NOTIFICATION_SERVICE_STARTED)
-        }
-    }
-
-    internal class ShutdownStreamTwitterRunnable(private val callback: UserStreamCallback?) : Runnable {
+    internal abstract class StreamingRunnable<T>(val context: Context, val account: AccountDetails) : Runnable {
 
         override fun run() {
-            if (callback == null) return
-            Log.d(LOGTAG, "Disconnecting stream")
-            callback.disconnect()
+            val instance = createStreamingInstance()
+            while (!Thread.currentThread().isInterrupted) {
+                try {
+                    instance.beginStreaming()
+                } catch (e: MicroBlogException) {
+
+                }
+                Thread.sleep(TimeUnit.MINUTES.toMillis(1))
+            }
         }
 
+        abstract fun createStreamingInstance(): T
+
+        abstract fun T.beginStreaming()
     }
 
-    internal class TwidereUserStreamCallback(
-            private val context: Context,
-            private val account: AccountDetails
-    ) : TwitterTimelineStreamCallback(account.key.id) {
-        override fun onHomeTimeline(status: Status): Boolean = true
+    internal class TwitterStreamingRunnable(context: Context, val handler: Handler, account: AccountDetails) :
+            StreamingRunnable<TwitterUserStream>(context, account) {
 
-        override fun onActivityAboutMe(activity: Activity): Boolean = true
+        private val profileImageSize = context.getString(R.string.profile_image_size)
+        private val isOfficial = account.isOfficial(context)
 
-        override fun onDirectMessage(directMessage: DirectMessage): Boolean = true
+        private var canGetInteractions: Boolean = true
+        private var canGetMessages: Boolean = true
 
-        private var statusStreamStarted: Boolean = false
-        private val mentionsStreamStarted: Boolean = false
+        private val interactionsTimeoutRunnable = Runnable {
+            canGetInteractions = true
+        }
+
+        private val messagesTimeoutRunnable = Runnable {
+            canGetMessages = true
+        }
+
+        val callback = object : TwitterTimelineStreamCallback(account.key.id) {
+            private var homeInsertGap = false
+            private var interactionsInsertGap = false
+            override fun onConnected(): Boolean {
+                homeInsertGap = true
+                interactionsInsertGap = true
+                return true
+            }
+
+            override fun onHomeTimeline(status: Status): Boolean {
+                val values = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
+                        .create(ParcelableStatusUtils.fromStatus(status, account.key, homeInsertGap,
+                                profileImageSize))
+                context.contentResolver.insert(Statuses.CONTENT_URI, values)
+                homeInsertGap = false
+                return true
+            }
+
+            override fun onActivityAboutMe(activity: Activity): Boolean {
+                if (isOfficial) {
+                    // Wait for 30 seconds to avoid rate limit
+                    if (canGetInteractions) {
+                        getInteractions()
+                        canGetInteractions = false
+                        handler.postDelayed(interactionsTimeoutRunnable, TimeUnit.SECONDS.toMillis(30))
+                    }
+                } else {
+                    val values = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
+                            .create(ParcelableActivityUtils.fromActivity(activity, account.key,
+                                    interactionsInsertGap, profileImageSize))
+                    context.contentResolver.insert(Activities.AboutMe.CONTENT_URI, values)
+                    interactionsInsertGap = false
+                }
+                return true
+            }
+
+            override fun onDirectMessage(directMessage: DirectMessage): Boolean {
+                if (canGetMessages) {
+                    getMessages()
+                    canGetMessages = false
+                    val timeout = TimeUnit.SECONDS.toMillis(if (isOfficial) 30 else 90)
+                    handler.postDelayed(messagesTimeoutRunnable, timeout)
+                }
+                return true
+            }
+
+            private fun getInteractions() {
+                val task = GetActivitiesAboutMeTask(context)
+                task.params = object : SimpleRefreshTaskParam() {
+                    override val accountKeys: Array<UserKey> = arrayOf(account.key)
+
+                    override val sinceIds: Array<String?>?
+                        get() = DataStoreUtils.getNewestActivityMaxPositions(context,
+                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key))
+
+                    override val sinceSortIds: LongArray?
+                        get() = DataStoreUtils.getNewestActivityMaxSortPositions(context,
+                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key))
+
+                    override val hasSinceIds: Boolean = true
+
+                }
+                TaskStarter.execute(task)
+            }
+
+            private fun getMessages() {
+                val task = GetMessagesTask(context)
+                task.params = object : GetMessagesTask.RefreshMessagesTaskParam(context) {
+                    override val accountKeys: Array<UserKey> = arrayOf(account.key)
+
+                    override val hasSinceIds: Boolean = true
+                }
+                TaskStarter.execute(task)
+            }
+        }
+
+        override fun createStreamingInstance(): TwitterUserStream {
+            return account.newMicroBlogInstance(context, cls = TwitterUserStream::class.java)
+        }
+
+        override fun TwitterUserStream.beginStreaming() {
+            getUserStream(StreamWith.USER, callback)
+        }
 
     }
 

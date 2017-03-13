@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.glide.RoundedRectTransformation
-import de.vanita5.twittnuker.view.ShapedImageView
 
 fun RequestManager.loadProfileImage(context: Context, url: String?, @ImageShapeStyle style: Int,
         cornerRadius: Float = 0f, cornerRadiusRatio: Float = 0f, size: String? = null): DrawableRequestBuilder<String?> {
@@ -145,15 +144,13 @@ internal inline fun <T> configureLoadProfileImage(context: Context, @ImageShapeS
     val builder = create()
     builder.diskCacheStrategy(DiskCacheStrategy.RESULT)
     builder.dontAnimate()
-    if (!ShapedImageView.OUTLINE_DRAW) {
-        when (shapeStyle) {
-            ImageShapeStyle.SHAPE_CIRCLE -> {
-                builder.bitmapTransform(CropCircleTransformation(context))
-            }
-            ImageShapeStyle.SHAPE_RECTANGLE -> {
-                builder.bitmapTransform(RoundedRectTransformation(context, cornerRadius,
-                        cornerRadiusRatio))
-            }
+    when (shapeStyle) {
+        ImageShapeStyle.SHAPE_CIRCLE -> {
+            builder.bitmapTransform(CropCircleTransformation(context))
+        }
+        ImageShapeStyle.SHAPE_RECTANGLE -> {
+            builder.bitmapTransform(RoundedRectTransformation(context, cornerRadius,
+                    cornerRadiusRatio))
         }
     }
     return builder

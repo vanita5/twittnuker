@@ -37,10 +37,10 @@ import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.GetHomeTimelineTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
-import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
 
 
 class TaskServiceRunner(
@@ -93,7 +93,7 @@ class TaskServiceRunner(
                         override val accountKeys: Array<UserKey> by lazy {
                         AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context)).filter {
                             it.isAutoRefreshEnabled && it.isAutoRefreshDirectMessagesEnabled
-                        }.map(AccountPreferences::getAccountKey).toTypedArray()
+                        }.map(AccountPreferences::accountKey).toTypedArray()
                     }
                 }
                 return task
@@ -119,7 +119,7 @@ class TaskServiceRunner(
         override val accountKeys: Array<UserKey> by lazy {
             return@lazy AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context)).filter {
                 it.isAutoRefreshEnabled && refreshable(it)
-            }.map(AccountPreferences::getAccountKey).toTypedArray()
+            }.map(AccountPreferences::accountKey).toTypedArray()
         }
 
         override val sinceIds: Array<String?>?
