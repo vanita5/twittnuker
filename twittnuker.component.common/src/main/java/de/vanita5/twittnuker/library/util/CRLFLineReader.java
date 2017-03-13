@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter.util;
+package de.vanita5.twittnuker.library.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

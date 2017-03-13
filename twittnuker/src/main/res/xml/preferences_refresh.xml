@@ -34,47 +34,6 @@
         app:switchKey="auto_refresh"/>
 
     <de.vanita5.twittnuker.preference.TintedPreferenceCategory
-        android:key="cat_streaming"
-        android:title="@string/streaming"
-        android:enabled="false">
-
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="stream_enabled"
-            android:summary="@string/stream_enabled_summary"
-            android:title="@string/stream_enabled" />
-
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:dependency="stream_enabled"
-            android:key="stream_notification"
-            android:summary="@string/stream_notification_summary"
-            android:title="@string/stream_notification" />
-
-        <SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:dependency="stream_enabled"
-            android:key="stream_autoscroll"
-            android:summary="@string/stream_autoscroll_summary"
-            android:title="@string/stream_autoscroll" />
-
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:dependency="stream_enabled"
-            android:key="refresh_before_streaming"
-            android:summary="@string/refresh_before_streaming_summary"
-            android:title="@string/refresh_before_streaming" />
-
-
-        <!--<SwitchPreferenceCompat-->
-            <!--android:defaultValue="false"-->
-            <!--android:dependency="stream_enabled"-->
-            <!--android:key="stream_on_mobile"-->
-            <!--android:summary="@string/stream_on_mobile_summary"-->
-            <!--android:title="@string/stream_on_mobile" />-->
-    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
-
-    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
         <de.vanita5.twittnuker.preference.RefreshIntervalPreference

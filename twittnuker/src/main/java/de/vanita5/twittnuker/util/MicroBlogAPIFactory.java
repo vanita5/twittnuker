@@ -57,7 +57,6 @@ import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import org.mariotaku.restfu.oauth.OAuthToken;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.extension.model.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
@@ -68,7 +67,6 @@ import de.vanita5.twittnuker.util.api.TwitterAndroidExtraHeaders;
 import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -119,26 +117,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         if (account == null) return null;
         final Credentials credentials = AccountExtensionsKt.getCredentials(account, am);
         final String accountType = AccountExtensionsKt.getAccountType(account, am);
-        final HashMap<String, String> extraParams = getExtraParams(accountType, true, true);
         return CredentialsExtensionsKt.newMicroBlogInstance(credentials, context, accountType,
-                extraParams, MicroBlog.class);
-    }
-
-    @NonNull
-    public static HashMap<String, String> getExtraParams(@NonNull @AccountType String accountType,
-            boolean includeEntities, boolean includeRetweets) {
-        final HashMap<String, String> extraParams = new HashMap<>();
-        switch (accountType) {
-            case AccountType.FANFOU: {
-                extraParams.put("format", "html");
-                break;
-            }
-            case AccountType.TWITTER: {
-                extraParams.put("include_entities", String.valueOf(includeEntities));
-                break;
-            }
-        }
-        return extraParams;
+                MicroBlog.class);
     }
 
     public static boolean verifyApiFormat(@NonNull String format) {
@@ -182,14 +162,24 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         if (startOfHost < 0) return getApiBaseUrl("https://[DOMAIN.]twitter.com/", domain);
         final int endOfHost = format.indexOf('/', startOfHost);
         final String host = endOfHost != -1 ? format.substring(startOfHost, endOfHost) : format.substring(startOfHost);
-        if (!host.equalsIgnoreCase("api.twitter.com")) return format;
         final StringBuilder sb = new StringBuilder();
         sb.append(format.substring(0, startOfHost));
-        if (domain != null) {
-            sb.append(domain);
-            sb.append(".twitter.com");
+        if (host.equalsIgnoreCase("api.twitter.com")) {
+            if (domain != null) {
+                sb.append(domain);
+                sb.append(".twitter.com");
+            } else {
+                sb.append("twitter.com");
+            }
+        } else if (host.equalsIgnoreCase("api.fanfou.com")) {
+            if (domain != null) {
+                sb.append(domain);
+                sb.append(".fanfou.com");
+            } else {
+                sb.append("fanfou.com");
+            }
         } else {
-            sb.append("twitter.com");
+            return format;
         }
         if (endOfHost != -1) {
             sb.append(format.substring(endOfHost));

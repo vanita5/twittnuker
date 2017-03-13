@@ -784,8 +784,8 @@
     <string name="settings">Einstellungen</string>
     <string name="settings_interface">Oberfläche</string>
     <string name="settings_notifications">Benachrichtigungen</string>
-    <string name="settings_streaming">Streaming</string>
     <string name="settings_refresh">Aktualisieren</string>
+  <string name="settings_streaming">Streaming</string>
     <string name="share_format">Format zum Teilen</string>
     <string name="share_format_summary">\"[TITLE]\" = Überschrift\n\"[TEXT]\" = Inhalt</string>
     <string name="share_link">Link teilen</string>
@@ -892,6 +892,7 @@
     <string name="title_select_users">Account auswählen</string>
     <string name="title_status">Tweet</string>
     <string name="title_statuses">Tweets</string>
+    <string name="title_streaming">Streaming</string>
     <string name="title_subscription_name">Name</string>
     <string name="title_subscription_url">URL</string>
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>

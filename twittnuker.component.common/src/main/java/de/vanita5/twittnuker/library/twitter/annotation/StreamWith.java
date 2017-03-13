@@ -22,19 +22,12 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.fanfou;
+package de.vanita5.twittnuker.library.twitter.annotation;
 
-import de.vanita5.twittnuker.library.fanfou.api.BlocksResources;
-import de.vanita5.twittnuker.library.fanfou.api.DirectMessagesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FavoritesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FriendshipsResources;
-import de.vanita5.twittnuker.library.fanfou.api.PhotosResources;
-import de.vanita5.twittnuker.library.fanfou.api.SearchResources;
-import de.vanita5.twittnuker.library.fanfou.api.StatusesResources;
-import de.vanita5.twittnuker.library.fanfou.api.TrendsResources;
-import de.vanita5.twittnuker.library.fanfou.api.UsersResources;
+import android.support.annotation.StringDef;
 
-public interface Fanfou extends StatusesResources, SearchResources, UsersResources, PhotosResources,
-        FriendshipsResources, BlocksResources, FavoritesResources, DirectMessagesResources,
-        TrendsResources {
+@StringDef({StreamWith.USER, StreamWith.FOLLOWING})
+public @interface StreamWith {
+    String USER = "user";
+    String FOLLOWING = "following";
 }

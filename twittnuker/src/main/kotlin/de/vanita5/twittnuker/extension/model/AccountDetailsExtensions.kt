@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterContentUtils
 
 fun AccountDetails.isOfficial(context: Context): Boolean {
@@ -62,11 +61,9 @@ fun <T> AccountDetails.newMicroBlogInstance(
         context: Context,
         includeEntities: Boolean = true,
         includeRetweets: Boolean = true,
-        extraRequestParams: Map<String, String>? = MicroBlogAPIFactory.getExtraParams(type,
-                includeEntities, includeRetweets),
         cls: Class<T>
 ): T {
-    return credentials.newMicroBlogInstance(context, type, extraRequestParams, cls)
+    return credentials.newMicroBlogInstance(context, type, cls)
 }
 
 val AccountDetails.isOAuth: Boolean

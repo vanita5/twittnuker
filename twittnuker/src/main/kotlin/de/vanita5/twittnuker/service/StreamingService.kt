@@ -36,7 +36,11 @@ import android.util.Log
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
-import de.vanita5.twittnuker.library.twitter.UserStreamCallback
+import de.vanita5.twittnuker.library.twitter.annotation.StreamWith
+import de.vanita5.twittnuker.library.twitter.callback.UserStreamCallback
+import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage
+import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
@@ -50,6 +54,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.TwidereArrayUtils
+import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
 
 class StreamingService : Service() {
 
@@ -119,7 +124,7 @@ class StreamingService : Service() {
             callbacks.put(account.key, callback)
             object : Thread() {
                 override fun run() {
-                    twitter.getUserStream("user", callback)
+                    twitter.getUserStream(StreamWith.USER, callback)
                     Log.d(LOGTAG, String.format("Stream %s disconnected", account.key))
                     callbacks.remove(account.key)
                     updateStreamState()
@@ -136,17 +141,16 @@ class StreamingService : Service() {
             val contentIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT)
             val contentTitle = getString(R.string.app_name)
-            val contentText = getString(R.string.streaming_service_running)
+            val contentText = getString(R.string.timeline_streaming_running)
             val builder = NotificationCompat.Builder(this)
             builder.setOngoing(true)
-                    .setOnlyAlertOnce(true)
-                    .setSmallIcon(R.drawable.ic_stat_twittnuker)
-                    .setContentTitle(contentTitle)
-                    .setContentText(contentText)
-                    .setTicker(getString(R.string.streaming_service_running))
-                    .setPriority(NotificationCompat.PRIORITY_MIN)
-                    .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setContentIntent(contentIntent)
+            builder.setSmallIcon(R.drawable.ic_stat_twittnuker)
+            builder.setContentTitle(contentTitle)
+            builder.setContentText(contentText)
+//            builder.setTicker(getString(R.string.streaming_service_running))
+//            builder.setPriority(NotificationCompat.PRIORITY_MIN)
+//            builder.setCategory(NotificationCompat.CATEGORY_SERVICE)
+            builder.setContentIntent(contentIntent)
             notificationManager!!.notify(NOTIFICATION_SERVICE_STARTED, builder.build())
         } else {
             notificationManager!!.cancel(NOTIFICATION_SERVICE_STARTED)
@@ -166,7 +170,12 @@ class StreamingService : Service() {
     internal class TwidereUserStreamCallback(
             private val context: Context,
             private val account: AccountDetails
-    ) : UserStreamCallback() {
+    ) : TwitterTimelineStreamCallback(account.key.id) {
+        override fun onHomeTimeline(status: Status): Boolean = true
+
+        override fun onActivityAboutMe(activity: Activity): Boolean = true
+
+        override fun onDirectMessage(directMessage: DirectMessage): Boolean = true
 
         private var statusStreamStarted: Boolean = false
         private val mentionsStreamStarted: Boolean = false

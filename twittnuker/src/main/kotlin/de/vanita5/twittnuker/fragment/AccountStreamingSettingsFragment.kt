@@ -20,16 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter;
+package de.vanita5.twittnuker.fragment
 
-import org.mariotaku.restfu.annotation.method.GET;
+import de.vanita5.twittnuker.R
 
-/**
- * Created by mariotaku on 15/5/26.
- */
-public interface TwitterUserStream {
+class AccountStreamingSettingsFragment : BaseAccountPreferenceFragment() {
 
-    @GET("/user.json")
-    void getUserStream(String with, UserStreamCallback callback);
+    override val preferencesResource: Int
+        get() = R.xml.preferences_account_streaming
+
+    override val switchPreferenceDefault: Boolean = false
+
+    override val switchPreferenceKey: String? = "streaming"
 
 }

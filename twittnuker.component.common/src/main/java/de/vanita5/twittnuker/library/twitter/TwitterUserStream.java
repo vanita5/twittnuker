@@ -20,20 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference
+package de.vanita5.twittnuker.library.twitter;
 
-import android.content.Context
-import android.util.AttributeSet
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
-import de.vanita5.twittnuker.fragment.AccountStreamingSettingsFragment
-import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.library.twitter.annotation.StreamWith;
+import de.vanita5.twittnuker.library.twitter.callback.UserStreamCallback;
+import org.mariotaku.restfu.annotation.method.GET;
 
-class StreamingAccountsListPreference(context: Context, attrs: AttributeSet? = null) : AccountsListPreference(context, attrs) {
+public interface TwitterUserStream {
 
-    override fun setupPreference(preference: AccountsListPreference.AccountItemPreference, account: AccountDetails) {
-        preference.fragment = AccountStreamingSettingsFragment::class.java.name
-        val args = preference.extras
-        args.putParcelable(EXTRA_ACCOUNT, account)
-    }
+    @GET("/user.json")
+    void getUserStream(@StreamWith String with, UserStreamCallback callback);
 
 }

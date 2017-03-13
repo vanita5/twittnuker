@@ -46,6 +46,7 @@ import org.mariotaku.commons.logansquare.JsonStringConverter;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.account.AccountExtras;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
+import de.vanita5.twittnuker.model.util.RGBHexColorConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.util.model.AccountDetailsUtils;
 
@@ -76,7 +77,7 @@ public class AccountDetails implements Parcelable, Comparable<AccountDetails> {
     public ParcelableUser user;
 
     @ColorInt
-    @JsonField(name = "color")
+    @JsonField(name = "color", typeConverter = RGBHexColorConverter.class)
     public int color;
 
     @JsonField(name = "position")

@@ -24,17 +24,11 @@
 
 package de.vanita5.twittnuker.library.fanfou;
 
-import de.vanita5.twittnuker.library.fanfou.api.BlocksResources;
-import de.vanita5.twittnuker.library.fanfou.api.DirectMessagesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FavoritesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FriendshipsResources;
-import de.vanita5.twittnuker.library.fanfou.api.PhotosResources;
-import de.vanita5.twittnuker.library.fanfou.api.SearchResources;
-import de.vanita5.twittnuker.library.fanfou.api.StatusesResources;
-import de.vanita5.twittnuker.library.fanfou.api.TrendsResources;
-import de.vanita5.twittnuker.library.fanfou.api.UsersResources;
+import de.vanita5.twittnuker.library.fanfou.callback.FanfouUserStreamCallback;
+import org.mariotaku.restfu.annotation.method.GET;
 
-public interface Fanfou extends StatusesResources, SearchResources, UsersResources, PhotosResources,
-        FriendshipsResources, BlocksResources, FavoritesResources, DirectMessagesResources,
-        TrendsResources {
+
+public interface FanfouStream {
+    @GET("/1/user.json")
+    void getUserStream(FanfouUserStreamCallback callback);
 }

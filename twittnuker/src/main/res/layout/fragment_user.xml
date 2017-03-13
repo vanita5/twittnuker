@@ -60,7 +60,7 @@
         android:layout_height="match_parent">
 
         <de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout
-            android:id="@+id/detailsContainer"
+            android:id="@+id/userProfileSwipeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

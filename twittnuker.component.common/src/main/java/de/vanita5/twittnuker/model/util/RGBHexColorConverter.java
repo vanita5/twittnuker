@@ -22,19 +22,28 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.fanfou;
+package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.library.fanfou.api.BlocksResources;
-import de.vanita5.twittnuker.library.fanfou.api.DirectMessagesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FavoritesResources;
-import de.vanita5.twittnuker.library.fanfou.api.FriendshipsResources;
-import de.vanita5.twittnuker.library.fanfou.api.PhotosResources;
-import de.vanita5.twittnuker.library.fanfou.api.SearchResources;
-import de.vanita5.twittnuker.library.fanfou.api.StatusesResources;
-import de.vanita5.twittnuker.library.fanfou.api.TrendsResources;
-import de.vanita5.twittnuker.library.fanfou.api.UsersResources;
+import android.graphics.Color;
 
-public interface Fanfou extends StatusesResources, SearchResources, UsersResources, PhotosResources,
-        FriendshipsResources, BlocksResources, FavoritesResources, DirectMessagesResources,
-        TrendsResources {
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
+
+import java.util.Locale;
+
+
+public class RGBHexColorConverter extends StringBasedTypeConverter<Integer> {
+    @Override
+    public Integer getFromString(final String string) {
+        if (string == null) return 0;
+        if (string.startsWith("#")) {
+            return Color.parseColor(string);
+        }
+        return Integer.parseInt(string);
+    }
+
+    @Override
+    public String convertToString(final Integer object) {
+        if (object == null) return null;
+        return String.format(Locale.US, "#%06X", 0xFFFFFF & object);
+    }
 }
