@@ -35,7 +35,7 @@ import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.activity.SignInActivity
 
 
-class AccountAuthenticatorService : Service() {
+class AccountAuthenticatorService : BaseService() {
 
     private lateinit var authenticator: TwidereAccountAuthenticator
 

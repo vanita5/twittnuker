@@ -25,14 +25,15 @@ package de.vanita5.twittnuker.service
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
+import android.support.v4.net.ConnectivityManagerCompat
 import org.apache.commons.lang3.concurrent.BasicThreadFactory
 import org.mariotaku.abstask.library.TaskStarter
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import org.mariotaku.library.objectcursor.ObjectCursor
@@ -43,8 +44,11 @@ import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
+import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.isStreamingSupported
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
@@ -57,7 +61,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.NotificationManagerWrapper
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
 import java.util.*
@@ -65,12 +70,9 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class StreamingService : Service() {
+class StreamingService : BaseService() {
 
-    @Inject
-    internal lateinit var notificationManager: NotificationManagerWrapper
     internal lateinit var threadPoolExecutor: ExecutorService
     internal lateinit var handler: Handler
 
@@ -106,6 +108,16 @@ class StreamingService : Service() {
     override fun onBind(intent: Intent) = throw UnsupportedOperationException()
 
     private fun setupStreaming(): Boolean {
+        val isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(connectivityManager)
+        if (preferences[streamingNonMeteredNetworkKey] && isNetworkMetered) {
+            stopSelf()
+            return false
+        }
+        val isCharging = Utils.isCharging(this)
+        if (preferences[streamingPowerSavingKey] && !isCharging) {
+            stopSelf()
+            return false
+        }
         if (updateStreamingInstances()) {
             showNotification()
             return true
@@ -185,7 +197,7 @@ class StreamingService : Service() {
                 try {
                     instance.beginStreaming()
                 } catch (e: MicroBlogException) {
-
+                    DebugLog.w(LOGTAG, tr = e)
                 }
                 Thread.sleep(TimeUnit.MINUTES.toMillis(1))
             }
@@ -214,6 +226,9 @@ class StreamingService : Service() {
         }
 
         val callback = object : TwitterTimelineStreamCallback(account.key.id) {
+
+            private var lastStatusTimestamps = LongArray(2)
+
             private var homeInsertGap = false
             private var interactionsInsertGap = false
             override fun onConnected(): Boolean {
@@ -223,9 +238,23 @@ class StreamingService : Service() {
             }
 
             override fun onHomeTimeline(status: Status): Boolean {
+                val parcelableStatus = ParcelableStatusUtils.fromStatus(status, account.key,
+                        homeInsertGap, profileImageSize)
+
+                val currentTimeMillis = System.currentTimeMillis()
+                if (lastStatusTimestamps[0] >= parcelableStatus.timestamp) {
+                    val extraValue = (currentTimeMillis - lastStatusTimestamps[1]).coerceAtMost(499)
+                    parcelableStatus.position_key = parcelableStatus.timestamp + extraValue
+                } else {
+                    parcelableStatus.position_key = parcelableStatus.timestamp
+                }
+                parcelableStatus.inserted_date = currentTimeMillis
+
+                lastStatusTimestamps[0] = parcelableStatus.position_key
+                lastStatusTimestamps[1] = parcelableStatus.inserted_date
+
                 val values = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
-                        .create(ParcelableStatusUtils.fromStatus(status, account.key, homeInsertGap,
-                                profileImageSize))
+                        .create(parcelableStatus)
                 context.contentResolver.insert(Statuses.CONTENT_URI, values)
                 homeInsertGap = false
                 return true
@@ -240,9 +269,11 @@ class StreamingService : Service() {
                         handler.postDelayed(interactionsTimeoutRunnable, TimeUnit.SECONDS.toMillis(30))
                     }
                 } else {
+                    val parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
+                            account.key, interactionsInsertGap, profileImageSize)
+                    parcelableActivity.position_key = parcelableActivity.timestamp
                     val values = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
-                            .create(ParcelableActivityUtils.fromActivity(activity, account.key,
-                                    interactionsInsertGap, profileImageSize))
+                            .create(parcelableActivity)
                     context.contentResolver.insert(Activities.AboutMe.CONTENT_URI, values)
                     interactionsInsertGap = false
                 }
@@ -256,6 +287,11 @@ class StreamingService : Service() {
                     val timeout = TimeUnit.SECONDS.toMillis(if (isOfficial) 30 else 90)
                     handler.postDelayed(messagesTimeoutRunnable, timeout)
                 }
+                return true
+            }
+
+            override fun onException(ex: Throwable): Boolean {
+                DebugLog.w(LOGTAG, tr = ex)
                 return true
             }
 

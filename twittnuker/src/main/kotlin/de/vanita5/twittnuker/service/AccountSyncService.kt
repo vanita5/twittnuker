@@ -29,7 +29,7 @@ import android.os.Bundle
 import android.os.IBinder
 
 
-class AccountSyncService : Service() {
+class AccountSyncService : BaseService() {
 
     override fun onCreate() {
         /*

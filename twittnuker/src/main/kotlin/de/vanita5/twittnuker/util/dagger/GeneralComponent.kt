@@ -41,10 +41,7 @@ import de.vanita5.twittnuker.preference.PremiumEntryPreferenceCategory
 import de.vanita5.twittnuker.preference.sync.SyncItemPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
-import de.vanita5.twittnuker.service.BaseIntentService
-import de.vanita5.twittnuker.service.JobTaskService
-import de.vanita5.twittnuker.service.LegacyTaskService
-import de.vanita5.twittnuker.service.StreamingService
+import de.vanita5.twittnuker.service.*
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.task.ManagedAsyncTask
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory
@@ -147,4 +144,6 @@ interface GeneralComponent {
     fun inject(fragment: ExoPlayerPageFragment)
 
     fun inject(service: StreamingService)
+
+    fun inject(service: BaseService)
 }
