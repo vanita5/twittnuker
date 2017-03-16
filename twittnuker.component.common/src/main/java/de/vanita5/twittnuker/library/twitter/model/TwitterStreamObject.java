@@ -27,9 +27,11 @@ import android.support.annotation.StringDef;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @JsonObject
 public class TwitterStreamObject {
-
 
     @JsonField(name = "sender")
     EmptyObject sender;
@@ -142,6 +144,7 @@ public class TwitterStreamObject {
         return warning;
     }
 
+    @Retention(RetentionPolicy.SOURCE)
     @StringDef({Type.STATUS, Type.DIRECT_MESSAGE, Type.DELETE, Type.LIMIT,
             Type.STALL_WARNING, Type.SCRUB_GEO, Type.FRIENDS, Type.FAVORITE, Type.UNFAVORITE,
             Type.FOLLOW, Type.UNFOLLOW, Type.USER_LIST_MEMBER_ADDED, Type.USER_LIST_MEMBER_DELETED,

@@ -26,6 +26,10 @@ package de.vanita5.twittnuker.library.twitter.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.SOURCE)
 @StringDef({StreamWith.USER, StreamWith.FOLLOWING})
 public @interface StreamWith {
     String USER = "user";
