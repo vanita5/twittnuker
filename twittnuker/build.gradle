@@ -22,7 +22,7 @@ buildscript {
 
     dependencies {
         // START Non-FOSS component
-        classpath "io.fabric.tools:gradle:${libVersions["FabricPlugin"]}"
+        classpath "io.fabric.tools:gradle:${libVersions['FabricPlugin']}"
         // END Non-FOSS component
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${libVersions['Kotlin']}"

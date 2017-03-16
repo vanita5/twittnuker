@@ -48,6 +48,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.isOfficial
@@ -121,6 +122,9 @@ class StreamingService : BaseService() {
      * @return True if there're enabled accounts, false if request not met and service should be stopped
      */
     private fun setupStreaming(): Boolean {
+        if (!preferences[streamingEnabledKey]) {
+            return false
+        }
         if (!activityTracker.isHomeActivityLaunched) {
             return false
         }
@@ -182,13 +186,13 @@ class StreamingService : BaseService() {
         val intent = IntentUtils.settings("streaming")
         val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val contentTitle = getString(R.string.app_name)
-        val contentText = getString(R.string.timeline_streaming_running)
+        val contentText = getString(R.string.streaming_service_running)
         val builder = NotificationCompat.Builder(this)
         builder.setOngoing(true)
         builder.setSmallIcon(R.drawable.ic_stat_twittnuker)
         builder.setContentTitle(contentTitle)
         builder.setContentText(contentText)
-//            builder.setTicker(getString(R.string.streaming_service_running))
+        builder.setTicker(contentText)
         builder.setContentIntent(contentIntent)
         builder.setCategory(NotificationCompat.CATEGORY_STATUS)
         builder.priority = NotificationCompat.PRIORITY_MIN
@@ -352,6 +356,11 @@ class StreamingService : BaseService() {
                         Expression.equalsArgs(Columns.Column(Statuses.STATUS_ID))).sql
                 val deleteWhereArgs = arrayOf(account.key.host, event.id)
                 context.contentResolver.delete(Statuses.CONTENT_URI, deleteWhere, deleteWhereArgs)
+                return true
+            }
+
+            override fun onDisconnectNotice(code: Int, reason: String?): Boolean {
+                disconnect();
                 return true
             }
 

@@ -34,9 +34,6 @@ import javax.inject.Inject
 
 abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) : AbstractTask<Params, Result, Callback>() {
 
-    protected var initialized: Boolean = false
-    private set
-
     @Inject
     lateinit var bus: Bus
     @Inject
@@ -57,10 +54,11 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var userColorNameManager: UserColorNameManager
 
     init {
-        @Suppress("UNCHECKED_CAST", "LeakingThis")
-        GeneralComponentHelper.build(context).inject(this as BaseAbstractTask<Any, Any, Any>)
-        initialized = true
+        injectMembers()
     }
 
-
+    private fun injectMembers() {
+        @Suppress("UNCHECKED_CAST")
+        GeneralComponentHelper.build(context).inject(this as BaseAbstractTask<Any, Any, Any>)
+    }
 }
