@@ -42,7 +42,7 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
         val isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
         val holder = DependencyHolder.get(context)
         holder.mediaPreloader.isNetworkMetered = isNetworkMetered
-        StreamingService.startOrStopService(context)
+        StreamingService.startOrStopService(appContext)
     }
 
     companion object {

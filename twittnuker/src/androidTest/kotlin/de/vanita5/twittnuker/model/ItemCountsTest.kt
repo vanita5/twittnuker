@@ -20,31 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.model
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import org.junit.Assert
+import org.junit.Test
 
-@JsonObject
-public class DeletionEvent {
+class ItemCountsTest {
+    @Test
+    fun getItemCountIndex() {
+        val counts = ItemCounts(3)
+        counts[0] = 2
+        counts[1] = 3
+        counts[2] = 3
 
-    @JsonField(name = {"id", "id_str"})
-    String id;
-    @JsonField(name = "user_id")
-    String userId;
-    @JsonField(name = "timestamp_ms")
-    long timestampMs;
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public long getTimestampMs() {
-        return timestampMs;
+        Assert.assertEquals(0, counts.getItemCountIndex(1))
+        Assert.assertEquals(1, counts.getItemCountIndex(2))
+        Assert.assertEquals(1, counts.getItemCountIndex(4))
+        Assert.assertEquals(2, counts.getItemCountIndex(7))
+        Assert.assertEquals(-1, counts.getItemCountIndex(10))
+        Assert.assertEquals(-1, counts.getItemCountIndex(-1))
     }
 
 }

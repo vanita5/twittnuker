@@ -96,7 +96,7 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
         slidingPane.openPane()
 
         if (savedInstanceState == null) {
-            val initialTag = intent.data?.path
+            val initialTag = intent.data?.authority
             var initialItem = -1
             var firstEntry = -1
             for (i in 0 until entriesAdapter.count) {

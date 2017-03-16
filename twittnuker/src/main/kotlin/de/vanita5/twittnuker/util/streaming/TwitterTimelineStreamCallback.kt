@@ -22,11 +22,12 @@
 
 package de.vanita5.twittnuker.util.streaming
 
+import android.support.annotation.WorkerThread
 import de.vanita5.twittnuker.library.twitter.callback.SimpleUserStreamCallback
 import de.vanita5.twittnuker.library.twitter.model.*
 import java.util.*
 
-
+@WorkerThread
 abstract class TwitterTimelineStreamCallback(val accountId: String) : SimpleUserStreamCallback() {
 
     private val friends = mutableSetOf<String>()
@@ -130,9 +131,12 @@ abstract class TwitterTimelineStreamCallback(val accountId: String) : SimpleUser
         return false
     }
 
+    @WorkerThread
     protected abstract fun onHomeTimeline(status: Status): Boolean
 
+    @WorkerThread
     protected abstract fun onActivityAboutMe(activity: Activity): Boolean
 
+    @WorkerThread
     override abstract fun onDirectMessage(directMessage: DirectMessage): Boolean
 }

@@ -830,6 +830,9 @@
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <!-- [noun] Accessibility label for retweet icon -->
     <string name="status_type_retweet">Retweet</string>
+    <string name="stream_type_home">Home</string>
+    <string name="stream_type_interactions">Interaktionen</string>
+    <string name="stream_type_messages">Nachrichten</string>
     <string name="streaming">Streaming</string>
     <string name="style">Style</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>

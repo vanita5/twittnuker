@@ -53,7 +53,7 @@ import org.mariotaku.chameleon.Chameleon;
 import org.mariotaku.chameleon.ChameleonUtils;
 import org.mariotaku.chameleon.ChameleonView;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.iface.PagerIndicator;
 
@@ -66,7 +66,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
     private final int mStripHeight;
     private final TabPagerIndicatorAdapter mIndicatorAdapter;
     private final TabLayoutManager mLayoutManager;
-    private final DividerItemDecoration mItemDecoration;
+    private final ExtendedDividerItemDecoration mItemDecoration;
     private ViewPager mViewPager;
     private PagerAdapter mPagerProvider;
 
@@ -80,7 +80,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR);
         final Resources res = getResources();
         mIndicatorAdapter = new TabPagerIndicatorAdapter(this);
-        mItemDecoration = new DividerItemDecoration(context, HORIZONTAL);
+        mItemDecoration = new ExtendedDividerItemDecoration(context, HORIZONTAL);
         mStripHeight = res.getDimensionPixelSize(R.dimen.element_spacing_small);
         setOverScrollMode(OVER_SCROLL_NEVER);
         setHorizontalScrollBarEnabled(false);

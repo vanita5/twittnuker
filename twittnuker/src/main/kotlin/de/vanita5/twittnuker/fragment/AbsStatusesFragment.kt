@@ -45,7 +45,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
+import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.annotation.Referral
@@ -388,7 +388,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     }
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView, layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
-        val itemDecoration = DividerItemDecoration(context, (recyclerView.layoutManager as LinearLayoutManager).orientation)
+        val itemDecoration = ExtendedDividerItemDecoration(context, (recyclerView.layoutManager as LinearLayoutManager).orientation)
         val res = context.resources
         if (adapter.profileImageEnabled) {
             val decorPaddingLeft = res.getDimensionPixelSize(R.dimen.element_spacing_normal) * 2 + res.getDimensionPixelSize(R.dimen.icon_size_status_profile_image)

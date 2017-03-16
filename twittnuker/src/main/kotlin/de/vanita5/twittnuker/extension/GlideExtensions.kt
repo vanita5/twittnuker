@@ -143,6 +143,7 @@ internal inline fun <T> configureLoadProfileImage(context: Context, @ImageShapeS
 ): DrawableRequestBuilder<T> {
     val builder = create()
     builder.diskCacheStrategy(DiskCacheStrategy.RESULT)
+    builder.centerCrop()
     builder.dontAnimate()
     when (shapeStyle) {
         ImageShapeStyle.SHAPE_CIRCLE -> {

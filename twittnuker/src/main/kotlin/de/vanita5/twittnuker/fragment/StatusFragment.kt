@@ -81,7 +81,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
+import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -128,7 +128,7 @@ import java.util.*
 class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback,
         ContentListSupport<StatusFragment.StatusAdapter> {
-    private var mItemDecoration: DividerItemDecoration? = null
+    private var mItemDecoration: ExtendedDividerItemDecoration? = null
 
     override lateinit var adapter: StatusAdapter
 
@@ -2157,7 +2157,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             context: Context,
             private val statusAdapter: StatusAdapter,
             orientation: Int
-    ) : DividerItemDecoration(context, orientation) {
+    ) : ExtendedDividerItemDecoration(context, orientation) {
 
         override fun isDividerEnabled(childPos: Int): Boolean {
             if (childPos >= statusAdapter.itemCount || childPos < 0) return false

@@ -37,7 +37,7 @@ import org.mariotaku.commons.parcel.ParcelUtils
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
+import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener
@@ -190,7 +190,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
                                       layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
-        val itemDecoration = DividerItemDecoration(context,
+        val itemDecoration = ExtendedDividerItemDecoration(context,
                 (recyclerView.layoutManager as LinearLayoutManager).orientation)
         val res = context.resources
         if (adapter.profileImageEnabled) {

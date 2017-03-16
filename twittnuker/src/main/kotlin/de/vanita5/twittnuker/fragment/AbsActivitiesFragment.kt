@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_STATUS
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_STUB
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_TITLE_SUMMARY
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
+import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.*
@@ -538,9 +538,10 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
                                       layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
-        val itemDecoration = object : DividerItemDecoration(context,
+        val itemDecoration = object : ExtendedDividerItemDecoration(context,
                 (recyclerView.layoutManager as LinearLayoutManager).orientation) {
             override fun isDividerEnabled(childPos: Int): Boolean {
+                if (childPos >= layoutManager.itemCount || childPos < 0) return false
                 when (adapter.getItemViewType(childPos)) {
                     ITEM_VIEW_TYPE_STATUS, ITEM_VIEW_TYPE_TITLE_SUMMARY, ITEM_VIEW_TYPE_GAP,
                     ITEM_VIEW_TYPE_STUB -> {
