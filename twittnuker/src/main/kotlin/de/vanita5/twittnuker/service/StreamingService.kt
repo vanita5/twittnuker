@@ -199,10 +199,6 @@ class StreamingService : BaseService() {
         stopForeground(true)
     }
 
-    private fun buildNotification() {
-
-    }
-
     private fun newStreamingRunnable(account: AccountDetails, preferences: AccountPreferences): StreamingRunnable<*>? {
         when (account.type) {
             AccountType.TWITTER -> {
