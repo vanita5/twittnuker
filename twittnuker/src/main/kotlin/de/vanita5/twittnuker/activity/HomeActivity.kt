@@ -39,7 +39,6 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceActivity
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -71,10 +70,9 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
-import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.coerceInOr
-import org.mariotaku.ktextension.contains
-import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.*
+import org.mariotaku.sqliteqb.library.Columns
+import org.mariotaku.sqliteqb.library.SQLFunctions
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
@@ -85,7 +83,6 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
-import de.vanita5.twittnuker.fragment.CustomTabsFragment
 import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -95,8 +92,10 @@ import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
+import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.service.RegistrationIntentService
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
@@ -376,10 +375,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 triggerActionsClick()
             }
             emptyTabHint -> {
-                val intent = Intent(this, SettingsActivity::class.java)
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, CustomTabsFragment::class.java.name)
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE, R.string.tabs)
-                startActivityForResult(intent, REQUEST_SETTINGS)
+                startActivityForResult(IntentUtils.settings("tabs"), REQUEST_SETTINGS)
             }
             drawerToggleButton -> {
                 if (homeMenu.isDrawerOpen(GravityCompat.START) || homeMenu.isDrawerOpen(GravityCompat.END)) {
@@ -947,6 +943,18 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                         }.fold(0L, Math::max)
                         val count = DataStoreUtils.getInteractionsCount(context, spec.args,
                                 accountKeys, position, Activities.TIMESTAMP)
+                        publishProgress(TabBadge(i, count))
+                        result.put(i, count)
+                    }
+                    CustomTabType.DIRECT_MESSAGES -> {
+                        val accountKeys = Utils.getAccountKeys(context, spec.args) ?: activatedKeys
+                        val projection = (Conversations.COLUMNS + Conversations.UNREAD_COUNT).map {
+                            TwidereQueryBuilder.mapConversationsProjection(it)
+                        }.toTypedArray()
+                        val count = context.contentResolver.getUnreadMessagesEntriesCursor(projection,
+                                accountKeys)?.useCursor { cur ->
+                            return@useCursor cur.count
+                        } ?: -1
                         publishProgress(TabBadge(i, count))
                         result.put(i, count)
                     }

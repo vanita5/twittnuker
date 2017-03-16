@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
@@ -62,6 +61,7 @@ import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
@@ -162,7 +162,7 @@ class StreamingService : BaseService() {
     }
 
     private fun showNotification() {
-        val intent = Intent(this, SettingsActivity::class.java)
+        val intent = IntentUtils.settings("streaming")
         val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val contentTitle = getString(R.string.app_name)
         val contentText = getString(R.string.timeline_streaming_running)

@@ -270,9 +270,16 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
                 <action android:name="de.vanita5.twittnuker.SETTINGS" />
+                <action android:name="de.vanita5.twittnuker.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="twittnuker.settings"/>
             </intent-filter>
 
             <meta-data

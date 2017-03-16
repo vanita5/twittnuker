@@ -671,6 +671,16 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
+    fun settings(initialTag: String? = null): Intent {
+        val intent = Intent()
+        val builder = Uri.Builder()
+        builder.scheme(SCHEME_TWITTNUKER_SETTINGS)
+        builder.authority(initialTag.orEmpty())
+        intent.data = builder.build()
+        intent.`package` = BuildConfig.APPLICATION_ID
+        return intent
+    }
+
     fun openProfileEditor(context: Context, accountId: UserKey?) {
         val intent = Intent()
         val builder = Uri.Builder()
