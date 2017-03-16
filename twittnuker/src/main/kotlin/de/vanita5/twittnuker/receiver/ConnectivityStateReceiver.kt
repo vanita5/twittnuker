@@ -27,8 +27,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.support.v4.net.ConnectivityManagerCompat
-import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 
@@ -37,12 +36,13 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         DebugLog.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent), null)
         if (ConnectivityManager.CONNECTIVITY_ACTION != intent.action) return
-        //TODO start streaming here?
 
         val appContext = context.applicationContext
         val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
-        DependencyHolder.get(context).mediaPreloader.isNetworkMetered = isNetworkMetered
+        val holder = DependencyHolder.get(context)
+        holder.mediaPreloader.isNetworkMetered = isNetworkMetered
+        StreamingService.startOrStopService(context)
     }
 
     companion object {

@@ -48,6 +48,8 @@ abstract class BaseService : Service() {
     lateinit var taskServiceRunner: TaskServiceRunner
     @Inject
     lateinit var connectivityManager: ConnectivityManager
+    @Inject
+    lateinit var activityTracker: ActivityTracker
 
     override fun onCreate() {
         super.onCreate()

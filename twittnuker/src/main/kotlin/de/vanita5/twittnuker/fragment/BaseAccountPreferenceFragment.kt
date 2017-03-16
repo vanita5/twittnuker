@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT
@@ -30,15 +29,30 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
-
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_PREFERENCES_NAME_PREFIX
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
 import de.vanita5.twittnuker.model.AccountDetails
 
-abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheckedChangeListener, OnSharedPreferenceChangeListener {
+abstract class BaseAccountPreferenceFragment : BasePreferenceFragment() {
+
+    protected val account: AccountDetails?
+        get() {
+            return arguments?.getParcelable(EXTRA_ACCOUNT)
+        }
+
+    protected abstract val preferencesResource: Int
+
+    protected abstract val switchPreferenceDefault: Boolean
+
+    protected abstract val switchPreferenceKey: String?
+
+    private val preferenceChangeListener = OnSharedPreferenceChangeListener { _, key ->
+        if (key == switchPreferenceKey) {
+            updatePreferenceScreen()
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -52,7 +66,7 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
         pm.sharedPreferencesName = preferenceName
         addPreferencesFromResource(preferencesResource)
         val prefs = pm.sharedPreferences
-        prefs.registerOnSharedPreferenceChangeListener(this)
+        prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
         val activity = activity
         val intent = activity.intent
         if (intent.hasExtra(EXTRA_SHOW_FRAGMENT)) {
@@ -67,19 +81,10 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
     override fun onDestroy() {
         val pm = preferenceManager
         val prefs = pm.sharedPreferences
-        prefs.unregisterOnSharedPreferenceChangeListener(this)
+        prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
         super.onDestroy()
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        val prefs = preferenceManager.sharedPreferences
-        val editor = prefs.edit()
-        if (prefs.getBoolean(switchPreferenceKey, switchPreferenceDefault) != isChecked) {
-            editor.putBoolean(switchPreferenceKey, isChecked)
-            editor.apply()
-            updatePreferenceScreen()
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val switchKey = switchPreferenceKey
@@ -88,28 +93,24 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
             val actionView = menu.findItem(R.id.toggle).actionView
             val toggle = actionView.findViewById(android.R.id.toggle) as CompoundButton
             val prefs = preferenceManager.sharedPreferences
-            toggle.setOnCheckedChangeListener(this)
+            toggle.setOnCheckedChangeListener { _, isChecked ->
+                val editor = prefs.edit()
+                if (prefs.getBoolean(switchPreferenceKey, switchPreferenceDefault) != isChecked) {
+                    editor.putBoolean(switchPreferenceKey, isChecked)
+                    editor.apply()
+                    onSwitchPreferenceChanged(isChecked)
+                    updatePreferenceScreen()
+                }
+            }
             toggle.isChecked = prefs.getBoolean(switchKey, switchPreferenceDefault)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onSharedPreferenceChanged(preferences: SharedPreferences, key: String) {
-        if (key == switchPreferenceKey) {
-            updatePreferenceScreen()
-        }
+    protected open fun onSwitchPreferenceChanged(isChecked: Boolean) {
+
     }
 
-    protected val account: AccountDetails?
-        get() {
-            return arguments?.getParcelable(EXTRA_ACCOUNT)
-        }
-
-    protected abstract val preferencesResource: Int
-
-    protected abstract val switchPreferenceDefault: Boolean
-
-    protected abstract val switchPreferenceKey: String?
 
     private fun updatePreferenceScreen() {
         val screen = preferenceScreen

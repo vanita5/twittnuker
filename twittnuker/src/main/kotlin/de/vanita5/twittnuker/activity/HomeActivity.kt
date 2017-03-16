@@ -71,8 +71,6 @@ import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.*
-import org.mariotaku.sqliteqb.library.Columns
-import org.mariotaku.sqliteqb.library.SQLFunctions
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
@@ -92,10 +90,9 @@ import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
-import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.service.RegistrationIntentService
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
@@ -288,7 +285,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         val initialTabPosition = handleIntent(intent, savedInstanceState == null)
         setTabPosition(initialTabPosition)
 
-        startService(Intent(this, StreamingService::class.java))
+        StreamingService.startOrStopService(this)
 
         if (!showDrawerTutorial() && !kPreferences[defaultAutoRefreshAskedKey]) {
             showAutoRefreshConfirm()
@@ -346,7 +343,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     override fun onDestroy() {
         if (isFinishing) {
             // Stop only when exiting explicitly
-            stopService(Intent(this, StreamingService::class.java))
+            StreamingService.startOrStopService(this)
         }
 
         // Delete unused items in databases.

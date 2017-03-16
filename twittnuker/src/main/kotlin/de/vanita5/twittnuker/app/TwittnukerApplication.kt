@@ -44,10 +44,9 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.constant.apiLastChangeKey
-import de.vanita5.twittnuker.constant.bugReportsKey
-import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.DefaultFeatures
+import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -211,6 +210,14 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             }
             KEY_NAME_FIRST, KEY_I_WANT_MY_STARS_BACK -> {
                 contentNotificationManager.updatePreferences()
+            }
+            streamingPowerSavingKey.key, streamingNonMeteredNetworkKey.key -> {
+                val streamingIntent = Intent(this, StreamingService::class.java)
+                if (activityTracker.isHomeActivityLaunched) {
+                    startService(streamingIntent)
+                } else {
+                    stopService(streamingIntent)
+                }
             }
         }
     }

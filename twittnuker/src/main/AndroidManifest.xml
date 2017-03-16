@@ -271,15 +271,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
                 <action android:name="de.vanita5.twittnuker.SETTINGS" />
-                <action android:name="de.vanita5.twittnuker.VIEW"/>
+                <action android:name="de.vanita5.twittnuker.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="twittnuker.settings"/>
+                <data android:scheme="twittnuker.settings" />
             </intent-filter>
 
             <meta-data
@@ -620,7 +620,15 @@
         </receiver>
         <receiver android:name=".receiver.ConnectivityStateReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.PowerStateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
         <receiver
