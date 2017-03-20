@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.*
+import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.*
@@ -329,11 +330,12 @@ class AsyncTwitterWrapper(
     }
 
     fun updateFriendship(accountKey: UserKey, userKey: UserKey, update: FriendshipUpdate) {
-        TaskStarter.execute(object : ExceptionHandlingAbstractTask<Any, Relationship, Exception, Any>(context) {
-            override fun onExecute(params: Any): Relationship {
+        TaskStarter.execute(object : ExceptionHandlingAbstractTask<Any?, Relationship, Exception, Any>(context) {
+            override fun onExecute(params: Any?): Relationship {
                 val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey)
                     ?: throw MicroBlogException("No account")
                 val relationship = microBlog.updateFriendship(userKey.id, update)
+                val cr = context.contentResolver
                 if (!relationship.isSourceWantRetweetsFromTarget) {
                     // TODO remove cached retweets
                     val where = Expression.and(
@@ -341,8 +343,11 @@ class AsyncTwitterWrapper(
                             Expression.equalsArgs(Statuses.RETWEETED_BY_USER_KEY)
                     )
                     val selectionArgs = arrayOf(accountKey.toString(), userKey.toString())
-                    context.contentResolver.delete(Statuses.CONTENT_URI, where.sql, selectionArgs)
+                    cr.delete(Statuses.CONTENT_URI, where.sql, selectionArgs)
                 }
+
+                ParcelableRelationshipUtils.insert(cr, listOf(ParcelableRelationshipUtils
+                        .create(accountKey, userKey, relationship)))
                 return relationship
             }
 

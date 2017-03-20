@@ -288,6 +288,7 @@
     <string name="ellipsis">&#8230;</string>
     <string name="emoji_support">Emoji Support</string>
     <string name="empty_content">Leerer Inhalt</string>
+    <string name="enable_notifications">Benachrichtigen</string>
     <string name="enable_retweets">Retweets erlauben</string>
     <string name="enable_streaming">Streaming freischalten</string>
     <string name="error_info_oauth_timestamp_error">Bitte überprüfe dein Systemdatum und die Zeiteinstellungen.</string>
@@ -535,6 +536,7 @@
     <string name="message_toast_no_account_permission">Account Berechtigung wird benötigt</string>
     <string name="message_toast_no_account_selected">Kein Account ausgewählt.</string>
     <string name="message_toast_no_user_selected">Kein Account ausgewählt</string>
+    <string name="message_toast_notification_enabled_hint">Funktioniert nur, wenn Streaming aktiv ist.</string>
     <string name="message_toast_press_again_to_close">Nochmal tippen zum schliessen</string>
     <string name="message_toast_profile_banner_image_updated">Profilbanner aktualisiert.</string>
     <string name="message_toast_save_media_no_storage_permission">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
@@ -594,8 +596,8 @@
     <string name="notification_ringtone">Klingelton</string>
     <string name="notification_status">Neuer Tweet von <xliff:g id="user">%s</xliff:g></string>
     <string name="notification_status_multiple">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> weiteren</string>
-    <string name="notification_title_new_status_by_user">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g></string>
     <string name="notification_title_new_retweet_by_user"><xliff:g id="user">%1$s</xliff:g> retweeted</string>
+    <string name="notification_title_new_status_by_user">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g></string>
     <string name="notification_type_home">Timeline</string>
     <string name="notification_type_interactions">Interaktionen</string>
     <string name="notification_type_messages">Nachrichten</string>

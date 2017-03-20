@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils
 object ParcelableRelationshipUtils {
 
     fun create(accountKey: UserKey, userKey: UserKey, relationship: Relationship?,
-            filtering: Boolean): ParcelableRelationship {
+               filtering: Boolean = false): ParcelableRelationship {
         val obj = ParcelableRelationship()
         obj.account_key = accountKey
         obj.user_key = userKey
