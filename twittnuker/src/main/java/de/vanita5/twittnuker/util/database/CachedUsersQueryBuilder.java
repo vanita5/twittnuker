@@ -32,6 +32,7 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -45,32 +46,32 @@ public final class CachedUsersQueryBuilder {
     }
 
     public static Pair<SQLSelectQuery, String[]> withRelationship(final String[] projection,
-                                                                  final String selection,
-                                                                  final String[] selectionArgs,
-                                                                  final String sortOrder,
-                                                                  final UserKey accountKey) {
+              final String selection,
+              final String[] selectionArgs,
+              final String sortOrder,
+              final UserKey accountKey) {
         return withRelationship(Utils.getColumnsFromProjection(projection), selection,
                 selectionArgs, sortOrder, accountKey);
     }
 
     public static Pair<SQLSelectQuery, String[]> withRelationship(final Selectable select,
-                                                                  final String selection,
-                                                                  final String[] selectionArgs,
-                                                                  final String sortOrder,
-                                                                  final UserKey accountKey) {
+              final String selection,
+              final String[] selectionArgs,
+              final String sortOrder,
+              final UserKey accountKey) {
         final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
         qb.select(select).from(new Tables(TwidereDataStore.CachedUsers.TABLE_NAME));
-        final Columns.Column relationshipsUserId = new Columns.Column(new Table(TwidereDataStore.CachedRelationships.TABLE_NAME),
-                TwidereDataStore.CachedRelationships.USER_KEY);
+        final Columns.Column relationshipsUserId = new Columns.Column(new Table(CachedRelationships.TABLE_NAME),
+                CachedRelationships.USER_KEY);
         final Columns.Column usersUserId = new Columns.Column(new Table(TwidereDataStore.CachedUsers.TABLE_NAME),
-                TwidereDataStore.CachedRelationships.USER_KEY);
-        final Columns.Column relationshipsAccountId = new Columns.Column(new Table(TwidereDataStore.CachedRelationships.TABLE_NAME),
-                TwidereDataStore.CachedRelationships.ACCOUNT_KEY);
+                CachedRelationships.USER_KEY);
+        final Columns.Column relationshipsAccountId = new Columns.Column(new Table(CachedRelationships.TABLE_NAME),
+                CachedRelationships.ACCOUNT_KEY);
         final Expression on = Expression.and(
                 Expression.equals(relationshipsUserId, usersUserId),
                 Expression.equalsArgs(relationshipsAccountId.getSQL())
         );
-        qb.join(new Join(false, Join.Operation.LEFT, new Table(TwidereDataStore.CachedRelationships.TABLE_NAME), on));
+        qb.join(new Join(false, Join.Operation.LEFT, new Table(CachedRelationships.TABLE_NAME), on));
         final Expression userTypeExpression;
         final String host = accountKey.getHost();
         final String[] accountKeyArgs;
@@ -113,10 +114,10 @@ public final class CachedUsersQueryBuilder {
                 columns[i] = new Columns.Column(column);
             }
         }
-        final String expr = String.format(Locale.ROOT, "%s * 100 + %s * 50 - %s * 100 - %s * 100 - %s * 100",
-                valueOrZero(TwidereDataStore.CachedRelationships.FOLLOWING, TwidereDataStore.CachedRelationships.FOLLOWED_BY,
-                        TwidereDataStore.CachedRelationships.BLOCKING, TwidereDataStore.CachedRelationships.BLOCKED_BY,
-                        TwidereDataStore.CachedRelationships.MUTING));
+        final String expr = String.format(Locale.ROOT, "%s * 100 + %s * 50 + %s * 50 - %s * 100 - %s * 100 - %s * 100",
+                valueOrZero(CachedRelationships.FOLLOWING, CachedRelationships.NOTIFICATIONS_ENABLED,
+                        CachedRelationships.FOLLOWED_BY, CachedRelationships.BLOCKING,
+                        CachedRelationships.BLOCKED_BY, CachedRelationships.MUTING));
         columns[columns.length - 1] = new Columns.Column(expr, "score");
         qb.select(select);
         final Pair<SQLSelectQuery, String[]> pair = withRelationship(new Columns(columns), null,

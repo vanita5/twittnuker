@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter
 
 import android.content.Context
 import android.database.Cursor
+import android.database.CursorIndexOutOfBoundsException
 import android.support.v4.widget.Space
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -411,7 +412,9 @@ abstract class ParcelableStatusesAdapter(
             defValue: T, raw: Boolean = false): T {
         if (data is ObjectCursor) {
             val dataPosition = position - statusStartIndex
-            if (dataPosition < 0 || dataPosition >= getStatusCount(true)) return defValue
+            if (dataPosition < 0 || dataPosition >= getStatusCount(true)) {
+                throw CursorIndexOutOfBoundsException("index: $position, valid range is $0..${getStatusCount(true)}")
+            }
             val cursor = (data as ObjectCursor).cursor
             if (!cursor.safeMoveToPosition(dataPosition)) return defValue
             val indices = (data as ObjectCursor).indices as ParcelableStatusCursorIndices

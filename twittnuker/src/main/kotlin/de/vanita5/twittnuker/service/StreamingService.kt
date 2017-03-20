@@ -47,7 +47,10 @@ import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_USER_NOTIFICATION
+import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
@@ -58,14 +61,11 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.model.util.UserKeyUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
-import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.DebugLog
-import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
@@ -79,7 +79,7 @@ class StreamingService : BaseService() {
     internal lateinit var threadPoolExecutor: ExecutorService
     internal lateinit var handler: Handler
 
-    private val submittedTasks = WeakHashMap<UserKey, StreamingRunnable<*>>()
+    private val submittedTasks: MutableMap<UserKey, StreamingRunnable<*>> = WeakHashMap()
 
     private val accountChangeObserver = OnAccountsUpdateListener {
         if (!setupStreaming()) {
@@ -204,7 +204,7 @@ class StreamingService : BaseService() {
     private fun newStreamingRunnable(account: AccountDetails, preferences: AccountPreferences): StreamingRunnable<*>? {
         when (account.type) {
             AccountType.TWITTER -> {
-                return TwitterStreamingRunnable(this, handler, account, preferences)
+                return TwitterStreamingRunnable(this, account, preferences)
             }
         }
         return null
@@ -213,7 +213,7 @@ class StreamingService : BaseService() {
     internal abstract class StreamingRunnable<T>(
             val context: Context,
             val account: AccountDetails,
-            val preferences: AccountPreferences
+            val accountPreferences: AccountPreferences
     ) : Runnable {
 
         var cancelled: Boolean = false
@@ -245,12 +245,11 @@ class StreamingService : BaseService() {
         abstract fun onCancelled()
     }
 
-    internal class TwitterStreamingRunnable(
+    internal inner class TwitterStreamingRunnable(
             context: Context,
-            val handler: Handler,
             account: AccountDetails,
-            preferences: AccountPreferences
-    ) : StreamingRunnable<TwitterUserStream>(context, account, preferences) {
+            accountPreferences: AccountPreferences
+    ) : StreamingRunnable<TwitterUserStream>(context, account, accountPreferences) {
 
         private val profileImageSize = context.getString(R.string.profile_image_size)
         private val isOfficial = account.isOfficial(context)
@@ -280,7 +279,7 @@ class StreamingService : BaseService() {
             }
 
             override fun onHomeTimeline(status: Status): Boolean {
-                if (!preferences.isStreamHomeTimelineEnabled) {
+                if (!accountPreferences.isStreamHomeTimelineEnabled) {
                     homeInsertGap = true
                     return false
                 }
@@ -307,7 +306,7 @@ class StreamingService : BaseService() {
             }
 
             override fun onActivityAboutMe(activity: Activity): Boolean {
-                if (!preferences.isStreamInteractionsEnabled) {
+                if (!accountPreferences.isStreamInteractionsEnabled) {
                     interactionsInsertGap = true
                     return false
                 }
@@ -332,7 +331,7 @@ class StreamingService : BaseService() {
 
             @WorkerThread
             override fun onDirectMessage(directMessage: DirectMessage): Boolean {
-                if (!preferences.isStreamDirectMessagesEnabled) {
+                if (!accountPreferences.isStreamDirectMessagesEnabled) {
                     return false
                 }
                 if (canGetMessages) {
@@ -342,6 +341,38 @@ class StreamingService : BaseService() {
                     handler.postDelayed(messagesTimeoutRunnable, timeout)
                 }
                 return true
+            }
+
+            override fun onAllStatus(status: Status) {
+                if (!accountPreferences.isStreamNotificationUsersEnabled) {
+                    return
+                }
+                val user = status.user ?: return
+                val userKey = UserKeyUtils.fromUser(user)
+                val where = Expression.and(Expression.equalsArgs(CachedRelationships.ACCOUNT_KEY),
+                        Expression.equalsArgs(CachedRelationships.USER_KEY),
+                        Expression.equalsArgs(CachedRelationships.NOTIFICATIONS_ENABLED)).sql
+                val whereArgs = arrayOf(account.key.toString(), userKey.toString(), "1")
+                if (DataStoreUtils.queryCount(context.contentResolver, CachedRelationships.CONTENT_URI,
+                        where, whereArgs) <= 0) return
+
+                // Build favorited user notifications
+                val userDisplayName = userColorNameManager.getDisplayName(user,
+                        preferences[nameFirstKey])
+                val statusUri = LinkCreator.getTwidereStatusLink(account.key, status.id)
+                val builder = NotificationCompat.Builder(context)
+                builder.color = userColorNameManager.getUserColor(userKey)
+                builder.setAutoCancel(true)
+                builder.setWhen(status.createdAt?.time ?: 0)
+                builder.setSmallIcon(R.drawable.ic_stat_twitter)
+                builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
+                builder.setContentTitle(context.getString(R.string.notification_title_new_status_by_user, userDisplayName))
+                builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status).text)
+                builder.setContentIntent(PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, statusUri).apply {
+                    setClass(context, LinkHandlerActivity::class.java)
+                }, PendingIntent.FLAG_UPDATE_CURRENT))
+                val tag = "${account.key}:$userKey:${status.id}"
+                notificationManager.notify(tag, NOTIFICATION_ID_USER_NOTIFICATION, builder.build())
             }
 
             override fun onStatusDeleted(event: DeletionEvent): Boolean {

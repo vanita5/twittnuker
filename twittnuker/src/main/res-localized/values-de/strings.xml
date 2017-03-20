@@ -594,6 +594,8 @@
     <string name="notification_ringtone">Klingelton</string>
     <string name="notification_status">Neuer Tweet von <xliff:g id="user">%s</xliff:g></string>
     <string name="notification_status_multiple">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> weiteren</string>
+    <string name="notification_title_new_status_by_user">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g></string>
+    <string name="notification_title_new_retweet_by_user"><xliff:g id="user">%1$s</xliff:g> retweeted</string>
     <string name="notification_type_home">Timeline</string>
     <string name="notification_type_interactions">Interaktionen</string>
     <string name="notification_type_messages">Nachrichten</string>
@@ -831,9 +833,11 @@
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <!-- [noun] Accessibility label for retweet icon -->
     <string name="status_type_retweet">Retweet</string>
+    <string name="stream_summary_notification_users">Benutzer hat "Benachrichtigungen" aktiviert, nicht komplett zuverlässig.</string>
     <string name="stream_type_home">Home</string>
     <string name="stream_type_interactions">Interaktionen</string>
     <string name="stream_type_messages">Nachrichten</string>
+    <string name="stream_type_notification_users">Benachrichtigungen über Tweets von Accounts</string>
     <string name="streaming">Streaming</string>
     <string name="style">Style</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>

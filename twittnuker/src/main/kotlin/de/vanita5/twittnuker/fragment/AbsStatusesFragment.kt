@@ -59,8 +59,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.glide.PauseRecyclerViewOnScrollListener
@@ -471,7 +470,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
 
     protected fun saveReadPosition(position: Int) {
         if (host == null) return
-        if (position == RecyclerView.NO_POSITION) return
+        if (position == RecyclerView.NO_POSITION || adapter.getStatusCount(false) <= 0) return
         val status = adapter.getStatus(position)
         val positionKey = if (status.position_key > 0) status.position_key else status.timestamp
         readPositionTagWithArguments?.let {

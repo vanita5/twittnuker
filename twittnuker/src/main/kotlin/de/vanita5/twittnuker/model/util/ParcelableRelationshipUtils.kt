@@ -31,7 +31,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
 object ParcelableRelationshipUtils {
