@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util
 
 import android.content.ContentValues
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -32,15 +33,12 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches
-import org.mariotaku.library.objectcursor.ObjectCursor
 
 object ContentValuesCreator {
 
     fun createCachedUser(user: User, profileImageSize: String = "normal"): ContentValues {
-        val values = ContentValues()
-        ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java).writeTo(ParcelableUserUtils.fromUser(user, null,
-                profileImageSize = profileImageSize), values)
-        return values
+        return ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java)
+                .create(ParcelableUserUtils.fromUser(user, null, profileImageSize = profileImageSize))
     }
 
     fun createFilteredUser(status: ParcelableStatus): ContentValues {

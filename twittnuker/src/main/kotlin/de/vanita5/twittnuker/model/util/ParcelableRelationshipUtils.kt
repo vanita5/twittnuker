@@ -22,11 +22,17 @@
 
 package de.vanita5.twittnuker.model.util
 
+import android.content.ContentResolver
+import android.support.v4.util.ArraySet
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.Relationship
 import de.vanita5.twittnuker.library.twitter.model.User
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
 object ParcelableRelationshipUtils {
 
@@ -66,7 +72,7 @@ object ParcelableRelationshipUtils {
     }
 
     fun create(accountKey: UserKey, userKey: UserKey, user: User,
-               filtering: Boolean): ParcelableRelationship {
+               filtering: Boolean = false): ParcelableRelationship {
         val obj = ParcelableRelationship()
         obj.account_key = accountKey
         obj.user_key = userKey
@@ -78,5 +84,26 @@ object ParcelableRelationshipUtils {
         obj.can_dm = user.isFollowedBy == true
         obj.notifications_enabled = user.isNotificationsEnabled == true
         return obj
+    }
+
+    /**
+     * @param relationships Relationships to update, if an item has _id, then we will call
+     * `ContentResolver.update`, `ContentResolver.bulkInsert` otherwise.
+     */
+    fun insert(cr: ContentResolver, relationships: Collection<ParcelableRelationship>) {
+        val insertItems = ArraySet<ParcelableRelationship>()
+        val valuesCreator = ObjectCursor.valuesCreatorFrom(ParcelableRelationship::class.java)
+        relationships.forEach {
+            if (it._id > 0) {
+                val values = valuesCreator.create(it)
+                val where = Expression.equalsArgs(CachedRelationships._ID).sql
+                val whereArgs = arrayOf(it._id.toString())
+                cr.update(CachedRelationships.CONTENT_URI, values, where, whereArgs)
+            } else {
+                insertItems.add(it)
+            }
+        }
+        ContentResolverUtils.bulkInsert(cr, CachedRelationships.CONTENT_URI,
+                insertItems.map(valuesCreator::create))
     }
 }

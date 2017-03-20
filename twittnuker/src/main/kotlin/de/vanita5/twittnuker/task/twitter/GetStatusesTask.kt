@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.BaseAbstractTask
-import de.vanita5.twittnuker.task.CacheUsersStatusesTask
+import de.vanita5.twittnuker.task.cache.CacheUsersStatusesTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import java.util.*
@@ -124,12 +124,10 @@ abstract class GetStatusesTask(
                 val storeResult = storeStatus(accountKey, details, statuses, sinceId, maxId, sinceSortId,
                         maxSortId, loadItemLimit, false)
                 // TODO cache related data and preload
-                val cacheTask = CacheUsersStatusesTask(context)
-                val response = TwitterWrapper.StatusListResponse(accountKey, statuses)
-                cacheTask.params = response
+                val cacheTask = CacheUsersStatusesTask(context, accountKey, statuses)
                 TaskStarter.execute(cacheTask)
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
-                result.add(response)
+                result.add(TwitterWrapper.StatusListResponse(accountKey, statuses))
                 if (storeResult != 0) {
                     throw GetTimelineException(storeResult)
                 }
