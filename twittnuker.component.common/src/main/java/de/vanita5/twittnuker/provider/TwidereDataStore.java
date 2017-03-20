@@ -35,6 +35,8 @@ import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableMessageConversationTableInfo;
 import de.vanita5.twittnuker.model.ParcelableMessageTableInfo;
+import de.vanita5.twittnuker.model.ParcelableRelationship;
+import de.vanita5.twittnuker.model.ParcelableRelationshipTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
 import de.vanita5.twittnuker.model.ParcelableTrendTableInfo;
 import de.vanita5.twittnuker.model.ParcelableUserTableInfo;
@@ -835,12 +837,11 @@ public interface TwidereDataStore {
 
         String RETWEET_ENABLED = "retweet_enabled";
 
-        String[] COLUMNS = {_ID, ACCOUNT_KEY, USER_KEY, FOLLOWING, FOLLOWED_BY, BLOCKING,
-                BLOCKED_BY, MUTING, RETWEET_ENABLED};
+        String NOTIFICATIONS_ENABLED = "notifications_enabled";
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
-                TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE,
-                TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_TRUE};
+        String[] COLUMNS = ParcelableRelationshipTableInfo.COLUMNS;
+
+        String[] TYPES = ParcelableRelationshipTableInfo.TYPES;
     }
 
 
