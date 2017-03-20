@@ -106,6 +106,7 @@ class MessagesEntriesAdapter(
     interface MessageConversationClickListener {
         fun onProfileImageClick(position: Int)
         fun onConversationClick(position: Int)
+        fun onConversationLongClick(position: Int): Boolean
 
     }
 
