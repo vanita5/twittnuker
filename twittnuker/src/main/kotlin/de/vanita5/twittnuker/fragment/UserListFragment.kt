@@ -67,7 +67,9 @@ import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.*
 
-class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback, SupportFragmentCallback {
+class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
+        LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
+        SupportFragmentCallback {
 
     private var userListLoaderInitialized: Boolean = false
 

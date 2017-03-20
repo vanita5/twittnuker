@@ -34,11 +34,13 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.BaseActivity
+import de.vanita5.twittnuker.activity.UserListSelectorActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
 
@@ -68,10 +70,23 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                     return
                 }
                 when (actionType) {
-                    "user" -> {
+                    "user", "user_timeline", "user_favorites" -> {
                         val selectUserIntent = Intent(this, UserSelectorActivity::class.java)
                         selectUserIntent.putExtra(EXTRA_ACCOUNT_KEY, accountKey)
+                        selectUserIntent.putExtra(EXTRA_EXTRAS, Bundle {
+                            this[EXTRA_TYPE] = actionType
+                            this[EXTRA_ACCOUNT_KEY] = accountKey
+                        })
                         startActivityForResult(selectUserIntent, REQUEST_SELECT_USER)
+                    }
+                    "list", "list_timeline" -> {
+                        val selectUserListIntent = Intent(this, UserListSelectorActivity::class.java)
+                        selectUserListIntent.putExtra(EXTRA_ACCOUNT_KEY, accountKey)
+                        selectUserListIntent.putExtra(EXTRA_EXTRAS, Bundle {
+                            this[EXTRA_TYPE] = actionType
+                            this[EXTRA_ACCOUNT_KEY] = accountKey
+                        })
+                        startActivityForResult(selectUserListIntent, REQUEST_SELECT_USER_LIST)
                     }
                     else -> {
                         setResult(Activity.RESULT_CANCELED)
@@ -85,21 +100,79 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                     finish()
                     return
                 }
-                val user = data.getParcelableExtra<ParcelableUser>(EXTRA_USER) ?: run {
+                val user = data.getParcelableExtra<ParcelableUser>(EXTRA_USER)
+                val extras = data.getBundleExtra(EXTRA_EXTRAS)
+                val accountKey = extras.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
+                val actionType = extras.getString(EXTRA_TYPE)
+                when (actionType) {
+                    "user_timeline" -> {
+                        val launchIntent = IntentUtils.userTimeline(accountKey, user.key,
+                                user.screen_name, profileUrl = user.extras?.statusnet_profile_url)
+                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+                            putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
+                                    preferences[nameFirstKey]))
+                        })
+                    }
+                    "user_favorites" -> {
+                        val launchIntent = IntentUtils.userTimeline(accountKey, user.key,
+                                user.screen_name, profileUrl = user.extras?.statusnet_profile_url)
+                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+                            putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
+                                    preferences[nameFirstKey]))
+                        })
+                    }
+                    else -> {
+                        val launchIntent = IntentUtils.userProfile(accountKey, user.key,
+                                user.screen_name, profileUrl = user.extras?.statusnet_profile_url)
+                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+                            putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
+                                    preferences[nameFirstKey]))
+                        })
+                    }
+                }
+                finish()
+            }
+            REQUEST_SELECT_USER_LIST -> {
+                if (resultCode != Activity.RESULT_OK || data == null) {
                     setResult(Activity.RESULT_CANCELED)
                     finish()
                     return
                 }
-
-                val launchIntent = IntentUtils.userProfile(user.account_key, user.key,
-                        user.screen_name, profileUrl = user.extras?.statusnet_profile_url)
-                val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
-                setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
-                    putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
-                    putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
-                            preferences[nameFirstKey]))
-                })
+                val list = data.getParcelableExtra<ParcelableUserList>(EXTRA_USER_LIST)
+                val extras = data.getBundleExtra(EXTRA_EXTRAS)
+                val accountKey = extras.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
+                val actionType = extras.getString(EXTRA_TYPE)
+                when (actionType) {
+                    "list_timeline" -> {
+                        val launchIntent = IntentUtils.userListTimeline(accountKey, list.id,
+                                list.user_key, list.user_screen_name, list.name)
+                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+                            putExtra(Intent.EXTRA_SHORTCUT_NAME, list.name)
+                        })
+                    }
+                    else -> {
+                        val launchIntent = IntentUtils.userListDetails(accountKey, list.id,
+                                list.user_key, list.user_screen_name, list.name)
+                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+                            putExtra(Intent.EXTRA_SHORTCUT_NAME, list.name)
+                        })
+                    }
+                }
                 finish()
             }
         }
