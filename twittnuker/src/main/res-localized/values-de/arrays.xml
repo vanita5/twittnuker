@@ -78,5 +78,11 @@
     <item>Standard</item>
     <item>Schwarz/Weiss</item>
     <item>Transparent</item>
+    </string-array>
+    <string-array name="entries_quick_access_shortcut_types">
+        <item>Benutzer</item>
+        <item>Liste</item>
+        <item>Benutzer Timeline</item>
+        <item>Favoriten</item>
   </string-array>
 </resources>
