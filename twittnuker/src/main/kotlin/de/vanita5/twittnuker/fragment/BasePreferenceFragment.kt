@@ -33,6 +33,7 @@ import android.provider.Settings
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import com.squareup.otto.Bus
+import nl.komponents.kovenant.Promise
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.preference.RingtonePreference
@@ -123,8 +124,9 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragmen
         return super.onPreferenceTreeClick(preference)
     }
 
-    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BasePreferenceFragment) -> Unit) {
-        actionHelper.executeAfterFragmentResumed(useHandler, action)
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BasePreferenceFragment) -> Unit)
+            : Promise<Unit, Exception> {
+        return actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 
     override fun fitSystemWindows(insets: Rect) {

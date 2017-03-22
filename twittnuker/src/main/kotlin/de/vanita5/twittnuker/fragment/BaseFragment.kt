@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.text.BidiFormatter
 import com.squareup.otto.Bus
 import com.twitter.Validator
+import nl.komponents.kovenant.Promise
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
@@ -77,8 +78,9 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
         GeneralComponentHelper.build(context!!).inject(this)
     }
 
-    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseFragment) -> Unit) {
-        actionHelper.executeAfterFragmentResumed(useHandler, action)
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseFragment) -> Unit)
+            : Promise<Unit, Exception> {
+        return actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 
     override fun onResume() {

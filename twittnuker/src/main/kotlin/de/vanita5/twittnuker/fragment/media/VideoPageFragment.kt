@@ -308,9 +308,7 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
         }
     }
 
-    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (VideoPageFragment) -> Unit) {
-        // No-op
-    }
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (VideoPageFragment) -> Unit) = TODO()
 
 
     private fun updatePlayerState() {

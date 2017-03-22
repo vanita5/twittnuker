@@ -28,6 +28,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.v4.util.ArraySet
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Trends
@@ -46,7 +47,6 @@ import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.DebugLog.w
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.util.*
 
 class GetTrendsTask(
@@ -59,8 +59,8 @@ class GetTrendsTask(
         val details = getAccountDetails(AccountManager.get(context), accountKey, true) ?: return
         val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         try {
-            val trends = when {
-                details.type == FANFOU -> twitter.fanfouTrends
+            val trends = when (details.type) {
+                FANFOU -> twitter.fanfouTrends
                 else -> twitter.getLocationTrends(woeId).firstOrNull()
             } ?: return
             storeTrends(context.contentResolver, CachedTrends.Local.CONTENT_URI, trends)
