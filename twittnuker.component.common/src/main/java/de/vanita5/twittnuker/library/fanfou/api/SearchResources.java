@@ -24,13 +24,13 @@
 
 package de.vanita5.twittnuker.library.fanfou.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Query;
 
 public interface SearchResources {
 

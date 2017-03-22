@@ -123,6 +123,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         listenExternalThemeChange()
 
         loadDefaultFeatures()
+
+        Analyzer.preferencesChanged(sharedPreferences)
     }
 
     private fun loadDefaultFeatures() {
@@ -221,6 +223,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 }
             }
         }
+        Analyzer.preferencesChanged(preferences)
     }
 
     override fun onTerminate() {

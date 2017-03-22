@@ -53,9 +53,11 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
-import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import de.vanita5.twittnuker.constant.themeBackgroundAlphaKey
+import de.vanita5.twittnuker.constant.themeBackgroundOptionKey
 import de.vanita5.twittnuker.constant.themeColorKey
 import de.vanita5.twittnuker.constant.themeKey
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
@@ -103,6 +105,9 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     lateinit var restHttpClient: RestHttpClient
 
     private val actionHelper = IBaseActivity.ActionHelper(this)
+    private val themePreferences by lazy {
+        getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    }
 
     // Registered listeners
     private val controlBarOffsetListeners = ArrayList<IControlBarActivity.ControlBarOffsetListener>()
@@ -116,7 +121,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         }
         if (ThemeUtils.isTransparentBackground(themeBackgroundOption)) {
             theme.colorToolbar = ColorUtils.setAlphaComponent(theme.colorToolbar,
-                    ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)))
+                    ThemeUtils.getActionBarAlpha(themePreferences[themeBackgroundAlphaKey]))
         }
         theme.statusBarColor = ChameleonUtils.darkenColor(theme.colorToolbar)
         theme.lightStatusBarMode = LightStatusBarMode.AUTO
@@ -273,11 +278,11 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     }
 
     override val themeBackgroundAlpha: Int
-        get() = ThemeUtils.getUserThemeBackgroundAlpha(this)
+        get() = themePreferences[themeBackgroundAlphaKey]
 
 
     override val themeBackgroundOption: String
-        get() = ThemeUtils.getThemeBackgroundOption(this)
+        get() = themePreferences[themeBackgroundOptionKey]
 
     protected open val shouldApplyWindowBackground: Boolean
         get() {

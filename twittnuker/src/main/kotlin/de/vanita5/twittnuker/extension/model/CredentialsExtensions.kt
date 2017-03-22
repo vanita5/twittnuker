@@ -27,6 +27,7 @@ import android.net.Uri
 import android.text.TextUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.fanfou.FanfouStream
 import de.vanita5.twittnuker.library.twitter.*
 import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization
@@ -41,7 +42,6 @@ import org.mariotaku.restfu.oauth.OAuthEndpoint
 import org.mariotaku.restfu.oauth.OAuthToken
 import de.vanita5.twittnuker.TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.library.fanfou.FanfouStream
 import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
@@ -146,6 +146,7 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
         UserAgentExtraHeaders(MicroBlogAPIFactory.getTwidereUserAgent(context))
     }
     val holder = DependencyHolder.get(context)
+    var extraRequestParams: Map<String, String>? = null
     when (cls) {
         TwitterUpload::class.java -> {
             val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
@@ -177,11 +178,14 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
         }
         AccountType.FANFOU -> {
             factory.setConstantPool(sFanfouConstantPool)
+            if (cls != FanfouStream::class.java) {
+                extraRequestParams = mapOf("format" to "html")
+            }
         }
     }
     val converterFactory = TwitterConverterFactory()
     factory.setRestConverterFactory(converterFactory)
-    factory.setRestRequestFactory(MicroBlogAPIFactory.TwidereRestRequestFactory(null))
+    factory.setRestRequestFactory(MicroBlogAPIFactory.TwidereRestRequestFactory(extraRequestParams))
     factory.setHttpRequestFactory(MicroBlogAPIFactory.TwidereHttpRequestFactory(extraHeaders))
     factory.setExceptionFactory(MicroBlogAPIFactory.TwidereExceptionFactory(converterFactory))
     return factory.build<T>(cls)

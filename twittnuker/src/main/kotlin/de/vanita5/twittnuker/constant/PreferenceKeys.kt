@@ -39,7 +39,6 @@ import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
-import de.vanita5.twittnuker.view.ProfileImageView
 
 
 val textSizeKey = KIntKey(KEY_TEXT_SIZE, 15)
@@ -89,6 +88,8 @@ val multiColumnWidthKey = KStringKey("multi_column_tab_width", "normal")
 val streamingEnabledKey = KBooleanKey("streaming_enabled", true)
 val streamingNonMeteredNetworkKey = KBooleanKey("streaming_non_metered_network", false)
 val streamingPowerSavingKey = KBooleanKey("streaming_power_saving", false)
+
+val themeBackgroundOptionKey = KStringKey(KEY_THEME_BACKGROUND, VALUE_THEME_BACKGROUND_DEFAULT)
 
 object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
     override fun read(preferences: SharedPreferences): Int {

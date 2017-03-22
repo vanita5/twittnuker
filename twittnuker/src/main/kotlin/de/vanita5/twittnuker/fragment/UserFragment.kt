@@ -101,11 +101,8 @@ import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
-import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
-import de.vanita5.twittnuker.constant.lightFontKey
-import de.vanita5.twittnuker.constant.newDocumentApiKey
-import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.extension.loadProfileBanner
@@ -671,8 +668,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         userColorNameManager.registerColorChangedListener(this)
         nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
         cardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
-                ThemeUtils.getThemeBackgroundOption(activity),
-                ThemeUtils.getUserThemeBackgroundAlpha(activity))
+                preferences[themeBackgroundOptionKey], preferences[themeBackgroundAlphaKey])
         actionBarShadowColor = 0xA0000000.toInt()
         val args = arguments
         val accountId: UserKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
