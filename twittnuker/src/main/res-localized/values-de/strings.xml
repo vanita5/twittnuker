@@ -30,6 +30,7 @@
     <string name="action_center">Mitte</string>
     <string name="action_clear">Löschen</string>
     <string name="action_compose">Neuer Tweet</string>
+  <string name="action_compose_message_convert_to_status">In Tweet umwandeln</string>
     <string name="action_conversation_info">Gesprächsinformationen</string>
     <string name="action_create_conversation">Gruppe erstellen</string>
   <string name="action_creating_list">erstelle Liste</string>
@@ -408,15 +409,20 @@
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_location_your_coarse_location">Deine ungefähre Position</string>
+  <string name="label_media">Medien</string>
     <string name="label_original_status">Original-Tweet</string>
     <string name="label_password_sign_in">Passwort Login</string>
+  <string name="label_photo">Foto</string>
+  <string name="label_photos">Fotos</string>
     <string name="label_poll">Umfrage</string>
     <string name="label_refresh_and_sync_service">Aktualisierungs- &amp; Synchronisierungsdienst</string>
     <string name="label_refresh_service">Dienst aktualisieren</string>
+  <string name="label_sensitive_content">Sensibler Inhalt</string>
     <string name="label_status_not_available">Tweet existiert nicht</string>
     <string name="label_streaming_service">Streaming Service</string>
     <string name="label_translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Übersetzung</string>
+  <string name="label_video">Video</string>
     <string name="label_your_profile_image">Dein Profilbild</string>
     <string name="large">Groß</string>
     <string name="leftside_compose_button">Tweet Button auf der linken Seite</string>
@@ -447,11 +453,7 @@
     <string name="long_click_to_open_menu">Halten, um das Menü zu öffnen</string>
     <string name="mark_as_sensitive">#NSFW</string>
     <string name="media">Medien</string>
-    <string name="label_media">Medien</string>
     <string name="label_sensitive">Sensitive</string>
-    <string name="label_photo">Foto</string>
-    <string name="label_photos">Fotos</string>
-    <string name="label_video">Video</string>
     <string name="media_preload">Medien im Voraus laden</string>
     <string name="media_preview">Medien Vorschau</string>
     <string name="media_preview_style">Bildvorschau Format</string>
@@ -473,25 +475,13 @@
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <string name="message_format_compose_message_convert_to_status">Diesen Tweet als Nachricht an <xliff:g id="name">%1$s</xliff:g> senden?</string>
     <string name="message_format_conversation_avatar_update">Gruppenbild aktualisiert</string>
-    <string name="message_format_conversation_avatar_update_by_user">
-        <xliff:g example="User" id="by_user">%1$s</xliff:g> hat das Gruppenbild aktualisiert</string>
+    <string name="message_format_conversation_avatar_update_by_user"><xliff:g example="User" id="by_user">%1$s</xliff:g> hat das Gruppenbild aktualisiert</string>
     <string name="message_format_conversation_name_update">Gruppenname geändert: <xliff:g example="User" id="name">%1$s</xliff:g></string>
-    <string name="message_format_conversation_name_update_by_user">
-    <xliff:g example="User"
-        id="by_user">%1$s</xliff:g> hat den Gruppennamen in \"<xliff:g
-        example="New name" id="name">%2$s</xliff:g>\" geändert
-    </string>
-    <string name="message_format_participants_join">
-         <xliff:g example="User" id="name">%1$s</xliff:g> ist beigetreten</string>
-    <string name="message_format_participants_join_added">
-     <xliff:g example="Sender" id="sender">%1$s</xliff:g> hat <xliff:g example="Recipient" id="recipient">%2$s</xliff:g> hinzugefügt
-    </string>
-    <string name="message_format_participants_leave">
-     <xliff:g example="User" id="name">%1$s</xliff:g> hat das Gespräch verlassen</string>
-    <string name="message_format_sender_time">
-     <xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g
-        example="12:00" id="time">%2$s</xliff:g>
-    </string>
+    <string name="message_format_conversation_name_update_by_user"><xliff:g example="User" id="by_user">%1$s</xliff:g> hat den Gruppennamen in \"<xliff:g example="New name" id="name">%2$s</xliff:g>\" geändert</string>
+    <string name="message_format_participants_join"><xliff:g example="User" id="name">%1$s</xliff:g> ist beigetreten</string>
+    <string name="message_format_participants_join_added"><xliff:g example="Sender" id="sender">%1$s</xliff:g> hat <xliff:g example="Recipient" id="recipient">%2$s</xliff:g> hinzugefügt</string>
+    <string name="message_format_participants_leave"><xliff:g example="User" id="name">%1$s</xliff:g> hat das Gespräch verlassen</string>
+    <string name="message_format_sender_time"><xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g example="12:00" id="time">%2$s</xliff:g></string>
     <string name="message_join_conversation">Gespräch beigetreten.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
