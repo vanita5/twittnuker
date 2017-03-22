@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.adapter.iface
 
 import android.support.v4.text.BidiFormatter
 import com.bumptech.glide.RequestManager
+import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.annotation.ImageShapeStyle
 
 interface IContentAdapter {
 
@@ -36,6 +36,8 @@ interface IContentAdapter {
 
     @ImageShapeStyle
     val profileImageStyle: Int
+
+    val profileImageSize: String
 
     val profileImageEnabled: Boolean
 

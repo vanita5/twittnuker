@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v4.text.BidiFormatter
 import com.bumptech.glide.RequestManager
+import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
@@ -56,6 +57,7 @@ open class BaseArrayAdapter<T>(
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
 
+    final override val profileImageSize: String = context.getString(R.string.profile_image_size)
     final override val profileImageStyle: Int
     final override val textSize: Float
     final override val profileImageEnabled: Boolean
@@ -64,17 +66,16 @@ open class BaseArrayAdapter<T>(
 
     override val itemCounts: ItemCounts = ItemCounts(1)
 
-    @ILoadMoreSupportAdapter.IndicatorPosition
+
     override var loadMoreSupportedPosition: Long = 0
-        set(value) {
+        @ILoadMoreSupportAdapter.IndicatorPosition set(value) {
             field = value
             loadMoreIndicatorPosition = ILoadMoreSupportAdapter.apply(loadMoreIndicatorPosition, value)
             notifyDataSetChanged()
         }
 
-    @ILoadMoreSupportAdapter.IndicatorPosition
     override var loadMoreIndicatorPosition: Long = 0
-        set(value) {
+        @ILoadMoreSupportAdapter.IndicatorPosition set(value) {
             if (field == value) return
             field = ILoadMoreSupportAdapter.apply(value, loadMoreSupportedPosition)
             notifyDataSetChanged()

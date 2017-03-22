@@ -27,6 +27,7 @@ import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
@@ -59,6 +60,7 @@ abstract class BaseRecyclerViewAdapter<VH : RecyclerView.ViewHolder>(
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
 
+    override final val profileImageSize: String = context.getString(R.string.profile_image_size)
     override final val profileImageStyle: Int
     override final val textSize: Float
     override final val profileImageEnabled: Boolean

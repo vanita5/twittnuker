@@ -26,6 +26,7 @@ import android.content.Context
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
@@ -59,6 +60,7 @@ class DummyItemAdapter(
     @Inject
     override lateinit var bidiFormatter: BidiFormatter
 
+    override var profileImageSize: String = context.getString(R.string.profile_image_size)
     override var profileImageStyle: Int = 0
     override var mediaPreviewStyle: Int = 0
     override var textSize: Float = 0f
