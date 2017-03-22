@@ -41,6 +41,8 @@ abstract class AbsFriendshipOperationTask(
 ) : ExceptionHandlingAbstractTask<AbsFriendshipOperationTask.Arguments, ParcelableUser,
         MicroBlogException, Any?>(context) {
 
+    override val exceptionClass = MicroBlogException::class.java
+
     override fun beforeExecute() {
         microBlogWrapper.addUpdatingRelationshipId(params.accountKey, params.userKey)
         val event = FriendshipTaskEvent(action, params.accountKey,

@@ -26,6 +26,7 @@ import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
@@ -45,7 +46,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 import de.vanita5.twittnuker.task.twitter.message.SendMessageTask.Companion.TEMP_CONVERSATION_ID_PREFIX
 import de.vanita5.twittnuker.util.DataStoreUtils
-import org.mariotaku.library.objectcursor.ObjectCursor
 
 
 class MarkMessageReadTask(
@@ -53,6 +53,9 @@ class MarkMessageReadTask(
         val accountKey: UserKey,
         val conversationId: String
 ) : ExceptionHandlingAbstractTask<Unit?, Boolean, MicroBlogException, Unit?>(context) {
+
+    override val exceptionClass = MicroBlogException::class.java
+
     override fun onExecute(params: Unit?): Boolean {
         if (conversationId.startsWith(TEMP_CONVERSATION_ID_PREFIX)) return true
         val account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?:
