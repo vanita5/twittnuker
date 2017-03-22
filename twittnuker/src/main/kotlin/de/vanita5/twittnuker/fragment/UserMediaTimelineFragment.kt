@@ -42,8 +42,9 @@ import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
-class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>(), LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, IStatusViewHolder.StatusClickListener {
-
+class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter,
+        StaggeredGridLayoutManager>(), LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback,
+        IStatusViewHolder.StatusClickListener {
 
     override var refreshing: Boolean
         get() {
@@ -128,6 +129,7 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
             }
         }
         loader.fromUser = false
+        refreshing = false
         showContent()
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
     }
@@ -141,7 +143,12 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
         if (ILoadMoreSupportAdapter.END != position) return
         super.onLoadMoreContents(position)
         // Get last raw status
-        val maxId = adapter.getStatusId(adapter.statusStartIndex + adapter.getStatusCount(true) - 1)
+        val startIdx = adapter.statusStartIndex
+        if (startIdx < 0) return
+        val statusCount = adapter.getStatusCount(true)
+        if (statusCount <= 0) return
+        val status = adapter.getStatus(startIdx + statusCount - 1, true)
+        val maxId = status.id
         getStatuses(maxId, null)
     }
 
