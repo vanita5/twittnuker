@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.activity.shortcut
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Bundle
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
@@ -36,11 +38,22 @@ class CreateComposeShortcutActivity : Activity() {
         setVisible(true)
         val intent = Intent()
         val launchIntent = Intent(INTENT_ACTION_COMPOSE).apply {
-            `package` = BuildConfig.VERSION_NAME
+            `package` = BuildConfig.APPLICATION_ID
         }
-        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+        val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_app_shortcut_compose,
+                BitmapFactory.Options().apply { inMutable = true }).apply {
+            val appIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher, BitmapFactory.Options().apply {
+                inSampleSize = 3
+            })
+            val canvas = Canvas(this)
+            val appIconLeft = (width - appIcon.width).toFloat()
+            val appIconTop = (height - appIcon.height).toFloat()
+            canvas.drawBitmap(appIcon, appIconLeft, appIconTop, null)
+            appIcon.recycle()
+        }
+
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon)
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.action_compose))
         setResult(RESULT_OK, intent)
         finish()

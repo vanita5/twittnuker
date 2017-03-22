@@ -24,9 +24,17 @@ package de.vanita5.twittnuker.activity.shortcut
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import nl.komponents.kovenant.deferred
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
@@ -37,12 +45,15 @@ import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.UserListSelectorActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
+import de.vanita5.twittnuker.util.glide.DeferredTarget
 
 class CreateQuickAccessShortcutActivity : BaseActivity() {
 
@@ -115,6 +126,7 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                             putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
                                     preferences[nameFirstKey]))
                         })
+                        finish()
                     }
                     "user_favorites" -> {
                         val launchIntent = IntentUtils.userTimeline(accountKey, user.key,
@@ -126,20 +138,34 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                             putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
                                     preferences[nameFirstKey]))
                         })
+                        finish()
                     }
                     else -> {
                         val launchIntent = IntentUtils.userProfile(accountKey, user.key,
                                 user.screen_name, profileUrl = user.extras?.statusnet_profile_url)
-                        val icon = Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
-                        setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
-                            putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon)
-                            putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
-                                    preferences[nameFirstKey]))
-                        })
+                        val requestBuilder = Glide.with(this).loadProfileImage(this, user, shapeStyle = preferences[profileImageStyleKey],
+                                cornerRadiusRatio = 0.1f, size = getString(R.string.profile_image_size))
+                        val deferred = deferred<GlideDrawable, Exception>()
+                        requestBuilder.into(DeferredTarget(deferred))
+                        deferred.promise.successUi { drawable ->
+                            val icon = Bitmap.createBitmap(drawable.intrinsicWidth,
+                                    drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                            val canvas = Canvas(icon)
+                            drawable.setBounds(0, 0, icon.width, icon.height)
+                            drawable.draw(canvas)
+                            setResult(Activity.RESULT_OK, Intent().apply {
+                                putExtra(Intent.EXTRA_SHORTCUT_INTENT, launchIntent)
+                                putExtra(Intent.EXTRA_SHORTCUT_ICON, icon)
+                                putExtra(Intent.EXTRA_SHORTCUT_NAME, userColorNameManager.getDisplayName(user,
+                                        preferences[nameFirstKey]))
+                            })
+                            finish()
+                        }.failUi {
+                            setResult(Activity.RESULT_CANCELED)
+                            finish()
+                        }
                     }
                 }
-                finish()
             }
             REQUEST_SELECT_USER_LIST -> {
                 if (resultCode != Activity.RESULT_OK || data == null) {
@@ -193,7 +219,7 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
     class QuickAccessShortcutTypeDialogFragment : BaseDialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val builder = AlertDialog.Builder(context)
-            builder.setItems(R.array.entries_quick_access_shortcut_types) { dialog, which ->
+            builder.setItems(R.array.entries_quick_access_shortcut_types) { _, which ->
                 (activity as CreateQuickAccessShortcutActivity).onItemSelected(which)
             }
             return builder.create().apply {
@@ -202,6 +228,10 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                     it.applyTheme()
                 }
             }
+        }
+
+        override fun onCancel(dialog: DialogInterface?) {
+            activity?.finish()
         }
     }
 }
