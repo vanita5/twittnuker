@@ -62,7 +62,7 @@ import de.vanita5.twittnuker.util.buildStatusFilterWhereClause
 abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     private var contentObserver: ContentObserver? = null
-    private val accountListener: OnAccountsUpdateListener = OnAccountsUpdateListener { accounts ->
+    private val accountListener: OnAccountsUpdateListener = OnAccountsUpdateListener {
         reloadStatuses()
     }
 

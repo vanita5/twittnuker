@@ -672,6 +672,7 @@
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Speicher</string>
+    <string name="preference_title_streaming_content">Streaming Inhalt</string>
     <string name="preference_title_streaming_enabled">Streaming aktivieren</string>
     <string name="preference_title_streaming_non_metered_network">Streaming in unbeschränkten Netzwerken</string>
     <string name="preference_title_streaming_power_saving">Energiesparmodus</string>

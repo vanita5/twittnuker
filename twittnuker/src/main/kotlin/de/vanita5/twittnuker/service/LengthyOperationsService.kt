@@ -47,6 +47,7 @@ import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
 import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.ktextension.useCursor
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
@@ -71,7 +72,6 @@ import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.deleteDrafts
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -172,7 +172,7 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
             }
             return@task data
         }.successUi { uri ->
-            notificationManager.cancel(data.toString(), NOTIFICATION_ID_DRAFTS)
+            notificationManager.cancel(uri.toString(), NOTIFICATION_ID_DRAFTS)
         }
     }
 

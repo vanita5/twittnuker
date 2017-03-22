@@ -1003,7 +1003,6 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.mediaPreview.displayMedia()
             }
 
-            val fm = fragment.childFragmentManager
             if (TwitterCardUtils.isCardSupported(status)) {
                 val size = TwitterCardUtils.getCardSize(status.card!!)
 

@@ -40,6 +40,7 @@ import org.mariotaku.sqliteqb.library.Columns.Column
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.HomeActivity
+import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.NotificationType
 import de.vanita5.twittnuker.constant.IntentConstants
@@ -49,6 +50,7 @@ import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.getTitle
 import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.rawQuery
+import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
@@ -185,7 +187,7 @@ class ContentNotificationManager(
             var timestamp: Long = -1
             val filteredUserIds = DataStoreUtils.getFilteredUserIds(context)
             var consumed = 0
-            val remaining = c.forEachRow(5) { cur, idx ->
+            val remaining = c.forEachRow(5) { cur, _ ->
 
                 val activity = ci.newObject(cur)
                 if (pref.isNotificationMentionsOnly && activity.action !in Activity.Action.MENTION_ACTIONS) {
@@ -408,5 +410,31 @@ class ContentNotificationManager(
         UriExtraUtils.addExtra(linkBuilder, "item_user_following", extraUserFollowing)
         intent.data = linkBuilder.build()
         return PendingIntent.getBroadcast(context, 0, intent, 0)
+    }
+
+    fun showUserNotification(accountKey: UserKey, status: Status, userKey: UserKey) {
+        // Build favorited user notifications
+        val userDisplayName = userColorNameManager.getDisplayName(status.user,
+                preferences[nameFirstKey])
+        val statusUri = LinkCreator.getTwidereStatusLink(accountKey, status.id)
+        val builder = NotificationCompat.Builder(context)
+        builder.color = userColorNameManager.getUserColor(userKey)
+        builder.setAutoCancel(true)
+        builder.setWhen(status.createdAt?.time ?: 0)
+        builder.setSmallIcon(R.drawable.ic_stat_twitter)
+        builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
+        if (status.isRetweetedByMe) {
+            builder.setContentTitle(context.getString(R.string.notification_title_new_retweet_by_user, userDisplayName))
+            builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status.retweetedStatus).text)
+        } else {
+            builder.setContentTitle(context.getString(R.string.notification_title_new_status_by_user, userDisplayName))
+            builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status).text)
+        }
+        builder.setContentIntent(PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, statusUri).apply {
+            setClass(context, LinkHandlerActivity::class.java)
+        }, PendingIntent.FLAG_UPDATE_CURRENT))
+
+        val tag = "$accountKey:$userKey:${status.id}"
+        notificationManager.notify(tag, NOTIFICATION_ID_USER_NOTIFICATION, builder.build())
     }
 }

@@ -87,8 +87,8 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
     private val initialMedia: ParcelableMedia?
         get() = intent.getParcelableExtra<ParcelableMedia>(EXTRA_CURRENT_MEDIA)
 
-    private val media: Array<ParcelableMedia> by lazy {
-        intent.getParcelableArrayExtra(EXTRA_MEDIA).toTypedArray(ParcelableMedia.CREATOR)
+    private val media: Array<out ParcelableMedia> by lazy {
+        intent.getParcelableArrayExtra(EXTRA_MEDIA)?.toTypedArray(ParcelableMedia.CREATOR).orEmpty()
     }
 
     override val shouldApplyWindowBackground: Boolean = false
@@ -358,7 +358,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
     }
 
     override fun onSwipeStateChanged(state: Int) {
-        supportActionBar?.let { bar ->
+        supportActionBar?.let {
             if (state == ViewDragHelper.STATE_IDLE) {
                 if (wasBarShowing == 1 && !isBarShowing) {
                     setBarVisibility(true)

@@ -41,6 +41,7 @@ import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.ktextension.*
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.fanfou.model.PhotoStatusUpdate
@@ -69,7 +70,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.io.Closeable
 import java.io.File
 import java.io.FileNotFoundException
@@ -499,9 +499,7 @@ class UpdateStatusTask(
         var sharedMediaIds: Array<String>? = null
         var sharedMediaOwners: Array<UserKey>? = null
 
-        val overrideTexts: Array<String> = Array(length) { idx ->
-            defaultText
-        }
+        val overrideTexts: Array<String> = Array(length) { defaultText }
         val mediaIds: Array<Array<String>?> = arrayOfNulls(length)
 
         val mediaUploadResults: Array<MediaUploadResult?> = arrayOfNulls(length)

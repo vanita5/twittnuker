@@ -47,10 +47,7 @@ import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_USER_NOTIFICATION
-import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
@@ -65,7 +62,10 @@ import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.IntentUtils
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
@@ -364,28 +364,7 @@ class StreamingService : BaseService() {
                 if (DataStoreUtils.queryCount(context.contentResolver, CachedRelationships.CONTENT_URI,
                         where, whereArgs) <= 0) return
 
-                // Build favorited user notifications
-                val userDisplayName = userColorNameManager.getDisplayName(user,
-                        preferences[nameFirstKey])
-                val statusUri = LinkCreator.getTwidereStatusLink(account.key, status.id)
-                val builder = NotificationCompat.Builder(context)
-                builder.color = userColorNameManager.getUserColor(userKey)
-                builder.setAutoCancel(true)
-                builder.setWhen(status.createdAt?.time ?: 0)
-                builder.setSmallIcon(R.drawable.ic_stat_twitter)
-                builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
-                if (status.isRetweetedByMe) {
-                    builder.setContentTitle(context.getString(R.string.notification_title_new_retweet_by_user, userDisplayName))
-                    builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status.retweetedStatus).text)
-                } else {
-                    builder.setContentTitle(context.getString(R.string.notification_title_new_status_by_user, userDisplayName))
-                    builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status).text)
-                }
-                builder.setContentIntent(PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, statusUri).apply {
-                    setClass(context, LinkHandlerActivity::class.java)
-                }, PendingIntent.FLAG_UPDATE_CURRENT))
-                val tag = "${account.key}:$userKey:${status.id}"
-                notificationManager.notify(tag, NOTIFICATION_ID_USER_NOTIFICATION, builder.build())
+                contentNotificationManager.showUserNotification(account.key, status, userKey)
             }
 
             override fun onStatusDeleted(event: DeletionEvent): Boolean {

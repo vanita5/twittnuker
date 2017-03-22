@@ -26,8 +26,8 @@ import android.content.Context
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
@@ -102,7 +102,7 @@ class DummyItemAdapter(
         } else if (adapter is VariousItemsAdapter) {
             return adapter.getItem(position) as ParcelableStatus
         } else if (adapter is ParcelableActivitiesAdapter) {
-            return adapter.getActivity(position)?.getActivityStatus()!!
+            return adapter.getActivity(position).getActivityStatus()!!
         }
         throw IndexOutOfBoundsException()
     }
