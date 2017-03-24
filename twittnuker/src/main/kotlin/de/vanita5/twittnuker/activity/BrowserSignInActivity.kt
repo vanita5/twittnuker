@@ -61,7 +61,6 @@ import java.io.IOException
 import java.io.StringReader
 import java.lang.ref.WeakReference
 
-@SuppressLint("SetJavaScriptEnabled")
 class BrowserSignInActivity : BaseActivity() {
 
     private var requestToken: OAuthToken? = null
@@ -77,7 +76,7 @@ class BrowserSignInActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    @SuppressLint("AddJavascriptInterface")
+    @SuppressLint("AddJavascriptInterface", "SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browser_sign_in)
@@ -97,7 +96,18 @@ class BrowserSignInActivity : BaseActivity() {
         if (task?.status == AsyncTask.Status.RUNNING) {
             task?.cancel(true)
         }
+        webView?.destroy()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView.onResume()
+    }
+
+    override fun onPause() {
+        webView.onPause()
+        super.onPause()
     }
 
     private fun getRequestToken() {
