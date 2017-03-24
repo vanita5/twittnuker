@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.message
 
+import android.Manifest
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
@@ -29,6 +30,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.ContextCompat
@@ -54,18 +56,20 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.set
+import org.mariotaku.ktextension.checkAllSelfPermissionsGranted
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.SecretConstants
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PICK_MEDIA
+import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
+import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
@@ -93,6 +97,9 @@ import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.PreviewGridItemDecoration
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.compose.MediaPreviewViewHolder
+import org.mariotaku.ktextension.checkAnySelfPermissionsGranted
+import xyz.klinker.giphy.Giphy
+import xyz.klinker.giphy.GiphyActivity
 import java.util.concurrent.atomic.AtomicReference
 
 class MessagesConversationFragment : AbsContentListRecyclerViewFragment<MessagesConversationAdapter>(),
@@ -214,8 +221,13 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Giphy.REQUEST_GIPHY -> {
+                requestOrPickGif()
+            }
+        }
         when (requestCode) {
-            REQUEST_PICK_MEDIA -> {
+            REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val mediaUris = MediaPickerActivity.getMediaUris(data)
                     TaskStarter.execute(AddMediaTask(this, mediaUris))
@@ -227,6 +239,25 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
                 }
             }
         }
+    }
+
+    private fun requestOrPickGif() {
+        if (this.context.checkAnySelfPermissionsGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            pickGif()
+            return
+        }
+        ActivityCompat.requestPermissions(this.activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_PICK_MEDIA_PERMISSION)
+    }
+
+    private fun pickGif(): Boolean {
+//        Giphy.Builder(this.activity, SecretConstants.GIPHY_API_KEY).maxFileSize(10 * 1024 * 1024).build()
+
+        val intent = Intent(activity, GiphyActivity::class.java)
+        intent.putExtra(GiphyActivity.EXTRA_API_KEY, SecretConstants.GIPHY_API_KEY)
+        intent.putExtra(GiphyActivity.EXTRA_SIZE_LIMIT, 10 * 1024 * 1024)
+        startActivityForResult(intent, Giphy.REQUEST_GIPHY)
+        return true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -419,6 +450,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
                         MediaPickerActivity.SOURCE_CAMCORDER,
                         MediaPickerActivity.SOURCE_GALLERY,
                         MediaPickerActivity.SOURCE_CLIPBOARD))
+                .addEntry(getString(R.string.add_gif), INTENT_ACTION_PICK_GIF, Giphy.REQUEST_GIPHY)
                 .containsVideo(true)
                 .allowMultiple(false)
                 .build()
@@ -561,6 +593,8 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
     companion object {
         private const val REQUEST_MANAGE_CONVERSATION_INFO = 101
+
+        private const val REQUEST_PICK_MEDIA_PERMISSION = 302
     }
 
 }
