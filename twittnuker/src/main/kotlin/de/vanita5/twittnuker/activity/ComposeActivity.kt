@@ -335,8 +335,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             R.id.take_photo -> {
                 requestOrOpenCamera()
             }
-            R.id.add_image, R.id.add_image_sub_item -> {
+            R.id.add_image -> {
                 requestOrPickMedia()
+            }
+            R.id.add_gif -> {
+                requestOrPickGif()
             }
             R.id.drafts -> {
                 IntentUtils.openDrafts(this)
@@ -1149,7 +1152,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 .containsVideo(true)
                 .videoOnly(false)
                 .allowMultiple(true)
-                .addEntry(getString(R.string.add_gif), INTENT_ACTION_PICK_GIF, Giphy.REQUEST_GIPHY)
                 .build()
         startActivityForResult(intent, REQUEST_PICK_MEDIA)
         return true
@@ -1173,7 +1175,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
          * Has media & Not reply: [Take photo][Media menu][Attach location][Drafts]
          * Is reply: [Media menu][View status][Attach location][Drafts]
          */
-        MenuUtils.setItemAvailability(menu, R.id.add_image, !hasMedia)
+        MenuUtils.setItemAvailability(menu, R.id.add_image, true) //TWITTNUKER always show
         MenuUtils.setItemAvailability(menu, R.id.media_menu, hasMedia)
         MenuUtils.setItemAvailability(menu, R.id.toggle_sensitive, hasMedia)
         MenuUtils.setItemAvailability(menu, R.id.schedule, scheduleSupported)
