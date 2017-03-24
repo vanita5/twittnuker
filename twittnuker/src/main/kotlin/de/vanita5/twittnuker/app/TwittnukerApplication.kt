@@ -26,6 +26,7 @@ import android.app.Application
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.AsyncTask
@@ -39,6 +40,7 @@ import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
+import org.mariotaku.ktextension.setLayoutDirectionCompat
 import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
@@ -86,12 +88,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     @Inject
     lateinit internal var contentNotificationManager: ContentNotificationManager
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
-
-
     val sqLiteDatabase: SQLiteDatabase by lazy {
         StrictModeUtils.checkDiskIO()
         sqLiteOpenHelper.writableDatabase
@@ -101,12 +97,24 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         TwidereSQLiteOpenHelper(this, Constants.DATABASES_NAME, Constants.DATABASES_VERSION)
     }
 
+    private val sharedPreferences: SharedPreferences by lazy {
+        val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        prefs.registerOnSharedPreferenceChangeListener(this)
+        return@lazy prefs
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
+
     override fun onCreate() {
         instance = this
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy()
         }
         super.onCreate()
+        applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()
         initDebugMode()
@@ -127,55 +135,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         Analyzer.preferencesChanged(sharedPreferences)
     }
 
-    private fun loadDefaultFeatures() {
-        val lastUpdated = kPreferences[defaultFeatureLastUpdated]
-        if (lastUpdated > 0 && TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastUpdated) < 12) {
-            return
-        }
-        task {
-            defaultFeatures.loadRemoteSettings(restHttpClient)
-        }.success {
-            defaultFeatures.save(sharedPreferences)
-            DebugLog.d(LOGTAG, "Loaded remote features")
-        }.fail {
-            DebugLog.w(LOGTAG, "Unable to load remote features", it)
-        }.always {
-            kPreferences[defaultFeatureLastUpdated] = System.currentTimeMillis()
-        }
-    }
-
-    private fun listenExternalThemeChange() {
-        val packageFilter = IntentFilter()
-        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED)
-        registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val uid = intent.getIntExtra(Intent.EXTRA_UID, -1)
-                val packages = packageManager.getPackagesForUid(uid)
-                val manager = externalThemeManager
-                if (ArrayUtils.contains(packages, manager.emojiPackageName)) {
-                    manager.reloadEmojiPreferences()
-                }
-            }
-        }, packageFilter)
-    }
-
-    private fun initDebugMode() {
-        DebugModeUtils.initForApplication(this)
-    }
-
-    private fun initBugReport() {
-        if (!sharedPreferences[bugReportsKey]) return
-        Analyzer.implementation = ServiceLoader.load(Analyzer::class.java).firstOrNull()
-        Analyzer.init(this)
-    }
-
-    private val sharedPreferences: SharedPreferences by lazy {
-        val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        prefs.registerOnSharedPreferenceChangeListener(this)
-        return@lazy prefs
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        applyLanguageSettings()
+        super.onConfigurationChanged(newConfig)
     }
 
     override fun onTrimMemory(level: Int) {
@@ -229,6 +191,62 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     override fun onTerminate() {
         super.onTerminate()
         stopKovenant()
+    }
+
+    @Suppress("DEPRECATION")
+    private fun applyLanguageSettings() {
+        val locale = sharedPreferences[overrideLanguageKey] ?: return
+        Locale.setDefault(locale)
+        val config = resources.configuration
+        config.locale = locale
+        config.setLayoutDirectionCompat(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
+    private fun loadDefaultFeatures() {
+        val lastUpdated = kPreferences[defaultFeatureLastUpdated]
+        if (lastUpdated > 0 && TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastUpdated) < 12) {
+            return
+        }
+        task {
+            defaultFeatures.loadRemoteSettings(restHttpClient)
+        }.success {
+            defaultFeatures.save(sharedPreferences)
+            DebugLog.d(LOGTAG, "Loaded remote features")
+        }.fail {
+            DebugLog.w(LOGTAG, "Unable to load remote features", it)
+        }.always {
+            kPreferences[defaultFeatureLastUpdated] = System.currentTimeMillis()
+        }
+    }
+
+    private fun listenExternalThemeChange() {
+        val packageFilter = IntentFilter()
+        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED)
+        registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val uid = intent.getIntExtra(Intent.EXTRA_UID, -1)
+                val packages = packageManager.getPackagesForUid(uid)
+                val manager = externalThemeManager
+                if (ArrayUtils.contains(packages, manager.emojiPackageName)) {
+                    manager.reloadEmojiPreferences()
+                }
+            }
+        }, packageFilter)
+    }
+
+
+    private fun initDebugMode() {
+        DebugModeUtils.initForApplication(this)
+    }
+
+    private fun initBugReport() {
+        if (!sharedPreferences[bugReportsKey]) return
+        Analyzer.implementation = ServiceLoader.load(Analyzer::class.java).firstOrNull()
+        Analyzer.init(this)
     }
 
     private fun reloadDnsSettings() {

@@ -25,7 +25,9 @@ package de.vanita5.twittnuker.constant
 import android.content.SharedPreferences
 import android.os.Build
 import android.text.TextUtils
+import org.apache.commons.lang3.LocaleUtils
 import org.mariotaku.kpreferences.*
+import org.mariotaku.ktextension.bcp47Tag
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
@@ -39,6 +41,7 @@ import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
+import java.util.*
 
 
 val textSizeKey = KIntKey(KEY_TEXT_SIZE, 15)
@@ -88,6 +91,19 @@ val multiColumnWidthKey = KStringKey("multi_column_tab_width", "normal")
 val streamingEnabledKey = KBooleanKey("streaming_enabled", true)
 val streamingNonMeteredNetworkKey = KBooleanKey("streaming_non_metered_network", false)
 val streamingPowerSavingKey = KBooleanKey("streaming_power_saving", false)
+
+object overrideLanguageKey : KSimpleKey<Locale?>("override_language", null) {
+    override fun read(preferences: SharedPreferences): Locale? {
+        return preferences.getString(key, null)?.takeIf(String::isNotEmpty)?.replace('-', '_')
+                ?.let(LocaleUtils::toLocale)
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Locale?): Boolean {
+        editor.putString(key, value?.bcp47Tag)
+        return true
+    }
+
+}
 
 val themeBackgroundOptionKey = KStringKey(KEY_THEME_BACKGROUND, VALUE_THEME_BACKGROUND_DEFAULT)
 
