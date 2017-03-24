@@ -660,6 +660,7 @@
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
     <string name="preference_title_multi_column_tab_width">Tab Breite</string>
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
+    <string name="preference_title_override_language">Sprache</string>
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Speicher</string>
     <string name="preference_title_streaming_content">Streaming Inhalt</string>
