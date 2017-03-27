@@ -26,13 +26,11 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-import android.util.Log
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
@@ -124,9 +122,7 @@ abstract class MicroBlogAPIStatusesLoader(
         } catch (e: MicroBlogException) {
             // mHandler.post(new ShowErrorRunnable(e));
             exception = e
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, e)
-            }
+            DebugLog.w(tr = e)
             return ListResponse.getListInstance(CopyOnWriteArrayList(data), e)
         }
 
