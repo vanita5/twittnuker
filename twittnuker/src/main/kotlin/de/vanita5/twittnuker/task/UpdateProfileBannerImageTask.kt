@@ -22,18 +22,21 @@
 
 package de.vanita5.twittnuker.task
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.Utils
 import java.io.IOException
@@ -60,8 +63,10 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
 
     override fun doLongOperation(params: Any?): SingleResponse<ParcelableUser> {
         try {
-            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey)!!
-            TwitterWrapper.updateProfileBannerImage(context, twitter, imageUri, deleteImage)
+            val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey,
+                    true) ?: throw MicroBlogException("No account")
+            val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+            TwitterWrapper.updateProfileBannerImage(context, microBlog, imageUri, deleteImage)
             // Wait for 5 seconds, see
             // https://dev.twitter.com/docs/api/1.1/post/account/update_profile_image
             try {
@@ -70,8 +75,8 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
                 Log.w(LOGTAG, e)
             }
 
-            val user = twitter.verifyCredentials()
-            return SingleResponse(ParcelableUserUtils.fromUser(user, accountKey,
+            val user = microBlog.verifyCredentials()
+            return SingleResponse(ParcelableUserUtils.fromUser(user, accountKey, details.type,
                     profileImageSize = profileImageSize))
         } catch (e: MicroBlogException) {
             return SingleResponse(exception = e)

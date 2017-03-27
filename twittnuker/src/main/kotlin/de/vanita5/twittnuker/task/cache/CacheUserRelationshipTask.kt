@@ -26,7 +26,6 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.support.v4.util.ArraySet
-import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.ktextension.map
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
@@ -38,21 +37,27 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
+class CacheUserRelationshipTask(
+        context: Context,
+        val accountKey: UserKey,
+        val accountType: String,
+        val users: Collection<User>
+) : BaseAbstractTask<Any?, Unit, Any?>(context) {
 
-class CacheUserRelationshipTask(context: Context, val accountKey: UserKey, val users: Collection<User>) : BaseAbstractTask<Any?, Unit, Any?>(context) {
     override fun doLongOperation(param: Any?) {
-        cacheUserRelationships(context.contentResolver, accountKey, users)
+        cacheUserRelationships(context.contentResolver, accountKey, accountType, users)
     }
 
     companion object {
-        fun cacheUserRelationships(cr: ContentResolver, accountKey: UserKey, users: Collection<User>) {
+        fun cacheUserRelationships(cr: ContentResolver, accountKey: UserKey, accountType: String,
+                users: Collection<User>) {
 
-            val parcelableUsers = users.map { ParcelableUserUtils.fromUser(it, accountKey) }
+            val parcelableUsers = users.map { ParcelableUserUtils.fromUser(it, accountKey, accountType) }
 
             val userValuesCreator = ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java)
             ContentResolverUtils.bulkInsert(cr, CachedUsers.CONTENT_URI, parcelableUsers.map(userValuesCreator::create))

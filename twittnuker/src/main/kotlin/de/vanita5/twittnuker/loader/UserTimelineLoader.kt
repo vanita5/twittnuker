@@ -31,8 +31,8 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.library.twitter.model.TimelineOption
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -73,7 +73,7 @@ class UserTimelineLoader(
         if (pinnedStatusIds != null) {
             pinnedStatuses = try {
                 microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
-                    val created = ParcelableStatusUtils.fromStatus(status, details.key,
+                    val created = ParcelableStatusUtils.fromStatus(status, details.key, details.type,
                             profileImageSize = profileImageSize)
                     created.sort_id = idx.toLong()
                     return@mapIndexed created

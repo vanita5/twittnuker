@@ -197,6 +197,10 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
     public int score;
 
     @ParcelableThisPlease
+    @CursorField(value = CachedUsers.USER_TYPE)
+    public String user_type;
+
+    @ParcelableThisPlease
     public int color;
 
     @ParcelableThisPlease

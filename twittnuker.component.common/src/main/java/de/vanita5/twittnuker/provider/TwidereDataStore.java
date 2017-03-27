@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableMessageConversationTableInfo;
 import de.vanita5.twittnuker.model.ParcelableMessageTableInfo;
-import de.vanita5.twittnuker.model.ParcelableRelationship;
 import de.vanita5.twittnuker.model.ParcelableRelationshipTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
 import de.vanita5.twittnuker.model.ParcelableTrendTableInfo;
@@ -274,6 +273,8 @@ public interface TwidereDataStore {
         String LAST_SEEN = "last_seen";
 
         String SCORE = "score";
+
+        String USER_TYPE = "user_type";
 
         String EXTRAS = "extras";
 

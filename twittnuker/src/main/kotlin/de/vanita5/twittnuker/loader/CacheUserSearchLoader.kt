@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.loader
 
+import android.annotation.SuppressLint
 import android.content.Context
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Columns
@@ -34,7 +36,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import org.mariotaku.library.objectcursor.ObjectCursor
 import java.text.Collator
 import java.util.*
 import javax.inject.Inject
@@ -59,12 +60,14 @@ class CacheUserSearchLoader(
         return super.getUsers(twitter, details)
     }
 
-    override fun processUsersData(list: MutableList<ParcelableUser>) {
+    override fun processUsersData(details: AccountDetails, list: MutableList<ParcelableUser>) {
         if (query.isEmpty() || !fromCache) return
         val queryEscaped = query.replace("_", "^_")
-        val selection = Expression.or(Expression.likeRaw(Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
-                Expression.likeRaw(Columns.Column(CachedUsers.NAME), "?||'%'", "^"))
+        val selection = Expression.and(Expression.equalsArgs(Columns.Column(CachedUsers.USER_TYPE)),
+                Expression.or(Expression.likeRaw(Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                Expression.likeRaw(Columns.Column(CachedUsers.NAME), "?||'%'", "^")))
         val selectionArgs = arrayOf(queryEscaped, queryEscaped)
+        @SuppressLint("Recycle")
         val c = context.contentResolver.query(CachedUsers.CONTENT_URI, CachedUsers.BASIC_COLUMNS,
                 selection.sql, selectionArgs, null)!!
         val i = ObjectCursor.indicesFrom(c, ParcelableUser::class.java)

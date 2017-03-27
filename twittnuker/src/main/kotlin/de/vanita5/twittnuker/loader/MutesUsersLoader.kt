@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 
 class MutesUsersLoader(
@@ -52,7 +53,7 @@ class MutesUsersLoader(
         return super.onLoadInBackground()
     }
 
-    override fun processUser(user: ParcelableUser) {
+    override fun processUser(details: AccountDetails, user: ParcelableUser) {
         user.is_filtered = filteredUsers?.contains(user.key) ?: false
     }
 }

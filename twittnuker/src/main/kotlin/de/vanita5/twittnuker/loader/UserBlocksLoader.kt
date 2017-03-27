@@ -60,7 +60,7 @@ class UserBlocksLoader(
         return super.onLoadInBackground()
     }
 
-    override fun processUser(user: ParcelableUser) {
+    override fun processUser(details: AccountDetails, user: ParcelableUser) {
         user.is_filtered = filteredUsers?.contains(user.key) ?: false
     }
 }
