@@ -30,6 +30,7 @@
     <string name="action_cancelling_like">Like entfernen</string>
     <string name="action_center">Mitte</string>
     <string name="action_clear">Löschen</string>
+    <string name="action_clear_messages">Nachrichten löschen</string>
     <string name="action_compose">Neuer Tweet</string>
     <string name="action_compose_message_convert_to_status">In Tweet umwandeln</string>
     <string name="action_connect_to_buffer">Verbinden</string>
@@ -475,6 +476,7 @@
     <string name="message_api_url_format_help">[DOMAIN]: Twitter API Domäne.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
+    <string name="message_clear_messages_confirm">Alle Nachrichten löschen?</string>
     <string name="message_conversation_created">Unterhaltung begonnen.</string>
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
@@ -525,6 +527,7 @@
     <string name="message_toast_accepted_users_follow_request">Follower-Anfrage von <xliff:g id="user">%s</xliff:g> wurde akzeptiert.</string>
     <string name="message_toast_added_to_filter">Zum Filter hinzugefügt.</string>
     <string name="message_toast_already_logged_in">Du bist schon eingeloggt.</string>
+    <string name="message_toast_buffer_connection_failed">Verbindung zu Buffer fehlgeschlagen</string>
     <string name="message_toast_cannot_get_location">Ort konnte nicht gefunden werden.</string>
     <string name="message_toast_compose_write_storage_no_permission">Es ist eine Berechtigung erforderlich, um die aufgenommenen Fotos/Videos zu löschen</string>
     <string name="message_toast_duplicate_filter_rule">Regel doppelt vorhanden</string>
@@ -979,11 +982,9 @@
     <string name="user_unblocked">Blockierung dieses Accounts wurde aufgehoben.</string>
     <string name="username">Username</string>
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
-    <string name="users_lists_with_name">
-        <xliff:g id="name">%s</xliff:g>\'s Listen</string>
+    <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="message_toast_buffer_connection_failed">Buffer ist nicht erreichbar</string>
 
 
     <!-- Twittnuker -->

@@ -71,7 +71,7 @@ class DestroyMessageTask(
 
     companion object {
 
-        private fun performDestroyMessage(context: Context, microBlog: MicroBlog,
+        internal fun performDestroyMessage(context: Context, microBlog: MicroBlog,
                 account: AccountDetails, messageId: String): Boolean {
             when (account.type) {
                 AccountType.TWITTER -> {

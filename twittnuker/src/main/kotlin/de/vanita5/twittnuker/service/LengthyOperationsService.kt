@@ -69,10 +69,8 @@ import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
-import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.deleteDrafts
-import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -391,27 +389,6 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
 
     private fun <T> invokeAfterExecute(task: AbstractTask<*, T, *>, result: T) {
         handler.post { ManualTaskStarter.invokeAfterExecute(task, result) }
-    }
-
-    internal class MessageMediaUploadListener(private val context: Context, private val manager: NotificationManagerWrapper,
-                                              builder: NotificationCompat.Builder, private val message: String) : ReadListener {
-
-        var percent: Int = 0
-
-        private val builder: Builder
-
-        init {
-            this.builder = builder
-        }
-
-        override fun onRead(length: Long, position: Long) {
-            val percent = if (length > 0) (position * 100 / length).toInt() else 0
-            if (this.percent != percent) {
-                manager.notify(NOTIFICATION_ID_SEND_DIRECT_MESSAGE,
-                        updateSendDirectMessageNotification(context, builder, percent, message))
-            }
-            this.percent = percent
-        }
     }
 
     companion object {
