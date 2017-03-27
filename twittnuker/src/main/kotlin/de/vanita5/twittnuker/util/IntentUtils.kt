@@ -155,24 +155,6 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
-    fun openUserTimeline(context: Context, accountKey: UserKey?,
-                         userKey: UserKey?, screenName: String?) {
-        val builder = Uri.Builder()
-        builder.scheme(SCHEME_TWITTNUKER)
-        builder.authority(AUTHORITY_USER_TIMELINE)
-        if (accountKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
-        }
-        if (userKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString())
-        }
-        if (screenName != null) {
-            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
-        }
-        val intent = Intent(Intent.ACTION_VIEW, builder.build())
-        context.startActivity(intent)
-    }
-
     fun openMedia(context: Context, status: ParcelableStatus,
                   current: ParcelableMedia? = null, newDocument: Boolean,
                   displaySensitiveContents: Boolean, options: Bundle? = null) {
@@ -359,19 +341,6 @@ object IntentUtils {
         val builder = Uri.Builder()
         builder.scheme(SCHEME_TWITTNUKER)
         builder.authority(AUTHORITY_MUTES_USERS)
-        if (accountKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
-        }
-        val intent = Intent(Intent.ACTION_VIEW, builder.build())
-        intent.`package` = BuildConfig.APPLICATION_ID
-        context.startActivity(intent)
-    }
-
-    fun openScheduledStatuses(context: Context,
-                              accountKey: UserKey?) {
-        val builder = Uri.Builder()
-        builder.scheme(SCHEME_TWITTNUKER)
-        builder.authority(AUTHORITY_SCHEDULED_STATUSES)
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
         }
