@@ -27,6 +27,7 @@ import android.support.v4.app.DialogFragment
 import com.squareup.otto.Bus
 import com.twitter.Validator
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -50,6 +51,8 @@ open class BaseDialogFragment : DialogFragment() {
     lateinit var bus: Bus
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit var restHttpClient: RestHttpClient
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

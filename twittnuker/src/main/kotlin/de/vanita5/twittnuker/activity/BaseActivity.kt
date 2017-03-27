@@ -68,6 +68,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
+import de.vanita5.twittnuker.util.schedule.StatusScheduleController
 import de.vanita5.twittnuker.util.support.ActivitySupport
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
@@ -101,9 +102,15 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject
+    lateinit var statusScheduleControllerFactory: StatusScheduleController.Factory
+    @Inject
     lateinit var defaultFeatures: DefaultFeatures
     @Inject
     lateinit var restHttpClient: RestHttpClient
+
+    protected val statusScheduleController: StatusScheduleController? by lazy {
+        statusScheduleControllerFactory.newInstance(this)
+    }
 
     private val actionHelper = IBaseActivity.ActionHelper(this)
     private val themePreferences by lazy {

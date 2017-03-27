@@ -48,14 +48,11 @@ import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.view.SupportMenuInflater
 import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener
-import android.support.v7.widget.FixedLinearLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
@@ -66,7 +63,11 @@ import org.mariotaku.ktextension.setMenuItemIcon
 import de.vanita5.twittnuker.Constants.EXTRA_FEATURES_NOTICE_VERSION
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.activity.*
+import de.vanita5.twittnuker.activity.ComposeActivity
+import de.vanita5.twittnuker.activity.HomeActivity
+import de.vanita5.twittnuker.activity.PremiumDashboardActivity
+import de.vanita5.twittnuker.activity.QuickSearchBarActivity
+import de.vanita5.twittnuker.adapter.AccountSelectorAdapter
 import de.vanita5.twittnuker.adapter.RecyclerPagerAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
@@ -88,13 +89,13 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.view.ShapedImageView
+import de.vanita5.twittnuker.view.holder.AccountProfileImageViewHolder
+import de.vanita5.twittnuker.view.transformer.AccountsSelectorTransformer
 import java.lang.ref.WeakReference
-import java.util.*
 
 class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         OnSharedPreferenceChangeListener, OnClickListener, KeyboardShortcutCallback,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, AccountSelectorAdapter.Listener {
 
     private val EXTRA_SYNC_LOAD = "sync_load"
     private val systemWindowsInsets = Rect()
@@ -124,10 +125,9 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val inflater = getLayoutInflater(savedInstanceState)
-        accountsAdapter = AccountSelectorAdapter(inflater, this)
-        val layoutManager = FixedLinearLayoutManager(context)
-        layoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        layoutManager.stackFromEnd = true
+        accountsAdapter = AccountSelectorAdapter(inflater, preferences, Glide.with(this)).also {
+            it.listener = this
+        }
         accountsSelector.adapter = accountsAdapter
         accountsSelector.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -403,7 +403,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         rectF.set(location[0].toFloat(), location[1].toFloat(), (location[0] + view.width).toFloat(), (location[1] + view.height).toFloat())
     }
 
-    private fun onAccountSelected(holder: AccountProfileImageViewHolder, account: AccountDetails) {
+    override fun onAccountSelected(holder: AccountProfileImageViewHolder, details: AccountDetails) {
         if (switchAccountAnimationPlaying) return
         val snapshotView = floatingProfileImageSnapshot
         val profileImageView = accountProfileImageView
@@ -461,7 +461,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 //TODO complete border color
                 clickedImageView.setBorderColors(*profileImageView.borderColors)
 
-                displayAccountBanner(account)
+                displayAccountBanner(details)
 
                 switchAccountAnimationPlaying = true
             }
@@ -480,9 +480,9 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
 
             private fun finishAnimation() {
                 preferences.edit()
-                        .putString(KEY_DEFAULT_ACCOUNT_KEY, account.key.toString())
+                        .putString(KEY_DEFAULT_ACCOUNT_KEY, details.key.toString())
                         .apply()
-                accountsAdapter.selectedAccount = account
+                accountsAdapter.selectedAccount = details
                 updateAccountActions()
                 displayCurrentAccount(clickedDrawable)
                 snapshotView.visibility = View.INVISIBLE
@@ -605,146 +605,6 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
 
     internal class AccountSpaceViewHolder(itemView: View) : RecyclerPagerAdapter.ViewHolder(itemView)
 
-    internal class AccountProfileImageViewHolder(
-            val adapter: AccountSelectorAdapter,
-            itemView: View
-    ) : RecyclerPagerAdapter.ViewHolder(itemView), OnClickListener {
-
-        val iconView: ShapedImageView
-
-        init {
-            itemView.setOnClickListener(this)
-            iconView = itemView.findViewById(android.R.id.icon) as ShapedImageView
-            iconView.style = adapter.profileImageStyle
-        }
-
-        override fun onClick(v: View) {
-            adapter.dispatchItemSelected(this)
-        }
-
-        fun display(account: AccountDetails) {
-            iconView.setBorderColor(account.color)
-            adapter.requestManager.loadProfileImage(itemView.context, account,
-                    adapter.profileImageStyle, iconView.cornerRadius,
-                    iconView.cornerRadiusRatio).into(iconView)
-        }
-
-    }
-
-    internal class AccountSelectorAdapter(
-            private val inflater: LayoutInflater,
-            private val fragment: AccountsDashboardFragment
-    ) : RecyclerPagerAdapter() {
-
-        internal var profileImageStyle: Int = fragment.preferences[profileImageStyleKey]
-        internal var requestManager: RequestManager = Glide.with(fragment)
-
-        var accounts: Array<AccountDetails>? = null
-            set(value) {
-                if (value != null) {
-                    val previousAccounts = accounts
-                    if (previousAccounts != null) {
-                        val tmpList = arrayListOf(*value)
-                        val tmpResult = ArrayList<AccountDetails>()
-                        previousAccounts.forEach { previousAccount ->
-                            val prefIndexOfTmp = tmpList.indexOfFirst { previousAccount == it }
-                            if (prefIndexOfTmp >= 0) {
-                                tmpResult.add(tmpList.removeAt(prefIndexOfTmp))
-                            }
-                        }
-                        tmpResult.addAll(tmpList)
-                        field = tmpResult.toTypedArray()
-                    } else {
-                        field = value
-                    }
-                } else {
-                    field = null
-                }
-                notifyPagesChanged(invalidateCache = true)
-            }
-
-
-        fun getAdapterAccount(position: Int): AccountDetails? {
-            return accounts?.getOrNull(position - accountStart + 1)
-        }
-
-        var selectedAccount: AccountDetails?
-            get() {
-                return accounts?.firstOrNull()
-            }
-            set(account) {
-                val from = account ?: return
-                val to = selectedAccount ?: return
-                swap(from, to)
-            }
-
-        val ITEM_VIEW_TYPE_SPACE = 1
-        val ITEM_VIEW_TYPE_ICON = 2
-
-        override fun onCreateViewHolder(container: ViewGroup, position: Int, itemViewType: Int): ViewHolder {
-            when (itemViewType) {
-                ITEM_VIEW_TYPE_SPACE -> {
-                    val view = inflater.inflate(R.layout.adapter_item_dashboard_account_space, container, false)
-                    return AccountSpaceViewHolder(view)
-                }
-                ITEM_VIEW_TYPE_ICON -> {
-            val view = inflater.inflate(R.layout.adapter_item_dashboard_account, container, false)
-                    return AccountProfileImageViewHolder(this, view)
-                }
-            }
-            throw UnsupportedOperationException()
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int, itemViewType: Int) {
-            when (itemViewType) {
-                ITEM_VIEW_TYPE_ICON -> {
-                    val account = getAdapterAccount(position)!!
-                    (holder as AccountProfileImageViewHolder).display(account)
-                }
-            }
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            if (position < accountStart) {
-                return ITEM_VIEW_TYPE_SPACE
-            }
-            return ITEM_VIEW_TYPE_ICON
-        }
-
-        override fun getCount(): Int {
-            return Math.max(3, accountsCount)
-        }
-
-        val accountStart: Int
-            get() = Math.max(0, 3 - accountsCount)
-
-        val accountsCount: Int
-            get() {
-                val accounts = this.accounts ?: return 0
-                return Math.max(0, accounts.size - 1)
-            }
-
-        override fun getPageWidth(position: Int): Float {
-            return 1f / AccountsSelectorTransformer.selectorAccountsCount
-        }
-
-        fun dispatchItemSelected(holder: AccountProfileImageViewHolder) {
-            fragment.onAccountSelected(holder, getAdapterAccount(holder.position)!!)
-        }
-
-        private fun swap(from: AccountDetails, to: AccountDetails) {
-            val accounts = accounts ?: return
-            val fromIdx = accounts.indexOfFirst { it == from }
-            val toIdx = accounts.indexOfFirst { it == to }
-            if (fromIdx < 0 || toIdx < 0) return
-            val temp = accounts[toIdx]
-            accounts[toIdx] = accounts[fromIdx]
-            accounts[fromIdx] = temp
-            notifyPagesChanged(invalidateCache = false)
-        }
-
-    }
-
     data class AccountsInfo(
             val accounts: Array<AccountDetails>,
             val draftsCount: Int
@@ -841,21 +701,6 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             val draftsCount = DataStoreUtils.queryCount(context.contentResolver, Drafts.CONTENT_URI_UNSENT, null, null)
             return AccountsInfo(accounts, draftsCount)
         }
-    }
-
-    object AccountsSelectorTransformer : ViewPager.PageTransformer {
-        const internal val selectorAccountsCount: Int = 3
-
-        override fun transformPage(page: View, position: Float) {
-            if (position < 0) {
-                page.alpha = 1 + position * selectorAccountsCount
-            } else if (position > (selectorAccountsCount - 1f) / selectorAccountsCount) {
-                page.alpha = (1 - position) * selectorAccountsCount
-            } else {
-                page.alpha = 1f
-            }
-        }
-
     }
 
 }

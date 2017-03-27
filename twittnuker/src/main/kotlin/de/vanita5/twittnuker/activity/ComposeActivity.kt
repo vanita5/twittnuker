@@ -86,6 +86,7 @@ import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestC
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
+import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
@@ -98,6 +99,7 @@ import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.view.CheckableLinearLayout
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.ShapedImageView
@@ -147,321 +149,14 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private var nameFirst: Boolean = false
     private var draftUniqueId: String? = null
     private var shouldSkipDraft: Boolean = false
+    private var scheduleInfo: ScheduleInfo? = null
+        set(value) {
+            field = value
+            updateUpdateStatusIcon()
+        }
 
     // Listeners
     private var locationListener: LocationListener? = null
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        when (resultCode) {
-            Giphy.REQUEST_GIPHY -> {
-                requestOrPickGif()
-            }
-        }
-        when (requestCode) {
-            REQUEST_TAKE_PHOTO, REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    val src = MediaPickerActivity.getMediaUris(intent)
-                    TaskStarter.execute(AddMediaTask(this, src, false, false))
-                }
-            }
-            REQUEST_EDIT_IMAGE -> {
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    if (intent.data != null) {
-                        setMenu()
-                        updateTextCount()
-                    }
-                }
-            }
-        }
-
-    }
-
-
-    override fun onBackPressed() {
-        if (currentTask?.status == AsyncTask.Status.RUNNING) return
-        if (!shouldSkipDraft && hasComposingStatus()) {
-            saveToDrafts()
-            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
-            shouldSkipDraft = true
-            finish()
-        } else {
-            shouldSkipDraft = true
-            discardTweet()
-        }
-    }
-
-    override fun onDestroy() {
-        if (!shouldSkipDraft && hasComposingStatus() && isFinishing) {
-            saveToDrafts()
-            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
-        }
-        super.onDestroy()
-    }
-
-    private fun discardTweet() {
-        if (isFinishing || currentTask?.status == AsyncTask.Status.RUNNING) return
-        currentTask = AsyncTaskUtils.executeTask(DiscardTweetTask(this))
-    }
-
-    private fun hasComposingStatus(): Boolean {
-        val text = if (editText != null) ParseUtils.parseString(editText.text) else null
-        val textChanged = text != null && !text.isEmpty() && text != originalText
-        val isEditingDraft = INTENT_ACTION_EDIT_DRAFT == intent.action
-        return textChanged || hasMedia() || isEditingDraft
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountsAdapter.selectedAccountKeys)
-        outState.putParcelableArrayList(EXTRA_MEDIA, ArrayList<Parcelable>(mediaList))
-        outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, possiblySensitive)
-        outState.putParcelable(EXTRA_STATUS, inReplyToStatus)
-        outState.putParcelable(EXTRA_USER, mentionUser)
-        outState.putParcelable(EXTRA_DRAFT, draft)
-        outState.putBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS, shouldSaveAccounts)
-        outState.putString(EXTRA_ORIGINAL_TEXT, originalText)
-        outState.putString(EXTRA_DRAFT_UNIQUE_ID, draftUniqueId)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        imageUploaderUsed = !ServicePickerPreference.isNoneValue(kPreferences[mediaUploaderKey])
-        statusShortenerUsed = !ServicePickerPreference.isNoneValue(kPreferences[statusShortenerKey])
-        if (kPreferences[attachLocationKey]) {
-            if (checkAnySelfPermissionsGranted(AndroidPermission.ACCESS_COARSE_LOCATION, AndroidPermission.ACCESS_FINE_LOCATION)) {
-                try {
-                    startLocationUpdateIfEnabled()
-                } catch (e: SecurityException) {
-                    locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
-                }
-            } else {
-                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
-            }
-        }
-        setMenu()
-        updateTextCount()
-        val textSize = preferences[textSizeKey]
-        editText.textSize = textSize * 1.25f
-    }
-
-    override fun onStop() {
-        saveAccountSelection()
-        try {
-            if (locationListener != null) {
-                locationManager.removeUpdates(locationListener)
-                locationListener = null
-            }
-        } catch (ignore: SecurityException) {
-            // That should not happen
-        }
-
-        super.onStop()
-    }
-
-    override fun onClick(view: View) {
-        when (view) {
-            updateStatus -> {
-                confirmAndUpdateStatus()
-            }
-            accountSelectorContainer -> {
-                isAccountSelectorVisible = false
-            }
-            accountSelectorButton -> {
-                isAccountSelectorVisible = !isAccountSelectorVisible
-            }
-            replyLabel -> {
-                if (replyLabel.visibility != View.VISIBLE) return
-                replyLabel.setSingleLine(replyLabel.lineCount > 1)
-            }
-        }
-    }
-
-    private var isAccountSelectorVisible: Boolean
-        get() = accountSelectorContainer.visibility == View.VISIBLE
-        set(visible) {
-            accountSelectorContainer.visibility = if (visible) View.VISIBLE else View.GONE
-        }
-
-    private fun confirmAndUpdateStatus() {
-        val matchResult = Regex("[DM] +([a-z0-9_]{1,20}) +[^ ]+").matchEntire(editText.text)
-        if (matchResult != null) {
-            val screenName = matchResult.groupValues[1]
-            val df = DirectMessageConfirmFragment()
-            df.arguments = Bundle {
-                this[EXTRA_SCREEN_NAME] = screenName
-            }
-            df.show(supportFragmentManager, "send_direct_message_confirm")
-        } else if (isQuotingProtectedStatus) {
-            val df = RetweetProtectedStatusWarnFragment()
-            df.show(supportFragmentManager,
-                    "retweet_protected_status_warning_message")
-        } else {
-            updateStatus()
-        }
-    }
-
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-        return true
-    }
-
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        return false
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode) {
-        val window = window
-        val contentView = window.findViewById(android.R.id.content)
-        contentView.setPadding(contentView.paddingLeft, 0,
-                contentView.paddingRight, contentView.paddingBottom)
-    }
-
-    override fun onLongClick(v: View): Boolean {
-        when (v) {
-            updateStatus -> {
-                Utils.showMenuItemToast(v, getString(R.string.action_send), true)
-                return true
-            }
-        }
-        return false
-    }
-
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.take_photo -> {
-                requestOrOpenCamera()
-            }
-            R.id.add_image -> {
-                requestOrPickMedia()
-            }
-            R.id.add_gif -> {
-                requestOrPickGif()
-            }
-            R.id.drafts -> {
-                IntentUtils.openDrafts(this)
-            }
-            R.id.delete -> {
-                TaskStarter.execute(DeleteMediaTask(this, media))
-            }
-            R.id.toggle_sensitive -> {
-                if (!hasMedia()) return false
-                possiblySensitive = !possiblySensitive
-                setMenu()
-                updateTextCount()
-            }
-
-            R.id.add_hashtag -> {
-                val selectionEnd = editText.selectionEnd + 1
-                val withHashtag = "${editText.text.subSequence(0, editText.selectionEnd)}#${editText.text.subSequence(editText.selectionEnd, editText.length())}"
-                editText.setText(withHashtag)
-                editText.setSelection(selectionEnd)
-            }
-            else -> {
-                val intent = item.intent
-                if (intent != null) {
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(LOGTAG, e)
-                        return false
-                    }
-
-                }
-            }
-        }
-        return true
-    }
-
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        when (ev.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                val x = ev.rawX
-                val y = ev.rawY
-                if (isAccountSelectorVisible && !TwidereViewUtils.hitView(x, y, accountSelectorButton)) {
-                    var clickedItem = false
-                    val layoutManager = accountSelector.layoutManager
-                    for (i in 0..layoutManager.childCount - 1) {
-                        if (TwidereViewUtils.hitView(x, y, layoutManager.getChildAt(i))) {
-                            clickedItem = true
-                            break
-                        }
-                    }
-                    if (!clickedItem) {
-                        isAccountSelectorVisible = false
-                        return true
-                    }
-                }
-            }
-        }
-        return super.dispatchTouchEvent(ev)
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            val x = event.rawX
-            val y = event.rawY
-            val window = window
-            if (!TwidereViewUtils.hitView(x, y, window.decorView)
-                    && window.peekDecorView() != null && !hasComposingStatus()) {
-                onBackPressed()
-                return true
-            }
-        }
-        return super.onTouchEvent(event)
-    }
-
-    override fun getMenuInflater(): MenuInflater {
-        return supportMenuInflater
-    }
-
-    fun removeAllMedia(list: List<ParcelableMediaUpdate>) {
-        mediaPreviewAdapter.removeAll(list)
-    }
-
-    fun saveToDrafts(): Uri {
-        val text = editText.text.toString()
-        val draft = Draft()
-        draft.unique_id = this.draftUniqueId ?: UUID.randomUUID().toString()
-        draft.action_type = getDraftAction(intent.action)
-        draft.account_keys = accountsAdapter.selectedAccountKeys
-        draft.text = text
-        draft.media = media
-        draft.location = recentLocation
-        draft.timestamp = System.currentTimeMillis()
-        draft.action_extras = UpdateStatusActionExtras().apply {
-            this.inReplyToStatus = this@ComposeActivity.inReplyToStatus
-            this.isPossiblySensitive = this@ComposeActivity.possiblySensitive
-        }
-        val values = ObjectCursor.valuesCreatorFrom(Draft::class.java).create(draft)
-        val draftUri = contentResolver.insert(Drafts.CONTENT_URI, values)
-        displayNewDraftNotification(text, draftUri)
-        return draftUri
-    }
-
-    fun setSelectedAccounts(vararg accounts: AccountDetails) {
-        if (accounts.size == 1) {
-            accountsCount.setText(null)
-            val account = accounts[0]
-            val profileImageStyle = preferences[profileImageStyleKey]
-            Glide.with(this).loadProfileImage(this, account, profileImageStyle).into(accountProfileImage)
-            accountProfileImage.setBorderColor(account.color)
-        } else {
-            accountsCount.setText(accounts.size.toString())
-            //TODO cancel image load
-            accountProfileImage.setImageDrawable(null)
-            accountProfileImage.setBorderColors(*Utils.getAccountColors(accounts))
-        }
-    }
-
-    override fun onActionModeStarted(mode: ActionMode) {
-        super.onActionModeStarted(mode)
-        ThemeUtils.applyColorFilterToMenuIcon(mode.menu, ThemeUtils.getContrastActionBarItemColor(this),
-                0, 0, Mode.MULTIPLY)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -582,6 +277,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             shouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS)
             originalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT)
             draftUniqueId = savedInstanceState.getString(EXTRA_DRAFT_UNIQUE_ID)
+            scheduleInfo = savedInstanceState.getParcelable(EXTRA_SCHEDULE_INFO)
             setLabel(intent)
         } else {
             // The context was first created
@@ -618,10 +314,333 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setMenu()
         updateLocationState()
         notifyAccountSelectionChanged()
+        updateUpdateStatusIcon()
 
         textChanged = false
 
         updateAttachedMediaView()
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        when (resultCode) {
+            Giphy.REQUEST_GIPHY -> {
+                requestOrPickGif()
+            }
+        }
+        when (requestCode) {
+            REQUEST_TAKE_PHOTO, REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
+                if (resultCode == Activity.RESULT_OK && intent != null) {
+                    val src = MediaPickerActivity.getMediaUris(intent)
+                    TaskStarter.execute(AddMediaTask(this, src, false, false))
+                }
+            }
+            REQUEST_EDIT_IMAGE -> {
+                if (resultCode == Activity.RESULT_OK && intent != null) {
+                    if (intent.data != null) {
+                        setMenu()
+                        updateTextCount()
+                    }
+                }
+            }
+            REQUEST_SET_SCHEDULE -> {
+                if (resultCode == Activity.RESULT_OK && intent != null) {
+                    scheduleInfo = intent.getParcelableExtra(EXTRA_SCHEDULE_INFO)
+                }
+            }
+        }
+
+    }
+
+    override fun onBackPressed() {
+        if (currentTask?.status == AsyncTask.Status.RUNNING) return
+        if (!shouldSkipDraft && hasComposingStatus()) {
+            saveToDrafts()
+            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
+            shouldSkipDraft = true
+            finish()
+        } else {
+            shouldSkipDraft = true
+            discardTweet()
+        }
+    }
+
+    override fun onDestroy() {
+        if (!shouldSkipDraft && hasComposingStatus() && isFinishing) {
+            saveToDrafts()
+            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
+        }
+        super.onDestroy()
+    }
+
+    private fun discardTweet() {
+        if (isFinishing || currentTask?.status == AsyncTask.Status.RUNNING) return
+        currentTask = AsyncTaskUtils.executeTask(DiscardTweetTask(this))
+    }
+
+    private fun hasComposingStatus(): Boolean {
+        val text = if (editText != null) ParseUtils.parseString(editText.text) else null
+        val textChanged = text != null && !text.isEmpty() && text != originalText
+        val isEditingDraft = INTENT_ACTION_EDIT_DRAFT == intent.action
+        return textChanged || hasMedia() || isEditingDraft
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountsAdapter.selectedAccountKeys)
+        outState.putParcelableArrayList(EXTRA_MEDIA, ArrayList<Parcelable>(mediaList))
+        outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, possiblySensitive)
+        outState.putParcelable(EXTRA_STATUS, inReplyToStatus)
+        outState.putParcelable(EXTRA_USER, mentionUser)
+        outState.putParcelable(EXTRA_DRAFT, draft)
+        outState.putParcelable(EXTRA_SCHEDULE_INFO, scheduleInfo)
+        outState.putBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS, shouldSaveAccounts)
+        outState.putString(EXTRA_ORIGINAL_TEXT, originalText)
+        outState.putString(EXTRA_DRAFT_UNIQUE_ID, draftUniqueId)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        imageUploaderUsed = !ServicePickerPreference.isNoneValue(kPreferences[mediaUploaderKey])
+        statusShortenerUsed = !ServicePickerPreference.isNoneValue(kPreferences[statusShortenerKey])
+        if (kPreferences[attachLocationKey]) {
+            if (checkAnySelfPermissionsGranted(AndroidPermission.ACCESS_COARSE_LOCATION, AndroidPermission.ACCESS_FINE_LOCATION)) {
+                try {
+                    startLocationUpdateIfEnabled()
+                } catch (e: SecurityException) {
+                    locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
+                }
+            } else {
+                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
+            }
+        }
+        setMenu()
+        updateTextCount()
+        val textSize = preferences[textSizeKey]
+        editText.textSize = textSize * 1.25f
+    }
+
+    override fun onStop() {
+        saveAccountSelection()
+        try {
+            if (locationListener != null) {
+                locationManager.removeUpdates(locationListener)
+                locationListener = null
+            }
+        } catch (ignore: SecurityException) {
+            // That should not happen
+        }
+
+        super.onStop()
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            updateStatus -> {
+                confirmAndUpdateStatus()
+            }
+            accountSelectorContainer -> {
+                isAccountSelectorVisible = false
+            }
+            accountSelectorButton -> {
+                isAccountSelectorVisible = !isAccountSelectorVisible
+            }
+            replyLabel -> {
+                if (replyLabel.visibility != View.VISIBLE) return
+                replyLabel.setSingleLine(replyLabel.lineCount > 1)
+            }
+        }
+    }
+
+    private var isAccountSelectorVisible: Boolean
+        get() = accountSelectorContainer.visibility == View.VISIBLE
+        set(visible) {
+            accountSelectorContainer.visibility = if (visible) View.VISIBLE else View.GONE
+        }
+
+    private fun confirmAndUpdateStatus() {
+        val matchResult = Regex("[DM] +([a-z0-9_]{1,20}) +[^ ]+").matchEntire(editText.text)
+        if (matchResult != null) {
+            val screenName = matchResult.groupValues[1]
+            val df = DirectMessageConfirmFragment()
+            df.arguments = Bundle {
+                this[EXTRA_SCREEN_NAME] = screenName
+            }
+            df.show(supportFragmentManager, "send_direct_message_confirm")
+        } else if (isQuotingProtectedStatus) {
+            val df = RetweetProtectedStatusWarnFragment()
+            df.show(supportFragmentManager,
+                    "retweet_protected_status_warning_message")
+        } else {
+            updateStatus()
+        }
+    }
+
+    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+        return true
+    }
+
+    override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+        return true
+    }
+
+    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+        return false
+    }
+
+    override fun onDestroyActionMode(mode: ActionMode) {
+        val window = window
+        val contentView = window.findViewById(android.R.id.content)
+        contentView.setPadding(contentView.paddingLeft, 0,
+                contentView.paddingRight, contentView.paddingBottom)
+    }
+
+    override fun onLongClick(v: View): Boolean {
+        when (v) {
+            updateStatus -> {
+                Utils.showMenuItemToast(v, getString(R.string.action_send), true)
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.take_photo -> {
+                requestOrOpenCamera()
+            }
+            R.id.add_media -> {
+                requestOrPickMedia()
+            }
+            R.id.add_gif -> {
+                requestOrPickGif()
+            }
+            R.id.drafts -> {
+                IntentUtils.openDrafts(this)
+            }
+            R.id.delete -> {
+                TaskStarter.execute(DeleteMediaTask(this, media))
+            }
+            R.id.toggle_sensitive -> {
+                if (!hasMedia()) return true
+                possiblySensitive = !possiblySensitive
+                setMenu()
+                updateTextCount()
+            }
+            R.id.schedule -> {
+                val controller = statusScheduleController ?: return true
+                startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
+            }
+
+            R.id.add_hashtag -> {
+                val selectionEnd = editText.selectionEnd + 1
+                val withHashtag = "${editText.text.subSequence(0, editText.selectionEnd)}#${editText.text.subSequence(editText.selectionEnd, editText.length())}"
+                editText.setText(withHashtag)
+                editText.setSelection(selectionEnd)
+            }
+            else -> {
+                val intent = item.intent
+                if (intent != null) {
+                    try {
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Log.w(LOGTAG, e)
+                        return false
+                    }
+
+                }
+            }
+        }
+        return true
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        when (ev.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                val x = ev.rawX
+                val y = ev.rawY
+                if (isAccountSelectorVisible && !TwidereViewUtils.hitView(x, y, accountSelectorButton)) {
+                    var clickedItem = false
+                    val layoutManager = accountSelector.layoutManager
+                    for (i in 0..layoutManager.childCount - 1) {
+                        if (TwidereViewUtils.hitView(x, y, layoutManager.getChildAt(i))) {
+                            clickedItem = true
+                            break
+                        }
+                    }
+                    if (!clickedItem) {
+                        isAccountSelectorVisible = false
+                        return true
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val x = event.rawX
+            val y = event.rawY
+            val window = window
+            if (!TwidereViewUtils.hitView(x, y, window.decorView)
+                    && window.peekDecorView() != null && !hasComposingStatus()) {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
+    override fun getMenuInflater(): MenuInflater {
+        return supportMenuInflater
+    }
+
+    fun removeAllMedia(list: List<ParcelableMediaUpdate>) {
+        mediaPreviewAdapter.removeAll(list)
+    }
+
+    fun saveToDrafts(): Uri {
+        val text = editText.text.toString()
+        val draft = Draft()
+        draft.unique_id = this.draftUniqueId ?: UUID.randomUUID().toString()
+        draft.action_type = getDraftAction(intent.action)
+        draft.account_keys = accountsAdapter.selectedAccountKeys
+        draft.text = text
+        draft.media = media
+        draft.location = recentLocation
+        draft.timestamp = System.currentTimeMillis()
+        draft.action_extras = UpdateStatusActionExtras().apply {
+            this.inReplyToStatus = this@ComposeActivity.inReplyToStatus
+            this.isPossiblySensitive = this@ComposeActivity.possiblySensitive
+        }
+        val values = ObjectCursor.valuesCreatorFrom(Draft::class.java).create(draft)
+        val draftUri = contentResolver.insert(Drafts.CONTENT_URI, values)
+        displayNewDraftNotification(text, draftUri)
+        return draftUri
+    }
+
+    fun setSelectedAccounts(vararg accounts: AccountDetails) {
+        if (accounts.size == 1) {
+            accountsCount.setText(null)
+            val account = accounts[0]
+            val profileImageStyle = preferences[profileImageStyleKey]
+            Glide.with(this).loadProfileImage(this, account, profileImageStyle).into(accountProfileImage)
+            accountProfileImage.setBorderColor(account.color)
+        } else {
+            accountsCount.setText(accounts.size.toString())
+            //TODO cancel image load
+            accountProfileImage.setImageDrawable(null)
+            accountProfileImage.setBorderColors(*Utils.getAccountColors(accounts))
+        }
+    }
+
+    override fun onActionModeStarted(mode: ActionMode) {
+        super.onActionModeStarted(mode)
+        ThemeUtils.applyColorFilterToMenuIcon(mode.menu, ThemeUtils.getContrastActionBarItemColor(this),
+                0, 0, Mode.MULTIPLY)
     }
 
     private fun updateViewStyle() {
@@ -1148,7 +1167,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun pickMedia(): Boolean {
         val intent = ThemedMediaPickerActivity.withThemed(this)
-                .pickMedia()
                 .containsVideo(true)
                 .videoOnly(false)
                 .allowMultiple(true)
@@ -1175,22 +1193,15 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
          * Has media & Not reply: [Take photo][Media menu][Attach location][Drafts]
          * Is reply: [Media menu][View status][Attach location][Drafts]
          */
-        MenuUtils.setItemAvailability(menu, R.id.add_image, true) //TWITTNUKER always show
+        MenuUtils.setItemAvailability(menu, R.id.add_media, true) //TWITTNUKER always show
         MenuUtils.setItemAvailability(menu, R.id.media_menu, hasMedia)
         MenuUtils.setItemAvailability(menu, R.id.toggle_sensitive, hasMedia)
-        MenuUtils.setItemAvailability(menu, R.id.schedule, scheduleSupported)
+        MenuUtils.setItemAvailability(menu, R.id.schedule, extraFeaturesService.isSupported(
+                ExtraFeaturesService.FEATURE_SCHEDULE_STATUS))
 
         menu.setItemChecked(R.id.toggle_sensitive, hasMedia && possiblySensitive)
         ThemeUtils.resetCheatSheet(menuBar)
-        //        mMenuBar.show();
     }
-
-    private val scheduleSupported: Boolean
-        get() {
-            val accounts = accountsAdapter.selectedAccounts
-            if (ArrayUtils.isEmpty(accounts)) return false
-            return false
-        }
 
     private fun setProgressVisible(visible: Boolean) {
         if (isFinishing) return
@@ -1390,6 +1401,14 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun updateTextCount() {
         val text = editText.text?.toString() ?: return
         statusTextCount.textCount = validator.getTweetLength(text)
+    }
+
+    private fun updateUpdateStatusIcon() {
+        if (scheduleInfo != null) {
+            updateStatusIcon.setImageResource(R.drawable.ic_action_time)
+        } else {
+            updateStatusIcon.setImageResource(R.drawable.ic_action_send)
+        }
     }
 
     internal class ComposeLocationListener(activity: ComposeActivity) : LocationListener {
@@ -1803,6 +1822,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         private const val REQUEST_ATTACH_LOCATION_PERMISSION = 301
         private const val REQUEST_PICK_MEDIA_PERMISSION = 302
         private const val REQUEST_OPEN_CAMERA_PERMISSION = 303
+        private const val REQUEST_SET_SCHEDULE = 304
 
         internal fun getDraftAction(intentAction: String?): String {
             if (intentAction == null) {

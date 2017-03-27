@@ -155,6 +155,7 @@
 -keep class * extends de.vanita5.twittnuker.util.TwitterCardFragmentFactory
 -keep class * extends de.vanita5.twittnuker.util.Analyzer
 -keep class * extends de.vanita5.twittnuker.util.premium.ExtraFeaturesService
+-keep class * extends de.vanita5.twittnuker.util.schedule.StatusScheduleController.Factory
 -keep class * extends de.vanita5.twittnuker.util.view.AppBarChildBehavior.ChildTransformation
 
 #jackson fasterxml
