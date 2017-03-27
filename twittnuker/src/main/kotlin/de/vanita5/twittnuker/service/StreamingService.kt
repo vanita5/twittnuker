@@ -38,6 +38,7 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.toLong
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
@@ -51,9 +52,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
-import de.vanita5.twittnuker.extension.model.isOfficial
-import de.vanita5.twittnuker.extension.model.isStreamingSupported
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
@@ -280,6 +279,8 @@ class StreamingService : BaseService() {
             private var homeInsertGap = false
             private var interactionsInsertGap = false
 
+            private var lastActivityAboutMe: ParcelableActivity? = null
+
             override fun onConnected(): Boolean {
                 homeInsertGap = true
                 interactionsInsertGap = true
@@ -326,13 +327,61 @@ class StreamingService : BaseService() {
                         handler.postDelayed(interactionsTimeoutRunnable, TimeUnit.SECONDS.toMillis(30))
                     }
                 } else {
-                    val parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
-                            account.key, interactionsInsertGap, profileImageSize)
-                    parcelableActivity.position_key = parcelableActivity.timestamp
+                    val insertGap: Boolean
+                    if (activity.action in Activity.Action.MENTION_ACTIONS) {
+                        insertGap = interactionsInsertGap
+                        interactionsInsertGap = false
+                    } else {
+                        insertGap = false
+                    }
+                    val curActivity = ParcelableActivityUtils.fromActivity(activity, account.key,
+                            insertGap, profileImageSize)
+                    curActivity.position_key = curActivity.timestamp
+                    var updateId = -1L
+                    if (curActivity.action !in Activity.Action.MENTION_ACTIONS) {
+                        /* Merge two activities if:
+                         * * Not mention/reply/quote
+                         * * Same action
+                         * * Same source or target or target object
+                         */
+                        val lastActivity = this.lastActivityAboutMe
+                        if (lastActivity != null && curActivity.action == lastActivity.action) {
+                            if (curActivity.reachedCountLimit) {
+                                // Skip if more than 10 sources/targets/target_objects
+                            } else if (curActivity.isSameSources(lastActivity)) {
+                                curActivity.prependTargets(lastActivity)
+                                curActivity.prependTargetObjects(lastActivity)
+                                updateId = lastActivity._id
+                            } else if (curActivity.isSameTarget(lastActivity)) {
+                                curActivity.prependSources(lastActivity)
+                                curActivity.prependTargets(lastActivity)
+                                updateId = lastActivity._id
+                            } else if (curActivity.isSameTargetObject(lastActivity)) {
+                                curActivity.prependSources(lastActivity)
+                                curActivity.prependTargets(lastActivity)
+                                updateId = lastActivity._id
+                            }
+                            if (updateId > 0) {
+                                curActivity.min_position = lastActivity.min_position
+                                curActivity.min_sort_position = lastActivity.min_sort_position
+                            }
+                        }
+                    }
                     val values = ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
-                            .create(parcelableActivity)
-                    context.contentResolver.insert(Activities.AboutMe.CONTENT_URI, values)
-                    interactionsInsertGap = false
+                            .create(curActivity)
+                    val resolver = context.contentResolver
+                    if (updateId > 0) {
+                        val where = Expression.equalsArgs(Activities._ID).sql
+                        val whereArgs = arrayOf(updateId.toString())
+                        resolver.update(Activities.AboutMe.CONTENT_URI, values, where, whereArgs)
+                        curActivity._id = updateId
+                    } else {
+                        val uri = resolver.insert(Activities.AboutMe.CONTENT_URI, values)
+                        if (uri != null) {
+                            curActivity._id = uri.lastPathSegment.toLong(-1)
+                        }
+                    }
+                    lastActivityAboutMe = curActivity
                 }
                 return true
             }
@@ -397,11 +446,11 @@ class StreamingService : BaseService() {
 
                     override val sinceIds: Array<String?>?
                         get() = DataStoreUtils.getNewestActivityMaxPositions(context,
-                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key))
+                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key), null, null)
 
                     override val sinceSortIds: LongArray?
                         get() = DataStoreUtils.getNewestActivityMaxSortPositions(context,
-                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key))
+                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key), null, null)
 
                     override val hasSinceIds: Boolean = true
 

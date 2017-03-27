@@ -143,18 +143,23 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         if (ILoadMoreSupportAdapter.START in position || refreshing) return
         super.onLoadMoreContents(position)
         if (position == 0L) return
+        val contentUri = this.contentUri
         getActivities(object : SimpleRefreshTaskParam() {
             override val accountKeys: Array<UserKey> by lazy {
                 this@CursorActivitiesFragment.accountKeys
             }
 
             override val maxIds: Array<String?>?
-                get() = getOldestActivityIds(accountKeys)
+                get() {
+                    val context = context ?: return null
+                    return DataStoreUtils.getRefreshOldestActivityMaxPositions(context, contentUri,
+                            accountKeys.toNulls())
+                }
 
             override val maxSortIds: LongArray?
                 get() {
                     val context = context ?: return null
-                    return DataStoreUtils.getOldestActivityMaxSortPositions(context,
+                    return DataStoreUtils.getRefreshOldestActivityMaxSortPositions(context,
                             contentUri, accountKeys.toNulls())
                 }
 
@@ -166,20 +171,28 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         })
     }
 
+
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
+        val contentUri = this.contentUri
         getActivities(object : SimpleRefreshTaskParam() {
             override val accountKeys: Array<UserKey> by lazy {
                 this@CursorActivitiesFragment.accountKeys
             }
 
             override val sinceIds: Array<String?>?
-                get() = DataStoreUtils.getNewestActivityMaxPositions(context, contentUri,
+                get() {
+                    val context = context ?: return null
+                    return DataStoreUtils.getRefreshNewestActivityMaxPositions(context, contentUri,
                         accountKeys.toNulls())
+                }
 
             override val sinceSortIds: LongArray?
-                get() = DataStoreUtils.getNewestActivityMaxSortPositions(context, contentUri,
-                        accountKeys.toNulls())
+                get() {
+                    val context = context ?: return null
+                    return DataStoreUtils.getRefreshNewestActivityMaxSortPositions(context,
+                            contentUri, accountKeys.toNulls())
+                }
 
             override val hasSinceIds: Boolean
                 get() = true
@@ -206,11 +219,6 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
                 twitterWrapper.clearNotificationAsync(notificationType, accountKey)
             }
         }
-    }
-
-    protected fun getOldestActivityIds(accountKeys: Array<UserKey>): Array<String?>? {
-        val context = context ?: return null
-        return DataStoreUtils.getOldestActivityMaxPositions(context, contentUri, accountKeys.toNulls())
     }
 
     protected abstract val isFilterEnabled: Boolean
@@ -343,5 +351,9 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
         class ActivityCursor(cursor: Cursor, indies: ObjectCursor.CursorIndices<ParcelableActivity>,
                              val filteredUserIds: Array<UserKey>) : ObjectCursor<ParcelableActivity>(cursor, indies)
+    }
+
+    companion object {
+
     }
 }

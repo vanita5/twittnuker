@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
@@ -75,6 +76,10 @@ class MarkMessageReadTask(
                 lastReadEvent.second.toString())
         context.contentResolver.update(Conversations.CONTENT_URI, values, updateWhere, updateWhereArgs)
         return true
+    }
+
+    override fun onSucceed(callback: Unit?, result: Boolean) {
+        bus.post(UnreadCountUpdatedEvent(-1))
     }
 
     private fun performMarkRead(microBlog: MicroBlog, account: AccountDetails,

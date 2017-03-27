@@ -286,7 +286,7 @@ class AsyncTwitterWrapper(
                 override val accountKeys: Array<UserKey> by lazy { action() }
 
                 override val sinceIds: Array<String?>? by lazy {
-                    DataStoreUtils.getNewestActivityMaxPositions(context,
+                    DataStoreUtils.getRefreshNewestActivityMaxPositions(context,
                             Activities.AboutMe.CONTENT_URI, accountKeys.toNulls())
                 }
             })

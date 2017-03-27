@@ -79,11 +79,8 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
-import de.vanita5.twittnuker.fragment.BaseDialogFragment
-import de.vanita5.twittnuker.fragment.EditAltTextDialogFragment
-import de.vanita5.twittnuker.fragment.PermissionRequestDialog
+import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
@@ -322,7 +319,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (resultCode) {
             Giphy.REQUEST_GIPHY -> {
                 requestOrPickGif()
@@ -330,22 +327,22 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
         when (requestCode) {
             REQUEST_TAKE_PHOTO, REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    val src = MediaPickerActivity.getMediaUris(intent)
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val src = MediaPickerActivity.getMediaUris(data)
                     TaskStarter.execute(AddMediaTask(this, src, false, false))
                 }
             }
             REQUEST_EDIT_IMAGE -> {
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    if (intent.data != null) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    if (data.data != null) {
                         setMenu()
                         updateTextCount()
                     }
                 }
             }
             REQUEST_SET_SCHEDULE -> {
-                if (resultCode == Activity.RESULT_OK && intent != null) {
-                    scheduleInfo = intent.getParcelableExtra(EXTRA_SCHEDULE_INFO)
+                if (resultCode == Activity.RESULT_OK) {
+                    scheduleInfo = data?.getParcelableExtra(EXTRA_SCHEDULE_INFO)
                 }
             }
         }
@@ -531,7 +528,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
             R.id.schedule -> {
                 val controller = statusScheduleController ?: return true
-                startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
+                if (extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)) {
+                    startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
+                } else {
+                    ExtraFeaturesIntroductionDialogFragment.show(supportFragmentManager,
+                            feature = ExtraFeaturesService.FEATURE_SCHEDULE_STATUS,
+                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
+                }
             }
 
             R.id.add_hashtag -> {

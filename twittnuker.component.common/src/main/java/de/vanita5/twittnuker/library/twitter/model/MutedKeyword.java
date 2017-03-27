@@ -24,8 +24,40 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import de.vanita5.twittnuker.library.twitter.model.util.UnixEpochMillisDateConverter;
+
+import java.util.Date;
 
 @JsonObject
 public class MutedKeyword {
+    @JsonField(name = "id")
+    String id;
+    @JsonField(name = "keyword")
+    String keyword;
+    @JsonField(name = "created_at", typeConverter = UnixEpochMillisDateConverter.class)
+    Date createdAt;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "MutedKeyword{" +
+                "id='" + id + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

@@ -59,7 +59,9 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.readFromBottomKey
 import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
+import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
+import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
@@ -311,6 +313,14 @@ abstract class AbsActivitiesFragment protected constructor() :
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val activity = adapter.getActivity(position)
         DebugLog.v(msg = "Load activity gap $activity")
+        if (!Utils.isOfficialCredentials(context, activity.account_key)) {
+            // Skip if item is not a status
+            if (activity.action !in Activity.Action.MENTION_ACTIONS) {
+                adapter.removeGapLoadingId(ObjectId(activity.account_key, activity.id))
+                adapter.notifyItemChanged(position)
+                return
+            }
+        }
         val accountIds = arrayOf(activity.account_key)
         val maxIds = arrayOf(activity.min_position)
         val maxSortIds = longArrayOf(activity.min_sort_position)
