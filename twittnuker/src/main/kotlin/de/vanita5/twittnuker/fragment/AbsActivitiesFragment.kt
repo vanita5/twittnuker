@@ -42,6 +42,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
+import de.vanita5.twittnuker.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
@@ -61,7 +62,6 @@ import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
-import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
@@ -252,7 +252,11 @@ abstract class AbsActivitiesFragment protected constructor() :
             } else {
                 firstVisibleItemPosition
             }.coerceInOr(activityRange, -1)
-            lastReadId = adapter.getTimestamp(lastReadPosition)
+            lastReadId = if (lastReadPosition < 0) {
+                -1
+            } else {
+                adapter.getTimestamp(lastReadPosition)
+            }
             lastReadViewTop = layoutManager.findViewByPosition(lastReadPosition)?.top ?: 0
             loadMore = activityRange.endInclusive in 0..lastVisibleItemPosition
         } else if (rememberPosition && readPositionTag != null) {
