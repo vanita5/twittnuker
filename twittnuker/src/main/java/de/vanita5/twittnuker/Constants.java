@@ -33,7 +33,7 @@ public interface Constants extends TwittnukerConstants {
     String DATABASES_NAME = "twittnuker.sqlite";
     int DATABASES_VERSION = 181;
 
-    int EXTRA_FEATURES_NOTICE_VERSION = 0;
+    int EXTRA_FEATURES_NOTICE_VERSION = 1;
 
     int MENU_GROUP_STATUS_SHARE = 20;
 
