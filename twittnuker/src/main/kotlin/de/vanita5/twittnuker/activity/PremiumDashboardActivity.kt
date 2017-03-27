@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
+import de.vanita5.twittnuker.util.schedule.StatusScheduleController
 import de.vanita5.twittnuker.view.ContainerView
 import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicBoolean
@@ -188,6 +189,9 @@ class PremiumDashboardActivity : BaseActivity() {
 
         @Inject
         protected lateinit var preferences: SharedPreferencesWrapper
+
+        @Inject
+        protected lateinit var scheduleControllerFactory: StatusScheduleController.Factory
 
         var position: Int = RecyclerView.NO_POSITION
             internal set

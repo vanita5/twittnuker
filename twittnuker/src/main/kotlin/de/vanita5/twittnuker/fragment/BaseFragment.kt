@@ -29,11 +29,13 @@ import android.support.v4.text.BidiFormatter
 import com.squareup.otto.Bus
 import com.twitter.Validator
 import nl.komponents.kovenant.Promise
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
+import de.vanita5.twittnuker.util.schedule.StatusScheduleController
 import javax.inject.Inject
 
 open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
@@ -65,6 +67,13 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
+    @Inject
+    lateinit var statusScheduleControllerFactory: StatusScheduleController.Factory
+    @Inject
+    lateinit var restHttpClient: RestHttpClient
+
+    protected val statusScheduleController: StatusScheduleController?
+        get() = statusScheduleControllerFactory.newInstance(context)
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 

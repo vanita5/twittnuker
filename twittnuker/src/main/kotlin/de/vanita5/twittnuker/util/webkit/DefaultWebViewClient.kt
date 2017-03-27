@@ -33,14 +33,14 @@ import de.vanita5.twittnuker.util.Utils.showErrorMessage
 
 open class DefaultWebViewClient<out A : Activity>(val activity: A) : WebViewClient() {
 
-    @Deprecated("")
+    @Suppress("OverridingDeprecatedMember")
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        val uri = Uri.parse(url)
         try {
-            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            activity.startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
             showErrorMessage(activity, null, e, false)
         }
-
         return true
     }
 }

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.app.Activity
 import android.app.Dialog
 import android.app.NotificationManager
 import android.content.Context
@@ -47,6 +48,7 @@ import android.widget.ListView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_drafts.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -56,10 +58,13 @@ import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.model.Draft
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.deleteDrafts
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import java.lang.ref.WeakReference
 
 class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
@@ -68,6 +73,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setHasOptionsMenu(true)
         adapter = DraftsAdapter(activity, Glide.with(this)).apply {
             textSize = preferences[textSizeKey].toFloat()
         }
@@ -86,6 +92,16 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
     override fun onStart() {
         twitterWrapper.clearNotificationAsync(NOTIFICATION_ID_DRAFTS)
         super.onStart()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(data!!))
+                }
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -107,6 +123,32 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
 
     override fun onLoaderReset(loader: Loader<Cursor?>) {
         adapter.swapCursor(null)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_drafts, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val scheduleSupported = extraFeaturesService.isSupported(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)
+        menu.setItemAvailability(R.id.scheduled_statuses, scheduleSupported)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.scheduled_statuses -> {
+                if (extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)) {
+                    val scheduleManageIntent = statusScheduleController?.createManageIntent()
+                    startActivity(scheduleManageIntent)
+                } else {
+                    ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
+                            ExtraFeaturesService.FEATURE_SCHEDULE_STATUS,
+                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
+                }
+                return true
+            }
+        }
+        return false
     }
 
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
