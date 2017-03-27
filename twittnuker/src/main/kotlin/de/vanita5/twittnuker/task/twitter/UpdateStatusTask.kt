@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
+import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
@@ -80,14 +81,15 @@ import java.util.concurrent.TimeUnit
 class UpdateStatusTask(
         context: Context,
         internal val stateCallback: UpdateStatusTask.StateCallback
-) : BaseAbstractTask<ParcelableStatusUpdate, UpdateStatusTask.UpdateStatusResult, Any?>(context) {
+) : BaseAbstractTask<Pair<ParcelableStatusUpdate, ScheduleInfo?>, UpdateStatusTask.UpdateStatusResult, Any?>(context) {
 
-    override fun doLongOperation(params: ParcelableStatusUpdate): UpdateStatusResult {
-        val draftId = saveDraft(params)
+    override fun doLongOperation(params: Pair<ParcelableStatusUpdate, ScheduleInfo?>): UpdateStatusResult {
+        val (update, info) = params
+        val draftId = saveDraft(update)
         microBlogWrapper.addSendingDraftId(draftId)
         try {
-            val result = doUpdateStatus(params, draftId)
-            deleteOrUpdateDraft(params, result, draftId)
+            val result = doUpdateStatus(update, info, draftId)
+            deleteOrUpdateDraft(update, result, draftId)
             return result
         } catch (e: UpdateStatusException) {
             return UpdateStatusResult(e, draftId)
@@ -102,9 +104,7 @@ class UpdateStatusTask(
 
     override fun afterExecute(handler: Any?, result: UpdateStatusResult) {
         stateCallback.afterExecute(result)
-        if (params != null) {
-            logUpdateStatus(params, result)
-        }
+        logUpdateStatus(params.first, result)
     }
 
     private fun logUpdateStatus(statusUpdate: ParcelableStatusUpdate, result: UpdateStatusResult) {
@@ -117,7 +117,8 @@ class UpdateStatusTask(
     }
 
     @Throws(UpdateStatusException::class)
-    private fun doUpdateStatus(update: ParcelableStatusUpdate, draftId: Long): UpdateStatusResult {
+    private fun doUpdateStatus(update: ParcelableStatusUpdate, info: ScheduleInfo?, draftId: Long):
+            UpdateStatusResult {
         val app = TwittnukerApplication.getInstance(context)
         val uploader = getMediaUploader(app)
         val shortener = getStatusShortener(app)
@@ -126,10 +127,14 @@ class UpdateStatusTask(
 
         val result: UpdateStatusResult
         try {
-            uploadMedia(uploader, update, pendingUpdate)
+            uploadMedia(uploader, update, info, pendingUpdate)
             shortenStatus(shortener, update, pendingUpdate)
 
-            result = requestUpdateStatus(update, pendingUpdate, draftId)
+            if (info != null) {
+                result = requestScheduleStatus(update, pendingUpdate, info, draftId)
+            } else {
+                result = requestUpdateStatus(update, pendingUpdate, draftId)
+            }
 
             mediaUploadCallback(uploader, pendingUpdate, result)
             statusShortenCallback(shortener, pendingUpdate, result)
@@ -148,7 +153,8 @@ class UpdateStatusTask(
         return result
     }
 
-    private fun deleteOrUpdateDraft(update: ParcelableStatusUpdate, result: UpdateStatusResult, draftId: Long) {
+    private fun deleteOrUpdateDraft(update: ParcelableStatusUpdate, result: UpdateStatusResult,
+            draftId: Long) {
         val where = Expression.equalsArgs(Drafts._ID).sql
         val whereArgs = arrayOf(draftId.toString())
         var hasError = false
@@ -174,12 +180,13 @@ class UpdateStatusTask(
     @Throws(UploadException::class)
     private fun uploadMedia(uploader: MediaUploaderInterface?,
                             update: ParcelableStatusUpdate,
+            info: ScheduleInfo?,
                             pendingUpdate: PendingStatusUpdate) {
         stateCallback.onStartUploadingMedia()
-        if (uploader == null) {
-            uploadMediaWithDefaultProvider(update, pendingUpdate)
-        } else {
+        if (uploader != null) {
             uploadMediaWithExtension(uploader, update, pendingUpdate)
+        } else if (info == null) {
+            uploadMediaWithDefaultProvider(update, pendingUpdate)
         }
     }
 
@@ -256,6 +263,29 @@ class UpdateStatusTask(
             // Override status text
             pending.overrideTexts[i] = shortenResult.shortened
         }
+    }
+
+    @Throws(UpdateStatusException::class)
+    private fun requestScheduleStatus(
+            statusUpdate: ParcelableStatusUpdate,
+            pendingUpdate: PendingStatusUpdate,
+            scheduleInfo: ScheduleInfo,
+            draftId: Long
+    ): UpdateStatusResult {
+
+        stateCallback.onUpdatingStatus()
+
+        val controller = scheduleController ?: run {
+            throw SchedulerNotFoundException("No scheduler found")
+        }
+
+        try {
+            controller.scheduleStatus(statusUpdate, pendingUpdate.overrideTexts, scheduleInfo)
+        } catch (e: ScheduleException) {
+            return UpdateStatusResult(e, draftId)
+        }
+
+        return UpdateStatusResult(pendingUpdate.length, draftId)
     }
 
     @Throws(UpdateStatusException::class)
@@ -400,7 +430,8 @@ class UpdateStatusTask(
         return microBlog.updateStatus(status)
     }
 
-    private fun statusShortenCallback(shortener: StatusShortenerInterface?, pendingUpdate: PendingStatusUpdate, updateResult: UpdateStatusResult) {
+    private fun statusShortenCallback(shortener: StatusShortenerInterface?,
+            pendingUpdate: PendingStatusUpdate, updateResult: UpdateStatusResult) {
         if (shortener == null || !shortener.waitForService()) return
         for (i in 0..pendingUpdate.length - 1) {
             val shortenResult = pendingUpdate.statusShortenResults[i]
@@ -410,7 +441,8 @@ class UpdateStatusTask(
         }
     }
 
-    private fun mediaUploadCallback(uploader: MediaUploaderInterface?, pendingUpdate: PendingStatusUpdate, updateResult: UpdateStatusResult) {
+    private fun mediaUploadCallback(uploader: MediaUploaderInterface?,
+            pendingUpdate: PendingStatusUpdate, updateResult: UpdateStatusResult) {
         if (uploader == null || !uploader.waitForService()) return
         for (i in 0..pendingUpdate.length - 1) {
             val uploadResult = pendingUpdate.mediaUploadResults[i]
@@ -518,7 +550,7 @@ class UpdateStatusTask(
         val exception: UpdateStatusException?
         val draftId: Long
 
-        val succeed: Boolean get() = exception == null && statuses.isNotEmpty() && statuses.none { it == null }
+        val succeed: Boolean get() = exception == null && exceptions.none { it != null }
 
         constructor(count: Int, draftId: Long) {
             this.statuses = arrayOfNulls(count)
@@ -549,10 +581,22 @@ class UpdateStatusTask(
     }
 
     class UploaderNotFoundException(message: String) : UpdateStatusException(message)
+    class SchedulerNotFoundException(message: String) : UpdateStatusException(message)
 
     class UploadException : UpdateStatusException {
 
         var deleteAlways: List<MediaDeletionItem>? = null
+
+        constructor() : super()
+
+        constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
+
+        constructor(throwable: Throwable) : super(throwable)
+
+        constructor(message: String) : super(message)
+    }
+
+    class ScheduleException : UpdateStatusException {
 
         constructor() : super()
 

@@ -29,6 +29,7 @@ import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.media.MediaPreloader
+import de.vanita5.twittnuker.util.schedule.StatusScheduleController
 import javax.inject.Inject
 
 
@@ -52,6 +53,11 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var readStateManager: ReadStateManager
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    lateinit var scheduleControllerFactory: StatusScheduleController.Factory
+
+    val scheduleController: StatusScheduleController?
+        get() = scheduleControllerFactory.newInstance(context)
 
     init {
         injectMembers()
