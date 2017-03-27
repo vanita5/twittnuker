@@ -481,6 +481,7 @@
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
+    <string name="message_error_buffer_media_not_supported">Medien mit Buffer zeitversetzt zu verschicken wird noch nicht unterstützt</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <string name="message_format_compose_message_convert_to_status">Diesen Tweet als Nachricht an <xliff:g id="name">%1$s</xliff:g> senden?</string>
     <string name="message_format_conversation_avatar_update">Gruppenbild aktualisiert</string>
@@ -883,6 +884,7 @@
     <string name="title_block_user"><xliff:g id="name">%s </xliff:g> blockieren</string>
     <string name="title_blocked_users">Blockierte Accounts</string>
     <string name="title_browser_sign_in">Browseranmeldung</string>
+    <string name="title_buffer_set_schedule">Zeitversetzt senden mit Buffer</string>
     <string name="title_compose">Neuer Tweet</string>
     <string name="title_conversation">Unterhaltung</string>
     <string name="title_dialog_sync_connect_to">Verbinden…</string>
@@ -912,6 +914,7 @@
     <string name="title_quick_action">Quick Action</string>
     <string name="title_search">Suche</string>
     <string name="title_select_users">Account auswählen</string>
+    <string name="title_sign_in_to_buffer">Buffer Anmeldung</string>
     <string name="title_status">Tweet</string>
     <string name="title_statuses">Tweets</string>
     <string name="title_statuses_scheduling">Tweets Zeitplanung</string>
@@ -985,8 +988,6 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="message_error_buffer_media_not_supported">Medien mit Buffer zeitversetzt zu verschicken wird noch nicht unterstützt</string>
-    <string name="title_buffer_set_schedule">Zeitversetzt senden mit Buffer</string>
 
 
     <!-- Twittnuker -->

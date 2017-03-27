@@ -20,44 +20,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model
+package de.vanita5.twittnuker.util.webkit
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
+import android.webkit.WebView
+import android.webkit.WebViewClient
 
-class ItemCounts(counts: Int) {
-    private val data: IntArray = IntArray(counts)
+import de.vanita5.twittnuker.util.Utils.showErrorMessage
 
-    fun getItemCountIndex(itemPosition: Int): Int {
-        if (itemPosition < 0) return -1
-        var sum = 0
-        data.forEachIndexed { i, num ->
-            sum += num
-            if (itemPosition < sum) {
-                return i
-            }
+open class DefaultWebViewClient<out A : Activity>(val activity: A) : WebViewClient() {
+
+    @Deprecated("")
+    override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+        try {
+            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: ActivityNotFoundException) {
+            showErrorMessage(activity, null, e, false)
         }
-        return -1
+
+        return true
     }
-
-    fun getItemStartPosition(countIndex: Int): Int {
-        return (0..countIndex - 1).sumBy { data[it] }
-    }
-
-    val itemCount: Int get() = data.sum()
-
-    val size: Int get() = data.size
-
-    operator fun set(countIndex: Int, value: Int) {
-        data[countIndex] = value
-    }
-
-    operator fun get(countIndex: Int): Int {
-        return data[countIndex]
-    }
-
-    fun clear() {
-        for (i in data.indices) {
-            data[i] = 0
-        }
-    }
-
 }
