@@ -26,6 +26,7 @@
     <string name="action_blocking">blockieren</string>
     <string name="action_buffer_disconnect">Von Buffer abmelden</string>
     <string name="action_buffer_settings">Einstellungen</string>
+    <string name="action_buffer_update_now">Jetzt aktualisieren</string>
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">Retweet löschen</string>
     <string name="action_cancelling_like">Like entfernen</string>
@@ -414,6 +415,7 @@
     <string name="label_auth_type">Authentifizierungtyp</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="label_buffer_accounts">Buffer Accounts</string>
+    <string name="label_buffer_due_at_no_time">Keine Zeit</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
@@ -479,6 +481,7 @@
     <string name="message_api_url_format_help">[DOMAIN]: Twitter API Domäne.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
+    <string name="message_buffer_delete_schedule_confirm">Geplanten Tweet löschen?</string>
     <string name="message_clear_messages_confirm">Alle Nachrichten löschen?</string>
     <string name="message_conversation_created">Unterhaltung begonnen.</string>
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
@@ -550,9 +553,11 @@
     <string name="message_toast_profile_banner_image_updated">Profilbanner aktualisiert.</string>
     <string name="message_toast_save_media_no_storage_permission">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
     <string name="message_toast_saved_to_gallery">In Galerie gespeichert.</string>
+    <string name="message_toast_schedule_future_time_required">Datum und Zeit müssen in der Zukunft liegen</string>
     <string name="message_toast_select_file_no_storage_permission">Speicherberechtigung notwendig um Dateien auszuwählen.</string>
     <string name="message_toast_share_media_no_storage_permission">Die Anwendung erfordert die Speicherberechtigung, um Medien zu teilen.</string>
     <string name="message_toast_status_saved_to_draft">Tweet als Entwurf gespeichert.</string>
+    <string name="message_toast_status_scheduled">Tweet geplant</string>
     <string name="message_toast_status_updated">Tweet gesendet.</string>
     <string name="message_toast_unable_to_load_more_statuses">Kann älteren Tweets nicht laden</string>
     <string name="message_toast_wrong_api_key">Inkorrekte API URL oder Consumer Key/Secret. Bitte nochmals prüfen.</string>
@@ -890,6 +895,7 @@
     <string name="title_blocked_users">Blockierte Accounts</string>
     <string name="title_browser_sign_in">Browseranmeldung</string>
     <string name="title_buffer_queue_manager">Buffer Warteschlange</string>
+    <string name="title_buffer_schedule">Buffer Zeitplan</string>
     <string name="title_buffer_set_schedule">Zeitversetzt senden mit Buffer</string>
     <string name="title_buffer_settings">Buffer Einstellungen</string>
     <string name="title_compose">Neuer Tweet</string>
@@ -997,7 +1003,6 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="label_buffer_due_at_no_time">Keine Zeit</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
