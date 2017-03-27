@@ -24,6 +24,7 @@
     <!-- [verb] Action for blocking user -->
     <string name="action_block">Blockieren</string>
     <string name="action_blocking">blockieren</string>
+    <string name="action_buffer_disconnect">Von Buffer abmelden</string>
     <string name="action_buffer_settings">Einstellungen</string>
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">Retweet löschen</string>
@@ -415,6 +416,7 @@
     <string name="label_buffer_accounts">Buffer Accounts</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
+    <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
     <string name="label_location_your_coarse_location">Deine ungefähre Position</string>
     <string name="label_media">Medien</string>
     <string name="label_original_status">Original-Tweet</string>
@@ -482,6 +484,7 @@
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
+    <string name="message_error_buffer_connection_failed">Konnte nicht mit Buffer verbinden</string>
     <string name="message_error_buffer_media_not_supported">Medien mit Buffer zeitversetzt zu verschicken wird noch nicht unterstützt</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <string name="message_format_compose_message_convert_to_status">Diesen Tweet als Nachricht an <xliff:g id="name">%1$s</xliff:g> senden?</string>
@@ -493,6 +496,7 @@
     <string name="message_format_participants_join_added"><xliff:g example="Sender" id="sender">%1$s</xliff:g> hat <xliff:g example="Recipient" id="recipient">%2$s</xliff:g> hinzugefügt</string>
     <string name="message_format_participants_leave"><xliff:g example="User" id="name">%1$s</xliff:g> hat das Gespräch verlassen</string>
     <string name="message_format_sender_time"><xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g example="12:00" id="time">%2$s</xliff:g></string>
+    <string name="message_info_buffer_queue_empty">Buffer Warteschlange ist leer</string>
     <string name="message_join_conversation">Gespräch beigetreten.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
@@ -993,7 +997,7 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="action_buffer_disconnect">Von Buffer abmelden</string>
+    <string name="label_buffer_due_at_no_time">Keine Zeit</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

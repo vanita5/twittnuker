@@ -25,20 +25,15 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.database.Cursor
 import android.support.v4.widget.SimpleCursorAdapter
+import android.support.v7.widget.RecyclerViewAccessor
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
-import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.draft.StatusObjectExtras
-import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.DraftViewHolder
 
@@ -47,7 +42,7 @@ import javax.inject.Inject
 class DraftsAdapter(
         context: Context,
         val requestManager: RequestManager
-) : SimpleCursorAdapter(context, R.layout.list_item_draft, null, arrayOfNulls<String>(0), IntArray(0), 0) {
+) : SimpleCursorAdapter(context, DraftViewHolder.layoutResource, null, emptyArray(), intArrayOf(), 0) {
 
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
@@ -59,6 +54,7 @@ class DraftsAdapter(
             field = value
             notifyDataSetChanged()
         }
+
     private var indices: ObjectCursor.CursorIndices<Draft>? = null
 
     init {
@@ -67,59 +63,19 @@ class DraftsAdapter(
     }
 
     override fun bindView(view: View, context: Context, cursor: Cursor) {
-        val holder = view.tag as DraftViewHolder
         val draft = indices!!.newObject(cursor)
 
-        val accountKeys = draft.account_keys
-        val actionType: String = draft.action_type ?: Draft.Action.UPDATE_STATUS
-        val actionName = draft.getActionName(context)
-        var summaryText: String? = null
-        when (actionType) {
-            Draft.Action.SEND_DIRECT_MESSAGE, Draft.Action.SEND_DIRECT_MESSAGE_COMPAT,
-            Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1,
-            Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                val media = ParcelableMediaUtils.fromMediaUpdates(draft.media)
-                holder.mediaPreviewContainer.visibility = View.VISIBLE
-                holder.mediaPreviewContainer.displayMedia(requestManager = requestManager,
-                        media = media)
-            }
-            Draft.Action.FAVORITE, Draft.Action.RETWEET -> {
-                val extras = draft.action_extras as? StatusObjectExtras
-                if (extras != null) {
-                    summaryText = extras.status.text_unescaped
-                }
-                holder.mediaPreviewContainer.visibility = View.GONE
-            }
-            else -> {
-                holder.mediaPreviewContainer.visibility = View.GONE
-            }
-        }
-        if (accountKeys != null) {
-            holder.content.drawEnd(*DataStoreUtils.getAccountColors(context, accountKeys))
-        } else {
-            holder.content.drawEnd()
-        }
-        holder.setTextSize(textSize)
-        if (summaryText != null) {
-            holder.text.text = summaryText
-        } else if (draft.text.isNullOrEmpty()) {
-            holder.text.setText(R.string.empty_content)
-        } else {
-            holder.text.text = draft.text
+        val holder = view.tag as DraftViewHolder
+        RecyclerViewAccessor.setLayoutPosition(holder, cursor.position)
+
+        holder.display(context, requestManager, draft)
         }
 
-        if (draft.timestamp > 0) {
-            val timeString = Utils.formatSameDayTime(context, draft.timestamp)
-            holder.time.text = context.getString(R.string.action_name_saved_at_time, actionName, timeString)
-        } else {
-            holder.time.text = actionName
-        }
-    }
-
-    override fun newView(context: Context?, cursor: Cursor?, parent: ViewGroup): View {
+    override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
         val view = super.newView(context, cursor, parent)
         if (view.tag !is DraftViewHolder) {
             view.tag = DraftViewHolder(view).apply {
+                this.setTextSize(textSize)
                 this.mediaPreviewContainer.style = mediaPreviewStyle
             }
         }

@@ -30,20 +30,30 @@
     android:layout_height="wrap_content"
     android:background="?android:activatedBackgroundIndicator"
     android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:minHeight="?android:listPreferredItemHeightSmall"
     android:orientation="vertical"
     android:padding="@dimen/element_spacing_normal"
     app:backgroundTint="?colorControlActivated"
     app:ignorePadding="true"
     tools:context=".adapter.DraftsAdapter">
 
+    <de.vanita5.twittnuker.view.FixedTextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/element_spacing_small"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="?android:textColorPrimary"
+        tools:text="@string/sample_status_text"/>
+
     <de.vanita5.twittnuker.view.CardMediaContainer
-        android:id="@+id/media_preview_container"
+        android:id="@+id/mediaPreviewContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/profileContainer"
         android:layout_alignStart="@+id/profileContainer"
         android:layout_below="@id/profileContainer"
-        android:layout_marginTop="@dimen/element_spacing_normal"
         android:horizontalSpacing="@dimen/element_spacing_xsmall"
         android:verticalSpacing="@dimen/element_spacing_xsmall">
 
@@ -52,26 +62,13 @@
     </de.vanita5.twittnuker.view.CardMediaContainer>
 
     <de.vanita5.twittnuker.view.FixedTextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?android:listPreferredItemHeightSmall"
-        android:paddingBottom="@dimen/element_spacing_normal"
-        android:paddingLeft="@dimen/element_spacing_normal"
-        android:paddingRight="@dimen/element_spacing_normal"
-        android:paddingTop="@dimen/element_spacing_normal"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:textColor="?android:textColorPrimary"/>
-
-    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/element_spacing_normal"
-        android:paddingLeft="@dimen/element_spacing_normal"
-        android:paddingRight="@dimen/element_spacing_normal"
+        android:padding="@dimen/element_spacing_small"
         android:textAppearance="?android:textAppearanceSmall"
-        android:textColor="?android:textColorPrimary"/>
+        android:textColor="?android:textColorPrimary"
+        tools:text="12:00 April 1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
