@@ -59,6 +59,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.util.Linkify
 import android.util.SparseBooleanArray
@@ -120,10 +121,10 @@ import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.model.event.FriendshipUpdatedEvent
 import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
 import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
-import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
+import de.vanita5.twittnuker.text.TwidereURLSpan
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -471,7 +472,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             profileType.visibility = View.GONE
         }
         profileNameContainer.screenName.text = "@${user.screen_name}"
-        val linkify = TwidereLinkify(this)
+        val linkHighlightOption = preferences[linkHighlightOptionKey]
+        val linkify = TwidereLinkify(this, linkHighlightOption)
         if (user.description_unescaped != null) {
             val text = SpannableStringBuilder.valueOf(user.description_unescaped).apply {
                 user.description_spans?.applyTo(this)
@@ -484,10 +486,15 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
         descriptionContainer.visibility = if (descriptionContainer.description.empty) View.GONE else View.VISIBLE
 
-        locationContainer.visibility = if (TextUtils.isEmpty(user.location)) View.GONE else View.VISIBLE
         locationContainer.location.text = user.location
-        urlContainer.visibility = if (TextUtils.isEmpty(user.url) && TextUtils.isEmpty(user.url_expanded)) View.GONE else View.VISIBLE
-        urlContainer.url.text = if (TextUtils.isEmpty(user.url_expanded)) user.url else user.url_expanded
+        locationContainer.visibility = if (locationContainer.location.empty) View.GONE else View.VISIBLE
+        urlContainer.url.text = (user.url_expanded?.takeIf(String::isNotEmpty) ?: user.url)?.let {
+            val ssb = SpannableStringBuilder(it)
+            ssb.setSpan(TwidereURLSpan(it, highlightStyle = linkHighlightOption), 0, ssb.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            return@let ssb
+        }
+        urlContainer.visibility = if (urlContainer.url.empty) View.GONE else View.VISIBLE
         if (user.created_at >= 0) {
             val createdAt = Utils.formatToLongTimeString(activity, user.created_at)
             val daysSinceCreation = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24.toFloat()
