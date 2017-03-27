@@ -985,6 +985,8 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
+    <string name="message_error_buffer_media_not_supported">Medien mit Buffer zeitversetzt zu verschicken wird noch nicht unterstützt</string>
+    <string name="title_buffer_set_schedule">Zeitversetzt senden mit Buffer</string>
 
 
     <!-- Twittnuker -->

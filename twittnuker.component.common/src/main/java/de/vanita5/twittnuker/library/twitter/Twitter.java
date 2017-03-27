@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.library.twitter.api.FavoritesResources;
 import de.vanita5.twittnuker.library.twitter.api.FriendsFollowersResources;
 import de.vanita5.twittnuker.library.twitter.api.HelpResources;
 import de.vanita5.twittnuker.library.twitter.api.ListResources;
+import de.vanita5.twittnuker.library.twitter.api.MutesResources;
 import de.vanita5.twittnuker.library.twitter.api.PlacesGeoResources;
 import de.vanita5.twittnuker.library.twitter.api.SavedSearchesResources;
 import de.vanita5.twittnuker.library.twitter.api.SearchResources;
@@ -41,5 +42,5 @@ import de.vanita5.twittnuker.library.twitter.api.UsersResources;
 public interface Twitter extends SearchResources, TimelineResources, TweetResources, UsersResources,
         ListResources, DirectMessagesResources, FriendsFollowersResources, FavoritesResources,
         SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
-        HelpResources, TwitterPrivate {
+        HelpResources, MutesResources, TwitterPrivate {
 }

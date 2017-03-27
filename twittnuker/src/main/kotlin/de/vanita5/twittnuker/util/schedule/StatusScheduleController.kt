@@ -28,6 +28,7 @@ import android.support.annotation.WorkerThread
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask.PendingStatusUpdate
 import java.util.*
 
 
@@ -35,8 +36,8 @@ interface StatusScheduleController {
 
     @WorkerThread
     @Throws(UpdateStatusTask.ScheduleException::class)
-    fun scheduleStatus(statusUpdate: ParcelableStatusUpdate, overrideTexts: Array<String>,
-            scheduleInfo: ScheduleInfo)
+    fun scheduleStatus(statusUpdate: ParcelableStatusUpdate, pendingUpdate: PendingStatusUpdate,
+                       scheduleInfo: ScheduleInfo)
 
     fun createSetScheduleIntent(): Intent
 

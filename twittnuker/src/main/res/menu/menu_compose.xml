@@ -34,14 +34,14 @@
     <item
         android:id="@+id/add_media_menu"
         android:icon="@drawable/ic_action_camera"
-        android:title="@string/add_image"
+        android:title="@string/label_media"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction">
         <menu>
             <item
                 android:id="@+id/add_media"
                 android:icon="@drawable/ic_action_gallery"
-                android:title="@string/add_image"
+                android:title="@string/action_add_media"
                 app:showAsAction="always"
                 tools:ignore="AlwaysShowAction" />
             <item
