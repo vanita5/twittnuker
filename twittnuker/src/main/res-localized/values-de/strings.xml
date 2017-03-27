@@ -70,6 +70,7 @@
     <!-- [verb] e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">Like</string>
     <string name="action_liking">Liken</string>
+    <string name="action_manage_in_buffer">Mit Buffer verwalten</string>
     <string name="action_mark_as_read">Als gelesen markieren</string>
     <string name="action_modifying_lists">Listen bearbeiten</string>
     <string name="action_mute">Stummschalten</string>
@@ -914,11 +915,13 @@
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
     <string name="title_quick_action">Quick Action</string>
+    <string name="title_scheduled_statuses">Geplante Tweets</string>
     <string name="title_search">Suche</string>
     <string name="title_select_users">Account auswählen</string>
     <string name="title_sign_in_to_buffer">Buffer Anmeldung</string>
     <string name="title_status">Tweet</string>
     <string name="title_statuses">Tweets</string>
+    <string name="title_statuses_and_replies">Tweets &amp; Antworten</string>
     <string name="title_statuses_scheduling">Tweets Zeitplanung</string>
     <string name="title_streaming">Streaming</string>
     <string name="title_subscription_name">Name</string>
@@ -990,8 +993,7 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="title_scheduled_statuses">Geplante Tweets</string>
-
+    <string name="action_buffer_disconnect">Von Buffer abmelden</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

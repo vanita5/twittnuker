@@ -28,6 +28,7 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.util.Log
+import org.mariotaku.ktextension.dismissDialogFragment
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants
@@ -128,11 +129,8 @@ class DataExportActivity : BaseActivity(), DataExportImportTypeSelectorDialogFra
         }
 
         override fun onPostExecute(result: Boolean?) {
-            activity.executeAfterFragmentResumed {
-                val activity = it as DataExportActivity
-                val fm = activity.supportFragmentManager
-                val f = fm.findFragmentByTag(FRAGMENT_TAG) as? DialogFragment
-                f?.dismiss()
+            activity.executeAfterFragmentResumed { activity ->
+                activity.supportFragmentManager.dismissDialogFragment(FRAGMENT_TAG)
             }
             if (result != null && result) {
                 activity.setResult(Activity.RESULT_OK)

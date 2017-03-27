@@ -56,7 +56,7 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
         SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback, ControlBarOffsetListener,
         HideUiOnScroll, OnPageChangeListener, IToolBarSupportFragment, KeyboardShortcutCallback {
 
-    private lateinit var pagerAdapter: SupportTabsAdapter
+    protected lateinit var pagerAdapter: SupportTabsAdapter
     override val toolbar: Toolbar
         get() = toolbarContainer.toolbar
 
@@ -72,6 +72,8 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
 
 
         addTabs(pagerAdapter)
+        toolbarTabs.notifyDataSetChanged()
+
         toolbarContainer.setOnSizeChangedListener { _, _, _, _, _ ->
             val pageLimit = viewPager.offscreenPageLimit
             val currentItem = viewPager.currentItem
@@ -90,7 +92,7 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
             val initialTab = arguments?.getString(EXTRA_INITIAL_TAB)
             if (initialTab != null) {
                 for (i in 0 until pagerAdapter.count) {
-                    if (initialTab == pagerAdapter.getTab(i).tag) {
+                    if (initialTab == pagerAdapter.get(i).tag) {
                         viewPager.currentItem = i
                         break
                     }

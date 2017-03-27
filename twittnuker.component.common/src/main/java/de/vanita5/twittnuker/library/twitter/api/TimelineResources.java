@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.TimelineOption;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
 
 import org.mariotaku.restfu.annotation.method.GET;
@@ -51,11 +52,14 @@ public interface TimelineResources {
     ResponseList<Status> getRetweetsOfMe(@Query Paging paging) throws MicroBlogException;
 
     @GET("/statuses/user_timeline.json")
-    ResponseList<Status> getUserTimeline(@Query("user_id") String userId, @Query Paging paging) throws MicroBlogException;
+    ResponseList<Status> getUserTimeline(@Query("user_id") String userId, @Query Paging paging,
+            @Query TimelineOption option) throws MicroBlogException;
 
     @GET("/statuses/user_timeline.json")
-    ResponseList<Status> getUserTimeline(@Query Paging paging) throws MicroBlogException;
+    ResponseList<Status> getUserTimeline(@Query Paging paging, @Query TimelineOption option)
+            throws MicroBlogException;
 
     @GET("/statuses/user_timeline.json")
-    ResponseList<Status> getUserTimelineByScreenName(@Query("screen_name") String screenName, @Query Paging paging) throws MicroBlogException;
+    ResponseList<Status> getUserTimelineByScreenName(@Query("screen_name") String screenName,
+            @Query Paging paging, @Query TimelineOption option) throws MicroBlogException;
 }

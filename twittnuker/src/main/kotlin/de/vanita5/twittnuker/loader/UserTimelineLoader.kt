@@ -26,13 +26,13 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
-import de.vanita5.twittnuker.R
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.library.twitter.model.TimelineOption
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -52,7 +52,8 @@ class UserTimelineLoader(
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean,
-        val pinnedStatusIds: Array<String>?
+        val pinnedStatusIds: Array<String>?,
+        val excludeReplies: Boolean = false
 ) : MicroBlogAPIStatusesLoader(context, accountId, sinceId, maxId, -1, data, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
@@ -81,10 +82,12 @@ class UserTimelineLoader(
                 null
             }
         }
+        val option = TimelineOption()
+        option.setExcludeReplies(excludeReplies)
         if (userId != null) {
-            return microBlog.getUserTimeline(userId.id, paging)
+            return microBlog.getUserTimeline(userId.id, paging, option)
         } else if (screenName != null) {
-            return microBlog.getUserTimelineByScreenName(screenName, paging)
+            return microBlog.getUserTimelineByScreenName(screenName, paging, option)
         } else {
             throw MicroBlogException("Invalid user")
         }

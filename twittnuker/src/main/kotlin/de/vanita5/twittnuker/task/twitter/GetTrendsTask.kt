@@ -69,7 +69,7 @@ class GetTrendsTask(
         }
     }
 
-    override fun afterExecute(handler: Any?, result: Unit) {
+    override fun afterExecute(callback: Any?, result: Unit) {
         bus.post(TrendsRefreshedEvent())
     }
 

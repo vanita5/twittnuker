@@ -372,10 +372,10 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             actionBar.subtitle = null
             return
         }
-        val spec = pagerAdapter.getTab(viewPager.currentItem)
+        val spec = pagerAdapter.get(viewPager.currentItem)
         assert(spec.type != null)
         when (spec.type) {
-            TAB_TYPE_STATUSES -> {
+            TAB_TYPE_STATUSES, TAB_TYPE_STATUSES_WITH_REPLIES -> {
                 actionBar.subtitle = resources.getQuantityString(R.plurals.N_statuses,
                         user.statuses_count.toInt(), user.statuses_count)
             }
@@ -501,13 +501,13 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
         val locale = Locale.getDefault()
 
-        tweetsContainer.statusesCount.text = Utils.getLocalizedNumber(locale, user.statuses_count)
+        listedContainer.listedCount.text = Utils.getLocalizedNumber(locale, user.listed_count)
         val groupsCount = if (user.extras != null) user.extras.groups_count else -1
         groupsContainer.groupsCount.text = Utils.getLocalizedNumber(locale, groupsCount)
         followersContainer.followersCount.text = Utils.getLocalizedNumber(locale, user.followers_count)
         friendsContainer.friendsCount.text = Utils.getLocalizedNumber(locale, user.friends_count)
 
-        tweetsContainer.visibility = if (user.statuses_count < 0) View.GONE else View.VISIBLE
+        listedContainer.visibility = if (user.listed_count < 0) View.GONE else View.VISIBLE
         groupsContainer.visibility = if (groupsCount < 0) View.GONE else View.VISIBLE
 
         if (user.color != 0) {
@@ -711,7 +711,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         followContainer.follow.setOnClickListener(this)
         profileImage.setOnClickListener(this)
         profileBanner.setOnClickListener(this)
-        tweetsContainer.setOnClickListener(this)
+        listedContainer.setOnClickListener(this)
         groupsContainer.setOnClickListener(this)
         followersContainer.setOnClickListener(this)
         friendsContainer.setOnClickListener(this)
@@ -1180,8 +1180,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 IntentUtils.openMedia(activity, user.account_key, media, null, false,
                         preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
             }
-            R.id.tweetsContainer -> {
-                IntentUtils.openUserTimeline(getActivity(), user.account_key, user.key,
+            R.id.listedContainer -> {
+                IntentUtils.openUserLists(getActivity(), user.account_key, user.key,
                         user.screen_name)
             }
             R.id.groupsContainer -> {
@@ -1381,16 +1381,24 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             tabArgs.putParcelable(EXTRA_USER_KEY, args.getParcelable<Parcelable>(EXTRA_USER_KEY))
             tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME))
         }
-        pagerAdapter.addTab(cls = UserTimelineFragment::class.java, args = tabArgs, name = getString(R.string.title_statuses),
-                icon = DrawableHolder.resource(R.drawable.ic_action_quote), type = TAB_TYPE_STATUSES, position = TAB_POSITION_STATUSES)
-        pagerAdapter.addTab(cls = UserMediaTimelineFragment::class.java, args = tabArgs, name = getString(R.string.media),
-                icon = DrawableHolder.resource(R.drawable.ic_action_gallery), type = TAB_TYPE_MEDIA, position = TAB_POSITION_MEDIA)
+        pagerAdapter.add(cls = UserTimelineFragment::class.java, args = Bundle(tabArgs).apply {
+            putBoolean(EXTRA_EXCLUDE_REPLIES, true)
+        }, name = getString(R.string.title_statuses), type = TAB_TYPE_STATUSES,
+                position = TAB_POSITION_STATUSES)
+        pagerAdapter.add(cls = UserTimelineFragment::class.java, args = tabArgs,
+                name = getString(R.string.title_statuses_and_replies), type = TAB_TYPE_STATUSES_WITH_REPLIES,
+                position = TAB_POSITION_STATUSES)
+        pagerAdapter.add(cls = UserMediaTimelineFragment::class.java, args = tabArgs,
+                name = getString(R.string.media), type = TAB_TYPE_MEDIA,
+                position = TAB_POSITION_MEDIA)
         if (preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
-            pagerAdapter.addTab(cls = UserFavoritesFragment::class.java, args = tabArgs, name = getString(R.string.title_favorites),
-                    icon = DrawableHolder.resource(R.drawable.ic_action_star), type = TAB_TYPE_FAVORITES, position = TAB_POSITION_FAVORITES)
+            pagerAdapter.add(cls = UserFavoritesFragment::class.java, args = tabArgs,
+                    name = getString(R.string.title_favorites), type = TAB_TYPE_FAVORITES,
+                    position = TAB_POSITION_FAVORITES)
         } else {
-            pagerAdapter.addTab(cls = UserFavoritesFragment::class.java, args = tabArgs, name = getString(R.string.title_likes),
-                    icon = DrawableHolder.resource(R.drawable.ic_action_heart), type = TAB_TYPE_FAVORITES, position = TAB_POSITION_FAVORITES)
+            pagerAdapter.add(cls = UserFavoritesFragment::class.java, args = tabArgs,
+                    name = getString(R.string.title_likes), type = TAB_TYPE_FAVORITES,
+                    position = TAB_POSITION_FAVORITES)
         }
     }
 
@@ -1702,6 +1710,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         private val TAB_POSITION_MEDIA = 1
         private val TAB_POSITION_FAVORITES = 2
         private val TAB_TYPE_STATUSES = "statuses"
+        private val TAB_TYPE_STATUSES_WITH_REPLIES = "statuses_with_replies"
         private val TAB_TYPE_MEDIA = "media"
         private val TAB_TYPE_FAVORITES = "favorites"
     }
