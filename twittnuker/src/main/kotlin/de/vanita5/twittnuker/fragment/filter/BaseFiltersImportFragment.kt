@@ -22,11 +22,12 @@
 
 package de.vanita5.twittnuker.fragment.filter
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
@@ -42,6 +43,7 @@ import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
 import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -49,15 +51,16 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_COUNT
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
-import de.vanita5.twittnuker.fragment.BaseDialogFragment
-import de.vanita5.twittnuker.fragment.MessageDialogFragment
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment
+import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import java.lang.ref.WeakReference
+
 
 abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<SelectableUsersAdapter>(),
         LoaderManager.LoaderCallbacks<List<ParcelableUser>?> {
@@ -77,6 +80,16 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
         loaderManager.initLoader(0, loaderArgs, this)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(data!!))
+                }
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_filters_import, menu)
     }
@@ -86,7 +99,7 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
         val userCount = adapter.userCount
         menu.setItemAvailability(R.id.select_none, checkedCount > 0)
         menu.setItemAvailability(R.id.select_all, checkedCount < userCount)
-        menu.setItemAvailability(R.id.invert_selection, checkedCount > 0 && checkedCount < userCount)
+        menu.setItemAvailability(R.id.invert_selection, checkedCount in 1 until userCount)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -110,6 +123,12 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
             R.id.perform_import -> {
                 if (adapter.checkedCount == 0) {
                     Toast.makeText(context, R.string.message_toast_no_user_selected, Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_IMPORT)) {
+                    ExtraFeaturesIntroductionDialogFragment.show(fragmentManager,
+                            feature = ExtraFeaturesService.FEATURE_FILTERS_IMPORT,
+                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
                     return true
                 }
                 val df = ImportConfirmDialogFragment()
@@ -187,7 +206,13 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
 
     override fun onCreateAdapter(context: Context): SelectableUsersAdapter {
         val adapter = SelectableUsersAdapter(context, Glide.with(this))
-        adapter.itemCheckedListener = { _, _ ->
+        adapter.itemCheckedListener = listener@ { position, value ->
+            if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_IMPORT)) {
+                ExtraFeaturesIntroductionDialogFragment.show(fragmentManager,
+                        feature = ExtraFeaturesService.FEATURE_FILTERS_IMPORT,
+                        requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
+                return@listener false
+            }
             val count = adapter.checkedCount
             val actionBar = (activity as BaseActivity).supportActionBar
             actionBar?.subtitle = if (count > 0) {
@@ -196,6 +221,7 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
                 null
             }
             activity.supportInvalidateOptionsMenu()
+            return@listener true
         }
         return adapter
     }

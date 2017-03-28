@@ -312,6 +312,7 @@
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_rate_limit">Twitter-Limit überschritten, probiere es in <xliff:g id="time">%s</xliff:g> noch einmal</string>
     <string name="error_message_rate_limit_with_action">Twitter-Limit überschritten beim <xliff:g id="action">%1$s</xliff:g>, probiere es in <xliff:g id="time">%2$s</xliff:g> noch einmal</string>
+    <string name="error_message_scheduler_not_available">Zeitversetztes senden nicht möglich</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
     <string name="error_message_with_action">Fehler beim <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
@@ -482,6 +483,7 @@
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
     <string name="message_buffer_delete_schedule_confirm">Geplanten Tweet löschen?</string>
+    <string name="message_buffer_disconnect_confirm">Von Buffer abmelden?</string>
     <string name="message_clear_messages_confirm">Alle Nachrichten löschen?</string>
     <string name="message_conversation_created">Unterhaltung begonnen.</string>
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>

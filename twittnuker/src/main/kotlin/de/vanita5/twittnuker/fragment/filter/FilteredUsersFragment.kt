@@ -20,6 +20,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_content_listview.*
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.ktextension.setItemAvailability
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -27,7 +28,6 @@ import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.fragment.AddUserFilterDialogFragment
-import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -39,8 +39,6 @@ import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
-import org.mariotaku.library.objectcursor.ObjectCursor
 import javax.inject.Inject
 
 class FilteredUsersFragment : BaseFiltersFragment() {
@@ -104,31 +102,22 @@ class FilteredUsersFragment : BaseFiltersFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var isExtraFeatures: Boolean = false
         val intent = Intent(context, AccountSelectorActivity::class.java)
         intent.putExtra(EXTRA_SINGLE_SELECTION, true)
         intent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
         val requestCode = when (item.itemId) {
             R.id.add_user_single, R.id.add_user -> REQUEST_ADD_USER_SELECT_ACCOUNT
             R.id.import_from_blocked_users -> {
-                isExtraFeatures = true
                 REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT
             }
             R.id.import_from_muted_users -> {
-                isExtraFeatures = true
                 intent.putExtra(EXTRA_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                 REQUEST_IMPORT_MUTES_SELECT_ACCOUNT
             }
             else -> return false
         }
 
-        if (!isExtraFeatures || extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_IMPORT)) {
-            startActivityForResult(intent, requestCode)
-        } else {
-            ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
-                    feature = ExtraFeaturesService.FEATURE_FILTERS_IMPORT,
-                    requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
-            }
+        startActivityForResult(intent, requestCode)
         return true
     }
 

@@ -82,6 +82,7 @@ import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -341,6 +342,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     }
                 }
             }
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(data!!))
+                }
+            }
             REQUEST_SET_SCHEDULE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     scheduleInfo = data?.getParcelableExtra(EXTRA_SCHEDULE_INFO)
@@ -470,6 +476,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val df = RetweetProtectedStatusWarnFragment()
             df.show(supportFragmentManager,
                     "retweet_protected_status_warning_message")
+        } else if (scheduleInfo != null && !extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)) {
+            ExtraFeaturesIntroductionDialogFragment.show(supportFragmentManager,
+                    feature = ExtraFeaturesService.FEATURE_SCHEDULE_STATUS,
+                    requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
         } else {
             updateStatus()
         }
@@ -529,13 +539,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
             R.id.schedule -> {
                 val controller = statusScheduleController ?: return true
-                if (extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)) {
-                    startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
-                } else {
-                    ExtraFeaturesIntroductionDialogFragment.show(supportFragmentManager,
-                            feature = ExtraFeaturesService.FEATURE_SCHEDULE_STATUS,
-                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
-                }
+                startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
             }
 
             R.id.add_hashtag -> {

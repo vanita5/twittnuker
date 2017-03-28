@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import java.io.Closeable
 import java.io.File
 import java.io.FileNotFoundException
@@ -274,9 +275,12 @@ class UpdateStatusTask(
     ): UpdateStatusResult {
 
         stateCallback.onUpdatingStatus()
+        if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SCHEDULE_STATUS)) {
+            throw SchedulerNotFoundException(context.getString(R.string.error_message_scheduler_not_available))
+        }
 
         val controller = scheduleController ?: run {
-            throw SchedulerNotFoundException("No scheduler found")
+            throw SchedulerNotFoundException(context.getString(R.string.error_message_scheduler_not_available))
         }
 
         controller.scheduleStatus(statusUpdate, pendingUpdate, scheduleInfo)
