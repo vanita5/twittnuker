@@ -113,6 +113,7 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import android.Manifest.permission as AndroidPermission
 
 class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener, OnLongClickListener,
@@ -1059,7 +1060,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val am = AccountManager.get(this)
         val accountUser = AccountUtils.findByAccountKey(am, status.account_key)?.getAccountUser(am) ?: return false
         var selectionStart = 0
-        val mentions = TreeSet(String.CASE_INSENSITIVE_ORDER)
+        val mentions = ArrayList<String>()
         // If replying status from current user, just exclude it's screen name from selection.
         if (accountUser.key != status.user_key) {
             editText.append("@${status.user_screen_name} ")
@@ -1088,7 +1089,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
         }
 
-        mentions.filterNot {
+        mentions.distinctBy { it.toLowerCase(Locale.US) }.filterNot {
             it.equals(status.user_screen_name, ignoreCase = true)
                     || it.equals(accountUser.screen_name, ignoreCase = true)
         }.forEach { editText.append("@$it ") }
