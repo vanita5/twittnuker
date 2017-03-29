@@ -513,6 +513,7 @@
 
     <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
 
+    <string name="label_account">Account</string>
     <string name="label_account_type">Account type</string>
     <string name="label_auth_type">Auth type</string>
     <string name="label_background_operation_service">Background operation service</string>
@@ -545,7 +546,7 @@
     <string name="leftside_compose_button">Left side compose button</string>
     <string name="leftside_compose_button_summary">Put the compose button on the left.</string>
 
-    <string name="light">Light</string>
+    <string name="notification_method_light">Light</string>
 
     <string name="link_highlight_option">Link highlight option</string>
     <string name="link_to_quoted_status">Link to quoted tweet</string>
@@ -832,6 +833,7 @@
     <string name="preference_title_media_preload_non_metered_network">Preload on free network</string>
     <string name="preference_title_multi_column_tab_width">Multi column tab width</string>
     <string name="preference_title_multi_column_tabs">Multi column tabs</string>
+    <string name="preference_title_notification_ringtone">Ringtone</string>
     <string name="preference_title_override_language">Language</string>
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Storage</string>
@@ -965,7 +967,7 @@
 
     <string name="revoke_permissions">Revoke permissions</string>
 
-    <string name="ringtone">Ringtone</string>
+    <string name="notification_method_ringtone">Ringtone</string>
 
     <string name="round">Round</string>
 
@@ -1276,7 +1278,7 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s lists</string>
     <string name="users_statuses">User\'s tweets</string>
 
-    <string name="vibration">Vibration</string>
+    <string name="notification_method_vibration">Vibration</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

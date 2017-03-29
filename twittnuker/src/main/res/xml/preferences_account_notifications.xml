@@ -35,7 +35,7 @@
             android:ringtoneType="notification"
             android:showDefault="true"
             android:showSilent="true"
-            android:title="@string/notification_ringtone" />
+            android:title="@string/preference_title_notification_ringtone" />
 
         <de.vanita5.twittnuker.preference.ColorPickerPreference
             android:key="notification_light_color"
