@@ -34,7 +34,6 @@
     android:padding="@dimen/element_spacing_normal"
     app:ignorePadding="true">
 
-
     <de.vanita5.twittnuker.view.IconActionView
         android:id="@+id/activity_type"
         android:layout_width="@dimen/element_size_small"
