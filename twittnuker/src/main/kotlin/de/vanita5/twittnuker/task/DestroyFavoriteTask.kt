@@ -26,12 +26,12 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import org.apache.commons.collections.primitives.ArrayIntList
+import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
@@ -112,8 +112,7 @@ class DestroyFavoriteTask(
 
     override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableStatus>) {
         destroyingFavoriteIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
-        val taskEvent = FavoriteTaskEvent(FavoriteTaskEvent.Action.DESTROY,
-                accountKey, statusId)
+        val taskEvent = FavoriteTaskEvent(FavoriteTaskEvent.Action.DESTROY, accountKey, statusId)
         taskEvent.isFinished = true
         if (result.hasData()) {
             val status = result.data

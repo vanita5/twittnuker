@@ -29,27 +29,11 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.loader.UserFavoritesLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.util.Utils
 import java.util.*
 
 class UserFavoritesFragment : ParcelableStatusesFragment() {
-
-    override fun onCreateStatusesLoader(context: Context,
-                                        args: Bundle,
-                                        fromUser: Boolean): Loader<List<ParcelableStatus>?> {
-        refreshing = true
-        val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val page = args.getInt(EXTRA_PAGE, -1)
-        val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-        val screenName = args.getString(EXTRA_SCREEN_NAME)
-        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return UserFavoritesLoader(context, accountKey, userKey, screenName, sinceId, maxId,
-                page, adapterData, savedStatusesFileArgs, tabPosition, fromUser,
-                loadingMore)
-    }
 
     override val savedStatusesFileArgs: Array<String>?
         get() {
@@ -70,7 +54,6 @@ class UserFavoritesFragment : ParcelableStatusesFragment() {
             return result.toTypedArray()
         }
 
-
     override val readPositionTagWithArguments: String?
         get() {
             val args = arguments!!
@@ -89,4 +72,37 @@ class UserFavoritesFragment : ParcelableStatusesFragment() {
             }
             return sb.toString()
         }
+
+
+    override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
+            Loader<List<ParcelableStatus>?> {
+        refreshing = true
+        val accountKey = Utils.getAccountKey(context, args)
+        val maxId = args.getString(EXTRA_MAX_ID)
+        val sinceId = args.getString(EXTRA_SINCE_ID)
+        val page = args.getInt(EXTRA_PAGE, -1)
+        val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
+        val screenName = args.getString(EXTRA_SCREEN_NAME)
+        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
+        return UserFavoritesLoader(context, accountKey, userKey, screenName, sinceId, maxId,
+                page, adapterData, savedStatusesFileArgs, tabPosition, fromUser,
+                loadingMore)
+    }
+
+    override fun notifyFavoriteTask(event: FavoriteTaskEvent) {
+        if (event.action == FavoriteTaskEvent.Action.DESTROY && event.isSucceeded) {
+            event.status?.let { status ->
+                val args = arguments!!
+                val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
+                if (status.account_key == userKey) {
+                    removeStatus(event.statusId)
+                    triggerRefresh()
+                    return
+                }
+            }
+        }
+        super.notifyFavoriteTask(event)
+    }
+
 }
