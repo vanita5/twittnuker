@@ -87,8 +87,6 @@ class HomeTimelineFragment : CursorStatusesFragment() {
         return super.processWhere(where, whereArgs)
     }
 
-    override val readPositionTag: String?
-        @ReadPositionTag
-        get() = ReadPositionTag.HOME_TIMELINE
+    override val readPositionTag: String = ReadPositionTag.HOME_TIMELINE
 
 }
