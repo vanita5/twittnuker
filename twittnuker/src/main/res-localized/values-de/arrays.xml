@@ -20,7 +20,7 @@
     </string-array>
     <string-array name="entries_image_sources">
         <item>Kamera</item>
-        <item>Galerie</item>
+        <item>Gallerie</item>
         <item>Zwischenablage</item>
     </string-array>
     <string-array name="entries_media_preload">
