@@ -51,7 +51,6 @@ import android.text.style.ImageSpan
 import android.text.style.MetricAffectingSpan
 import android.text.style.SuggestionSpan
 import android.text.style.UpdateAppearance
-import android.util.Log
 import android.view.*
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -205,15 +204,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setupEditText()
         accountSelectorButton.setOnClickListener(this)
         replyLabel.setOnClickListener(this)
-        val attachLocation = kPreferences[attachLocationKey]
-        val attachPreciseLocation = kPreferences[attachPreciseLocationKey]
 
         accountSelector.layoutManager = FixedLinearLayoutManager(this).apply {
             orientation = LinearLayoutManager.HORIZONTAL
             reverseLayout = false
             stackFromEnd = false
         }
-//        accountSelector.itemAnimator = DefaultItemAnimator()
         accountsAdapter = AccountIconsAdapter(this).apply {
             setAccounts(accountDetails)
         }
@@ -317,6 +313,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 if (resultCode == Activity.RESULT_OK) {
                     scheduleInfo = data?.getParcelableExtra(EXTRA_SCHEDULE_INFO)
                 }
+            }
+            REQUEST_ADD_GIF -> {
+
             }
         }
 
@@ -503,8 +502,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 updateTextCount()
             }
             R.id.schedule -> {
-                val controller = statusScheduleProvider ?: return true
-                startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
+                val provider = statusScheduleProvider ?: return true
+                startActivityForResult(provider.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
             }
 
             R.id.add_hashtag -> {
@@ -519,15 +518,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                         locationMenuItemSelected(item)
                     }
                     else -> {
-                        val intent = item.intent
-                        if (intent != null) {
-                            try {
-                                startActivity(intent)
-                            } catch (e: ActivityNotFoundException) {
-                                Log.w(LOGTAG, e)
-                                return false
-                            }
-                        }
+                        extensionIntentItemSelected(item)
                     }
                 }
             }
@@ -597,7 +588,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
         val values = ObjectCursor.valuesCreatorFrom(Draft::class.java).create(draft)
         val draftUri = contentResolver.insert(Drafts.CONTENT_URI, values)
-        displayNewDraftNotification(text, draftUri)
+        displayNewDraftNotification(draftUri)
         return draftUri
     }
 
@@ -684,6 +675,15 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         updateLocationState()
         setMenu()
         updateTextCount()
+    }
+
+    private fun extensionIntentItemSelected(item: MenuItem) {
+        val intent = item.intent ?: return
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Analyzer.logException(e)
+        }
     }
 
     private fun updateViewStyle() {
@@ -828,7 +828,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setMenu()
     }
 
-    private fun displayNewDraftNotification(text: String, draftUri: Uri) {
+    private fun displayNewDraftNotification(draftUri: Uri) {
         val values = ContentValues()
         values.put(BaseColumns._ID, draftUri.lastPathSegment)
         contentResolver.insert(Drafts.CONTENT_URI_NOTIFICATIONS, values)
@@ -1242,11 +1242,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
          * Has media & Not reply: [Take photo][Media menu][Attach location][Drafts]
          * Is reply: [Media menu][View status][Attach location][Drafts]
          */
-        MenuUtils.setItemAvailability(menu, R.id.add_media, true) //TWITTNUKER always show
-        MenuUtils.setItemAvailability(menu, R.id.media_menu, hasMedia)
-        MenuUtils.setItemAvailability(menu, R.id.toggle_sensitive, hasMedia)
-        MenuUtils.setItemAvailability(menu, R.id.schedule, extraFeaturesService.isSupported(
+        menu.setItemAvailability(R.id.toggle_sensitive, hasMedia)
+        menu.setItemAvailability(R.id.schedule, extraFeaturesService.isSupported(
                 ExtraFeaturesService.FEATURE_SCHEDULE_STATUS))
+        menu.setItemAvailability(R.id.add_gif, true) //Always show this for Twittnuker
 
         menu.setItemChecked(R.id.toggle_sensitive, hasMedia && possiblySensitive)
 
@@ -1569,7 +1568,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     ) : BaseRecyclerViewAdapter<AccountIconViewHolder>(activity, Glide.with(activity)) {
         private val inflater: LayoutInflater = activity.layoutInflater
         private val selection: MutableMap<UserKey, Boolean> = HashMap()
-        val isNameFirst: Boolean = preferences[nameFirstKey]
 
         private var accounts: Array<AccountDetails>? = null
 
@@ -1919,17 +1917,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         private const val EXTRA_DRAFT_UNIQUE_ID = "draft_unique_id"
         private const val DISCARD_STATUS_DIALOG_FRAGMENT_TAG = "discard_status"
 
-        val LOCATION_VALUE_PLACE = "place"
-        val LOCATION_VALUE_COORDINATE = "coordinate"
-        val LOCATION_VALUE_NONE = "none"
-
-        private val LOCATION_OPTIONS = arrayOf(LOCATION_VALUE_NONE, LOCATION_VALUE_PLACE, LOCATION_VALUE_COORDINATE)
-
         private const val REQUEST_ATTACH_LOCATION_PERMISSION = 301
         private const val REQUEST_PICK_MEDIA_PERMISSION = 302
         private const val REQUEST_TAKE_PHOTO_PERMISSION = 303
         private const val REQUEST_CAPTURE_VIDEO_PERMISSION = 304
-        private const val REQUEST_SET_SCHEDULE = 304
+        private const val REQUEST_SET_SCHEDULE = 305
+        private const val REQUEST_ADD_GIF = 306
 
         internal fun getDraftAction(intentAction: String?): String {
             if (intentAction == null) {

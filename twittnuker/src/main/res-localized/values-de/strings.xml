@@ -16,6 +16,7 @@
     <string name="action_add_filter_rule">Regel hinzufügen</string>
     <string name="action_add_filters_subscription">Abonnement hinzufügen</string>
     <string name="action_add_media">Medien hinzufügen</string>
+    <string name="action_add_gif">Gif hinzufügen</string>
     <string name="action_add_member">Mitglied hinzufügen</string>
     <string name="action_add_tab">Tab hinzufügen</string>
     <string name="action_add_to_filter">Zum Filter hinzufügen</string>
@@ -190,7 +191,6 @@
     <string name="activity_joined_twitter"><xliff:g id="user">%s</xliff:g> ist Twitter beigetreten.</string>
     <string name="activity_joined_twitter_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> sind Twitter beigetreten.</string>
     <string name="add_account">Account hinzufügen</string>
-    <string name="add_gif">Gif hinzufügen</string>
     <string name="add_host_mapping">Füge host mapping hinzu</string>
     <string name="add_image">Bild hinzufügen</string>
     <string name="title_add_or_remove_from_list">Zu Liste hinzufügen oder entfernen</string>
@@ -332,6 +332,7 @@
     <string name="extra_feature_description_filters_import">Importe Filterliste aus Blocks und Mutes</string>
     <string name="extra_feature_description_filters_subscription">Abonniere Filterlisten</string>
     <string name="extra_feature_description_schedule_status">Tweet planen (später senden)</string>
+    <string name="extra_feature_description_share_gif">Gifs teilen</string>
     <string name="extra_feature_description_sync_data">Synchronisieren von Daten mit Dropbox, Google Drive etc.</string>
     <string name="extra_feature_title_filters_import">Filter Import</string>
     <string name="extra_feature_title_filters_subscription">Filter Abonnement</string>
@@ -1010,6 +1011,7 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="notification_method_vibration">Vibration</string>
+    <string name="title_giphy_search">Suchen via Giphy</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

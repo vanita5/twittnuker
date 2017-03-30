@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import java.io.InputStream
 
-class AuthenticatedUrlLoader(
+class AuthenticatedUriLoader(
         val context: Context,
         val client: OkHttpClient
 ) : ModelLoader<AuthenticatedUri, InputStream> {
@@ -46,10 +46,8 @@ class AuthenticatedUrlLoader(
     override fun getResourceFetcher(model: AuthenticatedUri, width: Int, height: Int): DataFetcher<InputStream> {
         val headersBuilder = LazyHeaders.Builder()
         val credentials = model.accountKey?.credentials
-        if (credentials != null) {
-            if (TwidereMediaDownloader.isAuthRequired(credentials, model.uri)) {
-                headersBuilder.addHeader("Authorization", AuthorizationHeaderFactory(model.uri, credentials))
-            }
+        if (credentials != null && TwidereMediaDownloader.isAuthRequired(credentials, model.uri)) {
+            headersBuilder.addHeader("Authorization", AuthorizationHeaderFactory(model.uri, credentials))
         }
         val glideUrl = GlideUrl(model.uri.toString(), headersBuilder.build())
         return OkHttpStreamFetcher(client, glideUrl)
@@ -65,7 +63,7 @@ class AuthenticatedUrlLoader(
     }
 
     class Factory(val client: OkHttpClient) : ModelLoaderFactory<AuthenticatedUri, InputStream> {
-        override fun build(context: Context, factories: GenericLoaderFactory) = AuthenticatedUrlLoader(context, client)
+        override fun build(context: Context, factories: GenericLoaderFactory) = AuthenticatedUriLoader(context, client)
 
         override fun teardown() {}
     }
