@@ -72,6 +72,7 @@
     <!-- [verb] e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">Like</string>
     <string name="action_liking">Liken</string>
+    <string name="action_location">Standort</string>
     <string name="action_manage_in_buffer">Mit Buffer verwalten</string>
     <string name="action_mark_as_read">Als gelesen markieren</string>
     <string name="action_modifying_lists">Listen bearbeiten</string>
@@ -421,6 +422,9 @@
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
+    <string name="label_location_coarse">Ungefähr (Ort)</string>
+    <string name="label_location_no_location">Kein Standort</string>
+    <string name="label_location_precise">Genau (Koordinaten)</string>
     <string name="label_location_your_coarse_location">Deine ungefähre Position</string>
     <string name="label_media">Medien</string>
     <string name="label_original_status">Original-Tweet</string>

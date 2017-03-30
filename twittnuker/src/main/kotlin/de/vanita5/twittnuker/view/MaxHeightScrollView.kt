@@ -20,16 +20,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package android.support.v7.widget
+package de.vanita5.twittnuker.view
 
 import android.content.Context
-import android.support.v7.view.menu.TwidereActionMenuItemView
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ScrollView
+import de.vanita5.twittnuker.R
 
-class TwidereActionMenuView(context: Context, attrs: AttributeSet? = null) : ActionMenuView(context, attrs) {
+class MaxHeightScrollView(context: Context, attrs: AttributeSet? = null) : ScrollView(context, attrs) {
 
-    fun createActionMenuView(context: Context, attrs: AttributeSet): View {
-        return TwidereActionMenuItemView(context, attrs)
+    private var maxHeight: Int = -1
+
+    init {
+        val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.MaxHeightScrollView)
+        // 200 is a default value
+        maxHeight = styledAttrs.getDimensionPixelSize(R.styleable.MaxHeightScrollView_android_maxHeight, -1)
+        styledAttrs.recycle()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val hSpec = if (maxHeight >= 0) {
+            View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
+        } else {
+            heightMeasureSpec
+        }
+        super.onMeasure(widthMeasureSpec, hSpec)
     }
 }

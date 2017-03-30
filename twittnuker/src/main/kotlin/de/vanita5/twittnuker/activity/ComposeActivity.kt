@@ -205,53 +205,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setupEditText()
         accountSelectorButton.setOnClickListener(this)
         replyLabel.setOnClickListener(this)
-        locationSwitch.max = LOCATION_OPTIONS.size
-        locationSwitch.highlightCheckedPositions = kotlin.IntArray(LOCATION_OPTIONS.size - 1) { it + 1 }
         val attachLocation = kPreferences[attachLocationKey]
         val attachPreciseLocation = kPreferences[attachPreciseLocationKey]
-        if (attachLocation) {
-            if (attachPreciseLocation) {
-                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_COORDINATE)
-            } else {
-                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_PLACE)
-            }
-        } else {
-            locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
-        }
-        locationSwitch.setOnCheckedChangeListener {
-            val value = LOCATION_OPTIONS[locationSwitch.checkedPosition]
-            var attachLocationChecked = false
-            var attachPreciseLocationChecked = false
-            when (value) {
-                LOCATION_VALUE_COORDINATE -> {
-                    attachLocationChecked = true
-                    attachPreciseLocationChecked = true
-                    locationText.tag = null
-                }
-                LOCATION_VALUE_PLACE -> {
-                    attachLocationChecked = true
-                    attachPreciseLocationChecked = false
-                }
-            }
-            kPreferences.edit {
-                this[attachLocationKey] = attachLocationChecked
-                this[attachPreciseLocationKey] = attachPreciseLocationChecked
-            }
-            if (attachLocationChecked) {
-                requestOrUpdateLocation()
-            } else if (locationListener != null) {
-                try {
-                    locationManager.removeUpdates(locationListener)
-                    locationListener = null
-                } catch (e: SecurityException) {
-                    //Ignore
-                }
-
-            }
-            updateLocationState()
-            setMenu()
-            updateTextCount()
-        }
 
         accountSelector.layoutManager = FixedLinearLayoutManager(this).apply {
             orientation = LinearLayoutManager.HORIZONTAL
@@ -424,10 +379,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 try {
                     startLocationUpdateIfEnabled()
                 } catch (e: SecurityException) {
-                    locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
                 }
             } else {
-                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
             }
         }
         setMenu()
@@ -526,7 +479,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.take_photo -> {
-                requestOrOpenCamera()
+                requestOrTakePhoto()
+            }
+            R.id.record_video -> {
+                requestOrCaptureVideo()
             }
             R.id.add_media -> {
                 requestOrPickMedia()
@@ -558,15 +514,21 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 editText.setSelection(selectionEnd)
             }
             else -> {
-                val intent = item.intent
-                if (intent != null) {
-                    try {
-                        startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Log.w(LOGTAG, e)
-                        return false
+                when (item.groupId) {
+                    R.id.location_option -> {
+                        locationMenuItemSelected(item)
                     }
-
+                    else -> {
+                        val intent = item.intent
+                        if (intent != null) {
+                            try {
+                                startActivity(intent)
+                            } catch (e: ActivityNotFoundException) {
+                                Log.w(LOGTAG, e)
+                                return false
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -687,6 +649,41 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         } else {
             accountsCount.visibility = View.VISIBLE
         }
+    }
+
+    private fun locationMenuItemSelected(item: MenuItem) {
+        item.isChecked = true
+        var attachLocationChecked = false
+        var attachPreciseLocationChecked = false
+        when (item.itemId) {
+            R.id.location_precise -> {
+                attachLocationChecked = true
+                attachPreciseLocationChecked = true
+                locationText.tag = null
+            }
+            R.id.location_coarse -> {
+                attachLocationChecked = true
+                attachPreciseLocationChecked = false
+            }
+        }
+        kPreferences.edit {
+            this[attachLocationKey] = attachLocationChecked
+            this[attachPreciseLocationKey] = attachPreciseLocationChecked
+        }
+        if (attachLocationChecked) {
+            requestOrUpdateLocation()
+        } else if (locationListener != null) {
+            try {
+                locationManager.removeUpdates(locationListener)
+                locationListener = null
+            } catch (e: SecurityException) {
+                //Ignore
+            }
+
+        }
+        updateLocationState()
+        setMenu()
+        updateTextCount()
     }
 
     private fun updateViewStyle() {
@@ -828,11 +825,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun updateAttachedMediaView() {
         val hasMedia = hasMedia()
         attachedMediaPreview.visibility = if (hasMedia) View.VISIBLE else View.GONE
-        if (hasMedia) {
-            editText.minLines = resources.getInteger(R.integer.media_compose_min_lines)
-        } else {
-            editText.minLines = resources.getInteger(R.integer.default_compose_min_lines)
-        }
         setMenu()
     }
 
@@ -992,7 +984,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 return handleReplyMultipleIntent(screenNames, accountKey, inReplyToStatus)
             }
             INTENT_ACTION_COMPOSE_TAKE_PHOTO -> {
-                requestOrOpenCamera()
+                requestOrTakePhoto()
                 return true
             }
             INTENT_ACTION_COMPOSE_PICK_IMAGE -> {
@@ -1166,26 +1158,31 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setMenu()
     }
 
-    private fun requestOrOpenCamera() {
+    private fun requestOrTakePhoto() {
         if (checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
-            openCamera()
+            takePhoto()
             return
         }
         ActivityCompat.requestPermissions(this, arrayOf(AndroidPermission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_OPEN_CAMERA_PERMISSION)
+                REQUEST_TAKE_PHOTO_PERMISSION)
     }
 
-    private fun openCamera(): Boolean {
-        val builder = ThemedMediaPickerActivity.withThemed(this)
-        if (intent.action == INTENT_ACTION_COMPOSE_TAKE_PHOTO) {
-            builder.takePhoto()
-        } else {
-            builder.pickSources(arrayOf(MediaPickerActivity.SOURCE_CAMERA, MediaPickerActivity.SOURCE_CAMCORDER))
-            builder.containsVideo(true)
-            builder.videoOnly(false)
+    private fun requestOrCaptureVideo() {
+        if (checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
+            captureVideo()
+            return
         }
-        startActivityForResult(builder.build(), REQUEST_TAKE_PHOTO)
-        return true
+        ActivityCompat.requestPermissions(this, arrayOf(AndroidPermission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_CAPTURE_VIDEO_PERMISSION)
+    }
+
+    private fun requestOrPickMedia() {
+        if (checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
+            pickMedia()
+            return
+        }
+        ActivityCompat.requestPermissions(this, arrayOf(AndroidPermission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_PICK_MEDIA_PERMISSION)
     }
 
     private fun requestOrPickGif() {
@@ -1202,17 +1199,23 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return true
     }
 
-    private fun requestOrPickMedia() {
-        if (checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
-            pickMedia()
-            return
-        }
-        ActivityCompat.requestPermissions(this, arrayOf(AndroidPermission.WRITE_EXTERNAL_STORAGE),
-                REQUEST_PICK_MEDIA_PERMISSION)
+    private fun takePhoto(): Boolean {
+        val builder = ThemedMediaPickerActivity.withThemed(this)
+        builder.takePhoto()
+        startActivityForResult(builder.build(), REQUEST_TAKE_PHOTO)
+        return true
+    }
+
+    private fun captureVideo(): Boolean {
+        val builder = ThemedMediaPickerActivity.withThemed(this)
+        builder.captureVideo()
+        startActivityForResult(builder.build(), REQUEST_TAKE_PHOTO)
+        return true
     }
 
     private fun pickMedia(): Boolean {
         val intent = ThemedMediaPickerActivity.withThemed(this)
+                .pickMedia()
                 .containsVideo(true)
                 .videoOnly(false)
                 .allowMultiple(true)
@@ -1246,6 +1249,21 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 ExtraFeaturesService.FEATURE_SCHEDULE_STATUS))
 
         menu.setItemChecked(R.id.toggle_sensitive, hasMedia && possiblySensitive)
+
+        val attachLocation = kPreferences[attachLocationKey]
+        val attachPreciseLocation = kPreferences[attachPreciseLocationKey]
+
+        if (!attachLocation) {
+            menu.setItemChecked(R.id.location_off, true)
+            menu.setMenuItemIcon(R.id.location_submenu, R.drawable.ic_action_location_off)
+        } else if (attachPreciseLocation) {
+            menu.setItemChecked(R.id.location_precise, true)
+            menu.setMenuItemIcon(R.id.location_submenu, R.drawable.ic_action_location)
+        } else {
+            menu.setItemChecked(R.id.location_coarse, true)
+            menu.setMenuItemIcon(R.id.location_submenu, R.drawable.ic_action_location)
+        }
+
         ThemeUtils.resetCheatSheet(menuBar)
     }
 
@@ -1281,14 +1299,19 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                         this[attachLocationKey] = false
                         this[attachPreciseLocationKey] = false
                     }
-                    locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
                 }
             }
-            REQUEST_OPEN_CAMERA_PERMISSION -> {
+            REQUEST_TAKE_PHOTO_PERMISSION -> {
                 if (!checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
                     Toast.makeText(this, R.string.message_toast_compose_write_storage_no_permission, Toast.LENGTH_SHORT).show()
                 }
-                openCamera()
+                takePhoto()
+            }
+            REQUEST_CAPTURE_VIDEO_PERMISSION -> {
+                if (!checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, R.string.message_toast_compose_write_storage_no_permission, Toast.LENGTH_SHORT).show()
+                }
+                captureVideo()
             }
             REQUEST_PICK_MEDIA_PERMISSION -> {
                 if (!checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
@@ -1302,7 +1325,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     override fun onPermissionRequestCancelled(requestCode: Int) {
         when (requestCode) {
             REQUEST_ATTACH_LOCATION_PERMISSION -> {
-                locationSwitch.checkedPosition = LOCATION_OPTIONS.indexOf(LOCATION_VALUE_NONE)
             }
         }
     }
@@ -1375,14 +1397,15 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun updateLocationState() {
-        val attachLocation = kPreferences[attachLocationKey]
-        locationIcon.isActivated = attachLocation
-        if (!attachLocation) {
-            locationText.setText(R.string.no_location)
-        } else if (recentLocation != null) {
-            setRecentLocation(recentLocation)
+        if (kPreferences[attachLocationKey]) {
+            locationContainer.visibility = View.VISIBLE
+            if (recentLocation != null) {
+                setRecentLocation(recentLocation)
+            } else {
+                locationText.setText(R.string.getting_location)
+            }
         } else {
-            locationText.setText(R.string.getting_location)
+            locationContainer.visibility = View.GONE
         }
     }
 
@@ -1904,7 +1927,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         private const val REQUEST_ATTACH_LOCATION_PERMISSION = 301
         private const val REQUEST_PICK_MEDIA_PERMISSION = 302
-        private const val REQUEST_OPEN_CAMERA_PERMISSION = 303
+        private const val REQUEST_TAKE_PHOTO_PERMISSION = 303
+        private const val REQUEST_CAPTURE_VIDEO_PERMISSION = 304
         private const val REQUEST_SET_SCHEDULE = 304
 
         internal fun getDraftAction(intentAction: String?): String {
