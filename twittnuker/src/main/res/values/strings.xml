@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="account">Account</string>
-    <string name="account_delete_confirm_message">This account will be deleted from Twittnuker.</string>
-    <string name="account_delete_confirm_title">Delete account</string>
     <string name="account_options">Account options</string>
     <string name="account_type_fanfou">Fanfou</string>
     <string name="account_type_statusnet">StatusNet</string>
     <string name="account_type_twitter">Twitter</string>
 
+    <!-- [verb] Accept a friend request (follow request) -->
     <string name="action_accept_friend_request">Accept</string>
+    <!-- [verb] Accept a permission request like allow to use camera etc. -->
     <string name="action_accept_permission_request">Accept</string>
     <string name="action_accepting_follow_request">accepting follow request</string>
+    <!-- [verb] Add an item to a list/collection -->
     <string name="action_add">Add</string>
+    <!-- [verb] Add a member to a message conversation -->
     <string name="action_add_conversation_participant">Add member</string>
     <!-- [verb] Add mute filter rule -->
     <string name="action_add_filter_rule">Add rule</string>
@@ -179,7 +180,7 @@
     <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your retweet</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> added you to list</string>
     <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> added you to their lists</string>
-    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> added you to list <xliff:g id="list">%2$s</xliff:g>"</string>
+    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> added you to list <xliff:g id="list">%2$s</xliff:g></string>
     <string name="activity_about_me_media_tagged"><xliff:g id="user">%s</xliff:g> tagged you</string>
     <string name="activity_about_me_media_tagged_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> tagged you</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> retweeted</string>
@@ -525,6 +526,7 @@
     <string name="label_location_your_coarse_location">Your coarse location</string>
     <string name="label_media">Media</string>
     <string name="label_original_status">Original tweet</string>
+    <string name="label_password">Password</string>
     <string name="label_password_sign_in">Password sign in</string>
     <string name="label_photo">Photo</string>
     <string name="label_photos">Photos</string>
@@ -538,6 +540,7 @@
     <string name="label_streaming_service">Streaming service</string>
     <string name="label_translate_from_language">Translate from <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Translation</string>
+    <string name="label_username">Username</string>
     <string name="label_video">Video</string>
     <string name="label_your_profile_image">Your profile image</string>
 
@@ -545,8 +548,6 @@
 
     <string name="leftside_compose_button">Left side compose button</string>
     <string name="leftside_compose_button_summary">Put the compose button on the left.</string>
-
-    <string name="notification_method_light">Light</string>
 
     <string name="link_highlight_option">Link highlight option</string>
     <string name="link_to_quoted_status">Link to quoted tweet</string>
@@ -596,6 +597,7 @@
 
     <string name="mentions_only">Mentions only</string>
 
+    <string name="message_account_delete_confirm">This account will be deleted from Twittnuker.</string>
     <string name="message_api_data_corrupted">API data corrupted.</string>
     <string name="message_api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ will be replaced to https://api.twitter.com/.</string>
     <string name="message_auto_refresh_confirm">Enable auto refresh to get new tweets automatically?</string>
@@ -739,7 +741,12 @@
     <string name="notification_light_color">Light Color</string>
     <string name="notification_mention"><xliff:g id="user">%s</xliff:g> mentioned you.</string>
     <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others mentioned you.</string>
-    <string name="notification_ringtone">Ringtone</string>
+    <!-- Notification method, flashing LED light -->
+    <string name="notification_method_light">Light</string>
+    <!-- Notification method, ringtone -->
+    <string name="notification_method_ringtone">Ringtone</string>
+    <!-- Notification method, device vibration -->
+    <string name="notification_method_vibration">Vibration</string>
     <string name="notification_status">New tweet by <xliff:g id="user">%s</xliff:g></string>
     <string name="notification_status_multiple">New Tweet by <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others</string>
     <string name="notification_title_new_retweet_by_user"><xliff:g id="user">%1$s</xliff:g> retweeted</string>
@@ -762,7 +769,6 @@
     <string name="page_down">Page down</string>
     <string name="page_up">Page up</string>
 
-    <string name="password">Password</string>
     <string name="password_sign_in_twitter_only">Password sign in (Twitter only)</string>
 
     <string name="pause">Pause</string>
@@ -949,8 +955,6 @@
 
     <string name="requested">Requested</string>
 
-    <string name="research_hot_mobile">Data-Driven Mobile Network Research</string>
-
     <string name="reset_keyboard_shortcuts_confirm">Reset keyboard shortcuts to default?</string>
     <string name="reset_to_default">Reset to default</string>
 
@@ -966,8 +970,6 @@
     <string name="retweets_of_me">Retweets of me</string>
 
     <string name="revoke_permissions">Revoke permissions</string>
-
-    <string name="notification_method_ringtone">Ringtone</string>
 
     <string name="round">Round</string>
 
@@ -1118,9 +1120,11 @@
     <string name="theme_background_solid">Pure white/black</string>
     <string name="theme_background_transparent">Transparent</string>
     <string name="theme_color">Theme color</string>
+    <!-- Dark theme -->
     <string name="theme_dark">Dark</string>
     <string name="theme_dark_actionbar">Dark ActionBar</string>
     <string name="theme_font_family">Theme font family</string>
+    <!-- Light theme -->
     <string name="theme_light">Light</string>
 
     <string name="thumbor_integration">Thumbor integration</string>
@@ -1131,6 +1135,7 @@
     <string name="timeline_sync_service">Timeline sync service</string>
 
     <string name="title_about">About</string>
+    <string name="title_account_delete_confirm">Delete account</string>
     <string name="title_accounts">Accounts</string>
     <string name="title_add_or_remove_from_list">Add or remove from list</string>
     <string name="title_block_user">Block <xliff:g id="name">%s</xliff:g></string>
@@ -1172,8 +1177,8 @@
     <string name="title_scheduled_statuses">Scheduled tweets</string>
     <string name="title_search">Search</string>
     <string name="title_select_users">Select users</string>
-    <string name="title_sign_in_to_buffer">Sign in to Buffer</string>
     <string name="title_set_nickname">Set nickname</string>
+    <string name="title_sign_in_to_buffer">Sign in to Buffer</string>
     <string name="title_status">Tweet</string>
     <string name="title_statuses">Tweets</string>
     <string name="title_statuses_and_replies">Tweets &amp; replies</string>
@@ -1272,13 +1277,9 @@
     <string name="user_type_verified">Verified</string>
     <string name="user_unblocked">Unblocked this user.</string>
 
-    <string name="username">Username</string>
-
     <string name="users_blocked">Blocked these users.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s lists</string>
     <string name="users_statuses">User\'s tweets</string>
-
-    <string name="notification_method_vibration">Vibration</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
