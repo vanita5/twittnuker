@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
-import de.vanita5.twittnuker.util.schedule.StatusScheduleController
+import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import javax.inject.Inject
 
 open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
@@ -68,12 +68,12 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
     @Inject
-    lateinit var statusScheduleControllerFactory: StatusScheduleController.Factory
+    lateinit var statusScheduleProviderFactory: StatusScheduleProvider.Factory
     @Inject
     lateinit var restHttpClient: RestHttpClient
 
-    protected val statusScheduleController: StatusScheduleController?
-        get() = statusScheduleControllerFactory.newInstance(context)
+    protected val statusScheduleProvider: StatusScheduleProvider?
+        get() = statusScheduleProviderFactory.newInstance(context)
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 

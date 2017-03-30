@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
-import de.vanita5.twittnuker.util.schedule.StatusScheduleController
+import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import javax.inject.Inject
 
 
@@ -57,10 +57,10 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject
-    lateinit var scheduleControllerFactory: StatusScheduleController.Factory
+    lateinit var scheduleProviderFactory: StatusScheduleProvider.Factory
 
-    val scheduleController: StatusScheduleController?
-        get() = scheduleControllerFactory.newInstance(context)
+    val scheduleProvider: StatusScheduleProvider?
+        get() = scheduleProviderFactory.newInstance(context)
 
     init {
         injectMembers()

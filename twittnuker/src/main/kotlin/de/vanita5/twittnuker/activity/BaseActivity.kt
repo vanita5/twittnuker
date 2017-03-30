@@ -67,8 +67,9 @@ import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.gifshare.GifShareProvider
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
-import de.vanita5.twittnuker.util.schedule.StatusScheduleController
+import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.util.support.ActivitySupport
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
@@ -102,14 +103,19 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject
-    lateinit var statusScheduleControllerFactory: StatusScheduleController.Factory
+    lateinit var statusScheduleProviderFactory: StatusScheduleProvider.Factory
+    @Inject
+    lateinit var gifShareProviderFactory: GifShareProvider.Factory
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
     @Inject
     lateinit var restHttpClient: RestHttpClient
 
-    protected val statusScheduleController: StatusScheduleController?
-        get() = statusScheduleControllerFactory.newInstance(this)
+    protected val statusScheduleProvider: StatusScheduleProvider?
+        get() = statusScheduleProviderFactory.newInstance(this)
+
+    protected val gifShareProvider: GifShareProvider?
+        get() = gifShareProviderFactory.newInstance(this)
 
 
     private val actionHelper = IBaseActivity.ActionHelper(this)

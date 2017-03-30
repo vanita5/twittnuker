@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
 import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
-import de.vanita5.twittnuker.util.schedule.StatusScheduleController
+import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.util.sync.JobSchedulerSyncController
 import de.vanita5.twittnuker.util.sync.LegacySyncController
 import de.vanita5.twittnuker.util.sync.SyncController
@@ -240,8 +240,8 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun statusScheduleControllerFactory(): StatusScheduleController.Factory {
-        return StatusScheduleController.Factory.instance
+    fun statusScheduleProviderFactory(): StatusScheduleProvider.Factory {
+        return StatusScheduleProvider.Factory.instance
     }
 
     @Provides

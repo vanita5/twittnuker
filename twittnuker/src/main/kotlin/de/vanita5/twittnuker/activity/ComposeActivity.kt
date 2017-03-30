@@ -547,7 +547,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 updateTextCount()
             }
             R.id.schedule -> {
-                val controller = statusScheduleController ?: return true
+                val controller = statusScheduleProvider ?: return true
                 startActivityForResult(controller.createSetScheduleIntent(), REQUEST_SET_SCHEDULE)
             }
 

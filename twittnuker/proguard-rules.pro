@@ -151,11 +151,13 @@
     <init>(android.content.Context);
 }
 
--keep class * extends de.vanita5.twittnuker.util.OSMMapFragmentFactory
--keep class * extends de.vanita5.twittnuker.util.TwitterCardFragmentFactory
 -keep class * extends de.vanita5.twittnuker.util.Analyzer
+-keep class * extends de.vanita5.twittnuker.util.MapFragmentFactory
+-keep class * extends de.vanita5.twittnuker.util.gifshare.GifShareProvider.Factory
 -keep class * extends de.vanita5.twittnuker.util.premium.ExtraFeaturesService
--keep class * extends de.vanita5.twittnuker.util.schedule.StatusScheduleController.Factory
+-keep class * extends de.vanita5.twittnuker.util.schedule.StatusScheduleProvider.Factory
+-keep class * extends de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
+-keep class * extends de.vanita5.twittnuker.util.twitter.card.TwitterCardViewFactory
 -keep class * extends de.vanita5.twittnuker.util.view.AppBarChildBehavior.ChildTransformation
 
 #jackson fasterxml
