@@ -19,8 +19,8 @@
     <!-- [verb] Add mute filter rule -->
     <string name="action_add_filter_rule">Regel hinzufügen</string>
     <string name="action_add_filters_subscription">Abonnement hinzufügen</string>
-    <string name="action_add_media">Medien hinzufügen</string>
     <string name="action_add_gif">Gif hinzufügen</string>
+    <string name="action_add_media">Medien hinzufügen</string>
     <string name="action_add_member">Mitglied hinzufügen</string>
     <string name="action_add_tab">Tab hinzufügen</string>
     <string name="action_add_to_filter">Zum Filter hinzufügen</string>
@@ -436,6 +436,7 @@
     <string name="label_photo">Foto</string>
     <string name="label_photos">Fotos</string>
     <string name="label_poll">Umfrage</string>
+    <string name="label_powered_by_giphy">Powered by Giphy</string>
     <string name="label_refresh_and_sync_service">Aktualisierungs- &amp; Synchronisierungsdienst</string>
     <string name="label_refresh_service">Dienst aktualisieren</string>
     <string name="label_schedule_time_buffer_default">Buffer Standard</string>
@@ -942,6 +943,7 @@
     <string name="title_quick_action">Quick Action</string>
     <string name="title_scheduled_statuses">Geplante Tweets</string>
     <string name="title_search">Suche</string>
+    <string name="title_search_gif">Suche</string>
     <string name="title_select_users">Account auswählen</string>
     <string name="title_sign_in_to_buffer">Buffer Anmeldung</string>
     <string name="title_status">Tweet</string>
@@ -1018,7 +1020,6 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="notification_method_vibration">Vibration</string>
-    <string name="title_giphy_search">Suchen via Giphy</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
