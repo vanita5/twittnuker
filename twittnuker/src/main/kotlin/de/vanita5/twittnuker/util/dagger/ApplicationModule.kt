@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.cache.DiskLRUFileCache
 import de.vanita5.twittnuker.util.cache.JsonCache
+import de.vanita5.twittnuker.util.gifshare.GifShareProvider
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.net.TwidereDns
@@ -242,6 +243,12 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun statusScheduleProviderFactory(): StatusScheduleProvider.Factory {
         return StatusScheduleProvider.Factory.instance
+    }
+
+    @Provides
+    @Singleton
+    fun gifShareProviderFactory(): GifShareProvider.Factory {
+        return GifShareProvider.Factory.instance
     }
 
     @Provides
