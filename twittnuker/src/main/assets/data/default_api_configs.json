@@ -45,6 +45,17 @@
     "consumer_secret": "713003dd0bbd9e917bd13a1262ef0c47"
   },
   {
+    "name": "Mastodon.social",
+    "type": "statusnet",
+    "localized_name": "@string/provider_gnusocial_de",
+    "api_url_format": "https://mastodon.social/api/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "aa05285b6664f8f570d8a228e35cdcc58bb8c3c5cceeef2870464a37c7f81645",
+    "consumer_secret": "f08057acb88215db65c10bb7cab5e3d58492208ed543d31e6a41911d1dcad564"
+  },
+  {
     "name": "Fanfou",
     "type": "fanfou",
     "localized_name": "@string/provider_fanfou",
