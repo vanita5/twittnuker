@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
+import de.vanita5.twittnuker.model.timeline.TimelineFilter
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.*
@@ -122,6 +123,10 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     val shouldInitLoader: Boolean
         get() = (parentFragment as? StatusesFragmentDelegate)?.shouldInitLoader ?: true
 
+
+    protected open val enableTimelineFilter: Boolean = false
+
+    protected open val timelineFilter: TimelineFilter? = null
 
     // Fragment life cycles
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -307,6 +312,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         }
         // 2. Change adapter data
         adapterData = data
+        adapter.timelineFilter = timelineFilter
 
         refreshEnabled = true
 
@@ -476,7 +482,8 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     protected fun saveReadPosition(position: Int) {
         if (host == null) return
         if (position == RecyclerView.NO_POSITION || adapter.getStatusCount(false) <= 0) return
-        val status = adapter.getStatus(position)
+        val status = adapter.getStatus(position.coerceIn(rangeOfSize(adapter.statusStartIndex,
+                adapter.getStatusCount(false))))
         val readPosition = if (useSortIdAsReadPosition) {
             status.sort_id
         } else {

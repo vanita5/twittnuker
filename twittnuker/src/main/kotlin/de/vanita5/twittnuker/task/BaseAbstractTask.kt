@@ -26,6 +26,7 @@ import android.content.Context
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
+import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.media.MediaPreloader
@@ -56,6 +57,8 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var userColorNameManager: UserColorNameManager
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit var defaultFeatures: DefaultFeatures
     @Inject
     lateinit var scheduleProviderFactory: StatusScheduleProvider.Factory
 

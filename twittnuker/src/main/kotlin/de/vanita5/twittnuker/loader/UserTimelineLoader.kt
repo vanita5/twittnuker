@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import java.util.concurrent.atomic.AtomicReference
@@ -53,7 +54,7 @@ class UserTimelineLoader(
         fromUser: Boolean,
         loadingMore: Boolean,
         val pinnedStatusIds: Array<String>?,
-        val excludeReplies: Boolean = false
+        val timelineFilter: UserTimelineFilter? = null
 ) : MicroBlogAPIStatusesLoader(context, accountId, sinceId, maxId, -1, data, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
@@ -83,7 +84,10 @@ class UserTimelineLoader(
             }
         }
         val option = TimelineOption()
-        option.setExcludeReplies(excludeReplies)
+        if (timelineFilter != null) {
+            option.setExcludeReplies(!timelineFilter.isIncludeReplies)
+            option.setIncludeRetweets(timelineFilter.isIncludeRetweets)
+        }
         if (userId != null) {
             return microBlog.getUserTimeline(userId.id, paging, option)
         } else if (screenName != null) {

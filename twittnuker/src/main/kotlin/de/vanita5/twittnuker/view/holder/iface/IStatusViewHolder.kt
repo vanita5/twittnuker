@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.view.CardMediaContainer
+import de.vanita5.twittnuker.view.holder.TimelineFilterHeaderViewHolder
 
 interface IStatusViewHolder : CardMediaContainer.OnMediaClickListener {
 
@@ -62,6 +63,8 @@ interface IStatusViewHolder : CardMediaContainer.OnMediaClickListener {
         fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean = false
 
         fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {}
+
+        fun onFilterClick(holder: TimelineFilterHeaderViewHolder) {}
     }
 
 }

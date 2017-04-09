@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.constant
 
 import android.content.SharedPreferences
 import android.os.Build
+import android.support.v4.util.ArraySet
 import android.text.TextUtils
 import org.apache.commons.lang3.LocaleUtils
 import org.mariotaku.kpreferences.*
@@ -39,6 +40,7 @@ import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
+import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 import java.util.*
@@ -255,6 +257,31 @@ object composeAccountsKey : KSimpleKey<Array<UserKey>?>(KEY_COMPOSE_ACCOUNTS, nu
 
     override fun write(editor: SharedPreferences.Editor, value: Array<UserKey>?): Boolean {
         editor.putString(key, value?.joinToString(","))
+        return true
+    }
+
+}
+
+object userTimelineFilterKey : KSimpleKey<UserTimelineFilter>("user_timeline_filter", UserTimelineFilter()) {
+    override fun read(preferences: SharedPreferences): UserTimelineFilter {
+        val rawString = preferences.getString(key, null) ?: return def
+        val options = rawString.split(",")
+        return UserTimelineFilter().apply {
+            isIncludeReplies = "replies" in options
+            isIncludeRetweets = "retweets" in options
+        }
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: UserTimelineFilter): Boolean {
+        val options = ArraySet<String>().apply {
+            if (value.isIncludeReplies) {
+                add("replies")
+            }
+            if (value.isIncludeRetweets) {
+                add("retweets")
+            }
+        }.joinToString(",")
+        editor.putString(key, options)
         return true
     }
 

@@ -22,14 +22,24 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
+import android.support.v7.app.AlertDialog
+import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.constant.userTimelineFilterKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.loader.UserTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.timeline.TimelineFilter
+import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.view.holder.TimelineFilterHeaderViewHolder
 import java.util.*
 
 class UserTimelineFragment : ParcelableStatusesFragment() {
@@ -39,11 +49,9 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
 
     override val savedStatusesFileArgs: Array<String>?
         get() {
-            val args = arguments!!
-            val accountKey = Utils.getAccountKey(context, args)!!
-            val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-            val screenName = args.getString(EXTRA_SCREEN_NAME)
-            val excludeReplies = args.getBoolean(EXTRA_EXCLUDE_REPLIES)
+            val accountKey = Utils.getAccountKey(context, arguments)!!
+            val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
+            val screenName = arguments.getString(EXTRA_SCREEN_NAME)
             val result = ArrayList<String>()
             result.add(AUTHORITY_USER_TIMELINE)
             result.add("account=$accountKey")
@@ -54,21 +62,24 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
             } else {
                 return null
             }
-            if (excludeReplies) {
-                result.add("exclude_replies")
+            (timelineFilter as? UserTimelineFilter)?.let {
+                if (it.isIncludeReplies) {
+                    result.add("include_replies")
+                }
+                if (it.isIncludeRetweets) {
+                    result.add("include_retweets")
+                }
             }
             return result.toTypedArray()
         }
 
     override val readPositionTagWithArguments: String?
         get() {
-            val args = arguments!!
-            val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+            if (arguments.getLong(EXTRA_TAB_ID, -1) < 0) return null
             val sb = StringBuilder("user_timeline_")
-            if (tabPosition < 0) return null
 
-            val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-            val screenName = args.getString(EXTRA_SCREEN_NAME)
+            val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
+            val screenName = arguments.getString(EXTRA_SCREEN_NAME)
             if (userKey != null) {
                 sb.append(userKey)
             } else if (screenName != null) {
@@ -78,6 +89,12 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
             }
             return sb.toString()
         }
+
+    override val enableTimelineFilter: Boolean
+        get() = arguments.getBoolean(EXTRA_ENABLE_TIMELINE_FILTER)
+
+    override val timelineFilter: TimelineFilter?
+        get() = if (enableTimelineFilter) preferences[userTimelineFilterKey] else null
 
     override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
             Loader<List<ParcelableStatus>?> {
@@ -90,10 +107,10 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        val excludeReplies = args.getBoolean(EXTRA_EXCLUDE_REPLIES, false)
         val pinnedIds = if (adapter.hasPinnedStatuses) null else pinnedStatusIds
         return UserTimelineLoader(context, accountKey, userKey, screenName, sinceId, maxId, data,
-                savedStatusesFileArgs, tabPosition, fromUser, loadingMore, pinnedIds, excludeReplies)
+                savedStatusesFileArgs, tabPosition, fromUser, loadingMore, pinnedIds,
+                timelineFilter as? UserTimelineFilter)
     }
 
     override fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?) {
@@ -104,7 +121,63 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
         super.onStatusesLoaded(loader, data)
     }
 
+    override fun onFilterClick(holder: TimelineFilterHeaderViewHolder) {
+        val df = UserTimelineFilterDialogFragment()
+        df.setTargetFragment(this, REQUEST_SET_TIMELINE_FILTER)
+        df.show(childFragmentManager, "set_timeline_filter")
+    }
+
+    private fun reloadAllStatuses() {
+        adapterData = null
+        triggerRefresh()
+        showProgress()
+    }
+
     interface UserTimelineFragmentDelegate {
         val pinnedStatusIds: Array<String>?
+
+    }
+
+    class UserTimelineFilterDialogFragment : BaseDialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val builder = AlertDialog.Builder(context)
+            val values = resources.getStringArray(R.array.values_user_timeline_filter)
+            val checkedItems = BooleanArray(values.size) {
+                val filter = preferences[userTimelineFilterKey]
+                when (values[it]) {
+                    "replies" -> filter.isIncludeReplies
+                    "retweets" -> filter.isIncludeRetweets
+                    else -> false
+                }
+            }
+            builder.setTitle(R.string.title_user_timeline_filter)
+            builder.setMultiChoiceItems(R.array.entries_user_timeline_filter, checkedItems, null)
+            builder.setNegativeButton(android.R.string.cancel, null)
+            builder.setPositiveButton(android.R.string.ok) { dialog, _ ->
+                dialog as AlertDialog
+                val listView = dialog.listView
+                val filter = UserTimelineFilter().apply {
+                    isIncludeRetweets = listView.isItemChecked(values.indexOf("retweets"))
+                    isIncludeReplies = listView.isItemChecked(values.indexOf("replies"))
+                }
+                preferences.edit().apply {
+                    this[userTimelineFilterKey] = filter
+                }.apply()
+                (targetFragment as UserTimelineFragment).reloadAllStatuses()
+            }
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
+        }
+
+    }
+
+    companion object {
+        const val EXTRA_ENABLE_TIMELINE_FILTER = "enable_timeline_filter"
+        const val REQUEST_SET_TIMELINE_FILTER = 101
     }
 }

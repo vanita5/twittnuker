@@ -33,25 +33,12 @@ public class StatusUpdate extends SimpleValueMap {
         put("status", status);
     }
 
-    public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
-        setDisplayCoordinates(displayCoordinates);
-        return this;
-    }
-
     public void setInReplyToStatusId(final String inReplyToStatusId) {
         put("in_reply_to_status_id", inReplyToStatusId);
     }
 
     public void setRepostStatusId(final String repostStatusId) {
         put("repost_status_id", repostStatusId);
-    }
-
-    public void setLocation(final GeoLocation location) {
-        remove("lat");
-        remove("long");
-        if (location == null) return;
-        put("lat", location.getLatitude());
-        put("long", location.getLongitude());
     }
 
     public void setMediaIds(final String... mediaIds) {
@@ -74,17 +61,22 @@ public class StatusUpdate extends SimpleValueMap {
     }
 
 
-    public void setDisplayCoordinates(final boolean displayCoordinates) {
+    public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
         put("display_coordinates", displayCoordinates);
+        return this;
     }
 
-
-    public void setPossiblySensitive(final boolean possiblySensitive) {
-        put("possibly_sensitive", possiblySensitive);
+    public StatusUpdate autoPopulateReplyMetadata(final boolean autoPopulateReplyMetadata) {
+        put("auto_populate_reply_metadata", autoPopulateReplyMetadata);
+        return this;
     }
 
     public StatusUpdate location(final GeoLocation location) {
-        setLocation(location);
+        remove("lat");
+        remove("long");
+        if (location == null) return this;
+        put("lat", location.getLatitude());
+        put("long", location.getLongitude());
         return this;
     }
 
@@ -104,7 +96,7 @@ public class StatusUpdate extends SimpleValueMap {
     }
 
     public StatusUpdate possiblySensitive(final boolean possiblySensitive) {
-        setPossiblySensitive(possiblySensitive);
+        put("possibly_sensitive", possiblySensitive);
         return this;
     }
 

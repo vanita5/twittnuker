@@ -52,6 +52,9 @@ public class DefaultFeatures {
     @JsonField(name = "media_link_counts_in_status")
     boolean mediaLinkCountsInStatus = false;
 
+    @JsonField(name = "mentions_counts_in_status")
+    boolean mentionsCountsInStatus = false;
+
     @JsonField(name = "default_twitter_consumer_key")
     String defaultTwitterConsumerKey;
 
@@ -66,6 +69,10 @@ public class DefaultFeatures {
 
     public boolean isMediaLinkCountsInStatus() {
         return mediaLinkCountsInStatus;
+    }
+
+    public boolean isMentionsCountsInStatus() {
+        return mentionsCountsInStatus;
     }
 
     public String getDefaultTwitterConsumerKey() {
