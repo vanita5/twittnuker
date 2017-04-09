@@ -27,7 +27,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.Dialog
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.ContentValues
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.PorterDuff.Mode
 import android.location.*
@@ -315,7 +318,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 }
             }
             REQUEST_ADD_GIF -> {
-
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val intent = ThemedMediaPickerActivity.withThemed(this@ComposeActivity)
+                            .getMedia(data.data)
+                            .build()
+                    startActivityForResult(intent, REQUEST_PICK_MEDIA)
+                }
             }
         }
 
@@ -511,6 +519,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
 
             R.id.add_gif -> {
+                // Twittnuker implementation
                 requestOrPickGif()
             }
             else -> {

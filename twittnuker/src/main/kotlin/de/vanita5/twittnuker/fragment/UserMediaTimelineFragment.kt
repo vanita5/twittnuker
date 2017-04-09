@@ -34,6 +34,8 @@ import com.bumptech.glide.Glide
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.reachingEnd
+import de.vanita5.twittnuker.extension.reachingStart
 import de.vanita5.twittnuker.loader.MediaTimelineLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -55,26 +57,11 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
             super.refreshing = value
         }
 
-
     override val reachingEnd: Boolean
-        get() {
-            val lm = layoutManager
-            var visiblePos = lm.findLastCompletelyVisibleItemPositions(null)
-            if (visiblePos.all { it == RecyclerView.NO_POSITION }) {
-                visiblePos = lm.findLastVisibleItemPositions(null)
-            }
-            return visiblePos.contains(lm.itemCount - 1)
-        }
+        get() = layoutManager.reachingEnd
 
     override val reachingStart: Boolean
-        get() {
-            val lm = layoutManager
-            var visiblePos = lm.findFirstCompletelyVisibleItemPositions(null)
-            if (visiblePos.all { it == RecyclerView.NO_POSITION }) {
-                visiblePos = lm.findFirstVisibleItemPositions(null)
-            }
-            return visiblePos.contains(0)
-        }
+        get() = layoutManager.reachingStart
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
