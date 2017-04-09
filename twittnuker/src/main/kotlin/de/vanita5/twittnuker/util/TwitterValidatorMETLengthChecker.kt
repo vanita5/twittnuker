@@ -20,23 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.util
 
-import android.support.annotation.NonNull;
+import com.rengwuxian.materialedittext.validation.METLengthChecker
+import com.twitter.Validator
+import de.vanita5.twittnuker.extension.getTweetLength
 
-import com.rengwuxian.materialedittext.validation.METLengthChecker;
-import com.twitter.Validator;
+class TwitterValidatorMETLengthChecker(
+        private val validator: Validator,
+        private val ignoreMentions: Boolean
+) : METLengthChecker() {
 
-public class TwitterValidatorMETLengthChecker extends METLengthChecker {
-    private final Validator mValidator;
-
-    public TwitterValidatorMETLengthChecker(@NonNull Validator validator) {
-        mValidator = validator;
-    }
-
-    @Override
-    public int getLength(CharSequence charSequence) {
-        return mValidator.getTweetLength(String.valueOf(charSequence));
+    override fun getLength(charSequence: CharSequence): Int {
+        return validator.getTweetLength(charSequence.toString(), ignoreMentions)
     }
 
 }

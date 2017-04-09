@@ -78,9 +78,12 @@ import de.vanita5.twittnuker.SecretConstants
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getTweetLength
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
@@ -1419,7 +1422,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (isFinishing || editText == null) return
         val hasMedia = hasMedia()
         val text = editText.text.toString()
-        val tweetLength = validator.getTweetLength(text)
+        val accountKeys = accountsAdapter.selectedAccountKeys
+        val accounts = AccountUtils.getAllAccountDetails(AccountManager.get(this), accountKeys, true)
+        val ignoreMentions = accounts.all { it.type == AccountType.TWITTER }
+        val tweetLength = validator.getTweetLength(text, ignoreMentions)
         val maxLength = statusTextCount.maxLength
         if (accountsAdapter.isSelectionEmpty) {
             editText.error = getString(R.string.message_toast_no_account_selected)
@@ -1435,11 +1441,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
         val attachLocation = kPreferences[attachLocationKey]
         val attachPreciseLocation = kPreferences[attachPreciseLocationKey]
-        val accountKeys = accountsAdapter.selectedAccountKeys
         val isPossiblySensitive = hasMedia && possiblySensitive
         val update = ParcelableStatusUpdate()
         @Draft.Action val action = draft?.action_type ?: getDraftAction(intent.action)
-        update.accounts = AccountUtils.getAllAccountDetails(AccountManager.get(this), accountKeys, true)
+        update.accounts = accounts
         update.text = text
         if (attachLocation) {
             update.location = recentLocation
@@ -1475,8 +1480,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun updateTextCount() {
+        val am = AccountManager.get(this)
         val text = editText.text?.toString() ?: return
-        statusTextCount.textCount = validator.getTweetLength(text)
+        val ignoreMentions = accountsAdapter.selectedAccountKeys.all {
+            val account = AccountUtils.findByAccountKey(am, it) ?: return@all false
+            return@all account.getAccountType(am) == AccountType.TWITTER
+        }
+        statusTextCount.textCount = validator.getTweetLength(text, ignoreMentions)
     }
 
     private fun updateUpdateStatusIcon() {

@@ -51,6 +51,8 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getTweetLength
+import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -182,7 +184,8 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         return dialog
     }
 
-    private fun updateTextCount(dialog: DialogInterface, s: CharSequence, status: ParcelableStatus, credentials: AccountDetails) {
+    private fun updateTextCount(dialog: DialogInterface, s: CharSequence, status: ParcelableStatus,
+            credentials: AccountDetails) {
         if (dialog !is AlertDialog) return
         val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE) ?: return
         if (s.isNotEmpty()) {
@@ -198,8 +201,11 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             positiveButton.setText(R.string.action_retweet)
             positiveButton.isEnabled = !status.user_is_protected
         }
-        val textCountView = (dialog.findViewById(R.id.commentTextCount) as StatusTextCountView?)!!
-        textCountView.textCount = validator.getTweetLength(s.toString())
+        val textCountView = dialog.findViewById(R.id.commentTextCount) as StatusTextCountView
+        val am = AccountManager.get(context)
+        val ignoreMentions = AccountUtils.findByAccountKey(am, accountKey)?.getAccountType(am) ==
+                AccountType.TWITTER
+        textCountView.textCount = validator.getTweetLength(s.toString(), ignoreMentions)
     }
 
     private val status: ParcelableStatus
