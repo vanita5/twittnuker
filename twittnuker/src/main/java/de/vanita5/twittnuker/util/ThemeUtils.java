@@ -54,7 +54,6 @@ import android.widget.FrameLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.chameleon.ChameleonUtils;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
@@ -64,6 +63,7 @@ import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 
+@SuppressWarnings("RestrictedApi")
 public class ThemeUtils implements Constants {
 
     public static final int ACCENT_COLOR_THRESHOLD = 192;
@@ -78,9 +78,8 @@ public class ThemeUtils implements Constants {
 
 
     public static void applyColorFilterToMenuIcon(final Menu menu, @ColorInt final int color,
-                                                  @ColorInt final int popupColor,
-                                                  @ColorInt final int highlightColor, final Mode mode,
-                                                  final int... excludedGroups) {
+            @ColorInt final int popupColor, @ColorInt final int highlightColor, final Mode mode,
+            final int... excludedGroups) {
         for (int i = 0, j = menu.size(); i < j; i++) {
             final MenuItem item = menu.getItem(i);
             final Drawable icon = item.getIcon();

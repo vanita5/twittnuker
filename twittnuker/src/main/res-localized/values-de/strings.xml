@@ -123,6 +123,7 @@
     <!-- [verb] Used for skip some settings -->
     <string name="action_skip">Überspringen</string>
     <string name="action_start">Start</string>
+    <string name="action_status_attachment">Tweet Anhang</string>
     <string name="action_status_block_users">Account blockieren…</string>
     <string name="action_status_mute_users">Account muten…</string>
     <string name="action_status_schedule">Zeitversetzt</string>

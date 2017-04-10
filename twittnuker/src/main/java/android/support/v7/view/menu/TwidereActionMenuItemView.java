@@ -26,6 +26,7 @@ import android.content.Context;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.AttributeSet;
 
+@SuppressWarnings("RestrictedApi")
 public class TwidereActionMenuItemView extends ActionMenuItemView {
 
     public TwidereActionMenuItemView(Context context) {
