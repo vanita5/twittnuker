@@ -93,7 +93,6 @@ val multiColumnWidthKey = KStringKey("multi_column_tab_width", "normal")
 val streamingEnabledKey = KBooleanKey("streaming_enabled", true)
 val streamingNonMeteredNetworkKey = KBooleanKey("streaming_non_metered_network", false)
 val streamingPowerSavingKey = KBooleanKey("streaming_power_saving", false)
-val bufferAccessTokenKey = KNullableStringKey("buffer_access_token", null)
 
 object overrideLanguageKey : KSimpleKey<Locale?>("override_language", null) {
     override fun read(preferences: SharedPreferences): Locale? {
