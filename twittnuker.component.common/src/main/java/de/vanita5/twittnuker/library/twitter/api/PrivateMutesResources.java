@@ -31,10 +31,10 @@ import de.vanita5.twittnuker.library.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.template.UserAnnotationTemplate;
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.annotation.param.Query;
 
-@Queries(template = UserAnnotationTemplate.class)
+@Params(template = UserAnnotationTemplate.class)
 public interface PrivateMutesResources {
 
     @GET("/mutes/keywords/ids.json")

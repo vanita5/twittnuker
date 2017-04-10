@@ -121,7 +121,8 @@ public class TwidereMediaDownloader implements MediaDownloader {
         final String method = GET.METHOD;
         final String requestUri;
         if (isAuthRequired(credentials, uri)) {
-            additionalHeaders.add("Authorization", CredentialsExtensionsKt.authorizationHeader(credentials, uri, modifiedUri));
+            additionalHeaders.add("Authorization", CredentialsExtensionsKt.authorizationHeader(credentials,
+                    uri, modifiedUri, null));
             requestUri = modifiedUri.toString();
         } else  {
             requestUri = modifiedUri.toString();

@@ -24,22 +24,22 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
-import org.mariotaku.restfu.http.BodyType;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.library.twitter.model.CursorTimestampResponse;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
+import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Query;
+import org.mariotaku.restfu.http.BodyType;
 
 @SuppressWarnings("RedundantThrows")
-@Queries(template = StatusAnnotationTemplate.class)
+@Params(template = StatusAnnotationTemplate.class)
 public interface PrivateActivityResources extends PrivateResources {
 
     @GET("/activity/about_me.json")

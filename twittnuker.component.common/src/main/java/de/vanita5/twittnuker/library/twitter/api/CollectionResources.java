@@ -24,11 +24,10 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.param.Queries;
-
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
+import org.mariotaku.restfu.annotation.param.Params;
 
 @SuppressWarnings("RedundantThrows")
-@Queries(template = StatusAnnotationTemplate.class)
+@Params(template = StatusAnnotationTemplate.class)
 public interface CollectionResources {
 }

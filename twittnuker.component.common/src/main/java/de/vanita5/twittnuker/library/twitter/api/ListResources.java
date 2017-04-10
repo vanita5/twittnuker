@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.library.twitter.template.UserAnnotationTemplate;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.annotation.param.Query;
 
 @SuppressWarnings("RedundantThrows")
@@ -79,18 +79,18 @@ public interface ListResources {
     UserList destroyUserListSubscription(@Param("list_id") String listId) throws MicroBlogException;
 
     @GET("/lists/members.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembers(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/members.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembers(@Query("slug") String slug,
                                                   @Query("owner_id") String ownerId,
                                                   @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/members.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembersByScreenName(@Query("slug") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
             throws MicroBlogException;
 
@@ -126,29 +126,29 @@ public interface ListResources {
     ResponseList<UserList> getUserListsByScreenName(@Query("screen_name") String screenName, @Query("reverse") boolean reverse) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries(template = StatusAnnotationTemplate.class)
+    @Params(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries(template = StatusAnnotationTemplate.class)
+    @Params(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("slug") String slug, @Query("owner_id") long ownerId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries(template = StatusAnnotationTemplate.class)
+    @Params(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("slug") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String slug, @Query("owner_id") String ownerId, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribersByScreenName(@Query("list_id") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
             throws MicroBlogException;
 

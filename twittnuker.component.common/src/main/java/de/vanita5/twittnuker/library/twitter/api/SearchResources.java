@@ -30,11 +30,11 @@ import de.vanita5.twittnuker.library.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
 
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.annotation.param.Query;
 
 @SuppressWarnings("RedundantThrows")
-@Queries(template = StatusAnnotationTemplate.class)
+@Params(template = StatusAnnotationTemplate.class)
 public interface SearchResources {
     @GET("/search/tweets.json")
     QueryResult search(@Query SearchQuery query) throws MicroBlogException;

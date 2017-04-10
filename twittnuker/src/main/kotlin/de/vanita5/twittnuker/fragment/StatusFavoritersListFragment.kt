@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import android.os.Bundle
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS_ID
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
@@ -32,11 +33,15 @@ import de.vanita5.twittnuker.model.UserKey
 
 class StatusFavoritersListFragment : CursorUsersListFragment() {
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
+    }
+
     override fun onCreateUsersLoader(context: Context, args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val statusId = args.getString(EXTRA_STATUS_ID)
-        val loader = StatusFavoritersLoader(context, accountKey,
-                statusId, adapter.getData(), false)
+        val loader = StatusFavoritersLoader(context, accountKey, statusId, adapter.getData(), false)
         loader.cursor = nextCursor
         loader.page = nextPage
         return loader

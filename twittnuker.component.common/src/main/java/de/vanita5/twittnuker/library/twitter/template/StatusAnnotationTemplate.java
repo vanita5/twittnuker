@@ -25,9 +25,9 @@
 package de.vanita5.twittnuker.library.twitter.template;
 
 import org.mariotaku.restfu.annotation.param.KeyValue;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 
-@Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
+@Params({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
         @KeyValue(key = "include_rts", valueKey = "include_entities"),
         @KeyValue(key = "include_entities", valueKey = "include_entities"),
         @KeyValue(key = "include_cards", valueKey = "include_cards"),

@@ -24,11 +24,6 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Path;
-import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
@@ -36,9 +31,13 @@ import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.StatusActivitySummary;
 import de.vanita5.twittnuker.library.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Params;
+import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Query;
 
 @SuppressWarnings("RedundantThrows")
-@Queries(template = StatusAnnotationTemplate.class)
+@Params(template = StatusAnnotationTemplate.class)
 public interface PrivateTweetResources extends PrivateResources {
 
     @GET("/statuses/{id}/activity/summary.json")

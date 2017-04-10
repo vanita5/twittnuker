@@ -29,13 +29,13 @@ import de.vanita5.twittnuker.library.twitter.model.UniversalSearchQuery;
 import de.vanita5.twittnuker.library.twitter.model.UniversalSearchResult;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.annotation.param.Query;
 
 public interface PrivateSearchResources extends PrivateResources {
 
     @GET("/search/universal.json")
-    @Queries(template = StatusAnnotationTemplate.class)
+    @Params(template = StatusAnnotationTemplate.class)
     UniversalSearchResult universalSearch(@Query UniversalSearchQuery query) throws MicroBlogException;
 
 }

@@ -38,6 +38,7 @@ import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
@@ -48,32 +49,32 @@ public interface FriendsFollowersResources {
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User createFriendship(@Param("user_id") String userId) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User createFriendship(@Param("user_id") String userId, @Param("follow") boolean follow) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User createFriendshipByScreenName(@Param("screen_name") String screenName) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User createFriendshipByScreenName(@Param("screen_name") String screenName, @Param("follow") boolean follow) throws MicroBlogException;
 
     @POST("/friendships/destroy.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User destroyFriendship(@Param("user_id") String userId) throws MicroBlogException;
 
     @POST("/friendships/destroy.json")
     @BodyType(BodyType.FORM)
-    @Queries(template = UserAnnotationTemplate.class)
+    @Params(template = UserAnnotationTemplate.class)
     User destroyFriendshipByScreenName(@Param("screen_name") String screenName) throws MicroBlogException;
 
     @GET("/followers/ids.json")
