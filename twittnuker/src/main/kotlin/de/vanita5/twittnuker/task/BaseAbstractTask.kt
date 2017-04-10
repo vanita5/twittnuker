@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import com.squareup.otto.Bus
+import com.twitter.Extractor
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.model.DefaultFeatures
@@ -61,6 +62,8 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var defaultFeatures: DefaultFeatures
     @Inject
     lateinit var scheduleProviderFactory: StatusScheduleProvider.Factory
+    @Inject
+    lateinit var extractor: Extractor
 
     val scheduleProvider: StatusScheduleProvider?
         get() = scheduleProviderFactory.newInstance(context)

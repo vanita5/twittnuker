@@ -24,15 +24,13 @@ package de.vanita5.twittnuker.util
 
 import com.rengwuxian.materialedittext.validation.METLengthChecker
 import com.twitter.Validator
-import de.vanita5.twittnuker.extension.getTweetLength
 
 class TwitterValidatorMETLengthChecker(
-        private val validator: Validator,
-        private val ignoreMentions: Boolean
+        private val validator: Validator
 ) : METLengthChecker() {
 
     override fun getLength(charSequence: CharSequence): Int {
-        return validator.getTweetLength(charSequence.toString(), ignoreMentions)
+        return validator.getTweetLength(charSequence.toString())
     }
 
 }

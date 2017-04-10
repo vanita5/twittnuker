@@ -81,12 +81,12 @@ import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.getTweetLength
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
+import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
 import de.vanita5.twittnuker.model.*
@@ -1432,13 +1432,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val accountKeys = accountsAdapter.selectedAccountKeys
         val accounts = AccountUtils.getAllAccountDetails(AccountManager.get(this), accountKeys, true)
         val ignoreMentions = accounts.all { it.type == AccountType.TWITTER }
-        val tweetLength = validator.getTweetLength(text, ignoreMentions &&
-                !defaultFeatures.isMentionsCountsInStatus)
+        val tweetLength = validator.getTweetLength(text, ignoreMentions, inReplyToStatus)
         val maxLength = statusTextCount.maxLength
         if (accountsAdapter.isSelectionEmpty) {
             editText.error = getString(R.string.message_toast_no_account_selected)
             return
-        } else if (!hasMedia && (TextUtils.isEmpty(text) || noReplyContent(text))) {
+        } else if (!hasMedia && (tweetLength <= 0 || noReplyContent(text))) {
             editText.error = getString(R.string.error_message_no_content)
             return
         } else if (maxLength > 0 && !statusShortenerUsed && tweetLength > maxLength) {
@@ -1493,8 +1492,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val ignoreMentions = inReplyToStatus != null && accountsAdapter.selectedAccountKeys.all {
             val account = AccountUtils.findByAccountKey(am, it) ?: return@all false
             return@all account.getAccountType(am) == AccountType.TWITTER
-        } && !defaultFeatures.isMentionsCountsInStatus
-        statusTextCount.textCount = validator.getTweetLength(text, ignoreMentions)
+        }
+        statusTextCount.textCount = validator.getTweetLength(text, ignoreMentions, inReplyToStatus)
     }
 
     private fun updateUpdateStatusIcon() {

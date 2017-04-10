@@ -51,7 +51,6 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.getTweetLength
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -202,7 +201,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         }
         val textCountView = dialog.findViewById(R.id.commentTextCount) as StatusTextCountView
         val am = AccountManager.get(context)
-        textCountView.textCount = validator.getTweetLength(s.toString(), false)
+        textCountView.textCount = validator.getTweetLength(s.toString())
     }
 
     private val status: ParcelableStatus
