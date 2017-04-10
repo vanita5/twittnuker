@@ -83,7 +83,6 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountType
-import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
@@ -1067,24 +1066,28 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun handleReplyIntent(status: ParcelableStatus?): Boolean {
         if (status == null) return false
         val am = AccountManager.get(this)
-        val accountUser = AccountUtils.findByAccountKey(am, status.account_key)?.getAccountUser(am) ?: return false
+        val details = AccountUtils.getAccountDetails(am, status.account_key, false) ?: return false
+        val accountUser = details.user
         var selectionStart = 0
         val mentions = ArrayList<String>()
-        // If replying status from current user, just exclude it's screen name from selection.
-        if (accountUser.key != status.user_key) {
+        if (details.type == AccountType.TWITTER) {
+            // For Twitter, status user should always be the first
             editText.append("@${status.user_screen_name} ")
-            selectionStart = editText.length()
+        } else if (accountUser.key != status.user_key) {
+            // If replying status from current user, just exclude it's screen name from selection.
+            editText.append("@${status.user_screen_name} ")
         }
+        selectionStart = editText.length()
         if (status.is_retweet && !TextUtils.isEmpty(status.retweeted_by_user_screen_name)) {
             mentions.add(status.retweeted_by_user_screen_name)
         }
         if (status.is_quote && !TextUtils.isEmpty(status.quoted_user_screen_name)) {
             mentions.add(status.quoted_user_screen_name)
         }
-        if (!ArrayUtils.isEmpty(status.mentions)) {
-            status.mentions
-                    .filterNot { it.key == status.account_key || it.screen_name.isNullOrEmpty() }
-                    .mapTo(mentions) { it.screen_name }
+        if (status.mentions.isNotNullOrEmpty()) {
+            status.mentions.filterNot {
+                it.key == status.account_key || it.screen_name.isNullOrEmpty()
+            }.mapTo(mentions) { it.screen_name }
             mentions.addAll(extractor.extractMentionedScreennames(status.quoted_text_plain))
         } else if (USER_TYPE_FANFOU_COM == status.account_key.host) {
             addFanfouHtmlToMentions(status.text_unescaped, status.spans, mentions)
@@ -1099,12 +1102,15 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         mentions.distinctBy { it.toLowerCase(Locale.US) }.filterNot {
-            it.equals(status.user_screen_name, ignoreCase = true)
-                    || it.equals(accountUser.screen_name, ignoreCase = true)
+            if (details.type == AccountType.TWITTER && it.equals(accountUser.screen_name,
+                    ignoreCase = true)) {
+                return@filterNot true
+            }
+            return@filterNot it.equals(status.user_screen_name, ignoreCase = true)
         }.forEach { editText.append("@$it ") }
 
-        // Put current user mention at last
-        if (accountUser.key == status.user_key) {
+        // For non-Twitter instances, put current user mention at last
+        if (details.type != AccountType.TWITTER && accountUser.key == status.user_key) {
             selectionStart = editText.length()
             editText.append("@${status.user_screen_name} ")
         }
