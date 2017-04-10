@@ -87,6 +87,7 @@
     <string name="action_pick_color">Wähle Farbe</string>
     <string name="action_purchase">Kaufen</string>
     <string name="action_purchase_features_pack">Feature Pack kaufen</string>
+    <string name="action_qr_code">QR Code</string>
     <string name="action_quote">Zitat</string>
     <string name="action_record_video">Video aufnehmen</string>
     <string name="action_refresh">Aktualisieren</string>
@@ -718,8 +719,11 @@
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="preview">Vorschau</string>
     <string name="preview_images">Vorschaubilder</string>
+    <!-- Media will be cropped to fit preview -->
     <string name="preview_style_crop">Zuschneiden</string>
-    <string name="preview_style_real_size">Volle Grösse</string>
+    <!-- Actual size, media preview will be scaled respectively -->
+    <string name="preview_style_real_size">Originalgröße</string>
+    <!-- Media will be scaled to fit preview -->
     <string name="preview_style_scale">Skalieren</string>
     <!-- Previous item (tweet, user etc.) -->
     <string name="previous_item">Zurück</string>
