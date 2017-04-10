@@ -392,6 +392,7 @@
     <string name="hint_message_select_user">Account auswählen</string>
     <string name="hint_no_account">Kein Account</string>
     <string name="hint_search_gif">Suche Gif</string>
+    <string name="hint_status_reply_to_user_removed">Wird als Zitat versendet, da der User aus der Antwort entfernt wurde. &lt;a href=\"#dialog\";&gt;Wieso?&lt;/a&gt;</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="host_mapping_address">Adresse</string>
@@ -532,6 +533,7 @@
     <string name="message_permission_request_save_media">Twittnuker benötigt die Speicherberechtigung um Medien zu speichern.</string>
     <string name="message_permission_request_share_media">Twittnuker benötigt die Speicherberechtigung um Medien mit anderen Apps zu teilen.</string>
     <string name="message_please_wait">Bitte warten.</string>
+    <string name="message_status_reply_to_user_removed_explanation">Twitter fügt den Autor eines Tweets in einer Antwort immer hinzu. Wenn der Autor entfernt wird, sendet Twittnuker diese Antwort als Zitat, damit der User nicht weiter erwähnt wird, aber der Kontext erhalten bleibt.</string>
     <string name="message_status_scheduling_connect_buffer_hint">Mit Buffer verbinden, um Tweets zeitversetzt zu versenden</string>
     <string name="message_status_scheduling_connected_to_buffer">Twittnuker ist jetzt mit Buffer verbunden</string>
     <string name="message_summary_type_sticker">[Sticker]</string>

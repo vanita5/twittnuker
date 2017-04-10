@@ -72,6 +72,13 @@
                         android:hint="@string/status_hint"
                         android:inputType="textMultiLine|textLongMessage|textCapSentences"
                         android:padding="@dimen/element_spacing_normal"/>
+
+                    <de.vanita5.twittnuker.view.FixedTextView
+                        android:id="@+id/hintLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/element_spacing_normal"
+                        android:textAppearance="?android:textAppearanceSmall"/>
     
                     <de.vanita5.twittnuker.view.ExtendedRecyclerView
                         android:id="@+id/attachedMediaPreview"
@@ -227,7 +234,7 @@
                     app:sivBackgroundColor="?android:colorBackground"
                     app:sivBorder="true"
                     app:sivBorderWidth="@dimen/line_width_compose_account_profile_image"
-                    tools:src="@drawable/ic_profile_image_twidere"/>
+                    tools:src="@drawable/ic_account_logo_twitter"/>
             </de.vanita5.twittnuker.view.SquareFrameLayout>
 
             <de.vanita5.twittnuker.view.BadgeView

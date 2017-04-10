@@ -50,10 +50,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.*
-import android.text.style.ImageSpan
-import android.text.style.MetricAffectingSpan
-import android.text.style.SuggestionSpan
-import android.text.style.UpdateAppearance
+import android.text.method.LinkMovementMethod
+import android.text.style.*
 import android.view.*
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -85,6 +83,7 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
+import de.vanita5.twittnuker.extension.text.twitter.extractReplyTextAndMentions
 import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
@@ -209,6 +208,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         setupEditText()
         accountSelectorButton.setOnClickListener(this)
         replyLabel.setOnClickListener(this)
+
+        hintLabel.movementMethod = LinkMovementMethod.getInstance()
+        hintLabel.linksClickable = true
 
         accountSelector.layoutManager = FixedLinearLayoutManager(this).apply {
             orientation = LinearLayoutManager.HORIZONTAL
@@ -1495,11 +1497,40 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun updateTextCount() {
         val am = AccountManager.get(this)
         val text = editText.text?.toString() ?: return
-        val ignoreMentions = inReplyToStatus != null && accountsAdapter.selectedAccountKeys.all {
+        val inReplyTo = inReplyToStatus
+        val ignoreMentions = accountsAdapter.selectedAccountKeys.all {
             val account = AccountUtils.findByAccountKey(am, it) ?: return@all false
             return@all account.getAccountType(am) == AccountType.TWITTER
         }
-        statusTextCount.textCount = validator.getTweetLength(text, ignoreMentions, inReplyToStatus)
+        if (inReplyTo != null && ignoreMentions) {
+            val textAndMentions = extractor.extractReplyTextAndMentions(text, inReplyTo)
+            if (textAndMentions.replyToOriginalUser) {
+                hintLabel.visibility = View.GONE
+            } else {
+                hintLabel.visibility = View.VISIBLE
+                hintLabel.text = HtmlSpanBuilder.fromHtml(getString(R.string.hint_status_reply_to_user_removed)).apply {
+                    val dialogSpan = getSpans(0, length, URLSpan::class.java).firstOrNull {
+                        "#dialog" == it.url
+                    }
+                    if (dialogSpan != null) {
+                        val spanStart = getSpanStart(dialogSpan)
+                        val spanEnd = getSpanEnd(dialogSpan)
+                        removeSpan(dialogSpan)
+                        setSpan(object : ClickableSpan() {
+                            override fun onClick(widget: View) {
+                                MessageDialogFragment.show(supportFragmentManager,
+                                        message = getString(R.string.message_status_reply_to_user_removed_explanation),
+                                        tag = "status_reply_to_user_removed_explanation")
+                            }
+                        }, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    }
+                }
+            }
+            statusTextCount.textCount = validator.getTweetLength(textAndMentions.replyText)
+        } else {
+            statusTextCount.textCount = validator.getTweetLength(text)
+            hintLabel.visibility = View.GONE
+        }
     }
 
     private fun updateUpdateStatusIcon() {
