@@ -33,7 +33,7 @@ fun Validator.getTweetLength(text: String, ignoreMentions: Boolean, inReplyTo: P
         return getTweetLength(text)
     }
 
-    val (replyText, _, _, _) = InternalExtractor.extractReplyTextAndMentions(text, inReplyTo)
+    val (_, replyText, _, _, _) = InternalExtractor.extractReplyTextAndMentions(text, inReplyTo)
     return getTweetLength(replyText)
 }
 

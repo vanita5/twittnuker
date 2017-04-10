@@ -277,6 +277,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         updateStatus.setOnClickListener(this)
         updateStatus.setOnLongClickListener(this)
+
         updateViewStyle()
         setMenu()
         updateLocationState()
@@ -1497,16 +1498,20 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun updateTextCount() {
         val am = AccountManager.get(this)
-        val text = editText.text?.toString() ?: return
+        val editable = editText.editableText ?: return
         val inReplyTo = inReplyToStatus
         val ignoreMentions = accountsAdapter.selectedAccountKeys.all {
             val account = AccountUtils.findByAccountKey(am, it) ?: return@all false
             return@all account.getAccountType(am) == AccountType.TWITTER
         }
+        val text = editable.toString()
+        val mentionColor = ThemeUtils.getColorFromAttribute(this, android.R.attr.textColorSecondary, 0)
         if (inReplyTo != null && ignoreMentions) {
             val textAndMentions = extractor.extractReplyTextAndMentions(text, inReplyTo)
             if (textAndMentions.replyToOriginalUser) {
                 hintLabel.visibility = View.GONE
+                editable.setSpan(MentionColorSpan(mentionColor), 0, textAndMentions.replyStartIndex,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             } else {
                 hintLabel.visibility = View.VISIBLE
                 hintLabel.text = HtmlSpanBuilder.fromHtml(getString(R.string.hint_status_reply_to_user_removed)).apply {
@@ -1526,11 +1531,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                         }, spanStart, spanEnd, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                     }
                 }
+                editable.clearSpans(MentionColorSpan::class.java)
             }
             statusTextCount.textCount = validator.getTweetLength(textAndMentions.replyText)
         } else {
             statusTextCount.textCount = validator.getTweetLength(text)
             hintLabel.visibility = View.GONE
+            editable.clearSpans(MentionColorSpan::class.java)
         }
     }
 
@@ -2011,6 +2018,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             return handled
         }
     }
+
+    private class MentionColorSpan(color: Int) : ForegroundColorSpan(color)
 
     companion object {
 
