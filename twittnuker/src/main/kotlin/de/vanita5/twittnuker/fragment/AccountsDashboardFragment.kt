@@ -614,7 +614,6 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             context: Context,
             val firsSyncLoad: Boolean
     ) : FixedAsyncTaskLoader<AccountsInfo>(context) {
-        private val am = AccountManager.get(context)
 
         private var contentObserver: ContentObserver? = null
             set(value) {
@@ -627,6 +626,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             }
         private var accountListener: OnAccountsUpdateListener? = null
             set(value) {
+                val am = AccountManager.get(context)
                 field?.let {
                     am.removeOnAccountsUpdatedListenerSafe(it)
                 }
