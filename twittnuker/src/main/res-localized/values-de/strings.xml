@@ -959,6 +959,7 @@
     <string name="title_statuses">Tweets</string>
     <string name="title_statuses_and_replies">Tweets &amp; Antworten</string>
     <string name="title_statuses_scheduling">Tweets Zeitplanung</string>
+    <string name="title_gif_sharing">GIF teilen</string>
     <string name="title_streaming">Streaming</string>
     <string name="title_subscription_name">Name</string>
     <string name="title_subscription_url">URL</string>
