@@ -392,7 +392,7 @@
     <string name="hint_message_select_user">Account auswählen</string>
     <string name="hint_no_account">Kein Account</string>
     <string name="hint_search_gif">Suche Gif</string>
-    <string name="hint_status_reply_to_user_removed">Wird als Zitat versendet, da der User aus der Antwort entfernt wurde. &lt;a href=\"#dialog\";&gt;Wieso?&lt;/a&gt;</string>
+    <string name="hint_status_reply_to_user_removed">Wird als Zitat versendet, da der Autor des Tweets aus der Antwort entfernt wurde. &lt;a href=\"#dialog\";&gt;Wieso?&lt;/a&gt;</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="host_mapping_address">Adresse</string>
