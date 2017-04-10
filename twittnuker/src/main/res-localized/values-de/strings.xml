@@ -575,6 +575,8 @@
     <string name="message_toast_notification_enabled_hint">Funktioniert nur, wenn Streaming aktiv ist.</string>
     <string name="message_toast_press_again_to_close">Nochmal tippen zum schliessen</string>
     <string name="message_toast_profile_banner_image_updated">Profilbanner aktualisiert.</string>
+    <string name="message_toast_qr_scan_link_not_supported">Falscher Link</string>
+    <string name="message_toast_qr_scanner_not_supported">QR Scanner nicht gefunden</string>
     <string name="message_toast_save_media_no_storage_permission">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
     <string name="message_toast_saved_to_gallery">In Galerie gespeichert.</string>
     <string name="message_toast_schedule_future_time_required">Datum und Zeit müssen in der Zukunft liegen</string>
