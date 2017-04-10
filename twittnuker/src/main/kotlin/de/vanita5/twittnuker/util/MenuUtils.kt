@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.util
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.support.annotation.DrawableRes
@@ -45,15 +44,12 @@ import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.setMenuItemIcon
-import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.nameFirstKey
-import de.vanita5.twittnuker.fragment.AbsStatusesFragment
 import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment
 import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment
 import de.vanita5.twittnuker.fragment.status.BlockStatusUsersDialogFragment
@@ -65,7 +61,6 @@ import de.vanita5.twittnuker.menu.SupportStatusShareProvider
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
@@ -220,8 +215,8 @@ object MenuUtils {
         } else if (shareItem.hasSubMenu()) {
             val shareSubMenu = shareItem.subMenu
             val shareIntent = Utils.createStatusShareIntent(context, status)
-            shareSubMenu.removeGroup(Constants.MENU_GROUP_STATUS_SHARE)
-            addIntentToMenu(context, shareSubMenu, shareIntent, Constants.MENU_GROUP_STATUS_SHARE)
+            shareSubMenu.removeGroup(MENU_GROUP_STATUS_SHARE)
+            addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE)
         } else {
             val shareIntent = Utils.createStatusShareIntent(context, status)
             val chooserIntent = Intent.createChooser(shareIntent, context.getString(R.string.share_status))

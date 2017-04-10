@@ -30,7 +30,6 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
@@ -48,6 +47,7 @@ import de.vanita5.twittnuker.model.account.AccountExtras;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.util.RGBHexColorConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.model.AccountDetailsUtils;
 
 import java.io.IOException;
@@ -142,10 +142,10 @@ public class AccountDetails implements Parcelable, Comparable<AccountDetails> {
     @OnPreJsonSerialize
     void onPreJsonSerialize() throws IOException {
         if (credentials != null) {
-            credentials_json = LoganSquare.serialize(credentials);
+            credentials_json = JsonSerializer.serialize(credentials);
         }
         if (extras != null) {
-            extras_json = LoganSquare.serialize(extras);
+            extras_json = JsonSerializer.serialize(extras);
         }
     }
 

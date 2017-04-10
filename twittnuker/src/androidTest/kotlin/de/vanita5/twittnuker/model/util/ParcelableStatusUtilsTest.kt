@@ -24,13 +24,13 @@ package de.vanita5.twittnuker.model.util
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.bluelinelabs.logansquare.LoganSquare
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.test.R
+import de.vanita5.twittnuker.util.JsonSerializer
 
 @RunWith(AndroidJUnit4::class)
 class ParcelableStatusUtilsTest {
@@ -41,13 +41,13 @@ class ParcelableStatusUtilsTest {
     fun testFromStatus() {
         val context = InstrumentationRegistry.getContext()
         val status_8754050 = context.resources.openRawResource(R.raw.status_8754050).use {
-            val status = LoganSquare.parse(it, Status::class.java)
+            val status = JsonSerializer.parse(it, Status::class.java)
             return@use ParcelableStatusUtils.fromStatus(status, UserKey("1234567", "gnusocial.de"),
                     "statusnet", false)
         }
 
         val status_9171447 = context.resources.openRawResource(R.raw.status_9171447).use {
-            val status = LoganSquare.parse(it, Status::class.java)
+            val status = JsonSerializer.parse(it, Status::class.java)
             return@use ParcelableStatusUtils.fromStatus(status, UserKey("1234567", "gnusocial.de"),
                     "statusnet", false)
         }

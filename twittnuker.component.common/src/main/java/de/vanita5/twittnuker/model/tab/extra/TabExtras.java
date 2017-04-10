@@ -30,10 +30,10 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 
@@ -49,13 +49,13 @@ public abstract class TabExtras implements Parcelable {
         if (json == null) return null;
         switch (type) {
             case CustomTabType.NOTIFICATIONS_TIMELINE: {
-                return LoganSquare.parse(json, InteractionsTabExtras.class);
+                return JsonSerializer.parse(json, InteractionsTabExtras.class);
             }
             case CustomTabType.HOME_TIMELINE: {
-                return LoganSquare.parse(json, HomeTabExtras.class);
+                return JsonSerializer.parse(json, HomeTabExtras.class);
             }
             case CustomTabType.TRENDS_SUGGESTIONS: {
-                return LoganSquare.parse(json, TrendsTabExtras.class);
+                return JsonSerializer.parse(json, TrendsTabExtras.class);
             }
         }
         return null;

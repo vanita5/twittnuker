@@ -33,7 +33,6 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.bluelinelabs.logansquare.LoganSquare
 import com.bumptech.glide.Glide
 import com.rengwuxian.materialedittext.MaterialEditText
 import org.mariotaku.restfu.annotation.method.GET
@@ -49,6 +48,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.setSelectedItem
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
+import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator
@@ -227,7 +227,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
                             return null
                         }
                         // Save to cache
-                        return LoganSquare.parseList(response.body.stream(), CustomAPIConfig::class.java)
+                        return JsonSerializer.parseList(response.body.stream(), CustomAPIConfig::class.java)
                     }
                 } catch (e: IOException) {
                     // Ignore

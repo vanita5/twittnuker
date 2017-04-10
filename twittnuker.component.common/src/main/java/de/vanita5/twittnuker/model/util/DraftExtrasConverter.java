@@ -28,8 +28,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.draft.ActionExtras;
@@ -37,6 +35,7 @@ import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras;
 import de.vanita5.twittnuker.model.draft.StatusObjectExtras;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -53,15 +52,15 @@ public class DraftExtrasConverter implements CursorFieldConverter<ActionExtras> 
             case Draft.Action.UPDATE_STATUS:
             case Draft.Action.REPLY:
             case Draft.Action.QUOTE: {
-                return LoganSquare.parse(json, UpdateStatusActionExtras.class);
+                return JsonSerializer.parse(json, UpdateStatusActionExtras.class);
             }
             case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
             case Draft.Action.SEND_DIRECT_MESSAGE: {
-                return LoganSquare.parse(json, SendDirectMessageActionExtras.class);
+                return JsonSerializer.parse(json, SendDirectMessageActionExtras.class);
             }
             case Draft.Action.FAVORITE:
             case Draft.Action.RETWEET: {
-                return LoganSquare.parse(json, StatusObjectExtras.class);
+                return JsonSerializer.parse(json, StatusObjectExtras.class);
             }
         }
         return null;
@@ -70,6 +69,6 @@ public class DraftExtrasConverter implements CursorFieldConverter<ActionExtras> 
     @Override
     public void writeField(ContentValues values, ActionExtras object, String columnName, ParameterizedType fieldType) throws IOException {
         if (object == null) return;
-        values.put(columnName, LoganSquare.serialize(object));
+        values.put(columnName, JsonSerializer.serialize(object));
     }
 }

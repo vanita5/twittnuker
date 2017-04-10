@@ -28,7 +28,6 @@ import android.os.Handler
 import android.os.Looper
 import android.support.annotation.RequiresApi
 import android.text.TextUtils
-import com.bluelinelabs.logansquare.LoganSquare
 import org.mariotaku.ktextension.HexColorFormat
 import org.mariotaku.ktextension.toHexColor
 import org.mariotaku.ktextension.toInt
@@ -45,6 +44,7 @@ import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.AccountUtils.ACCOUNT_USER_DATA_KEYS
+import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
 import java.io.IOException
 import java.util.concurrent.FutureTask
@@ -78,13 +78,13 @@ fun Account.setAccountKey(am: AccountManager, accountKey: UserKey) {
 }
 
 fun Account.getAccountUser(am: AccountManager): ParcelableUser {
-    val user = LoganSquare.parse(am.getNonNullUserData(this, ACCOUNT_USER_DATA_USER), ParcelableUser::class.java)
+    val user = JsonSerializer.parse(am.getNonNullUserData(this, ACCOUNT_USER_DATA_USER), ParcelableUser::class.java)
     user.is_cache = true
     return user
 }
 
 fun Account.setAccountUser(am: AccountManager, user: ParcelableUser) {
-    am.setUserData(this, ACCOUNT_USER_DATA_USER, LoganSquare.serialize(user))
+    am.setUserData(this, ACCOUNT_USER_DATA_USER, JsonSerializer.serialize(user))
 }
 
 @android.support.annotation.ColorInt
@@ -100,10 +100,10 @@ fun Account.getAccountExtras(am: AccountManager): AccountExtras? {
     val json = AccountDataQueue.getUserData(am, this, ACCOUNT_USER_DATA_EXTRAS) ?: return null
     when (getAccountType(am)) {
         AccountType.TWITTER -> {
-            return LoganSquare.parse(json, TwitterAccountExtras::class.java)
+            return JsonSerializer.parse(json, TwitterAccountExtras::class.java)
         }
         AccountType.STATUSNET -> {
-            return LoganSquare.parse(json, StatusNetAccountExtras::class.java)
+            return JsonSerializer.parse(json, StatusNetAccountExtras::class.java)
         }
     }
     return null
@@ -176,9 +176,9 @@ private fun AccountManager.getNonNullUserData(account: Account, key: String): St
 
 private fun parseCredentials(authToken: String, @Credentials.Type authType: String): Credentials {
     when (authType) {
-        Credentials.Type.OAUTH, Credentials.Type.XAUTH -> return LoganSquare.parse(authToken, OAuthCredentials::class.java)
-        Credentials.Type.BASIC -> return LoganSquare.parse(authToken, BasicCredentials::class.java)
-        Credentials.Type.EMPTY -> return LoganSquare.parse(authToken, EmptyCredentials::class.java)
+        Credentials.Type.OAUTH, Credentials.Type.XAUTH -> return JsonSerializer.parse(authToken, OAuthCredentials::class.java)
+        Credentials.Type.BASIC -> return JsonSerializer.parse(authToken, BasicCredentials::class.java)
+        Credentials.Type.EMPTY -> return JsonSerializer.parse(authToken, EmptyCredentials::class.java)
     }
     throw UnsupportedOperationException()
 }

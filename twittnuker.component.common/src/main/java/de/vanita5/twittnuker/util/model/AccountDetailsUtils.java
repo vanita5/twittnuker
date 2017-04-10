@@ -24,8 +24,6 @@
 
 package de.vanita5.twittnuker.util.model;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.account.AccountExtras;
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras;
@@ -35,6 +33,7 @@ import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials;
 import de.vanita5.twittnuker.model.account.cred.OAuth2Credentials;
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 
@@ -44,16 +43,16 @@ public class AccountDetailsUtils {
             switch (type) {
                 case Credentials.Type.OAUTH:
                 case Credentials.Type.XAUTH: {
-                    return LoganSquare.parse(json, OAuthCredentials.class);
+                    return JsonSerializer.parse(json, OAuthCredentials.class);
                 }
                 case Credentials.Type.BASIC: {
-                    return LoganSquare.parse(json, BasicCredentials.class);
+                    return JsonSerializer.parse(json, BasicCredentials.class);
                 }
                 case Credentials.Type.EMPTY: {
-                    return LoganSquare.parse(json, EmptyCredentials.class);
+                    return JsonSerializer.parse(json, EmptyCredentials.class);
                 }
                 case Credentials.Type.OAUTH2: {
-                    return LoganSquare.parse(json, OAuth2Credentials.class);
+                    return JsonSerializer.parse(json, OAuth2Credentials.class);
                 }
             }
         } catch (IOException e) {
@@ -67,10 +66,10 @@ public class AccountDetailsUtils {
         try {
             switch (type) {
                 case AccountType.TWITTER: {
-                    return LoganSquare.parse(json, TwitterAccountExtras.class);
+                    return JsonSerializer.parse(json, TwitterAccountExtras.class);
                 }
                 case AccountType.STATUSNET: {
-                    return LoganSquare.parse(json, StatusNetAccountExtras.class);
+                    return JsonSerializer.parse(json, StatusNetAccountExtras.class);
                 }
             }
         } catch (IOException e) {

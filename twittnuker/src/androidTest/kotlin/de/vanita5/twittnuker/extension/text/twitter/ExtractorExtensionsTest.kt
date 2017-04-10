@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.extension.text.twitter
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.bluelinelabs.logansquare.LoganSquare
 import com.twitter.Extractor
 import org.junit.Assert
 import org.junit.Before
@@ -33,6 +32,7 @@ import org.junit.runner.RunWith
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUserMention
 import de.vanita5.twittnuker.test.R
+import de.vanita5.twittnuker.util.JsonSerializer
 
 @RunWith(AndroidJUnit4::class)
 class ExtractorExtensionsTest {
@@ -46,7 +46,7 @@ class ExtractorExtensionsTest {
 
         // This is a tweet by @t_deyarmin, mentioning @nixcraft
         inReplyTo = context.resources.openRawResource(R.raw.parcelable_status_848051071444410368).use {
-            LoganSquare.parse(it, ParcelableStatus::class.java)
+            JsonSerializer.parse(it, ParcelableStatus::class.java)
         }
     }
 

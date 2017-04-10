@@ -95,10 +95,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
-import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountDetails;
-import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
@@ -139,6 +137,7 @@ public final class Utils implements Constants {
     private Utils() {
         throw new AssertionError("You are trying to create an instance for this utility class!");
     }
+
 
     public static void announceForAccessibilityCompat(final Context context, final View view, final CharSequence text,
                                                       final Class<?> cls) {
@@ -823,7 +822,7 @@ public final class Utils implements Constants {
         return orig.replaceAll("\\n+", "\n");
     }
 
-    private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
+    static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
         if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
             return null;
         return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
@@ -845,18 +844,6 @@ public final class Utils implements Constants {
             return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
         return 0;
-    }
-
-    public static String parseURLEntities(String text, final UrlEntity[] entities) {
-        for (UrlEntity entity : entities) {
-            final int start = entity.getStart(), end = entity.getEnd();
-            final String displayUrl = entity.getDisplayUrl();
-            if (displayUrl != null && !displayUrl.isEmpty() && start >= 0 && end >= 0) {
-                StringBuffer bf = new StringBuffer(text);
-                return bf.replace(start, end, displayUrl).toString();
-            }
-        }
-        return text;
     }
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
@@ -967,7 +954,7 @@ public final class Utils implements Constants {
             final Intent intent = new Intent(INTENT_ACTION_PEBBLE_NOTIFICATION);
             intent.putExtra("messageType", "PEBBLE_ALERT");
             intent.putExtra("sender", appName);
-            intent.putExtra("notificationData", JsonSerializer.serialize(messages, PebbleMessage.class));
+            intent.putExtra("notificationData", JsonSerializer.serializeList(messages, PebbleMessage.class));
 
             context.getApplicationContext().sendBroadcast(intent);
         }

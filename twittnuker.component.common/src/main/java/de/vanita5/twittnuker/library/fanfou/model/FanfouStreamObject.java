@@ -26,12 +26,12 @@ package de.vanita5.twittnuker.library.fanfou.model;
 
 import android.support.annotation.NonNull;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.mariotaku.commons.logansquare.JsonStringConverter;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.util.Date;
@@ -70,7 +70,7 @@ public class FanfouStreamObject {
 
     public <T> T getObject(Class<T> cls) throws IOException {
         if (rawObject == null) return null;
-        return LoganSquare.parse(rawObject, cls);
+        return JsonSerializer.parse(rawObject, cls);
     }
 
 }

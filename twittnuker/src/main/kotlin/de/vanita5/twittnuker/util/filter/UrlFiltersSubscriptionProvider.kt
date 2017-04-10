@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.extension.model.parse
 import de.vanita5.twittnuker.extension.newPullParser
 import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.util.ETagCache
+import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.io.IOException
 import javax.inject.Inject
@@ -120,7 +121,7 @@ class UrlFiltersSubscriptionProvider(context: Context, val arguments: Arguments)
     }
 
     private fun Body.toJsonFilters(): FiltersData? {
-        return LoganSquare.parse(stream(), FiltersData::class.java)
+        return JsonSerializer.parse(stream(), FiltersData::class.java)
     }
 
     private fun Body.toXmlFilters(): FiltersData? {

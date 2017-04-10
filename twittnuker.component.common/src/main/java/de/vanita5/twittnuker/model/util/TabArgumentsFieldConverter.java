@@ -28,13 +28,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 
 import de.vanita5.twittnuker.model.Tab;
 import de.vanita5.twittnuker.model.tab.argument.TabArguments;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -52,7 +51,7 @@ public class TabArgumentsFieldConverter implements CursorFieldConverter<TabArgum
     public void writeField(ContentValues values, TabArguments object, String columnName, ParameterizedType fieldType) {
         if (object == null) return;
         try {
-            values.put(columnName, LoganSquare.serialize(object));
+            values.put(columnName, JsonSerializer.serialize(object));
         } catch (IOException e) {
             // Ignore
         }

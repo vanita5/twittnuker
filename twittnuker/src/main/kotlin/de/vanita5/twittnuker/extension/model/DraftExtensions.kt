@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.extension.model
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import com.bluelinelabs.logansquare.LoganSquare
 import org.apache.james.mime4j.dom.Header
 import org.apache.james.mime4j.dom.MessageServiceFactory
 import org.apache.james.mime4j.dom.address.Mailbox
@@ -44,6 +43,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.Draft.Action
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
+import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.collection.NonEmptyHashMap
 import java.io.File
 import java.io.FileOutputStream
@@ -86,7 +86,7 @@ fun Draft.writeMimeMessageTo(context: Context, st: OutputStream) {
 
     this.action_extras?.let { extras ->
         multipart.addBodyPart(BodyPart().apply {
-            setText(bodyFactory.textBody(LoganSquare.serialize(extras)), "json")
+            setText(bodyFactory.textBody(JsonSerializer.serialize(extras)), "json")
             this.filename = "twittnuker.action.extras.json"
         })
     }
@@ -234,10 +234,10 @@ private class BodyPartHandler(private val context: Context, private val draft: D
                 "twittnuker.action.extras.json" -> {
                     draft.action_extras = when (draft.action_type) {
                         "0", "1", Action.UPDATE_STATUS, Action.REPLY, Action.QUOTE -> {
-                            LoganSquare.parse(st, UpdateStatusActionExtras::class.java)
+                            JsonSerializer.parse(st, UpdateStatusActionExtras::class.java)
                         }
                         "2", Action.SEND_DIRECT_MESSAGE -> {
-                            LoganSquare.parse(st, SendDirectMessageActionExtras::class.java)
+                            JsonSerializer.parse(st, SendDirectMessageActionExtras::class.java)
                         }
                         else -> {
                             null

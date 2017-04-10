@@ -33,13 +33,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
-import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import org.mariotaku.library.objectcursor.ObjectCursor;
 
 import de.vanita5.twittnuker.Constants;
@@ -324,8 +322,7 @@ public class DataImportExportUtils implements Constants {
             throws IOException {
         final ZipEntry entry = zipFile.getEntry(entryName);
         if (entry == null) return;
-        final JsonMapper<T> mapper = LoganSquareMapperFinder.mapperFor(itemCls);
-        List<T> itemsList = mapper.parseList(zipFile.getInputStream(entry));
+        List<T> itemsList = JsonSerializer.parseList(zipFile.getInputStream(entry), itemCls);
         strategy.importItem(context.getContentResolver(), itemsList);
     }
 
@@ -335,9 +332,7 @@ public class DataImportExportUtils implements Constants {
                                             @NonNull final Class<T> itemCls,
                                             @NonNull final List<T> itemList) throws IOException {
         zos.putNextEntry(new ZipEntry(entryName));
-        final JsonGenerator jsonGenerator = LoganSquare.JSON_FACTORY.createGenerator(zos);
-        LoganSquareMapperFinder.mapperFor(itemCls).serialize(itemList, jsonGenerator);
-        jsonGenerator.flush();
+        JsonSerializer.serialize(itemList, zos, itemCls);
         zos.closeEntry();
     }
 
@@ -349,8 +344,7 @@ public class DataImportExportUtils implements Constants {
             throws IOException {
         final ZipEntry entry = zipFile.getEntry(entryName);
         if (entry == null) return;
-        final JsonMapper<T> mapper = LoganSquareMapperFinder.mapperFor(itemCls);
-        T item = mapper.parse(zipFile.getInputStream(entry));
+        T item = JsonSerializer.parse(zipFile.getInputStream(entry), itemCls);
         strategy.importItem(context.getContentResolver(), item);
     }
 
@@ -360,9 +354,7 @@ public class DataImportExportUtils implements Constants {
                                        @NonNull final Class<T> itemCls,
                                        @NonNull final T item) throws IOException {
         zos.putNextEntry(new ZipEntry(entryName));
-        final JsonGenerator jsonGenerator = LoganSquare.JSON_FACTORY.createGenerator(zos);
-        LoganSquareMapperFinder.mapperFor(itemCls).serialize(item, jsonGenerator, true);
-        jsonGenerator.flush();
+        JsonSerializer.serialize(item, zos, itemCls);
         zos.closeEntry();
     }
 

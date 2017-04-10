@@ -22,12 +22,14 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.nayuki.qrcodegen.QrCode
+import io.nayuki.qrcodegen.QrCodeAndroid
 import kotlinx.android.synthetic.main.fragment_user_qr.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
@@ -46,7 +48,8 @@ class UserQRDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val qrCode = QrCode.encodeText(LinkCreator.getUserWebLink(user).toString(), QrCode.Ecc.HIGH)
-        qrView.setImageDrawable(BitmapDrawable(resources, qrCode.toBitmap(1, 0)).apply {
+        val bitmap = QrCodeAndroid.toBitmap(qrCode, 1, 0, Bitmap.Config.ARGB_8888)
+        qrView.setImageDrawable(BitmapDrawable(resources, bitmap).apply {
             this.setAntiAlias(false)
             this.isFilterBitmap = false
         })

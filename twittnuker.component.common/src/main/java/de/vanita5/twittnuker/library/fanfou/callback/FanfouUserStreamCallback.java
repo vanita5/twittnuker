@@ -26,8 +26,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.fanfou.model.FanfouStreamObject;
 import de.vanita5.twittnuker.library.twitter.model.Status;
@@ -35,6 +33,7 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.util.CRLFLineReader;
 import org.mariotaku.restfu.callback.RawCallback;
 import org.mariotaku.restfu.http.HttpResponse;
+import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,7 +65,7 @@ public abstract class FanfouUserStreamCallback implements RawCallback<MicroBlogE
                     connected = true;
                 }
                 if (TextUtils.isEmpty(line)) continue;
-                FanfouStreamObject object = LoganSquare.parse(line, FanfouStreamObject.class);
+                FanfouStreamObject object = JsonSerializer.parse(line, FanfouStreamObject.class);
                 if (!handleEvent(object, line)) {
                     onUnhandledEvent(object.getEvent(), line);
                 }
