@@ -519,6 +519,7 @@
     <string name="message_format_participants_join_added"><xliff:g example="Sender" id="sender">%1$s</xliff:g> hat <xliff:g example="Recipient" id="recipient">%2$s</xliff:g> hinzugefügt</string>
     <string name="message_format_participants_leave"><xliff:g example="User" id="name">%1$s</xliff:g> hat das Gespräch verlassen</string>
     <string name="message_format_sender_time"><xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g example="12:00" id="time">%2$s</xliff:g></string>
+    <string name="message_gif_sharing_introduction">Search &amp; share GIF by GIPHY</string>
     <string name="message_info_buffer_queue_empty">Buffer Warteschlange ist leer</string>
     <string name="message_join_conversation">Gespräch beigetreten.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
@@ -941,6 +942,7 @@
     <string name="title_filters_subscription_url">URL</string>
     <string name="title_followers">Follower</string>
     <string name="title_following">Folgen</string>
+    <string name="title_gif_sharing">GIFs teilen</string>
     <string name="title_home">Home</string>
     <!-- [noun] Like, Formerly Twitter's favorite, in the plural -->
     <string name="title_likes">Likes</string>
@@ -959,7 +961,6 @@
     <string name="title_statuses">Tweets</string>
     <string name="title_statuses_and_replies">Tweets &amp; Antworten</string>
     <string name="title_statuses_scheduling">Tweets Zeitplanung</string>
-    <string name="title_gif_sharing">GIF teilen</string>
     <string name="title_streaming">Streaming</string>
     <string name="title_subscription_name">Name</string>
     <string name="title_subscription_url">URL</string>
