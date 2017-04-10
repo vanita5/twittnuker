@@ -391,6 +391,7 @@
     <string name="hint_error_message_no_content">Kein Inhalt</string>
     <string name="hint_message_select_user">Account auswählen</string>
     <string name="hint_no_account">Kein Account</string>
+    <string name="hint_search_gif">Suche Gif</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="host_mapping_address">Adresse</string>
@@ -422,6 +423,10 @@
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="label_buffer_accounts">Buffer Accounts</string>
     <string name="label_buffer_due_at_no_time">Keine Zeit</string>
+    <string name="label_content_rating_g">G</string>
+    <string name="label_content_rating_pg">PG</string>
+    <string name="label_content_rating_pg13">PG-13</string>
+    <string name="label_content_rating_r">R</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
@@ -442,6 +447,10 @@
     <string name="label_send_at">Senden um</string>
     <string name="label_sensitive_content">Sensibler Inhalt</string>
     <string name="label_status_not_available">Tweet existiert nicht</string>
+    <string name="label_statuses">Tweets</string>
+    <string name="label_statuses_replies">Tweets und Antworten</string>
+    <string name="label_statuses_retweets">Tweets und Retweets</string>
+    <string name="label_statuses_retweets_replies">Tweets, Retweets und Antworten</string>
     <string name="label_streaming_service">Streaming Service</string>
     <string name="label_translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Übersetzung</string>
@@ -960,6 +969,7 @@
     <string name="title_user_list_memberships">Mitglied von</string>
     <string name="title_user_list_ownerships">Erstellte</string>
     <string name="title_user_list_subscriptions">Abonnements</string>
+    <string name="title_user_timeline_filter">Timeline Filter</string>
     <string name="title_users_favorited_this">User favorisierten das</string>
     <string name="title_users_liked_this">Usern gefällt das</string>
     <string name="title_users_retweeted_this">User retweeteten das</string>
@@ -1018,13 +1028,7 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="hint_search_gif">Gif suchen</string>
     <string name="notification_method_vibration">Vibration</string>
-    <string name="title_user_timeline_filter">Timeline Filter</string>
-    <string name="label_statuses">Tweets</string>
-    <string name="label_statuses_retweets">Tweets und Retweets</string>
-    <string name="label_statuses_replies">Tweets und Antworten</string>
-    <string name="label_statuses_retweets_replies">Tweets, Retweets und Antworten</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
