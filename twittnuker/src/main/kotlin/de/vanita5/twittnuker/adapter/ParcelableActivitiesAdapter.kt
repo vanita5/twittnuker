@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.OnLinkClickHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
@@ -116,8 +117,8 @@ class ParcelableActivitiesAdapter(
         if (data is ObjectCursor) {
             val cursor = (data as ObjectCursor).cursor
             if (!cursor.moveToPosition(dataPosition)) return false
-            val indices = (data as ObjectCursor).indices as ParcelableActivityCursorIndices
-            return cursor.getShort(indices.is_gap).toInt() == 1
+            val indices = (data as ObjectCursor).indices
+            return cursor.getInt(indices[Activities.IS_GAP]) == 1
         }
         return data!![dataPosition].is_gap
     }
@@ -127,11 +128,11 @@ class ParcelableActivitiesAdapter(
         if (data is ObjectCursor) {
             val cursor = (data as ObjectCursor).cursor
             if (!cursor.moveToPosition(dataPosition)) return -1
-            val indices = (data as ObjectCursor).indices as ParcelableActivityCursorIndices
-            val accountKey = UserKey.valueOf(cursor.getString(indices.account_key))
-            val timestamp = cursor.getLong(indices.timestamp)
-            val maxPosition = cursor.getLong(indices.max_position)
-            val minPosition = cursor.getLong(indices.min_position)
+            val indices = (data as ObjectCursor).indices
+            val accountKey = UserKey.valueOf(cursor.getString(indices[Activities.ACCOUNT_KEY]))
+            val timestamp = cursor.getLong(indices[Activities.TIMESTAMP])
+            val maxPosition = cursor.getLong(indices[Activities.MAX_SORT_POSITION])
+            val minPosition = cursor.getLong(indices[Activities.MIN_SORT_POSITION])
             return ParcelableActivity.calculateHashCode(accountKey, timestamp, maxPosition,
                     minPosition).toLong()
         }
@@ -144,8 +145,8 @@ class ParcelableActivitiesAdapter(
         if (data is ObjectCursor) {
             val cursor = (data as ObjectCursor).cursor
             if (!cursor.safeMoveToPosition(dataPosition)) return -1
-            val indices = (data as ObjectCursor).indices as ParcelableActivityCursorIndices
-            return cursor.getLong(indices.timestamp)
+            val indices = (data as ObjectCursor).indices
+            return cursor.getLong(indices[Activities.TIMESTAMP])
         }
         return getActivity(adapterPosition, raw).timestamp
     }
