@@ -1360,9 +1360,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 locationLabel.text = ParcelableLocationUtils.getHumanReadableString(location, 3)
             } else {
                 if (locationLabel.tag == null || location != recentLocation) {
-                    val task = DisplayPlaceNameTask(this)
+                    val task = DisplayPlaceNameTask()
                     task.params = location
-                    task.callback = locationLabel
+                    task.callback = this
                     TaskStarter.execute(task)
                 }
             }
@@ -1784,13 +1784,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
     }
 
-    internal class DisplayPlaceNameTask(
-            private val context: ComposeActivity
-    ) : AbstractTask<ParcelableLocation, List<Address>, TextView>() {
+    internal class DisplayPlaceNameTask : AbstractTask<ParcelableLocation, List<Address>,
+            ComposeActivity>() {
 
         override fun doLongOperation(location: ParcelableLocation): List<Address>? {
-            val gcd = Geocoder(context, Locale.getDefault())
             try {
+                val activity = callback ?: throw IOException("Interrupted")
+                val gcd = Geocoder(activity, Locale.getDefault())
                 return gcd.getFromLocation(location.latitude, location.longitude, 1)
             } catch (e: IOException) {
                 return null
@@ -1800,9 +1800,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         override fun beforeExecute() {
             val location = params
-            val textView = callback ?: return
+            val activity = callback ?: return
+            val textView = activity.locationLabel ?: return
 
-            val preferences = context.preferences
+            val preferences = activity.preferences
             val attachLocation = preferences[attachLocationKey]
             val attachPreciseLocation = preferences[attachPreciseLocationKey]
             if (attachLocation) {
@@ -1824,9 +1825,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
         }
 
-        override fun afterExecute(textView: TextView?, addresses: List<Address>?) {
-            textView!!
-            val preferences = context.preferences
+        override fun afterExecute(activity: ComposeActivity?, addresses: List<Address>?) {
+            if (activity == null) return
+            val textView = activity.locationLabel ?: return
+            val preferences = activity.preferences
             val attachLocation = preferences[attachLocationKey]
             val attachPreciseLocation = preferences[attachPreciseLocationKey]
             if (attachLocation) {

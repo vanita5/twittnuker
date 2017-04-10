@@ -30,6 +30,7 @@ import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.util.AccountUtils
+import java.lang.ref.WeakReference
 
 class AccountDetailsLoader(
         context: Context,
@@ -61,8 +62,9 @@ class AccountDetailsLoader(
     }
 
     override fun onStartLoading() {
+        val weakThis = WeakReference(this)
         accountUpdateListener = OnAccountsUpdateListener {
-            onContentChanged()
+            weakThis.get()?.onContentChanged()
         }
         if (takeContentChanged()) {
             forceLoad()

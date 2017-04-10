@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.util.TwidereMathUtils
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.media.MediaExtra
 import java.io.IOException
+import java.lang.ref.WeakReference
 
 class ImagePageFragment : SubsampleImageViewerFragment() {
 
@@ -118,9 +119,12 @@ class ImagePageFragment : SubsampleImageViewerFragment() {
 
     internal class SizedResult(cacheUri: Uri, val width: Int, val height: Int) : CacheDownloadLoader.Result(cacheUri, null)
 
-    internal class SizedResultCreator(private val context: Context) : CacheDownloadLoader.ResultCreator {
+    internal class SizedResultCreator(context: Context) : CacheDownloadLoader.ResultCreator {
+
+        private val weakContext = WeakReference(context)
 
         override fun create(uri: Uri): CacheDownloadLoader.Result {
+            val context = weakContext.get() ?: return CacheDownloadLoader.Result.getInstance(InterruptedException())
             val o = BitmapFactory.Options()
             o.inJustDecodeBounds = true
             try {
