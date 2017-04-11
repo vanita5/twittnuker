@@ -29,6 +29,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.nfc.NfcAdapter
 import android.os.Bundle
@@ -57,6 +58,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_BACKGROUND_SOLID
 import de.vanita5.twittnuker.constant.themeBackgroundAlphaKey
 import de.vanita5.twittnuker.constant.themeBackgroundOptionKey
 import de.vanita5.twittnuker.constant.themeColorKey
@@ -130,10 +132,18 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         val theme = Chameleon.Theme.from(this)
         theme.colorAccent = ThemeUtils.getUserAccentColor(this)
         theme.colorPrimary = ThemeUtils.getUserAccentColor(this)
+        val backgroundOption = themeBackgroundOption
         if (theme.isToolbarColored) {
             theme.colorToolbar = theme.colorPrimary
+        } else if (backgroundOption == VALUE_THEME_BACKGROUND_SOLID) {
+            theme.colorToolbar = if (ThemeUtils.isLightTheme(this)) {
+                Color.WHITE
+            } else {
+                Color.BLACK
+            }
         }
-        if (ThemeUtils.isTransparentBackground(themeBackgroundOption)) {
+
+        if (ThemeUtils.isTransparentBackground(backgroundOption)) {
             theme.colorToolbar = ColorUtils.setAlphaComponent(theme.colorToolbar,
                     ThemeUtils.getActionBarAlpha(themePreferences[themeBackgroundAlphaKey]))
         }
