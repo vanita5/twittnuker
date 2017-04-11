@@ -28,3 +28,5 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 fun ParcelableUser.getBestProfileBanner(width: Int): String? {
     return InternalTwitterContentUtils.getBestBannerUrl(profile_banner_url, width)
 }
+
+val ParcelableUser.urlPreferred: String? get() = url_expanded?.takeIf(String::isNotEmpty) ?: url

@@ -132,29 +132,7 @@ open class OnLinkClickHandler(
 
     protected open fun openLink(link: String) {
         if (manager != null && manager.isActive) return
-        val uri = Uri.parse(link)
-        if (!preferences[chromeCustomTabKey]) {
-            val viewIntent = Intent(Intent.ACTION_VIEW, uri)
-            viewIntent.addCategory(Intent.CATEGORY_BROWSABLE)
-            try {
-                return context.startActivity(viewIntent)
-            } catch (e: ActivityNotFoundException) {
-                // Ignore
-            }
-            return
-        }
-        val builder = CustomTabsIntent.Builder()
-        builder.addDefaultShareMenuItem()
-        (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
-            builder.setToolbarColor(theme.colorToolbar)
-        }
-        val intent = builder.build()
-        try {
-            intent.launchUrl(context, uri)
-        } catch (e: ActivityNotFoundException) {
-            // Ignore
-        }
-
+        openLink(context, preferences, link)
     }
 
     protected fun openTwitterLink(link: String, accountKey: UserKey) {
@@ -204,5 +182,34 @@ open class OnLinkClickHandler(
         }
         context.startActivity(intent)
         return true
+    }
+
+    companion object {
+
+        fun openLink(context: Context, preferences: SharedPreferences, link: String) {
+            val uri = Uri.parse(link)
+            if (!preferences[chromeCustomTabKey]) {
+                val viewIntent = Intent(Intent.ACTION_VIEW, uri)
+                viewIntent.addCategory(Intent.CATEGORY_BROWSABLE)
+                try {
+                    return context.startActivity(viewIntent)
+                } catch (e: ActivityNotFoundException) {
+                    // Ignore
+                }
+                return
+            }
+            val builder = CustomTabsIntent.Builder()
+            builder.addDefaultShareMenuItem()
+            (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
+                builder.setToolbarColor(theme.colorToolbar)
+            }
+            val intent = builder.build()
+            try {
+                intent.launchUrl(context, uri)
+            } catch (e: ActivityNotFoundException) {
+                // Ignore
+            }
+
+        }
     }
 }
