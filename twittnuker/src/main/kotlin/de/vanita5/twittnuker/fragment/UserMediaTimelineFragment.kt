@@ -45,18 +45,6 @@ class UserMediaTimelineFragment : AbsMediaStatusesFragment() {
                 adapter.getData(), null, tabPosition, fromUser, loadingMore)
     }
 
-    override fun hasMoreData(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?,
-            changed: Boolean): Boolean {
-        if (loader !is MediaTimelineLoader) return false
-        val maxId = loader.maxId?.takeIf(String::isNotEmpty)
-        val sinceId = loader.sinceId?.takeIf(String::isNotEmpty)
-        if (sinceId != null && maxId != null) {
-            if (data != null && !data.isEmpty()) {
-                return changed
-            }
-        }
-        return false
-    }
 
     override fun getStatuses(maxId: String?, sinceId: String?): Int {
         if (context == null) return -1

@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.extension.reachingEnd
 import de.vanita5.twittnuker.extension.reachingStart
+import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.IntentUtils
@@ -130,11 +131,21 @@ abstract class AbsMediaStatusesFragment : AbsContentRecyclerViewFragment<Stagger
         IntentUtils.openStatus(context, status.account_key, status.quoted_id)
     }
 
+    protected open fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
+            data: List<ParcelableStatus>?, changed: Boolean): Boolean {
+        if (loader !is MicroBlogAPIStatusesLoader) return false
+        val maxId = loader.maxId?.takeIf(String::isNotEmpty)
+        val sinceId = loader.sinceId?.takeIf(String::isNotEmpty)
+        if (sinceId == null && maxId != null) {
+            if (data != null && !data.isEmpty()) {
+                return changed
+            }
+        }
+        return true
+    }
+
     protected abstract fun onCreateStatusesLoader(context: Context, args: Bundle,
                                                   fromUser: Boolean): Loader<List<ParcelableStatus>?>
-
-    protected abstract fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
-                                       data: List<ParcelableStatus>?, changed: Boolean): Boolean
 
     protected abstract fun getStatuses(maxId: String?, sinceId: String?): Int
 
