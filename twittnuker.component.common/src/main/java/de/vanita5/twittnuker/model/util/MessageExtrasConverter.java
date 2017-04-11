@@ -28,10 +28,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 import de.vanita5.twittnuker.model.message.MessageExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
-import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
@@ -47,6 +48,6 @@ public class MessageExtrasConverter implements CursorFieldConverter<MessageExtra
     @Override
     public void writeField(ContentValues values, MessageExtras object, String columnName, ParameterizedType fieldType) throws IOException {
         if (object == null) return;
-        values.put(columnName, JsonSerializer.serialize(object));
+        values.put(columnName, LoganSquare.serialize(object));
     }
 }

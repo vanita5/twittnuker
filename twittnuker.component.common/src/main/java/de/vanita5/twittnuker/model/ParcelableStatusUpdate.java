@@ -27,12 +27,20 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
+import com.bluelinelabs.logansquare.annotation.OnPreJsonSerialize;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.mariotaku.commons.logansquare.JsonStringConverter;
+import de.vanita5.twittnuker.model.draft.ActionExtras;
+import de.vanita5.twittnuker.model.util.DraftExtrasFieldConverter;
+
+import java.io.IOException;
 import java.util.Arrays;
 
 @ParcelablePlease
@@ -75,6 +83,13 @@ public class ParcelableStatusUpdate implements Parcelable {
     @ParcelableThisPlease
     @Draft.Action
     public String draft_action;
+    @JsonField(name = "draft_extras")
+    @ParcelableThisPlease
+    @Nullable
+    public ActionExtras draft_extras;
+
+    @JsonField(name = "draft_extras", typeConverter = JsonStringConverter.class)
+    String rawDraftExtras;
 
     public ParcelableStatusUpdate() {
     }
@@ -101,6 +116,16 @@ public class ParcelableStatusUpdate implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableStatusUpdateParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    @OnJsonParseComplete
+    void onJsonParseComplete() throws IOException {
+        draft_extras = DraftExtrasFieldConverter.parseExtras(draft_action, rawDraftExtras);
+    }
+
+    @OnPreJsonSerialize
+    void onPreJsonSerialize() throws IOException {
+        rawDraftExtras = DraftExtrasFieldConverter.serializeExtras(draft_extras);
     }
 
     public static final Creator<ParcelableStatusUpdate> CREATOR = new Creator<ParcelableStatusUpdate>() {

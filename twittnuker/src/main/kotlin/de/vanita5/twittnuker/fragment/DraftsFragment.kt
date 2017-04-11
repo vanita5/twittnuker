@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.fragment
 
 import android.app.Activity
 import android.app.Dialog
-import android.app.NotificationManager
-import android.content.Context
 import android.content.DialogInterface
 import android.content.DialogInterface.OnClickListener
 import android.content.Intent
@@ -51,8 +49,10 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
+import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.activity.content.RetweetQuoteDialogActivity
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
@@ -200,18 +201,28 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
-        val item = adapter.getDraft(position)
-        if (TextUtils.isEmpty(item.action_type)) {
-            editDraft(item)
-            return
-        }
-        when (item.action_type) {
-            "0", "1", Draft.Action.UPDATE_STATUS, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                editDraft(item)
+        val draft = adapter.getDraft(position)
+        var deleteDraft = false
+        if (TextUtils.isEmpty(draft.action_type)) {
+            deleteDraft = editUpdateStatusDraft(draft)
+        } else when (draft.action_type) {
+            "0", "1", Draft.Action.UPDATE_STATUS, Draft.Action.REPLY -> {
+                deleteDraft = editUpdateStatusDraft(draft)
+            }
+            Draft.Action.QUOTE -> {
+                deleteDraft = editQuoteStatusDraft(draft)
             }
         }
-    }
+        if (deleteDraft) {
+            val draftIdString = draft._id.toString()
+            val where = Expression.equalsArgs(Drafts._ID).sql
+            val whereArgs = arrayOf(draftIdString)
 
+            val cr = context.contentResolver
+            cr.delete(Drafts.CONTENT_URI, where, whereArgs)
+            cr.delete(Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(draftIdString), null, null)
+        }
+    }
 
     fun setListShown(listShown: Boolean) {
         listContainer.visibility = if (listShown) View.VISIBLE else View.GONE
@@ -219,11 +230,25 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
         emptyView.visibility = if (listShown && adapter.isEmpty) View.VISIBLE else View.GONE
     }
 
-    private fun editDraft(draft: Draft) {
-        val intent = Intent(INTENT_ACTION_EDIT_DRAFT)
-        intent.putExtra(EXTRA_DRAFT, draft)
-        context.contentResolver.delete(Drafts.CONTENT_URI, Expression.equals(Drafts._ID, draft._id).sql, null)
+    private fun editUpdateStatusDraft(draft: Draft): Boolean {
+        val intent = Intent(INTENT_ACTION_EDIT_DRAFT).apply {
+            `package` = BuildConfig.APPLICATION_ID
+            putExtra(EXTRA_DRAFT, draft)
+        }
         startActivityForResult(intent, REQUEST_COMPOSE)
+        return true
+    }
+
+    private fun editQuoteStatusDraft(draft: Draft): Boolean {
+        val extras = draft.action_extras as? QuoteStatusActionExtras ?: return false
+        val status = extras.status ?: return false
+        val intent = Intent(context, RetweetQuoteDialogActivity::class.java).apply {
+            putExtra(EXTRA_STATUS, status)
+            putExtra(EXTRA_ACCOUNT_KEY, draft.account_keys?.singleOrNull())
+            putExtra(EXTRA_TEXT, draft.text)
+        }
+        startActivityForResult(intent, REQUEST_COMPOSE)
+        return true
     }
 
     private fun sendDrafts(list: LongArray): Boolean {
@@ -250,7 +275,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     val args = arguments ?: return
-                    AsyncTaskUtils.executeTask(DeleteDraftsTask(activity, args.getLongArray(IntentConstants.EXTRA_IDS)))
+                    AsyncTaskUtils.executeTask(DeleteDraftsTask(activity, args.getLongArray(EXTRA_IDS)))
                 }
             }
         }
@@ -281,6 +306,10 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
         override fun doInBackground(vararg params: Any) {
             val activity = activityRef.get() ?: return
             deleteDrafts(activity, ids)
+            ids.forEach { id ->
+                val uri = Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(id.toString())
+                activity.contentResolver.delete(uri, null, null)
+            }
         }
 
         override fun onPreExecute() {
@@ -299,11 +328,6 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
                 if (f is DialogFragment) {
                     f.dismiss()
                 }
-            }
-            val notificationManager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            ids.forEach { id ->
-                val tag = Uri.withAppendedPath(Drafts.CONTENT_URI, id.toString()).toString()
-                notificationManager.cancel(tag, NOTIFICATION_ID_DRAFTS)
             }
         }
 

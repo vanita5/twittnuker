@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.draft.StatusObjectExtras
+import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.event.StatusRetweetedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -56,7 +56,7 @@ class RetweetStatusTask(
     override fun doLongOperation(params: Any?): SingleResponse<ParcelableStatus> {
         val draftId = UpdateStatusTask.saveDraft(context, Draft.Action.RETWEET) {
             this@saveDraft.account_keys = arrayOf(accountKey)
-            this@saveDraft.action_extras = StatusObjectExtras().apply {
+            this@saveDraft.action_extras = StatusObjectActionExtras().apply {
                 this@apply.status = this@RetweetStatusTask.status
             }
         }

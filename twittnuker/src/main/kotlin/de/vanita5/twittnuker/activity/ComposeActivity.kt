@@ -84,6 +84,7 @@ import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.extension.text.twitter.extractReplyTextAndMentions
 import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
+import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
 import de.vanita5.twittnuker.model.*
@@ -847,9 +848,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun displayNewDraftNotification(draftUri: Uri) {
-        val values = ContentValues()
-        values.put(BaseColumns._ID, draftUri.lastPathSegment)
-        contentResolver.insert(Drafts.CONTENT_URI_NOTIFICATIONS, values)
+        val notificationUri = Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(draftUri.lastPathSegment)
+        contentResolver.insert(notificationUri, null)
     }
 
     private val media: Array<ParcelableMediaUpdate>
@@ -1465,7 +1465,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         update.media = media
         update.in_reply_to_status = inReplyToStatus
         update.is_possibly_sensitive = isPossiblySensitive
-        update.attachment_url = (draft?.action_extras as? UpdateStatusActionExtras)?.attachmentUrl
+        update.draft_extras = UpdateStatusActionExtras().also {
+            it.inReplyToStatus = inReplyToStatus
+            it.isPossiblySensitive = isPossiblySensitive
+            it.displayCoordinates = attachPreciseLocation
+        }
+
+
         LengthyOperationsService.updateStatusesAsync(this, action, statuses = update,
                 scheduleInfo = scheduleInfo)
         if (preferences[noCloseAfterTweetSentKey] && inReplyToStatus == null) {

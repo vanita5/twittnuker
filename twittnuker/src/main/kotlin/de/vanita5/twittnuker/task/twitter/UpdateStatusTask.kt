@@ -63,7 +63,6 @@ import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
-import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -547,13 +546,7 @@ class UpdateStatusTask(
             this.location = statusUpdate.location
             this.media = statusUpdate.media
             this.timestamp = System.currentTimeMillis()
-            this.action_extras = UpdateStatusActionExtras().apply {
-                inReplyToStatus = statusUpdate.in_reply_to_status
-                isPossiblySensitive = statusUpdate.is_possibly_sensitive
-                isRepostStatusId = statusUpdate.repost_status_id
-                displayCoordinates = statusUpdate.display_coordinates
-                attachmentUrl = statusUpdate.attachment_url
-            }
+            this.action_extras = statusUpdate.draft_extras
         }
     }
 

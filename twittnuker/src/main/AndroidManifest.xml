@@ -528,6 +528,9 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.content.RetweetQuoteDialogActivity"
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
 
         <service
             android:name=".service.LegacyTaskService"

@@ -26,49 +26,63 @@ package de.vanita5.twittnuker.model.util;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.draft.ActionExtras;
+import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras;
-import de.vanita5.twittnuker.model.draft.StatusObjectExtras;
+import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 
-public class DraftExtrasConverter implements CursorFieldConverter<ActionExtras> {
+public class DraftExtrasFieldConverter implements CursorFieldConverter<ActionExtras> {
     @Override
     public ActionExtras parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) throws IOException {
         final String actionType = cursor.getString(cursor.getColumnIndex(Drafts.ACTION_TYPE));
         final String json = cursor.getString(columnIndex);
-        if (TextUtils.isEmpty(actionType) || TextUtils.isEmpty(json)) return null;
-        switch (actionType) {
-            case Draft.Action.UPDATE_STATUS_COMPAT_1:
-            case Draft.Action.UPDATE_STATUS_COMPAT_2:
-            case Draft.Action.UPDATE_STATUS:
-            case Draft.Action.REPLY:
-            case Draft.Action.QUOTE: {
-                return JsonSerializer.parse(json, UpdateStatusActionExtras.class);
-            }
-            case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
-            case Draft.Action.SEND_DIRECT_MESSAGE: {
-                return JsonSerializer.parse(json, SendDirectMessageActionExtras.class);
-            }
-            case Draft.Action.FAVORITE:
-            case Draft.Action.RETWEET: {
-                return JsonSerializer.parse(json, StatusObjectExtras.class);
-            }
-        }
-        return null;
+        return parseExtras(actionType, json);
     }
 
     @Override
     public void writeField(ContentValues values, ActionExtras object, String columnName, ParameterizedType fieldType) throws IOException {
         if (object == null) return;
-        values.put(columnName, JsonSerializer.serialize(object));
+        values.put(columnName, serializeExtras(object));
+    }
+
+    @Nullable
+    public static ActionExtras parseExtras(final String actionType, final String json) throws IOException {
+        if (TextUtils.isEmpty(actionType) || TextUtils.isEmpty(json)) return null;
+        switch (actionType) {
+            case Draft.Action.UPDATE_STATUS_COMPAT_1:
+            case Draft.Action.UPDATE_STATUS_COMPAT_2:
+            case Draft.Action.UPDATE_STATUS:
+            case Draft.Action.REPLY: {
+                return LoganSquare.parse(json, UpdateStatusActionExtras.class);
+            }
+            case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
+            case Draft.Action.SEND_DIRECT_MESSAGE: {
+                return LoganSquare.parse(json, SendDirectMessageActionExtras.class);
+            }
+            case Draft.Action.FAVORITE:
+            case Draft.Action.RETWEET: {
+                return LoganSquare.parse(json, StatusObjectActionExtras.class);
+            }
+            case Draft.Action.QUOTE: {
+                return LoganSquare.parse(json, QuoteStatusActionExtras.class);
+            }
+        }
+        return null;
+    }
+
+    public static String serializeExtras(final ActionExtras object) throws IOException {
+        return LoganSquare.serialize(object);
     }
 }

@@ -60,7 +60,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
-import de.vanita5.twittnuker.model.draft.StatusObjectExtras
+import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
@@ -381,7 +381,7 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
 
     private fun <T> performStatusAction(draft: Draft, action: (accountKey: UserKey, status: ParcelableStatus) -> AbstractTask<*, T, *>): Boolean {
         val accountKey = draft.account_keys?.firstOrNull() ?: return false
-        val status = (draft.action_extras as? StatusObjectExtras)?.status ?: return false
+        val status = (draft.action_extras as? StatusObjectActionExtras)?.status ?: return false
         val task = action(accountKey, status)
         invokeBeforeExecute(task)
         val result = ManualTaskStarter.invokeExecute(task)

@@ -47,7 +47,10 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.model.tab.argument.TabArguments;
+import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras;
+import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.TabExtras;
+import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
 import java.io.IOException;
@@ -120,13 +123,26 @@ public class CustomTabUtils implements Constants {
         }
     }
 
+
+    /**
+     * Remember to make this method correspond to {@link TabExtras#parse(String, String)}
+     *
+     * @see TabExtras#parse(String, String)
+     */
     @Nullable
     public static TabExtras newTabExtras(@NonNull @CustomTabType String type) {
-        try {
-            return TabExtras.parse(type, "{}");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        switch (type) {
+            case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                return new InteractionsTabExtras();
+            }
+            case CustomTabType.HOME_TIMELINE: {
+                return new HomeTabExtras();
+            }
+            case CustomTabType.TRENDS_SUGGESTIONS: {
+                return new TrendsTabExtras();
+            }
         }
+        return null;
     }
 
     @Nullable

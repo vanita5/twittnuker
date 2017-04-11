@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.Status
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
+import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.HomeActivity
@@ -53,10 +54,10 @@ import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.receiver.NotificationReceiver
+import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.database.FilterQueryBuilder
 import org.oshkimaadziig.george.androidutils.SpanFormatter
 import java.io.IOException
@@ -353,6 +354,53 @@ class ContentNotificationManager(
 
         val tag = "$accountKey:$userKey:${status.id}"
         notificationManager.notify(tag, NOTIFICATION_ID_USER_NOTIFICATION, builder.build())
+    }
+
+    fun showDraft(draftUri: Uri): Long {
+        val draftId = draftUri.lastPathSegment.toLongOrNull() ?: return -1
+        val where = Expression.equals(Drafts._ID, draftId)
+        val c = context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql,
+                null, null) ?: return -1
+        val i = ObjectCursor.indicesFrom(c, Draft::class.java)
+        val item: Draft
+        try {
+            if (!c.moveToFirst()) return -1
+            item = i.newObject(c)
+        } catch (e: IOException) {
+            return -1
+        } finally {
+            c.close()
+        }
+        val title = context.getString(R.string.status_not_updated)
+        val message = context.getString(R.string.status_not_updated_summary)
+        val intent = Intent()
+        intent.`package` = BuildConfig.APPLICATION_ID
+        val uriBuilder = Uri.Builder()
+        uriBuilder.scheme(SCHEME_TWITTNUKER)
+        uriBuilder.authority(AUTHORITY_DRAFTS)
+        intent.data = uriBuilder.build()
+        val nb = NotificationCompat.Builder(context)
+        nb.setTicker(message)
+        nb.setContentTitle(title)
+        nb.setContentText(item.text)
+        nb.setAutoCancel(true)
+        nb.setWhen(System.currentTimeMillis())
+        nb.setSmallIcon(R.drawable.ic_stat_draft)
+        val discardIntent = Intent(context, LengthyOperationsService::class.java)
+        discardIntent.action = INTENT_ACTION_DISCARD_DRAFT
+        discardIntent.data = draftUri
+        nb.addAction(R.drawable.ic_action_delete, context.getString(R.string.discard),
+                PendingIntent.getService(context, 0, discardIntent, PendingIntent.FLAG_ONE_SHOT))
+
+        val sendIntent = Intent(context, LengthyOperationsService::class.java)
+        sendIntent.action = INTENT_ACTION_SEND_DRAFT
+        sendIntent.data = draftUri
+        nb.addAction(R.drawable.ic_action_send, context.getString(R.string.action_send),
+                PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        nb.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT))
+        notificationManager.notify(draftUri.toString(), NOTIFICATION_ID_DRAFTS, nb.build())
+        return draftId
     }
 
     fun updatePreferences() {

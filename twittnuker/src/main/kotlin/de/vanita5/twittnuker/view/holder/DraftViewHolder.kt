@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableMedia
-import de.vanita5.twittnuker.model.draft.StatusObjectExtras
+import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
@@ -58,7 +58,7 @@ class DraftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         media = media)
             }
             Draft.Action.FAVORITE, Draft.Action.RETWEET -> {
-                val extras = draft.action_extras as? StatusObjectExtras
+                val extras = draft.action_extras as? StatusObjectActionExtras
                 if (extras != null) {
                     summaryText = extras.status.text_unescaped
                 }
