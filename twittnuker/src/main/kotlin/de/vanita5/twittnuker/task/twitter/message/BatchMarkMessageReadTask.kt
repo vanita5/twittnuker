@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
@@ -63,7 +64,10 @@ class BatchMarkMessageReadTask(
             cur.forEachRow { cur, _ ->
                 val conversation = indices.newObject(cur)
                 try {
-                    MarkMessageReadTask.performMarkRead(context, microBlog, account, conversation)
+                    val lastReadEvent = MarkMessageReadTask.performMarkRead(context, microBlog,
+                            account, conversation) ?: return@forEachRow false
+                    MarkMessageReadTask.updateLocalLastRead(cr, account.key, conversation.id,
+                            lastReadEvent)
                     return@forEachRow true
                 } catch (e: MicroBlogException) {
                     return@forEachRow false
@@ -73,4 +77,7 @@ class BatchMarkMessageReadTask(
         return true
     }
 
+    override fun onSucceed(callback: Unit?, result: Boolean) {
+        bus.post(UnreadCountUpdatedEvent(-1))
+    }
 }
