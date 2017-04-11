@@ -47,7 +47,8 @@ import de.vanita5.twittnuker.model.util.AccountUtils.ACCOUNT_USER_DATA_KEYS
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
 import java.io.IOException
-import java.util.concurrent.FutureTask
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
@@ -184,15 +185,16 @@ private fun parseCredentials(authToken: String, @Credentials.Type authType: Stri
 }
 
 internal object AccountDataQueue {
-    val handler = Handler(Looper.getMainLooper())
+    private val executor = Executors.newSingleThreadExecutor()
 
     fun getUserData(manager: AccountManager, account: Account, key: String): String? {
-        val future = FutureTask<String?> { manager.getUserData(account, key) }
-        if (Thread.currentThread() === Looper.getMainLooper().thread) {
-            future.run()
-        } else handler.post {
-            future.run()
+        val callable = Callable {
+            manager.getUserData(account, key)
         }
+        if (Thread.currentThread() === Looper.getMainLooper().thread) {
+            return callable.call()
+        }
+        val future = executor.submit(callable)
         try {
             return future.get(1, TimeUnit.SECONDS)
         } catch (e: TimeoutException) {
@@ -201,12 +203,13 @@ internal object AccountDataQueue {
     }
 
     fun peekAuthToken(manager: AccountManager, account: Account, authTokenType: String): String? {
-        val future = FutureTask<String?> { manager.peekAuthToken(account, authTokenType) }
-        if (Thread.currentThread() === Looper.getMainLooper().thread) {
-            future.run()
-        } else handler.post {
-            future.run()
+        val callable = Callable {
+            manager.peekAuthToken(account, authTokenType)
         }
+        if (Thread.currentThread() === Looper.getMainLooper().thread) {
+            return callable.call()
+        }
+        val future = executor.submit(callable)
         try {
             return future.get(1, TimeUnit.SECONDS)
         } catch (e: TimeoutException) {
