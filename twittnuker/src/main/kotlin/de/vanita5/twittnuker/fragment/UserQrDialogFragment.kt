@@ -42,9 +42,8 @@ import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.promiseOnUi
 import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
-import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.util.LinkCreator
 import de.vanita5.twittnuker.util.TwidereColorUtils
@@ -69,8 +68,8 @@ class UserQrDialogFragment : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val weakThis = WeakReference(this)
-        val deferred = Glide.with(context.applicationContext).loadProfileImage(context, user, 0,
-                size = ProfileImageSize.ORIGINAL).into(DeferredTarget())
+        val deferred = Glide.with(context.applicationContext).loadOriginalProfileImage(context,
+                user, 0).into(DeferredTarget())
         promiseOnUi {
             val fragment = weakThis.get() ?: return@promiseOnUi
             fragment.qrView.visibility = View.INVISIBLE

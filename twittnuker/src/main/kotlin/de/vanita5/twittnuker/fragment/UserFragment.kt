@@ -113,6 +113,7 @@ import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getBestProfileBanner
+import de.vanita5.twittnuker.extension.model.originalProfileImage
 import de.vanita5.twittnuker.extension.model.urlPreferred
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
@@ -1195,7 +1196,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 }
             }
             R.id.profileImage -> {
-                val url = Utils.getOriginalTwitterProfileImage(user.profile_image_url)
+                val url = user.originalProfileImage ?: return
                 val profileImage = ParcelableMediaUtils.image(url)
                 profileImage.type = ParcelableMedia.Type.IMAGE
                 val media = arrayOf(profileImage)

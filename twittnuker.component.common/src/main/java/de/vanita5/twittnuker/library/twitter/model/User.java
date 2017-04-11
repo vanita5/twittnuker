@@ -158,9 +158,10 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
     String profileImageUrlHttps;
 
     /**
-     * Fanfou has this field
+     * Fanfou has field {@code "profile_image_url_large"}
+     * GNU Social has field {@code "profile_image_url_profile_size"}
      */
-    @JsonField(name = "profile_image_url_large")
+    @JsonField(name = {"profile_image_url_large", "profile_image_url_profile_size"})
     String profileImageUrlLarge;
 
     @JsonField(name = {"profile_banner_url", "cover_photo"})
@@ -206,9 +207,6 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
 
     @JsonField(name = "profile_image_url_original")
     String profileImageUrlOriginal;
-
-    @JsonField(name = "profile_image_url_profile_size")
-    String profileImageUrlProfileSize;
 
     // BEGIN Twitter fields
 
@@ -450,10 +448,6 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
         return profileImageUrlOriginal;
     }
 
-    public String getProfileImageUrlProfileSize() {
-        return profileImageUrlProfileSize;
-    }
-
     public String[] getPinnedTweetIds() {
         return pinnedTweetIds;
     }
@@ -565,7 +559,6 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
                 ", statusnetProfileUrl='" + statusnetProfileUrl + '\'' +
                 ", ostatusUri='" + ostatusUri + '\'' +
                 ", profileImageUrlOriginal='" + profileImageUrlOriginal + '\'' +
-                ", profileImageUrlProfileSize='" + profileImageUrlProfileSize + '\'' +
                 ", blockedBy=" + blockedBy +
                 ", blocking=" + blocking +
                 ", muting=" + muting +

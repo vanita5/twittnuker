@@ -31,6 +31,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.extension.model.getBestProfileBanner
+import de.vanita5.twittnuker.extension.model.originalProfileImage
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.Utils
@@ -127,10 +128,8 @@ fun RequestManager.loadProfileImage(context: Context, conversation: ParcelableMe
 fun RequestManager.loadOriginalProfileImage(context: Context, user: ParcelableUser,
         @ImageShapeStyle shapeStyle: Int, cornerRadius: Float = 0f, cornerRadiusRatio: Float = 0f
 ): DrawableRequestBuilder<String> {
-    val original = user.extras?.profile_image_url_original?.takeUnless(String::isEmpty)
-            ?: Utils.getOriginalTwitterProfileImage(user.profile_image_url)
     return configureLoadProfileImage(context, shapeStyle, cornerRadius, cornerRadiusRatio) {
-        load(original)
+        load(user.originalProfileImage)
     }
 }
 

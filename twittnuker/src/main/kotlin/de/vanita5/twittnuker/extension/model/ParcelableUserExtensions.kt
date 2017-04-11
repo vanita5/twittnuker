@@ -28,6 +28,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.Utils
 
 fun ParcelableUser.getBestProfileBanner(width: Int): String? {
     return profile_banner_url?.let {
@@ -39,7 +40,12 @@ fun ParcelableUser.getBestProfileBanner(width: Int): String? {
     }
 }
 
-val ParcelableUser.urlPreferred: String? get() = url_expanded?.takeIf(String::isNotEmpty) ?: url
+inline val ParcelableUser.originalProfileImage: String? get() {
+    return extras?.profile_image_url_original?.takeIf(String::isNotEmpty)
+            ?: Utils.getOriginalTwitterProfileImage(profile_image_url)
+}
+
+inline val ParcelableUser.urlPreferred: String? get() = url_expanded?.takeIf(String::isNotEmpty) ?: url
 
 
 fun Array<User>.toParcelables(accountKey: UserKey, accountType: String, profileImageSize: String = "normal"): Array<ParcelableUser>? {
