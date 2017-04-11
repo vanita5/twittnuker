@@ -32,6 +32,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Outline
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -74,7 +75,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
-import de.vanita5.twittnuker.BuildConfig
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.android.synthetic.main.fragment_user.view.*
 import kotlinx.android.synthetic.main.header_user.*
@@ -96,6 +96,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -1541,9 +1542,11 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     }
 
     private fun setFollowEditButton(@DrawableRes icon: Int, @ColorRes color: Int, @StringRes label: Int) {
-        followContainer.follow.setImageResource(icon)
-        ViewCompat.setBackgroundTintList(followContainer.follow, ContextCompat.getColorStateList(context, color))
-        followContainer.follow.contentDescription = getString(label)
+        val followButton = followContainer.follow
+        followButton.setImageResource(icon)
+        ViewCompat.setBackgroundTintMode(followButton, PorterDuff.Mode.SRC_ATOP)
+        ViewCompat.setBackgroundTintList(followButton, ContextCompat.getColorStateList(context, color))
+        followButton.contentDescription = getString(label)
     }
 
     private class ActionBarDrawable(shadow: Drawable) : LayerDrawable(arrayOf(shadow, ActionBarColorDrawable.create(true))) {

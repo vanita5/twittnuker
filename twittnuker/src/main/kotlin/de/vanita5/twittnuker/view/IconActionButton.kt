@@ -113,6 +113,11 @@ class IconActionButton(
         updateColorFilter()
     }
 
+    override fun setSupportBackgroundTintList(tint: ColorStateList?) {
+        super.setSupportBackgroundTintList(tint)
+        updateColorFilter()
+    }
+
     override fun isPostApplyTheme(): Boolean {
         return false
     }
