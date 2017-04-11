@@ -304,7 +304,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         val status = adapter.getStatus(statusPosition)
         IntentUtils.openMedia(activity, status, current, preferences[newDocumentApiKey],
                 preferences[displaySensitiveContentsKey])
+    }
 
+    override fun onQuotedMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia, statusPosition: Int) {
+        val status = adapter.getStatus(statusPosition)
+        val quotedMedia = status.quoted_media ?: return
+        IntentUtils.openMedia(activity, status.account_key, status.is_possibly_sensitive, status,
+                current, quotedMedia, preferences[newDocumentApiKey],
+                preferences[displaySensitiveContentsKey])
     }
 
     override fun onGapClick(holder: GapViewHolder, position: Int) {

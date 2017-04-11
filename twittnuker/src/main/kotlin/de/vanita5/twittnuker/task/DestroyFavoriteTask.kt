@@ -82,7 +82,7 @@ class DestroyFavoriteTask(
                 resolver.update(uri, values, where.sql, whereArgs)
             }
 
-            updateActivityStatus(resolver, accountKey, statusId) { activity ->
+            resolver.updateActivityStatus(accountKey, statusId) { activity ->
                 val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
                 for (statusesArray in statusesMatrix) {
                     if (statusesArray == null) continue
