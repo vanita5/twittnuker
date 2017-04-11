@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
+import org.mariotaku.ktextension.set
 
 abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<ParcelableUserListsAdapter>(), LoaderCallbacks<List<ParcelableUserList>>, UserListClickListener, KeyboardShortcutCallback {
 
@@ -160,6 +161,16 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
     }
 
     override fun onUserListLongClick(holder: UserListViewHolder, position: Int): Boolean {
+        return true
+    }
+
+    override fun triggerRefresh(): Boolean {
+        adapter.setData(null)
+        val loaderArgs = Bundle(arguments).apply {
+            this[EXTRA_FROM_USER] = true
+        }
+        loaderManager.restartLoader(0, loaderArgs, this)
+        showProgress()
         return true
     }
 
