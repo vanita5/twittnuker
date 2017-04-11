@@ -29,6 +29,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.support.multidex.MultiDex
 import com.bumptech.glide.Glide
@@ -48,6 +49,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.DefaultFeatures
+import de.vanita5.twittnuker.receiver.ConnectivityStateReceiver
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
@@ -127,6 +129,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         extraFeaturesService.appStarted()
 
         registerActivityLifecycleCallbacks(activityTracker)
+        registerReceiver(ConnectivityStateReceiver(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         listenExternalThemeChange()
 
