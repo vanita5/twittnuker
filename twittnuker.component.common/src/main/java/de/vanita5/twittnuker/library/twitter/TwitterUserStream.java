@@ -27,12 +27,12 @@ import de.vanita5.twittnuker.library.twitter.callback.UserStreamCallback;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
 
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Params;
 
 /**
  * Twitter UserStream API
  */
-@Queries(template = StatusAnnotationTemplate.class)
+@Params(template = StatusAnnotationTemplate.class)
 public interface TwitterUserStream {
 
     @GET("/user.json")
