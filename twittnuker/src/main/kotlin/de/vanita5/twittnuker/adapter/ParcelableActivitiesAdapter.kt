@@ -31,6 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.Activity
@@ -41,6 +42,7 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
 import de.vanita5.twittnuker.model.*
@@ -430,8 +432,8 @@ class ParcelableActivitiesAdapter(
             val adapter = adapterRef.get() ?: return
             val status = adapter.getActivity(position).getActivityStatus() ?: return
             IntentUtils.openUserProfile(adapter.context, status.account_key, status.user_key,
-                    status.user_screen_name, adapter.preferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.TIMELINE_STATUS,
-                    null)
+                    status.user_screen_name, status.extras?.user_statusnet_profile_url,
+                    adapter.preferences[newDocumentApiKey], Referral.TIMELINE_STATUS, null)
         }
 
         override fun onStatusClick(holder: IStatusViewHolder, position: Int) {

@@ -75,6 +75,7 @@ import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.loadProfileImage
@@ -247,14 +248,12 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 val account = accountsAdapter.selectedAccount ?: return
                 val activity = activity
                 if (account.user != null) {
-                    IntentUtils.openUserProfile(activity, account.user!!, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                            Referral.SELF_PROFILE,
-                            null)
+                    IntentUtils.openUserProfile(activity, account.user!!,
+                            preferences[newDocumentApiKey], Referral.SELF_PROFILE, null)
                 } else {
                     IntentUtils.openUserProfile(activity, account.key, account.key,
-                            account.user.screen_name, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                            Referral.SELF_PROFILE,
-                            null)
+                            account.user.screen_name, null, preferences[newDocumentApiKey],
+                            Referral.SELF_PROFILE, null)
                 }
             }
         }

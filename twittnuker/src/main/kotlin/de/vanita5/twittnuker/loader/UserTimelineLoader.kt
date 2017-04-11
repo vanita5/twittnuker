@@ -26,26 +26,39 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
+import okhttp3.HttpUrl
+import org.attoparser.ParseException
+import org.attoparser.config.ParseConfiguration
+import org.attoparser.simple.AbstractSimpleMarkupHandler
+import org.attoparser.simple.SimpleMarkupParser
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.library.twitter.model.TimelineOption
+import org.mariotaku.restfu.annotation.method.GET
+import org.mariotaku.restfu.http.Endpoint
+import org.mariotaku.restfu.http.HttpRequest
+import org.mariotaku.restfu.http.mime.SimpleBody
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.JsonSerializer
+import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 
 class UserTimelineLoader(
         context: Context,
         accountId: UserKey?,
-        private val userId: UserKey?,
+        private val userKey: UserKey?,
         private val screenName: String?,
+        private val profileUrl: String?,
         sinceId: String?,
         maxId: String?,
         data: List<ParcelableStatus>?,
@@ -68,9 +81,8 @@ class UserTimelineLoader(
         }
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(microBlog: MicroBlog,
-                             details: AccountDetails,
-                             paging: Paging): ResponseList<Status> {
+    override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging):
+            List<Status> {
         if (pinnedStatusIds != null) {
             pinnedStatuses = try {
                 microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
@@ -88,8 +100,16 @@ class UserTimelineLoader(
             option.setExcludeReplies(!timelineFilter.isIncludeReplies)
             option.setIncludeRetweets(timelineFilter.isIncludeRetweets)
         }
-        if (userId != null) {
-            return microBlog.getUserTimeline(userId.id, paging, option)
+        if (userKey != null) {
+            if (details.type == AccountType.STATUSNET && userKey.host != details.key.host
+                    && profileUrl != null) {
+                try {
+                    return showStatusNetExternalTimeline(profileUrl, paging)
+                } catch (e: IOException) {
+                    throw MicroBlogException(e)
+                }
+            }
+            return microBlog.getUserTimeline(userKey.id, paging, option)
         } else if (screenName != null) {
             return microBlog.getUserTimelineByScreenName(screenName, paging, option)
         } else {
@@ -100,11 +120,55 @@ class UserTimelineLoader(
     @WorkerThread
     override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
         val accountId = accountKey
-        if (accountId != null && userId != null && TextUtils.equals(accountId.id, userId.id))
+        if (accountId != null && userKey != null && TextUtils.equals(accountId.id, userKey.id))
             return false
         val retweetUserId = if (status.is_retweet) status.user_key else null
         return InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
                 status.quoted_text_plain, status.spans, status.quoted_spans, status.source,
                 status.quoted_source, null, status.quoted_user_key)
+    }
+
+    private fun showStatusNetExternalTimeline(profileUrl: String, paging: Paging): List<Status> {
+        val holder = DependencyHolder.get(context)
+        val client = holder.restHttpClient
+        val parser = SimpleMarkupParser(ParseConfiguration.htmlConfiguration())
+        val pageRequest = HttpRequest.Builder().apply {
+            method(GET.METHOD)
+            url(profileUrl)
+        }.build()
+        val validAtomSuffix = ".atom"
+        val requestLink = client.newCall(pageRequest).execute().use {
+            if (!it.isSuccessful) throw IOException("Server returned ${it.status} response")
+            val handler = AtomLinkFindHandler(profileUrl)
+            try {
+                parser.parse(SimpleBody.reader(it.body), handler)
+            } catch (e: ParseException) {
+                // Ignore
+            }
+            return@use handler.atomLink
+        }?.takeIf { it.endsWith(validAtomSuffix) }?.let {
+            it.replaceRange(it.length - validAtomSuffix.length, it.length, ".json")
+        } ?: throw IOException("No atom link found fof external user")
+        val queries = paging.asMap().map { arrayOf(it.key, it.value?.toString()) }.toTypedArray()
+        val restRequest = HttpRequest.Builder().apply {
+            method(GET.METHOD)
+            url(Endpoint.constructUrl(requestLink, *queries))
+        }.build()
+        return client.newCall(restRequest).execute().use {
+            if (!it.isSuccessful) throw IOException("Server returned ${it.status} response")
+            return@use JsonSerializer.parseList(it.body.stream(), Status::class.java)
+        }
+    }
+
+    private class AtomLinkFindHandler(val profileUrl: String) : AbstractSimpleMarkupHandler() {
+        var atomLink: String? = null
+        override fun handleStandaloneElement(elementName: String, attributes: Map<String, String>?,
+                minimized: Boolean, line: Int, col: Int) {
+            if (atomLink != null || elementName != "link" || attributes == null) return
+            if (attributes["rel"] == "alternate" && attributes["type"] == "application/atom+xml") {
+                val href = attributes["href"] ?: return
+                atomLink = HttpUrl.parse(profileUrl).resolve(href).toString()
+            }
+        }
     }
 }

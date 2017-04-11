@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -66,6 +67,7 @@ import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.*
+import org.mariotaku.kpreferences.get
 
 class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
@@ -276,9 +278,8 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
             }
             R.id.profileImage -> {
                 val userList = this.userList ?: return
-                IntentUtils.openUserProfile(activity, userList.account_key,
-                        userList.user_key, userList.user_screen_name, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        null, null)
+                IntentUtils.openUserProfile(activity, userList.account_key, userList.user_key,
+                        userList.user_screen_name, null, preferences[newDocumentApiKey], null, null)
             }
         }
 
