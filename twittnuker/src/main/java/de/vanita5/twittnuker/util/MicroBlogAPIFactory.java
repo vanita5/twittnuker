@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.api.TwitterAndroidExtraHeaders;
+import de.vanita5.twittnuker.util.api.TwitterMacExtraHeaders;
 import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders;
 
 import java.util.List;
@@ -195,7 +196,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
                 return new UserAgentExtraHeaders("Twitter/6.75.2 CFNetwork/811.4.18 Darwin/16.5.0");
             }
             case TWITTER_FOR_MAC: {
-                return new UserAgentExtraHeaders("Twitter-Mac/5002734 Mac/10.12.3 (;x86_64)");
+                return TwitterMacExtraHeaders.INSTANCE;
             }
             case TWEETDECK: {
                 return new UserAgentExtraHeaders(UserAgentUtils.getDefaultUserAgentStringSafe(context));
