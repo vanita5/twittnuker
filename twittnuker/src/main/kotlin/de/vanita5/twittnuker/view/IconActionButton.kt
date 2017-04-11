@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.annotation.ColorInt
 import android.support.v4.view.ViewCompat
@@ -105,6 +106,11 @@ class IconActionButton(
         } else {
             setColorFilter(disabledColor)
         }
+    }
+
+    override fun setBackgroundTintList(tint: ColorStateList?) {
+        super.setBackgroundTintList(tint)
+        updateColorFilter()
     }
 
     override fun isPostApplyTheme(): Boolean {
