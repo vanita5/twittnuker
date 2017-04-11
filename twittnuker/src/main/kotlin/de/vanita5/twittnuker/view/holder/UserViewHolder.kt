@@ -27,7 +27,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
-import android.widget.*
+import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.list_item_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
@@ -37,38 +37,36 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
-import de.vanita5.twittnuker.view.NameView
-import de.vanita5.twittnuker.view.ProfileImageView
-import de.vanita5.twittnuker.view.iface.IColorLabelView
 import java.util.*
 
 class UserViewHolder(
         itemView: View,
         private val adapter: IUsersAdapter<*>,
-        private val simple: Boolean = false
+        private val simple: Boolean = false,
+        private val showFollow: Boolean = false
 ) : ViewHolder(itemView), OnClickListener, OnLongClickListener {
 
-    private val itemContent: IColorLabelView
-    val profileImageView: ProfileImageView
-    val profileTypeView: ImageView
-    private val nameView: NameView
-    private val externalIndicator: TextView
-    private val descriptionView: TextView
-    private val locationView: TextView
-    private val urlView: TextView
-    private val statusesCountView: TextView
-    private val followersCountView: TextView
-    private val friendsCountView: TextView
+    private val itemContent = itemView.itemContent
+    private val profileImageView = itemView.profileImage
+    private val profileTypeView = itemView.profileType
+    private val nameView = itemView.name
+    private val externalIndicator = itemView.externalIndicator
+    private val descriptionView = itemView.description
+    private val locationView = itemView.location
+    private val urlView = itemView.url
+    private val statusesCountView = itemView.statusesCount
+    private val followersCountView = itemView.followersCount
+    private val friendsCountView = itemView.friendsCount
 
-    private val acceptRequestButton: ImageButton
-    private val denyRequestButton: ImageButton
-    private val unblockButton: ImageButton
-    private val unmuteButton: ImageButton
-    private val followButton: ImageButton
-    private val actionsProgressContainer: View
-    private val actionsContainer: View
-    private val processingRequestProgress: View
-    private val countsContainer: LinearLayout
+    private val acceptRequestButton = itemView.acceptRequest
+    private val denyRequestButton = itemView.denyRequest
+    private val unblockButton = itemView.unblock
+    private val unmuteButton = itemView.unmute
+    private val followButton = itemView.follow
+    private val actionsProgressContainer = itemView.actionsProgressContainer
+    private val actionsContainer = itemView.actionsContainer
+    private val processingRequestProgress = itemView.processingRequest
+    private val countsContainer = itemView.countsContainer
 
     private var userClickListener: UserClickListener? = null
     private var requestClickListener: RequestClickListener? = null
@@ -76,27 +74,6 @@ class UserViewHolder(
     private var friendshipClickListener: FriendshipClickListener? = null
 
     init {
-        itemContent = itemView.itemContent
-        profileImageView = itemView.profileImage
-        profileTypeView = itemView.profileType
-        nameView = itemView.name
-        externalIndicator = itemView.externalIndicator
-        descriptionView = itemView.description
-        locationView = itemView.location
-        urlView = itemView.url
-        statusesCountView = itemView.statusesCount
-        followersCountView = itemView.followersCount
-        friendsCountView = itemView.friendsCount
-        actionsProgressContainer = itemView.actionsProgressContainer
-        actionsContainer = itemView.actionsContainer
-        acceptRequestButton = itemView.acceptRequest
-        denyRequestButton = itemView.denyRequest
-        unblockButton = itemView.unblock
-        unmuteButton = itemView.unmute
-        followButton = itemView.follow
-        countsContainer = itemView.countsContainer
-        processingRequestProgress = itemView.findViewById(R.id.processingRequest)
-
         if (simple) {
             externalIndicator.visibility = View.GONE
             descriptionView.visibility = View.GONE
@@ -172,12 +149,12 @@ class UserViewHolder(
             denyRequestButton.visibility = View.GONE
         }
         if (friendshipClickListener != null && !isMySelf) {
-            if (user.extras?.blocking ?: false) {
-                followButton.visibility = View.GONE
-                unblockButton.visibility = View.VISIBLE
-            } else {
+            if (showFollow && !(user.extras?.blocking ?: false)) {
                 followButton.visibility = View.VISIBLE
                 unblockButton.visibility = View.GONE
+            } else {
+                followButton.visibility = View.GONE
+                unblockButton.visibility = View.VISIBLE
             }
             unmuteButton.visibility = if (user.extras?.muting ?: false) View.VISIBLE else View.GONE
         } else {
