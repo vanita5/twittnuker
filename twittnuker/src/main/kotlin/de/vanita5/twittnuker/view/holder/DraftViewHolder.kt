@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.list_item_draft.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
+import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.draft.StatusObjectExtras
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -51,7 +52,7 @@ class DraftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             Draft.Action.SEND_DIRECT_MESSAGE, Draft.Action.SEND_DIRECT_MESSAGE_COMPAT,
             Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1,
             Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                val media = ParcelableMediaUtils.fromMediaUpdates(draft.media)
+                val media = draft.media?.map(::ParcelableMedia)?.toTypedArray()
                 mediaPreviewContainer.visibility = View.VISIBLE
                 mediaPreviewContainer.displayMedia(requestManager = requestManager,
                         media = media)

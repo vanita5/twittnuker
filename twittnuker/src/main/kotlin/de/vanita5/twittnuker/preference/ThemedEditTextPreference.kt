@@ -20,20 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.preference
 
-import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import android.content.Context
+import android.support.v7.preference.EditTextPreference
+import android.support.v7.preference.PreferenceFragmentCompat
+import android.util.AttributeSet
 
-fun ParcelableUser.getBestProfileBanner(width: Int): String? {
-    return profile_banner_url?.let {
-        InternalTwitterContentUtils.getBestBannerUrl(it, width)
-    } ?: if (USER_TYPE_FANFOU_COM == key.host) {
-        profile_background_url
-    } else {
-        null
+import de.vanita5.twittnuker.fragment.ThemedEditTextPreferenceDialogFragmentCompat
+import de.vanita5.twittnuker.preference.iface.IDialogPreference
+
+class ThemedEditTextPreference(context: Context, attrs: AttributeSet? = null) : EditTextPreference(context, attrs), IDialogPreference {
+
+    override fun displayDialog(fragment: PreferenceFragmentCompat) {
+        val df = ThemedEditTextPreferenceDialogFragmentCompat.newInstance(key)
+        df.setTargetFragment(fragment, 0)
+        df.show(fragment.fragmentManager, key)
     }
 }
-
-val ParcelableUser.urlPreferred: String? get() = url_expanded?.takeIf(String::isNotEmpty) ?: url

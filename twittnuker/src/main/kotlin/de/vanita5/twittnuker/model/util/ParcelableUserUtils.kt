@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.model.util
 import android.text.TextUtils
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.twitter.model.User
-import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -39,7 +38,18 @@ import de.vanita5.twittnuker.util.UserColorNameManager
  */
 object ParcelableUserUtils {
 
-    fun fromUser(user: User, accountKey: UserKey?, accountType: String?, position: Long = 0,
+    fun fromUser(user: User, accountKey: UserKey, accountType: String, position: Long = 0,
+            profileImageSize: String = "normal"): ParcelableUser {
+        return fromUserInternal(user, accountKey, accountType, position, profileImageSize)
+    }
+
+    fun fromUser(user: User, accountType: String, position: Long = 0,
+            profileImageSize: String = "normal"): ParcelableUser {
+        return fromUserInternal(user, null, accountType, position, profileImageSize)
+    }
+
+
+    private fun fromUserInternal(user: User, accountKey: UserKey?, accountType: String?, position: Long = 0,
             profileImageSize: String = "normal"): ParcelableUser {
         val urlEntities = user.urlEntities
         val obj = ParcelableUser()
@@ -98,11 +108,11 @@ object ParcelableUserUtils {
         return obj
     }
 
-    fun fromUsers(users: Array<User>?, accountKey: UserKey?, accountType: String?,
+    fun fromUsers(users: Array<User>, accountKey: UserKey, accountType: String,
             profileImageSize: String = "normal"): Array<ParcelableUser>? {
-        return users?.map {
+        return users.map {
             fromUser(it, accountKey, accountType, profileImageSize = profileImageSize)
-        }?.toTypedArray()
+        }.toTypedArray()
     }
 
     fun parseColor(colorString: String?): Int {
@@ -112,14 +122,6 @@ object ParcelableUserUtils {
             str = "#" + str
         }
         return ParseUtils.parseColor(str, 0)
-    }
-
-    fun getProfileBannerUrl(user: ParcelableUser): String? {
-        if (!TextUtils.isEmpty(user.profile_banner_url)) return user.profile_banner_url
-        if (USER_TYPE_FANFOU_COM == user.key.host) {
-            return user.profile_background_url
-        }
-        return null
     }
 
     fun updateExtraInformation(user: ParcelableUser, account: AccountDetails,

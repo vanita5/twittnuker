@@ -145,7 +145,7 @@ class UserViewHolder(
             profileImageView.visibility = View.GONE
         }
 
-        if (twitter.isUpdatingRelationship(user.account_key, user.key)) {
+        if (user.account_key != null && twitter.isUpdatingRelationship(user.account_key, user.key)) {
             processingRequestProgress.visibility = View.VISIBLE
             actionsContainer.visibility = View.GONE
         } else {

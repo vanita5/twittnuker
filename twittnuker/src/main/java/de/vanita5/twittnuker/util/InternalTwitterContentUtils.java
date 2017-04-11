@@ -73,11 +73,11 @@ public class InternalTwitterContentUtils {
 
 
     public static boolean isFiltered(final SQLiteDatabase database, final UserKey userKey,
-                                     final String textPlain, final String quotedTextPlain,
-                                     final SpanItem[] spans, final SpanItem[] quotedSpans,
-                                     final String source, final String quotedSource,
-                                     final UserKey retweetedByKey, final UserKey quotedUserKey,
-                                     final boolean filterRts) {
+            final String textPlain, final String quotedTextPlain,
+            final SpanItem[] spans, final SpanItem[] quotedSpans,
+            final String source, final String quotedSource,
+            final UserKey retweetedByKey, final UserKey quotedUserKey,
+            final boolean filterRts) {
         if (textPlain == null && spans == null && userKey == null && source == null)
             return false;
 
@@ -101,9 +101,8 @@ public class InternalTwitterContentUtils {
                 status.retweeted_by_user_key, status.quoted_user_key, filterRTs);
     }
 
-    @Nullable
-    public static String getBestBannerUrl(@Nullable final String baseUrl, final int width) {
-        if (baseUrl == null) return null;
+    @NonNull
+    public static String getBestBannerUrl(@NonNull final String baseUrl, final int width) {
         final String type = getBestBannerType(width);
         final String authority = UriUtils.getAuthority(baseUrl);
         return authority != null && authority.endsWith(".twimg.com") ? baseUrl + "/" + type : baseUrl;

@@ -107,6 +107,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.model.applyTo
+import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.urlPreferred
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
@@ -1190,9 +1191,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                         preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
             }
             R.id.profileBanner -> {
-                val bannerUrl = ParcelableUserUtils.getProfileBannerUrl(user) ?: return
-                val url = getBestBannerUrl(bannerUrl,
-                        Integer.MAX_VALUE)
+                val url = user.getBestProfileBanner(Integer.MAX_VALUE) ?: return
                 val profileBanner = ParcelableMediaUtils.image(url)
                 profileBanner.type = ParcelableMedia.Type.IMAGE
                 val media = arrayOf(profileBanner)
