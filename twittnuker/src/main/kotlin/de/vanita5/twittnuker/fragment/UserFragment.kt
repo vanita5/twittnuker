@@ -74,6 +74,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
+import de.vanita5.twittnuker.BuildConfig
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.android.synthetic.main.fragment_user.view.*
 import kotlinx.android.synthetic.main.header_user.*
@@ -812,7 +813,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             mentionItem.title = getString(R.string.mention_user_name, displayName)
         }
         MenuUtils.setItemAvailability(menu, R.id.mention, !isMyself)
-        MenuUtils.setItemAvailability(menu, R.id.qr_code, isMyself)
+        MenuUtils.setItemAvailability(menu, R.id.qr_code, isMyself || BuildConfig.DEBUG)
         MenuUtils.setItemAvailability(menu, R.id.incoming_friendships, isMyself)
         MenuUtils.setItemAvailability(menu, R.id.saved_searches, isMyself)
 

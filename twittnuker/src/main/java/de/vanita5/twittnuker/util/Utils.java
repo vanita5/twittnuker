@@ -82,6 +82,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
+
+import de.vanita5.twittnuker.annotation.ProfileImageSize;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
@@ -555,6 +557,9 @@ public final class Utils implements Constants {
 
 
     public static String getTwitterProfileImageOfSize(@NonNull final String url, @NonNull final String size) {
+        if (ProfileImageSize.ORIGINAL.equals(size)) {
+            return getOriginalTwitterProfileImage(url);
+        }
         final Matcher matcher = PATTERN_TWITTER_PROFILE_IMAGES.matcher(url);
         if (matcher.matches()) {
             return matcher.replaceFirst("$1$2/profile_images/$3/$4_" + size + "$6");
