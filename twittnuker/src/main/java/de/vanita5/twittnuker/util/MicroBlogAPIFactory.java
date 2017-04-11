@@ -33,27 +33,9 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
-import com.fasterxml.jackson.core.JsonParseException;
-
 import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory;
-import org.mariotaku.restfu.ExceptionFactory;
-import org.mariotaku.restfu.RestConverter;
-import org.mariotaku.restfu.RestFuUtils;
-import org.mariotaku.restfu.RestMethod;
-import org.mariotaku.restfu.RestRequest;
-import org.mariotaku.restfu.annotation.HttpMethod;
-import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.BodyType;
 import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.HttpRequest;
-import org.mariotaku.restfu.http.HttpResponse;
-import org.mariotaku.restfu.http.MultiValueMap;
-import org.mariotaku.restfu.http.RawValue;
 import org.mariotaku.restfu.http.SimpleValueMap;
-import org.mariotaku.restfu.http.ValueMap;
-import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import org.mariotaku.restfu.oauth.OAuthToken;
 import de.vanita5.twittnuker.TwittnukerConstants;
@@ -66,9 +48,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.api.TwitterAndroidExtraHeaders;
 import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -284,108 +264,6 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     private static boolean isAsciiLetterOrDigit(int codePoint) {
         return 'A' <= codePoint && codePoint <= 'Z' || 'a' <= codePoint && codePoint <= 'z'
                 || '0' <= codePoint && codePoint <= '9';
-    }
-
-    public static class TwidereHttpRequestFactory implements HttpRequest.Factory {
-
-        @Nullable
-        private final ExtraHeaders extraHeaders;
-
-        public TwidereHttpRequestFactory(final @Nullable ExtraHeaders extraHeaders) {
-            this.extraHeaders = extraHeaders;
-        }
-
-        @Override
-        public <E extends Exception> HttpRequest create(@NonNull Endpoint endpoint, @NonNull RestRequest info,
-                                                        @Nullable Authorization authorization,
-                                                        RestConverter.Factory<E> converterFactory)
-                throws IOException, RestConverter.ConvertException, E {
-            final String restMethod = info.getMethod();
-            final String url = Endpoint.constructUrl(endpoint.getUrl(), info);
-            MultiValueMap<String> headers = info.getHeaders();
-            if (headers == null) {
-                headers = new MultiValueMap<>();
-            }
-
-            if (authorization != null && authorization.hasAuthorization()) {
-                headers.add("Authorization", RestFuUtils.sanitizeHeader(authorization.getHeader(endpoint, info)));
-            }
-            if (extraHeaders != null) {
-                for (final Pair<String, String> pair : extraHeaders.get()) {
-                    headers.add(pair.getFirst(), RestFuUtils.sanitizeHeader(pair.getSecond()));
-                }
-            }
-            return new HttpRequest(restMethod, url, headers, info.getBody(converterFactory), null);
-        }
-    }
-
-    public static class TwidereExceptionFactory implements ExceptionFactory<MicroBlogException> {
-
-        private final TwitterConverterFactory converterFactory;
-
-        public TwidereExceptionFactory(TwitterConverterFactory converterFactory) {
-            this.converterFactory = converterFactory;
-        }
-
-        @Override
-        public MicroBlogException newException(Throwable cause, HttpRequest request, HttpResponse response) {
-            final MicroBlogException te;
-            if (cause != null) {
-                te = new MicroBlogException(cause);
-            } else {
-                te = parseTwitterException(response);
-            }
-            te.setHttpRequest(request);
-            te.setHttpResponse(response);
-            return te;
-        }
-
-
-        public MicroBlogException parseTwitterException(HttpResponse resp) {
-            try {
-                return (MicroBlogException) converterFactory.forResponse(MicroBlogException.class).convert(resp);
-            } catch (JsonParseException e) {
-                return new MicroBlogException("Malformed JSON Data", e);
-            } catch (IOException e) {
-                return new MicroBlogException("IOException while throwing exception", e);
-            } catch (RestConverter.ConvertException e) {
-                return new MicroBlogException(e);
-            } catch (MicroBlogException e) {
-                return e;
-            }
-        }
-    }
-
-    public static class TwidereRestRequestFactory implements RestRequest.Factory<MicroBlogException> {
-        @Nullable
-        private final Map<String, String> extraRequestParams;
-
-        public TwidereRestRequestFactory(@Nullable Map<String, String> extraRequestParams) {
-            this.extraRequestParams = extraRequestParams;
-        }
-
-        @Override
-        public RestRequest create(RestMethod<MicroBlogException> restMethod,
-                                  RestConverter.Factory<MicroBlogException> factory,
-                                  ValueMap valuePool) throws RestConverter.ConvertException, IOException, MicroBlogException {
-            final HttpMethod method = restMethod.getMethod();
-            final String path = restMethod.getPath();
-            final MultiValueMap<String> headers = restMethod.getHeaders(valuePool);
-            final MultiValueMap<String> queries = restMethod.getQueries(valuePool);
-            final MultiValueMap<Body> params = restMethod.getParams(factory, valuePool);
-            final RawValue rawValue = restMethod.getRawValue();
-            final BodyType bodyType = restMethod.getBodyType();
-            final Map<String, Object> extras = restMethod.getExtras();
-
-            if (queries != null && extraRequestParams != null) {
-                for (Map.Entry<String, String> entry : extraRequestParams.entrySet()) {
-                    queries.add(entry.getKey(), entry.getValue());
-                }
-            }
-
-            return new RestRequest(method.value(), method.allowBody(), path, headers, queries,
-                    params, rawValue, bodyType, extras);
-        }
     }
 
     public interface ExtraHeaders {

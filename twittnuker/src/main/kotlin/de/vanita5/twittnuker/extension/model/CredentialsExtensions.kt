@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.library.fanfou.FanfouStream
 import de.vanita5.twittnuker.library.twitter.*
 import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization
-import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory
 import org.mariotaku.restfu.RestAPIFactory
 import org.mariotaku.restfu.RestRequest
 import org.mariotaku.restfu.http.Authorization
@@ -51,7 +50,7 @@ import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sFanfouConstantPool
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
 import de.vanita5.twittnuker.util.TwitterContentUtils
-import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders
+import de.vanita5.twittnuker.util.api.*
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 
@@ -194,11 +193,10 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
             }
         }
     }
-    val converterFactory = TwitterConverterFactory()
-    factory.setRestConverterFactory(converterFactory)
-    factory.setRestRequestFactory(MicroBlogAPIFactory.TwidereRestRequestFactory(extraRequestParams))
-    factory.setHttpRequestFactory(MicroBlogAPIFactory.TwidereHttpRequestFactory(extraHeaders))
-    factory.setExceptionFactory(MicroBlogAPIFactory.TwidereExceptionFactory(converterFactory))
+    factory.setRestConverterFactory(TwitterConverterFactory)
+    factory.setExceptionFactory(TwidereExceptionFactory)
+    factory.setRestRequestFactory(TwidereRestRequestFactory(extraRequestParams))
+    factory.setHttpRequestFactory(TwidereHttpRequestFactory(extraHeaders))
     return factory.build<T>(cls)
 }
 

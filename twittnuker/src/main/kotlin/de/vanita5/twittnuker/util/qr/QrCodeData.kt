@@ -25,17 +25,14 @@ package de.vanita5.twittnuker.util.qr
 import io.nayuki.qrcodegen.QrCode
 import org.mariotaku.uniqr.QrData
 
+/**
+ * Wrapper for `QrCode`
+ */
 data class QrCodeData(private val qrCode: QrCode) : QrData {
 
-    override fun getSize(): Int {
-        return qrCode.size
-    }
+    override fun getSize() = qrCode.size
 
-    override fun getVersion(): Int {
-        return qrCode.version
-    }
+    override fun getVersion() = qrCode.version
 
-    override fun get(x: Int, y: Int): Boolean {
-        return qrCode.getModule(x, y) == 1
-    }
+    override fun get(x: Int, y: Int) = qrCode.getModule(x, y) == 1
 }
