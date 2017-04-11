@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.QuickSearchBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
@@ -59,6 +60,18 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
         SystemWindowsInsetsCallback, ControlBarOffsetListener, OnPageChangeListener,
         LinkHandlerActivity.HideUiOnScroll {
 
+    val accountKey: UserKey
+        get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
+
+    val query: String
+        get() = arguments.getString(EXTRA_QUERY)
+
+    private val accountType: String?
+        get() {
+            val am = AccountManager.get(context)
+            return accountKey.let { AccountUtils.findByAccountKey(am, it) }?.getAccountType(am)
+        }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
@@ -70,10 +83,7 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
             val values = ContentValues()
             values.put(SearchHistory.QUERY, query)
             context.contentResolver.insert(SearchHistory.CONTENT_URI, values)
-            val am = AccountManager.get(context)
-            Analyzer.log(Search(query, accountKey.let {
-                AccountUtils.findByAccountKey(am, it)
-            }?.getAccountType(am)))
+            Analyzer.log(Search(query, accountType))
         }
 
         val activity = this.activity
@@ -147,18 +157,19 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
         return false
     }
 
-    val accountKey: UserKey
-        get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)!!
-
-    val query: String
-        get() = arguments.getString(EXTRA_QUERY)!!
-
-
     override fun addTabs(adapter: SupportTabsAdapter) {
         adapter.add(cls = StatusesSearchFragment::class.java, args = arguments,
-                name = getString(R.string.search_type_statuses), icon = DrawableHolder.resource(R.drawable.ic_action_twitter))
+                name = getString(R.string.search_type_statuses),
+                icon = DrawableHolder.resource(R.drawable.ic_action_twitter))
+        if (accountType == AccountType.TWITTER) {
+            adapter.add(cls = MediaStatusesSearchFragment::class.java, args = arguments,
+                    name = getString(R.string.search_type_media),
+                    icon = DrawableHolder.resource(R.drawable.ic_action_gallery))
+        }
         adapter.add(cls = SearchUsersFragment::class.java, args = arguments,
-                name = getString(R.string.search_type_users), icon = DrawableHolder.resource(R.drawable.ic_action_user))
+                name = getString(R.string.search_type_users),
+                icon = DrawableHolder.resource(R.drawable.ic_action_user))
+
     }
 
     companion object {

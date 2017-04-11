@@ -23,18 +23,15 @@
 package de.vanita5.twittnuker.fragment
 
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.loader.MediaStatusesSearchLoader
 import de.vanita5.twittnuker.loader.TweetSearchLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Utils
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
-import java.util.*
 
-open class StatusesSearchFragment : ParcelableStatusesFragment() {
+class MediaStatusesSearchFragment : AbsMediaStatusesFragment() {
 
     override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
             Loader<List<ParcelableStatus>?> {
@@ -47,42 +44,32 @@ open class StatusesSearchFragment : ParcelableStatusesFragment() {
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val makeGap = args.getBoolean(EXTRA_MAKE_GAP, true)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return TweetSearchLoader(activity, accountKey, query, sinceId, maxId, page, adapterData,
-                savedStatusesFileArgs, tabPosition, fromUser, makeGap, loadingMore)
+        return TweetSearchLoader(activity, accountKey, query, sinceId, maxId, page, adapter.getData(),
+                null, tabPosition, fromUser, makeGap, loadingMore)
     }
 
-    override fun fitSystemWindows(insets: Rect) {
-        super.fitSystemWindows(insets)
-    }
-
-    override val savedStatusesFileArgs: Array<String>?
-        get() {
-            val args = arguments!!
-            val accountKey = Utils.getAccountKey(context, args)!!
-            val query = args.getString(EXTRA_QUERY)!!
-            val result = ArrayList<String>()
-            result.add(AUTHORITY_SEARCH_TWEETS)
-            result.add("account=$accountKey")
-            result.add("query=$query")
-            return result.toTypedArray()
-        }
-
-    override val readPositionTagWithArguments: String?
-        get() {
-            val args = arguments!!
-            val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-            val sb = StringBuilder("search_")
-            if (tabPosition < 0) return null
-            val query = args.getString(EXTRA_QUERY) ?: return null
-            val encodedQuery: String
-            try {
-                encodedQuery = URLEncoder.encode(query, "UTF-8").replace("[^\\w\\d]".toRegex(), "_")
-            } catch (e: UnsupportedEncodingException) {
-                return null
+    override fun hasMoreData(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?,
+                             changed: Boolean): Boolean {
+        if (loader !is MediaStatusesSearchLoader) return false
+        val maxId = loader.maxId?.takeIf(String::isNotEmpty)
+        val sinceId = loader.sinceId?.takeIf(String::isNotEmpty)
+        if (sinceId != null && maxId != null) {
+            if (data != null && !data.isEmpty()) {
+                return changed
             }
-
-            sb.append(encodedQuery)
-            return sb.toString()
         }
+        return false
+    }
+
+    override fun getStatuses(maxId: String?, sinceId: String?): Int {
+        if (context == null) return -1
+        val args = Bundle(arguments)
+        args.putBoolean(EXTRA_MAKE_GAP, false)
+        args.putString(EXTRA_MAX_ID, maxId)
+        args.putString(EXTRA_SINCE_ID, sinceId)
+        args.putBoolean(EXTRA_FROM_USER, true)
+        loaderManager.restartLoader(0, args, this)
+        return 0
+    }
 
 }
