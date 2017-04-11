@@ -27,13 +27,11 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 * Direct messages with conversation style
 * Filters (mute unwanted tweets)
 * Drafts feature
-* t.co link auto expanding
 * Multiple account support
 * Pebble notifications
+* Search & share GIFs by [GIPHY](https://giphy.com/)
 * Custom OAuth consumer key/secret
-* Direct login with user name and password (Don't worry! It's TOTALLY safe!)
 * Custom API Proxy (jtapi recommended, gtap and twip o mode works)
-* GZip compressing for API requests
 * TCP DNS query and custom host mapping to fight against censorship
 * Experimental Push Notifications. Documentation and installation guide will follow soon!
 * Many many many other configurations to fit your habit
