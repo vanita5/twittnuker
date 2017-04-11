@@ -164,7 +164,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             KEY_DNS_SERVER, KEY_TCP_DNS_QUERY, KEY_BUILTIN_DNS_RESOLVER -> {
                 reloadDnsSettings()
             }
-            KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET, KEY_API_URL_FORMAT, KEY_CREDENTIALS_TYPE,
+            KEY_CREDENTIALS_TYPE, KEY_API_URL_FORMAT, KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET,
             KEY_SAME_OAUTH_SIGNING_URL -> {
                 preferences[apiLastChangeKey] = System.currentTimeMillis()
             }
