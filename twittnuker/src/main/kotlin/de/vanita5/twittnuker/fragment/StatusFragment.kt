@@ -1988,14 +1988,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             if (childCount > 0) {
                 if (isSmoothScrollbarEnabled) {
                     var extent = childCount * 100
-                    var view = findViewByPosition(firstPosition)
+                    var view = findViewByPosition(firstPosition) ?: return 0
                     val top = view.top
                     var height = view.height
                     if (height > 0) {
                         extent += top * 100 / height
                     }
 
-                    view = findViewByPosition(lastPosition)
+                    view = findViewByPosition(lastPosition) ?: return 0
                     val bottom = view.bottom
                     height = view.height
                     if (height > 0) {
@@ -2017,7 +2017,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val skippedCount = skippedScrollItemCount
             if (firstPosition >= skippedCount && childCount > 0) {
                 if (isSmoothScrollbarEnabled) {
-                    val view = findViewByPosition(firstPosition)
+                    val view = findViewByPosition(firstPosition) ?: return 0
                     val top = view.top
                     val height = view.height
                     if (height > 0) {
