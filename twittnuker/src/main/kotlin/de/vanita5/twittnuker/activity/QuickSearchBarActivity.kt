@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_QUERY
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_QUERY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.constant.newDocumentApiKey
@@ -144,6 +145,11 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
                 supportLoaderManager.restartLoader(0, null, this@QuickSearchBarActivity)
             }
         })
+
+        if (savedInstanceState == null) {
+            searchQuery.setText(intent.getStringExtra(EXTRA_QUERY))
+            searchQuery.setSelection(searchQuery.length())
+        }
 
         supportLoaderManager.initLoader(0, null, this)
 
@@ -263,6 +269,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
             }
             SuggestionsAdapter.VIEW_TYPE_SAVED_SEARCH, SuggestionsAdapter.VIEW_TYPE_SEARCH_HISTORY -> {
                 IntentUtils.openSearch(this, selectedAccountDetails?.key, item.title!!)
+                setResult(RESULT_SEARCH_PERFORMED)
                 finish()
             }
         }
@@ -300,6 +307,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         if (TextUtils.isEmpty(query)) return
         val details = selectedAccountDetails ?: return
         IntentUtils.openSearch(this, details.key, query)
+        setResult(RESULT_SEARCH_PERFORMED)
         finish()
     }
 
@@ -520,5 +528,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         const val EXTRA_ZXING_SCAN_RESULT = "SCAN_RESULT"
         const val ZXING_SCAN_MODE_QR_CODE = "QR_CODE_MODE"
         const val REQUEST_SCAN_QR = 101
+
+        const val RESULT_SEARCH_PERFORMED = 2
     }
 }

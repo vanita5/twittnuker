@@ -68,7 +68,9 @@
                     android:background="@android:color/transparent"
                     android:focusable="true"
                     android:hint="@string/search_hint"
-                    android:inputType="text|textMultiLine">
+                    android:imeOptions="actionSearch"
+                    android:inputType="text|textImeMultiLine"
+                    android:maxLines="1">
 
                     <requestFocus/>
                 </de.vanita5.twittnuker.view.FixedEditText>
