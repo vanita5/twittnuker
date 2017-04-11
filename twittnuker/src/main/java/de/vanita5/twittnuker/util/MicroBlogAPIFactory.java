@@ -27,6 +27,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -49,11 +50,13 @@ import de.vanita5.twittnuker.util.api.TwitterAndroidExtraHeaders;
 import de.vanita5.twittnuker.util.api.UserAgentExtraHeaders;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import kotlin.Pair;
 import okhttp3.HttpUrl;
+import okhttp3.internal.Version;
 
 public class MicroBlogAPIFactory implements TwittnukerConstants {
 
@@ -185,16 +188,14 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     public static ExtraHeaders getExtraHeaders(Context context, ConsumerKeyType type) {
         switch (type) {
             case TWITTER_FOR_ANDROID: {
-                return new TwitterAndroidExtraHeaders();
+                return TwitterAndroidExtraHeaders.INSTANCE;
             }
-            case TWITTER_FOR_IPHONE: {
-                return new UserAgentExtraHeaders("Twitter-iPhone");
-            }
+            case TWITTER_FOR_IPHONE:
             case TWITTER_FOR_IPAD: {
-                return new UserAgentExtraHeaders("Twitter-iPad");
+                return new UserAgentExtraHeaders("Twitter/6.75.2 CFNetwork/811.4.18 Darwin/16.5.0");
             }
             case TWITTER_FOR_MAC: {
-                return new UserAgentExtraHeaders("Twitter-Mac");
+                return new UserAgentExtraHeaders("Twitter-Mac/5002734 Mac/10.12.3 (;x86_64)");
             }
             case TWEETDECK: {
                 return new UserAgentExtraHeaders(UserAgentUtils.getDefaultUserAgentStringSafe(context));
@@ -207,7 +208,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         final PackageManager pm = context.getPackageManager();
         try {
             final PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-            return String.format("%s %s / %s", TWITTNUKER_APP_NAME, TWITTNUKER_PROJECT_URL, pi.versionName);
+            return String.format(Locale.US, "%s/%s %s Android/%s", TWITTNUKER_APP_NAME,
+                    pi.versionName, Version.userAgent(), Build.VERSION.RELEASE);
         } catch (final PackageManager.NameNotFoundException e) {
             throw new AssertionError(e);
         }

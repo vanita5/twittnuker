@@ -54,6 +54,9 @@ import de.vanita5.twittnuker.util.api.*
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 
+/**
+ * Creates [MicroBlog] instances
+ */
 fun Credentials.getAuthorization(cls: Class<*>?): Authorization {
     if (cls != null) {
         when {
@@ -148,13 +151,12 @@ fun <T> Credentials.newMicroBlogInstance(context: Context, @AccountType accountT
 fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authorization,
         @AccountType accountType: String? = null, cls: Class<T>): T {
     val factory = RestAPIFactory<MicroBlogException>()
-    val extraHeaders = if (auth is OAuthAuthorization) {
+    val extraHeaders = run {
+        if (auth !is OAuthAuthorization) return@run null
         val officialKeyType = TwitterContentUtils.getOfficialKeyType(context,
                 auth.consumerKey, auth.consumerSecret)
-        MicroBlogAPIFactory.getExtraHeaders(context, officialKeyType)
-    } else {
-        UserAgentExtraHeaders(MicroBlogAPIFactory.getTwidereUserAgent(context))
-    }
+        return@run MicroBlogAPIFactory.getExtraHeaders(context, officialKeyType)
+    } ?: UserAgentExtraHeaders(MicroBlogAPIFactory.getTwidereUserAgent(context))
     val holder = DependencyHolder.get(context)
     var extraRequestParams: Map<String, String>? = null
     when (cls) {
