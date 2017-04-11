@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.model.util
 
 import android.text.TextUtils
-import org.apache.commons.lang3.ArrayUtils
-import org.apache.commons.lang3.math.NumberUtils
+import de.vanita5.twittnuker.extension.model.toParcelable
 import org.mariotaku.ktextension.addAllTo
 import org.mariotaku.ktextension.isNullOrEmpty
+import org.mariotaku.ktextension.toIntOr
 import de.vanita5.twittnuker.library.twitter.model.*
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -106,11 +106,9 @@ object ParcelableMediaUtils {
 
     private fun fromAttachments(status: Status): Array<ParcelableMedia> {
         val attachments = status.attachments ?: return emptyArray()
-        val temp = arrayOfNulls<ParcelableMedia>(attachments.size)
         val externalUrl = status.externalUrl
-        var i = 0
-        for (attachment in attachments) {
-            val mimeType = attachment.mimetype ?: continue
+        return attachments.mapNotNull { attachment ->
+            val mimeType = attachment.mimetype ?: return@mapNotNull null
             val media = ParcelableMedia()
 
             if (mimeType.startsWith("image/")) {
@@ -120,7 +118,7 @@ object ParcelableMediaUtils {
             } else {
                 // https://github.com/TwidereProject/Twidere-Android/issues/729
                 // Skip unsupported attachment
-                continue
+                return@mapNotNull null
             }
             media.width = attachment.width
             media.height = attachment.height
@@ -128,9 +126,8 @@ object ParcelableMediaUtils {
             media.page_url = if (TextUtils.isEmpty(externalUrl)) attachment.url else externalUrl
             media.media_url = attachment.url
             media.preview_url = attachment.largeThumbUrl
-            temp[i++] = media
-        }
-        return ArrayUtils.subarray<ParcelableMedia>(temp, 0, i)
+            return@mapNotNull null
+        }.toTypedArray()
     }
 
     private fun fromCard(card: CardEntity?, urlEntities: Array<UrlEntity>?,
@@ -141,8 +138,7 @@ object ParcelableMediaUtils {
         if ("animated_gif" == name || "player" == name) {
             val media = ParcelableMedia()
             val playerStreamUrl = card.getBindingValue("player_stream_url")
-            media.card = ParcelableCardEntityUtils.fromCardEntity(card, accountKey,
-                    accountType)
+            media.card = card.toParcelable(accountKey, accountType)
             val appUrlResolved = card.getBindingValue("app_url_resolved") as CardEntity.StringValue
             media.url = if (checkUrl(appUrlResolved)) appUrlResolved.value else card.url
             if ("animated_gif" == name) {
@@ -167,8 +163,8 @@ object ParcelableMediaUtils {
             val playerWidth = card.getBindingValue("player_width")
             val playerHeight = card.getBindingValue("player_height")
             if (playerWidth is CardEntity.StringValue && playerHeight is CardEntity.StringValue) {
-                media.width = NumberUtils.toInt(playerWidth.value, -1)
-                media.height = NumberUtils.toInt(playerHeight.value, -1)
+                media.width = playerWidth.value.toIntOr(-1)
+                media.height = playerHeight.value.toIntOr(-1)
             }
             writeLinkInfo(media, urlEntities, mediaEntities, extendedMediaEntities)
             return arrayOf(media)
@@ -177,8 +173,7 @@ object ParcelableMediaUtils {
 
             val media = ParcelableMedia()
             media.url = card.url
-            media.card = ParcelableCardEntityUtils.fromCardEntity(card, accountKey,
-                    accountType)
+            media.card = card.toParcelable(accountKey, accountType)
             media.type = ParcelableMedia.Type.IMAGE
             media.media_url = photoImageFullSize.url
             media.width = photoImageFullSize.width

@@ -26,6 +26,7 @@ import android.text.Spanned
 import android.text.style.URLSpan
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
+import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableStatus.FilterFlags
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
@@ -182,9 +183,7 @@ object ParcelableStatusUtils {
         result.is_possibly_sensitive = status.isPossiblySensitive
         result.mentions = ParcelableUserMentionUtils.fromUserMentionEntities(user,
                 status.userMentionEntities)
-        result.card = status.card?.let {
-            ParcelableCardEntityUtils.fromCardEntity(it, accountKey, accountType)
-        }
+        result.card = status.card?.toParcelable(accountKey, accountType)
         result.card_name = result.card?.name
         result.place_full_name = getPlaceFullName(status)
         result.lang = status.lang
@@ -225,14 +224,6 @@ object ParcelableStatusUtils {
             }
         }
         return UserKey(inReplyToUserId, accountKey.host)
-    }
-
-    fun fromStatuses(statuses: Array<Status>?, accountKey: UserKey, accountType: String,
-            profileImageSize: String): Array<ParcelableStatus>? {
-        if (statuses == null) return null
-        return Array(statuses.size) { i ->
-            fromStatus(statuses[i], accountKey, accountType, false, profileImageSize)
-        }
     }
 
     private fun getPlaceFullName(status: Status): String? {

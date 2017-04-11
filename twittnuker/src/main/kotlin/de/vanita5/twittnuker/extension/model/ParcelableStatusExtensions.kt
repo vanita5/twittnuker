@@ -22,8 +22,11 @@
 
 package de.vanita5.twittnuker.extension.model
 
+import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 
 val ParcelableStatus.media_type: Int
     get() = media?.firstOrNull()?.type ?: 0
@@ -48,3 +51,8 @@ val ParcelableStatus.referenced_users: Array<ParcelableUser>
         }
         return resultList.toTypedArray()
     }
+
+
+fun Array<Status>.toParcelables(accountKey: UserKey, accountType: String, profileImageSize: String) = Array(size) { i ->
+    ParcelableStatusUtils.fromStatus(this[i], accountKey, accountType, false, profileImageSize)
+}

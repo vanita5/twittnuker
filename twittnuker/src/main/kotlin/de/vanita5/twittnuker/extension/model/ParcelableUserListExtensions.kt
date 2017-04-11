@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.util
+package de.vanita5.twittnuker.extension.model
+
+import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 
 
-import de.vanita5.twittnuker.library.twitter.util.ThreadLocalSimpleDateFormat
-import java.text.DateFormat
-import java.util.*
-
-object ParcelableCardEntityUtils {
-
-    internal val sISOFormat: DateFormat = ThreadLocalSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'",
-            Locale.ENGLISH)
-
-    init {
-        sISOFormat.isLenient = true
-        sISOFormat.timeZone = TimeZone.getTimeZone("UTC")
-    }
-
+fun Array<UserList>.toParcelables(accountKey: UserKey, profileImageSize: String = "normal") = Array(size) {
+    ParcelableUserListUtils.from(this[it], accountKey, profileImageSize = profileImageSize)
 }

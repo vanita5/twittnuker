@@ -36,7 +36,7 @@ import org.apache.james.mime4j.stream.BodyDescriptor
 import org.apache.james.mime4j.stream.MimeConfig
 import org.apache.james.mime4j.stream.RawField
 import org.apache.james.mime4j.util.MimeUtil
-import org.mariotaku.ktextension.toInt
+import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.ktextension.toString
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.*
@@ -250,7 +250,7 @@ private class BodyPartHandler(private val context: Context, private val draft: D
                     val mediaFile = File(context.filesDir, filename)
                     media = ParcelableMediaUpdate().apply {
                         bd.transferEncoding
-                        this.type = contentType?.getParameter("media_type").toInt(ParcelableMedia.Type.UNKNOWN)
+                        this.type = contentType?.getParameter("media_type").toIntOr(ParcelableMedia.Type.UNKNOWN)
                         this.alt_text = contentType?.getParameter("alt_text")
                         FileOutputStream(mediaFile).use {
                             st.copyTo(it)

@@ -41,7 +41,6 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.text.BidiFormatter
 import com.squareup.otto.Bus
 import okhttp3.Dns
-import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.toNulls
 import org.mariotaku.library.objectcursor.ObjectCursor

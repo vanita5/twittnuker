@@ -49,9 +49,12 @@ import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.constant.readFromBottomKey
+import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader

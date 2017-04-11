@@ -31,11 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
-import org.apache.commons.lang3.ArrayUtils
-import org.mariotaku.ktextension.contains
-import org.mariotaku.ktextension.rangeOfSize
-import org.mariotaku.ktextension.safeGetLong
-import org.mariotaku.ktextension.safeMoveToPosition
+import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.R
@@ -273,19 +269,19 @@ class ParcelableActivitiesAdapter(
                 val activity = getActivity(position, false)
                 when (activity.action) {
                     Activity.Action.MENTION -> {
-                        if (ArrayUtils.isEmpty(activity.target_object_statuses)) {
+                        if (activity.target_object_statuses.isNullOrEmpty()) {
                             return ITEM_VIEW_TYPE_STUB
                         }
                         return ITEM_VIEW_TYPE_STATUS
                     }
                     Activity.Action.REPLY -> {
-                        if (ArrayUtils.isEmpty(activity.target_statuses)) {
+                        if (activity.target_statuses.isNullOrEmpty()) {
                             return ITEM_VIEW_TYPE_STUB
                         }
                         return ITEM_VIEW_TYPE_STATUS
                     }
                     Activity.Action.QUOTE -> {
-                        if (ArrayUtils.isEmpty(activity.target_statuses)) {
+                        if (activity.target_statuses.isNullOrEmpty()) {
                             return ITEM_VIEW_TYPE_STUB
                         }
                         return ITEM_VIEW_TYPE_STATUS

@@ -22,9 +22,9 @@
 
 package de.vanita5.twittnuker.util.twitter.card
 
+import de.vanita5.twittnuker.extension.model.getString
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils
 import de.vanita5.twittnuker.util.TwitterCardUtils
 import de.vanita5.twittnuker.view.ContainerView
 import de.vanita5.twittnuker.view.controller.twitter.card.CardBrowserViewController
@@ -69,7 +69,7 @@ abstract class TwitterCardViewFactory {
         }
 
         private fun createGenericPlayerFragment(card: ParcelableCardEntity): ContainerView.ViewController? {
-            val playerUrl = ParcelableCardEntityUtils.getString(card, "player_url") ?: return null
+            val playerUrl = card.getString("player_url") ?: return null
             return CardBrowserViewController.show(playerUrl)
         }
     }

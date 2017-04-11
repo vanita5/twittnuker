@@ -30,6 +30,7 @@ import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -104,7 +105,7 @@ abstract class GetStatusesTask(
                 }
                 if (sinceIds != null && sinceIds[i] != null) {
                     sinceId = sinceIds[i]
-                    val sinceIdLong = NumberUtils.toLong(sinceId, -1)
+                    val sinceIdLong = sinceId.toLongOr(-1L)
                     //TODO handle non-twitter case
                     if (sinceIdLong != -1L) {
                         paging.sinceId((sinceIdLong - 1).toString())
@@ -212,7 +213,7 @@ abstract class GetStatusesTask(
         val rowsDeleted = resolver.delete(writeUri, deleteWhere, deleteWhereArgs)
 
         // Insert a gap.
-        val deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId)
+        val deletedOldGap = rowsDeleted > 0 && maxId in statusIds
         val noRowsDeleted = rowsDeleted == 0
         // Why loadItemLimit / 2? because it will not acting strange in most cases
         val insertGap = minIdx != -1 && olderCount > 0 && (noRowsDeleted || deletedOldGap)

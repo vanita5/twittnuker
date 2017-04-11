@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model.util
 
+import de.vanita5.twittnuker.extension.model.toParcelables
 import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -86,26 +87,26 @@ object ParcelableActivityUtils {
         result.min_sort_position = activity.minSortPosition
         result.max_position = activity.maxPosition
         result.min_position = activity.minPosition
-        result.sources = ParcelableUserUtils.fromUsers(activity.sources, accountKey, accountType,
+        result.sources = activity.sources?.toParcelables(accountKey, accountType,
                 profileImageSize)
-        result.target_users = ParcelableUserUtils.fromUsers(activity.targetUsers, accountKey,
+        result.target_users = activity.targetUsers?.toParcelables(accountKey,
                 accountType, profileImageSize)
-        result.target_user_lists = ParcelableUserListUtils.fromUserLists(activity.targetUserLists,
-                accountKey, profileImageSize)
-        result.target_statuses = ParcelableStatusUtils.fromStatuses(activity.targetStatuses,
-                accountKey, accountType, profileImageSize)
-        result.target_object_statuses = ParcelableStatusUtils.fromStatuses(activity.targetObjectStatuses,
-                accountKey, accountType, profileImageSize)
-        result.target_object_user_lists = ParcelableUserListUtils.fromUserLists(activity.targetObjectUserLists,
-                accountKey, profileImageSize)
-        result.target_object_users = ParcelableUserUtils.fromUsers(activity.targetObjectUsers,
-                accountKey, accountType, profileImageSize)
-        result.has_following_source = activity.sources.fold(false) { folded, item ->
+        result.target_user_lists = activity.targetUserLists?.toParcelables(accountKey,
+                profileImageSize)
+        result.target_statuses = activity.targetStatuses?.toParcelables(accountKey,
+                accountType, profileImageSize)
+        result.target_object_statuses = activity.targetObjectStatuses?.toParcelables(accountKey,
+                accountType, profileImageSize)
+        result.target_object_user_lists = activity.targetObjectUserLists?.toParcelables(accountKey,
+                profileImageSize)
+        result.target_object_users = activity.targetObjectUsers?.toParcelables(accountKey, accountType,
+                profileImageSize)
+        result.has_following_source = activity.sources?.fold(false) { folded, item ->
             if (item.isFollowing == true) {
                 return@fold true
             }
             return@fold folded
-        }
+        } ?: false
         if (result.sources != null) {
             result.source_ids = arrayOfNulls<UserKey>(result.sources.size)
             for (i in result.sources.indices) {

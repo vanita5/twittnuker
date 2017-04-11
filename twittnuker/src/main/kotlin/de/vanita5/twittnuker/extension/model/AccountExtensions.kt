@@ -30,7 +30,7 @@ import android.support.annotation.RequiresApi
 import android.text.TextUtils
 import org.mariotaku.ktextension.HexColorFormat
 import org.mariotaku.ktextension.toHexColor
-import org.mariotaku.ktextension.toInt
+import org.mariotaku.ktextension.toIntOr
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -93,7 +93,7 @@ fun Account.getColor(am: AccountManager): Int {
 }
 
 fun Account.getPosition(am: AccountManager): Int {
-    return AccountDataQueue.getUserData(am, this, ACCOUNT_USER_DATA_POSITION).toInt(-1)
+    return AccountDataQueue.getUserData(am, this, ACCOUNT_USER_DATA_POSITION).toIntOr(-1)
 }
 
 fun Account.getAccountExtras(am: AccountManager): AccountExtras? {

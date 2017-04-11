@@ -37,7 +37,6 @@ import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.task
 import okhttp3.Dns
-import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
@@ -234,7 +233,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 val uid = intent.getIntExtra(Intent.EXTRA_UID, -1)
                 val packages = packageManager.getPackagesForUid(uid)
                 val manager = externalThemeManager
-                if (ArrayUtils.contains(packages, manager.emojiPackageName)) {
+                if (manager.emojiPackageName in packages) {
                     manager.reloadEmojiPreferences()
                 }
             }

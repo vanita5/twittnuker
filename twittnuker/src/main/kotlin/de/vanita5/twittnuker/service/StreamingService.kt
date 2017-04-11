@@ -38,7 +38,7 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.toLong
+import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
@@ -380,7 +380,7 @@ class StreamingService : BaseService() {
                     } else {
                         val uri = resolver.insert(Activities.AboutMe.CONTENT_URI, values)
                         if (uri != null) {
-                            curActivity._id = uri.lastPathSegment.toLong(-1)
+                            curActivity._id = uri.lastPathSegment.toLongOr(-1L)
                         }
                     }
                     lastActivityAboutMe = curActivity

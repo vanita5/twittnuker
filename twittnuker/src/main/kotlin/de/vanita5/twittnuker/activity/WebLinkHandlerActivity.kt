@@ -27,8 +27,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import org.apache.commons.lang3.ArrayUtils
-import org.mariotaku.ktextension.toLong
+import org.mariotaku.ktextension.toLongOr
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
@@ -189,7 +188,7 @@ class WebLinkHandlerActivity : Activity() {
                     return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 else -> {
-                    if (ArrayUtils.contains(TWITTER_RESERVED_PATHS, pathSegments[0])) {
+                    if (pathSegments[0] in TWITTER_RESERVED_PATHS) {
                         return Pair(null, true)
                     }
                     return handleUserSpecificPageIntent(uri, pathSegments, pathSegments[0])
@@ -245,7 +244,7 @@ class WebLinkHandlerActivity : Activity() {
                 }
             }
         } else if (segsSize >= 3) {
-            if ("status" == pathSegments[1] && pathSegments[2].toLong(-1) != -1L) {
+            if ("status" == pathSegments[1] && pathSegments[2].toLongOr(-1L) != -1L) {
                 val builder = Uri.Builder()
                 builder.scheme(SCHEME_TWITTNUKER)
                 builder.authority(AUTHORITY_STATUS)
