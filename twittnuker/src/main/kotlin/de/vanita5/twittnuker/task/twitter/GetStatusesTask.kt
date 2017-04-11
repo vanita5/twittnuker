@@ -26,8 +26,6 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import org.apache.commons.lang3.ArrayUtils
-import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toLongOr
@@ -208,7 +206,7 @@ abstract class GetStatusesTask(
         var olderCount = -1
         if (minPositionKey > 0) {
             olderCount = DataStoreUtils.getStatusesCount(context, preferences, uri, null,
-                    minPositionKey, Statuses.POSITION_KEY, false, arrayOf(accountKey))
+                    Statuses.POSITION_KEY, minPositionKey, false, arrayOf(accountKey))
         }
         val rowsDeleted = resolver.delete(writeUri, deleteWhere, deleteWhereArgs)
 

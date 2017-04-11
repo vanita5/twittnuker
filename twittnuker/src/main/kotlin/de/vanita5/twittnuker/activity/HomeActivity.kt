@@ -99,6 +99,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
+import org.mariotaku.sqliteqb.library.Expression
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
@@ -931,7 +932,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                             readStateManager.getPosition(tag)
                         }.fold(0L, Math::max)
                         val count = DataStoreUtils.getStatusesCount(context, preferences,
-                                Statuses.CONTENT_URI, spec.args, position, Statuses.STATUS_TIMESTAMP,
+                                Statuses.CONTENT_URI, spec.args, Statuses.STATUS_TIMESTAMP, position,
                                 true, accountKeys)
                         result.put(i, count)
                         publishProgress(TabBadge(i, count))
@@ -952,8 +953,9 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                         val projection = (Conversations.COLUMNS + Conversations.UNREAD_COUNT).map {
                             TwidereQueryBuilder.mapConversationsProjection(it)
                         }.toTypedArray()
+                        val unreadHaving = Expression.greaterThan(Conversations.UNREAD_COUNT, 0)
                         val count = context.contentResolver.getUnreadMessagesEntriesCursor(projection,
-                                accountKeys)?.useCursor { cur ->
+                                accountKeys, extraHaving = unreadHaving)?.useCursor { cur ->
                             return@useCursor cur.count
                         } ?: -1
                         publishProgress(TabBadge(i, count))

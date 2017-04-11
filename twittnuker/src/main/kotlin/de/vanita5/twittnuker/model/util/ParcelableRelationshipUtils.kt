@@ -96,9 +96,8 @@ object ParcelableRelationshipUtils {
         relationships.forEach {
             if (it._id > 0) {
                 val values = valuesCreator.create(it)
-                val where = Expression.equalsArgs(CachedRelationships._ID).sql
-                val whereArgs = arrayOf(it._id.toString())
-                cr.update(CachedRelationships.CONTENT_URI, values, where, whereArgs)
+                val where = Expression.equals(CachedRelationships._ID, it._id).sql
+                cr.update(CachedRelationships.CONTENT_URI, values, where, null)
             } else {
                 insertItems.add(it)
             }
