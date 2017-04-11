@@ -68,7 +68,7 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
     @JsonField(name = "screen_name")
     String screenName;
 
-    @JsonField(name = {"location", "profile_location"})
+    @JsonField(name = "location")
     String location;
 
     @JsonField(name = "description")
