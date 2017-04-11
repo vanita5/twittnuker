@@ -29,7 +29,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.BadParcelableException
 import android.support.customtabs.CustomTabsIntent
-import org.apache.commons.lang3.StringUtils
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
@@ -98,7 +97,7 @@ open class OnLinkClickHandler(
                 return true
             }
             TwidereLinkify.LINK_TYPE_LIST -> {
-                val mentionList = StringUtils.split(link, "/")
+                val mentionList = link.split("/")
                 if (mentionList.size != 2) {
                     return false
                 }

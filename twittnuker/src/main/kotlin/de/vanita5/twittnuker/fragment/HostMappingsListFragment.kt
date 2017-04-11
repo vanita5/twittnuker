@@ -38,7 +38,6 @@ import android.widget.*
 import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.CompoundButton.OnCheckedChangeListener
 import kotlinx.android.synthetic.main.fragment_content_listview.*
-import org.apache.commons.lang3.StringUtils
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.HOST_MAPPING_PREFERENCES_NAME
@@ -111,7 +110,7 @@ class HostMappingsListFragment : AbsContentListViewFragment<HostMappingsListFrag
         val args = Bundle()
         args.putString(EXTRA_HOST, host)
         args.putString(EXTRA_ADDRESS, address)
-        args.putBoolean(EXTRA_EXCLUDED, StringUtils.equals(host, address))
+        args.putBoolean(EXTRA_EXCLUDED, host == address)
         args.putBoolean(EXTRA_EDIT_MODE, true)
         val df = AddMappingDialogFragment()
         df.arguments = args

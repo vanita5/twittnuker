@@ -26,10 +26,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import android.util.TimingLogger
-import de.vanita5.twittnuker.BuildConfig
 import okhttp3.Dns
-import org.apache.commons.lang3.StringUtils
 import org.mariotaku.ktextension.toIntOr
+import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.HOST_MAPPING_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
@@ -236,7 +235,7 @@ class TwidereDns(context: Context, private val preferences: SharedPreferences) :
 
         private fun hostMatches(host: String?, rule: String?): Boolean {
             if (rule == null || host == null) return false
-            if (rule.startsWith(".")) return StringUtils.endsWithIgnoreCase(host, rule)
+            if (rule.startsWith(".")) return host.endsWith(rule, ignoreCase = true)
             return host.equals(rule, ignoreCase = true)
         }
 
