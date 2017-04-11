@@ -22,17 +22,22 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import io.nayuki.qrcodegen.QrCode
 import io.nayuki.qrcodegen.QrCodeAndroid
 import kotlinx.android.synthetic.main.fragment_user_qr.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.util.LinkCreator
 
@@ -49,9 +54,14 @@ class UserQRDialogFragment : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val qrCode = QrCode.encodeText(LinkCreator.getUserWebLink(user).toString(), QrCode.Ecc.HIGH)
         val bitmap = QrCodeAndroid.toBitmap(qrCode, 1, 0, Bitmap.Config.ARGB_8888)
+        val profileImageSize = getString(R.string.profile_image_size)
         qrView.setImageDrawable(BitmapDrawable(resources, bitmap).apply {
             this.setAntiAlias(false)
             this.isFilterBitmap = false
         })
+        profileImage.setShapeBackground(Color.WHITE)
+        Glide.with(this).loadProfileImage(context, user, profileImage.style, profileImage.cornerRadius,
+                profileImage.cornerRadiusRatio, profileImageSize).into(profileImage)
     }
+
 }
