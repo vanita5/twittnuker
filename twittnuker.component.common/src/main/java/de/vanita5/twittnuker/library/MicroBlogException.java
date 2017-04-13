@@ -27,13 +27,13 @@ package de.vanita5.twittnuker.library;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.HttpRequest;
-import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.library.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.library.twitter.util.InternalParseUtil;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -87,7 +87,7 @@ public class MicroBlogException extends Exception implements TwitterResponse, Ht
 
 
     public ErrorInfo[] getErrors() {
-        if (errors != null && errorMessage != null && requestPath != null) {
+        if (errors == null && errorMessage != null && requestPath != null) {
             return new ErrorInfo[]{new SingleErrorInfo(errorMessage, requestPath)};
         }
         return errors;

@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
@@ -59,13 +58,13 @@ import javax.inject.Inject
 
 class ParcelableUserLoader(
         context: Context,
-        private val accountKey: UserKey,
+        private val accountKey: UserKey?,
         private val userKey: UserKey?,
         private val screenName: String?,
         private val extras: Bundle?,
         private val omitIntentExtra: Boolean,
         private val loadFromCache: Boolean
-) : FixedAsyncTaskLoader<SingleResponse<ParcelableUser>>(context), Constants {
+) : FixedAsyncTaskLoader<SingleResponse<ParcelableUser>>(context) {
 
     private val profileImageSize = context.getString(R.string.profile_image_size)
 
@@ -79,7 +78,7 @@ class ParcelableUserLoader(
     override fun loadInBackground(): SingleResponse<ParcelableUser> {
         val context = context
         val resolver = context.contentResolver
-        val accountKey = accountKey
+        val accountKey = accountKey ?: return SingleResponse(MicroBlogException("No account"))
         val am = AccountManager.get(context)
         val details = AccountUtils.getAllAccountDetails(am, AccountUtils.getAccounts(am), true).firstOrNull {
             if (it.key == accountKey) {
@@ -108,7 +107,7 @@ class ParcelableUserLoader(
                 where = Expression.equalsArgs(CachedUsers.USER_KEY)
                 whereArgs = arrayOf(userKey.toString())
             } else if (screenName != null) {
-                val host = this.accountKey.host
+                val host = accountKey.host
                 if (host != null) {
                     where = Expression.and(
                             Expression.likeRaw(Columns.Column(CachedUsers.USER_KEY), "'%@'||?"),
