@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util
 
+import android.app.Activity
 import android.app.Application
 import android.content.SharedPreferences
 import de.vanita5.twittnuker.annotation.AccountType
@@ -37,6 +38,8 @@ abstract class Analyzer {
     protected abstract fun init(application: Application)
 
     protected abstract fun preferencesChanged(preferences: SharedPreferences)
+
+    protected abstract fun activityResumed(activity: Activity)
 
     interface Event {
         val name: String
@@ -72,6 +75,10 @@ abstract class Analyzer {
 
         fun preferencesChanged(preferences: SharedPreferences) {
             implementation?.preferencesChanged(preferences)
+        }
+
+        fun activityResumed(activity: Activity) {
+            implementation?.activityResumed(activity)
         }
     }
 }

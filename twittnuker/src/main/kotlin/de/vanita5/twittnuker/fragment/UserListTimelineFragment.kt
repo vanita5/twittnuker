@@ -35,32 +35,13 @@ import java.util.*
 
 class UserListTimelineFragment : ParcelableStatusesFragment() {
 
-    override fun onCreateStatusesLoader(context: Context,
-                                        args: Bundle,
-                                        fromUser: Boolean): Loader<List<ParcelableStatus>?> {
-        refreshing = true
-        val listId = args.getString(EXTRA_LIST_ID)
-        val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-        val screenName = args.getString(EXTRA_SCREEN_NAME)
-        val listName = args.getString(EXTRA_LIST_NAME)
-        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return UserListTimelineLoader(activity, accountKey, listId, userKey, screenName,
-                listName, sinceId, maxId, adapterData, savedStatusesFileArgs, tabPosition,
-                fromUser, loadingMore)
-    }
-
     override val savedStatusesFileArgs: Array<String>?
         get() {
-            val args = arguments!!
-            val accountKey = Utils.getAccountKey(context, args)!!
-            val listId = args.getString(EXTRA_LIST_ID)
-            val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-            val screenName = args.getString(EXTRA_SCREEN_NAME)
-            val listName = args.getString(EXTRA_LIST_NAME)
+            val accountKey = Utils.getAccountKey(context, arguments)
+            val listId = arguments.getString(EXTRA_LIST_ID)
+            val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
+            val screenName = arguments.getString(EXTRA_SCREEN_NAME)
+            val listName = arguments.getString(EXTRA_LIST_NAME)
             val result = ArrayList<String>()
             result.add(TwittnukerConstants.AUTHORITY_USER_LIST_TIMELINE)
             result.add("account=$accountKey")
@@ -81,17 +62,16 @@ class UserListTimelineFragment : ParcelableStatusesFragment() {
 
     override val readPositionTagWithArguments: String?
         get() {
-            val args = arguments!!
-            val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+            val tabPosition = arguments.getInt(EXTRA_TAB_POSITION, -1)
             val sb = StringBuilder("user_list_")
             if (tabPosition < 0) return null
-            val listId = args.getString(EXTRA_LIST_ID)
-            val listName = args.getString(EXTRA_LIST_NAME)
+            val listId = arguments.getString(EXTRA_LIST_ID)
+            val listName = arguments.getString(EXTRA_LIST_NAME)
             if (listId != null) {
                 sb.append(listId)
             } else if (listName != null) {
-                val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-                val screenName = args.getString(EXTRA_SCREEN_NAME)
+                val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
+                val screenName = arguments.getString(EXTRA_SCREEN_NAME)
                 if (userKey != null) {
                     sb.append(userKey)
                 } else if (screenName != null) {
@@ -106,5 +86,22 @@ class UserListTimelineFragment : ParcelableStatusesFragment() {
             }
             return sb.toString()
         }
+
+    override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
+            Loader<List<ParcelableStatus>?> {
+        refreshing = true
+        val listId = args.getString(EXTRA_LIST_ID)
+        val accountKey = Utils.getAccountKey(context, args)
+        val maxId = args.getString(EXTRA_MAX_ID)
+        val sinceId = args.getString(EXTRA_SINCE_ID)
+        val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
+        val screenName = args.getString(EXTRA_SCREEN_NAME)
+        val listName = args.getString(EXTRA_LIST_NAME)
+        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
+        return UserListTimelineLoader(activity, accountKey, listId, userKey, screenName,
+                listName, sinceId, maxId, adapterData, savedStatusesFileArgs, tabPosition,
+                fromUser, loadingMore)
+    }
 
 }

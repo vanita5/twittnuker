@@ -79,6 +79,9 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+/**
+ * Update status
+ */
 class UpdateStatusTask(
         context: Context,
         internal val stateCallback: UpdateStatusTask.StateCallback
@@ -343,7 +346,7 @@ class UpdateStatusTask(
                         if (statusUpdate.media.isNotNullOrEmpty()) {
                             // Fanfou only allow one photo
                             fanfouUpdateStatusWithPhoto(microBlog, statusUpdate, pendingUpdate,
-                                    pendingUpdate.overrideTexts[i], account.mediaSizeLimit, i)
+                                    account.mediaSizeLimit, i)
                         } else {
                             twitterUpdateStatus(microBlog, statusUpdate, pendingUpdate, i)
                         }
@@ -363,8 +366,7 @@ class UpdateStatusTask(
 
     @Throws(MicroBlogException::class, UploadException::class)
     private fun fanfouUpdateStatusWithPhoto(microBlog: MicroBlog, statusUpdate: ParcelableStatusUpdate,
-                                            pendingUpdate: PendingStatusUpdate, overrideText: String,
-                                            sizeLimit: SizeLimit, updateIndex: Int): Status {
+            pendingUpdate: PendingStatusUpdate, sizeLimit: SizeLimit, updateIndex: Int): Status {
         if (statusUpdate.media.size > 1) {
             throw MicroBlogException(context.getString(R.string.error_too_many_photos_fanfou))
         }
@@ -372,8 +374,8 @@ class UpdateStatusTask(
         try {
             return getBodyFromMedia(context, media, sizeLimit, false, ContentLengthInputStream.ReadListener { length, position ->
                 stateCallback.onUploadingProgressChanged(-1, position, length)
-            }).use { mediaBody ->
-                val photoUpdate = PhotoStatusUpdate(mediaBody.body, pendingUpdate.overrideTexts[updateIndex])
+            }).use { (body) ->
+                val photoUpdate = PhotoStatusUpdate(body, pendingUpdate.overrideTexts[updateIndex])
                 return@use microBlog.uploadPhoto(photoUpdate)
             }
         } catch (e: IOException) {

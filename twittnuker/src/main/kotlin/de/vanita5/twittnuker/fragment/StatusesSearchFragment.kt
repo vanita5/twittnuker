@@ -36,6 +36,34 @@ import java.util.*
 
 open class StatusesSearchFragment : ParcelableStatusesFragment() {
 
+    override val savedStatusesFileArgs: Array<String>?
+        get() {
+            val accountKey = Utils.getAccountKey(context, arguments)
+            val query = arguments.getString(EXTRA_QUERY)
+            val result = ArrayList<String>()
+            result.add(AUTHORITY_SEARCH_TWEETS)
+            result.add("account=$accountKey")
+            result.add("query=$query")
+            return result.toTypedArray()
+        }
+
+    override val readPositionTagWithArguments: String?
+        get() {
+            val tabPosition = arguments.getInt(EXTRA_TAB_POSITION, -1)
+            val sb = StringBuilder("search_")
+            if (tabPosition < 0) return null
+            val query = arguments.getString(EXTRA_QUERY) ?: return null
+            val encodedQuery: String
+            try {
+                encodedQuery = URLEncoder.encode(query, "UTF-8").replace("[^\\w\\d]".toRegex(), "_")
+            } catch (e: UnsupportedEncodingException) {
+                return null
+            }
+
+            sb.append(encodedQuery)
+            return sb.toString()
+        }
+
     override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
             Loader<List<ParcelableStatus>?> {
         refreshing = true
@@ -54,35 +82,5 @@ open class StatusesSearchFragment : ParcelableStatusesFragment() {
     override fun fitSystemWindows(insets: Rect) {
         super.fitSystemWindows(insets)
     }
-
-    override val savedStatusesFileArgs: Array<String>?
-        get() {
-            val args = arguments!!
-            val accountKey = Utils.getAccountKey(context, args)!!
-            val query = args.getString(EXTRA_QUERY)!!
-            val result = ArrayList<String>()
-            result.add(AUTHORITY_SEARCH_TWEETS)
-            result.add("account=$accountKey")
-            result.add("query=$query")
-            return result.toTypedArray()
-        }
-
-    override val readPositionTagWithArguments: String?
-        get() {
-            val args = arguments!!
-            val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-            val sb = StringBuilder("search_")
-            if (tabPosition < 0) return null
-            val query = args.getString(EXTRA_QUERY) ?: return null
-            val encodedQuery: String
-            try {
-                encodedQuery = URLEncoder.encode(query, "UTF-8").replace("[^\\w\\d]".toRegex(), "_")
-            } catch (e: UnsupportedEncodingException) {
-                return null
-            }
-
-            sb.append(encodedQuery)
-            return sb.toString()
-        }
 
 }

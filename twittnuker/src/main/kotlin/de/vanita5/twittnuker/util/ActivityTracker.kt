@@ -63,7 +63,7 @@ class ActivityTracker : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-
+        Analyzer.activityResumed(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {

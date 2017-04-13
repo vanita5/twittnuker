@@ -42,6 +42,9 @@ import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.holder.TimelineFilterHeaderViewHolder
 import java.util.*
 
+/**
+ * User timeline
+ */
 class UserTimelineFragment : ParcelableStatusesFragment() {
 
     val pinnedStatusIds: Array<String>?

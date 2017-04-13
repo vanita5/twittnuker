@@ -59,16 +59,15 @@ class ImagePageFragment : SubsampleImageViewerFragment() {
         }
     }
 
+    override fun getDownloadUri(): Uri? {
+        return media.media_url?.let(Uri::parse)
+    }
+
     override fun getDownloadExtra(): Any? {
         val mediaExtra = MediaExtra()
         mediaExtra.accountKey = accountKey
-        val origDownloadUri = super.getDownloadUri()
-        val downloadUri = downloadUri
-        if (origDownloadUri != null && downloadUri != null) {
-            val fallbackUrl = origDownloadUri.toString()
-            mediaExtra.fallbackUrl = fallbackUrl
-            mediaExtra.isSkipUrlReplacing = fallbackUrl != downloadUri.toString()
-        }
+        mediaExtra.fallbackUrl = media.preview_url
+        mediaExtra.isSkipUrlReplacing = mediaExtra.fallbackUrl != downloadUri?.toString()
         return mediaExtra
     }
 

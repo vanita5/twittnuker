@@ -45,6 +45,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.*
 
+/**
+ * Retweet status
+ */
 class RetweetStatusTask(
         context: Context,
         private val accountKey: UserKey,
@@ -124,7 +127,6 @@ class RetweetStatusTask(
         creatingRetweetIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         if (result.hasData()) {
             val status = result.data
-
             bus.post(StatusRetweetedEvent(status))
         } else {
             Utils.showErrorMessage(context, R.string.action_retweeting, result.exception, true)

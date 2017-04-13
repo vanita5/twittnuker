@@ -34,6 +34,17 @@ import java.util.*
 
 class UserMentionsFragment : StatusesSearchFragment() {
 
+    override val savedStatusesFileArgs: Array<String>?
+        get() {
+            val accountKey = Utils.getAccountKey(context, arguments)
+            val screenName = arguments.getString(EXTRA_SCREEN_NAME)
+            val result = ArrayList<String>()
+            result.add(AUTHORITY_USER_MENTIONS)
+            result.add("account=$accountKey")
+            result.add("screen_name=$screenName")
+            return result.toTypedArray()
+        }
+
     override fun onCreateStatusesLoader(context: Context,
                                         args: Bundle,
                                         fromUser: Boolean): Loader<List<ParcelableStatus>?> {
@@ -49,16 +60,4 @@ class UserMentionsFragment : StatusesSearchFragment() {
                 adapterData, savedStatusesFileArgs, tabPosition, fromUser, makeGap, loadingMore)
     }
 
-
-    override val savedStatusesFileArgs: Array<String>?
-        get() {
-            val args = arguments!!
-            val accountKey = Utils.getAccountKey(context, args)!!
-            val screenName = args.getString(EXTRA_SCREEN_NAME)!!
-            val result = ArrayList<String>()
-            result.add(AUTHORITY_USER_MENTIONS)
-            result.add("account=$accountKey")
-            result.add("screen_name=$screenName")
-            return result.toTypedArray()
-        }
 }

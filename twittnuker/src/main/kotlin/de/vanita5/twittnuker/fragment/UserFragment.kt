@@ -112,6 +112,7 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadOriginalProfileImage
 import de.vanita5.twittnuker.extension.loadProfileBanner
+import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.originalProfileImage
@@ -543,7 +544,10 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val requestManager = Glide.with(this)
         requestManager.loadProfileBanner(context, user, width).into(profileBanner)
         requestManager.loadOriginalProfileImage(context, user, profileImage.style,
-                profileImage.cornerRadius, profileImage.cornerRadiusRatio).into(profileImage)
+                profileImage.cornerRadius, profileImage.cornerRadiusRatio)
+                .thumbnail(requestManager.loadProfileImage(context, user, profileImage.style,
+                        profileImage.cornerRadius, profileImage.cornerRadiusRatio,
+                        getString(R.string.profile_image_size))).into(profileImage)
         val relationship = relationship
         if (relationship == null) {
             getFriendship()
@@ -1200,6 +1204,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 val url = user.originalProfileImage ?: return
                 val profileImage = ParcelableMediaUtils.image(url)
                 profileImage.type = ParcelableMedia.Type.IMAGE
+                profileImage.preview_url = user.profile_image_url
                 val media = arrayOf(profileImage)
                 IntentUtils.openMedia(activity, user.account_key, media, null, false,
                         preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
