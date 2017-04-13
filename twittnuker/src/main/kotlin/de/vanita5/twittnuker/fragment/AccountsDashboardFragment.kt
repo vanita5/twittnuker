@@ -337,6 +337,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         val account = accountsAdapter.selectedAccount ?: return
         var hasDmTab = false
         var hasInteractionsTab = false
+        var hasPublicTimelineTab = false
         for (tab in tabs) {
             when (tab.type) {
                 CustomTabType.DIRECT_MESSAGES -> {
@@ -347,6 +348,11 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 CustomTabType.NOTIFICATIONS_TIMELINE -> {
                     if (!hasInteractionsTab) {
                         hasInteractionsTab = hasAccountInTab(tab, account.key, account.activated)
+                    }
+                }
+                CustomTabType.PUBLIC_TIMELINE -> {
+                    if (!hasPublicTimelineTab) {
+                        hasPublicTimelineTab = hasAccountInTab(tab, account.key, true)
                     }
                 }
             }
@@ -375,9 +381,10 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             }
             AccountType.STATUSNET -> {
                 hasGroups = true
+                hasPublicTimeline = !hasPublicTimelineTab
             }
             AccountType.FANFOU -> {
-                hasPublicTimeline = true
+                hasPublicTimeline = !hasPublicTimelineTab
             }
         }
         menu.setItemAvailability(R.id.groups, hasGroups)

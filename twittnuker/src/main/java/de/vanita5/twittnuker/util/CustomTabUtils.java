@@ -47,6 +47,9 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.model.tab.argument.TabArguments;
+import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
 import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.TabExtras;
@@ -114,13 +117,33 @@ public class CustomTabUtils implements Constants {
         return specs;
     }
 
+    /**
+     * Remember to make this method correspond to {@link TabArguments#parse(String, String)}
+     *
+     * @see TabArguments#parse(String, String)
+     */
     @Nullable
     public static TabArguments newTabArguments(@NonNull @CustomTabType String type) {
-        try {
-            return TabArguments.parse(type, "{}");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        switch (type) {
+            case CustomTabType.HOME_TIMELINE:
+            case CustomTabType.NOTIFICATIONS_TIMELINE:
+            case CustomTabType.DIRECT_MESSAGES:
+            case CustomTabType.TRENDS_SUGGESTIONS:
+            case CustomTabType.PUBLIC_TIMELINE: {
+                return new TabArguments();
+            }
+            case CustomTabType.USER_TIMELINE:
+            case CustomTabType.FAVORITES: {
+                return new UserArguments();
+            }
+            case CustomTabType.LIST_TIMELINE: {
+                return new UserListArguments();
+            }
+            case CustomTabType.SEARCH_STATUSES: {
+                return new TextQueryArguments();
+            }
         }
+        return null;
     }
 
 

@@ -238,7 +238,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
             args.putAll(fragmentArgs)
             args.putBoolean(EXTRA_FROM_USER, true)
         }
-        loaderManager.restartLoader(0, args, this)
+        loaderManager.restartLoader(loaderId, args, this)
     }
 
     private fun showContentOrError() {

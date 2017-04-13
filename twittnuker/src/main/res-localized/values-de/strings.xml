@@ -702,12 +702,12 @@
     <string name="preference_summary_background_streaming">Drücke "Home" statt "Zurück", damit das Streaming weiter läuft</string>
     <string name="preference_summary_chrome_custom_tab">Links mit dem In-App Browser öffnen</string>
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
+    <string name="preference_summary_favorite_confirmation">Nachfragen vorm favorisieren</string>
+    <string name="preference_summary_like_confirmation">Nachfragen vorm liken</string>
     <string name="preference_summary_media_preload_non_metered_network">Medien nur in nicht beschränkten Netzwerken wie WLAN vorladen.</string>
     <string name="preference_summary_streaming_non_metered_network">Nur mit WLAN streamen</string>
     <string name="preference_summary_streaming_power_saving">Nur streamen während der Akku geladen wird</string>
     <string name="preference_summary_trends_location">Du kannst jetzt den Standort in den Tab-Einstellungen separat festlegen.</string>
-    <string name="preference_summary_favorite_confirmation">Nachfragen vorm favorisieren</string>
-    <string name="preference_summary_like_confirmation">Nachfragen vorm liken</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
     <string name="preference_title_auto_refresh_compatibility_mode">Kompatibilitätsmodus</string>
@@ -778,7 +778,6 @@
     <string name="proxy_summary">Proxy für alle Netzwerkanfragen verwenden.</string>
     <string name="proxy_type">Proxy Typ</string>
     <string name="proxy_username">Proxy Username</string>
-    <string name="public_timeline">Öffentliche Timeline</string>
     <string name="query">Abfrage</string>
     <string name="quick_send">\"Enter\" zum Senden</string>
     <string name="quick_send_summary">Tweet mit \"Enter\" abschicken.</string>
@@ -973,10 +972,12 @@
     <!-- [noun] Like, Formerly Twitter's favorite, in the plural -->
     <string name="title_likes">Likes</string>
     <string name="title_manage_filter_subscriptions">Filter Abonnements</string>
+    <string name="title_media_timeline">Medien Timeline</string>
     <string name="title_mentions">Erwähnungen</string>
     <string name="title_message_conversation_info">Gruppeninfo</string>
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
+    <string name="title_public_timeline">Öffentliche Timeline</string>
     <string name="title_quick_action">Quick Action</string>
     <string name="title_retweet_quote_confirm">Retweet</string>
     <string name="title_scheduled_statuses">Geplante Tweets</string>
