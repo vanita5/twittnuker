@@ -27,8 +27,10 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.PorterDuff
+import android.os.Parcelable
 import android.support.annotation.UiThread
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -42,16 +44,18 @@ import android.view.MenuItem
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
-import org.mariotaku.ktextension.setItemChecked
-import org.mariotaku.ktextension.setMenuItemIcon
+import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
+import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.favoriteConfirmationKey
+import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
-import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment
-import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment
+import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.content.FavoriteConfirmDialogFragment
+import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.fragment.status.BlockStatusUsersDialogFragment
 import de.vanita5.twittnuker.fragment.status.MuteStatusUsersDialogFragment
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
@@ -65,28 +69,57 @@ import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
+import java.io.IOException
 
 object MenuUtils {
 
-    fun setItemAvailability(menu: Menu?, id: Int, available: Boolean) {
-        if (menu == null) return
-        val item = menu.findItem(id) ?: return
-        item.isVisible = available
-        item.isEnabled = available
+    fun favorite(context: Context, fragment: Fragment?, fm: FragmentManager, preferences: SharedPreferences,
+                 twitter: AsyncTwitterWrapper, status: ParcelableStatus, item: MenuItem) {
+        if (preferences[favoriteConfirmationKey]) {
+            if (fragment is BaseFragment) {
+                fragment.executeAfterFragmentResumed {
+                    FavoriteConfirmDialogFragment.show(it.childFragmentManager,
+                            status.account_key, status.id, status)
+                }
+            } else if (context is BaseActivity) {
+                context.executeAfterFragmentResumed {
+                    FavoriteConfirmDialogFragment.show(it.supportFragmentManager,
+                            status.account_key, status.id, status)
+                }
+            } else {
+                FavoriteConfirmDialogFragment.show(fm, status.account_key, status.id,
+                        status)
+            }
+        } else if (status.is_favorite) {
+            twitter.destroyFavoriteAsync(status.account_key, status.id)
+        } else {
+            val provider = MenuItemCompat.getActionProvider(item)
+            if (provider is FavoriteItemProvider) {
+                provider.invokeItem(item,
+                        AbsStatusesFragment.DefaultOnLikedListener(twitter, status))
+            } else {
+                twitter.createFavoriteAsync(status.account_key, status)
+            }
+        }
     }
 
-    fun setItemChecked(menu: Menu?, id: Int, checked: Boolean) {
-        menu?.setItemChecked(id, checked)
-    }
 
-    fun setMenuItemIcon(menu: Menu?, id: Int, @DrawableRes icon: Int) {
-        menu?.setMenuItemIcon(id, icon)
-    }
-
-    fun setMenuItemTitle(menu: Menu?, id: Int, @StringRes icon: Int) {
-        if (menu == null) return
-        val item = menu.findItem(id) ?: return
-        item.setTitle(icon)
+    fun retweet(context: Context, fragment: Fragment?, fm: FragmentManager,
+                status: ParcelableStatus) {
+        if (fragment is BaseFragment) {
+            fragment.executeAfterFragmentResumed {
+                RetweetQuoteDialogFragment.show(it.childFragmentManager, status.account_key,
+                        status.id, status)
+            }
+        } else if (context is BaseActivity) {
+            context.executeAfterFragmentResumed {
+                RetweetQuoteDialogFragment.show(it.supportFragmentManager, status.account_key,
+                        status.id, status)
+            }
+        } else {
+            RetweetQuoteDialogFragment.show(fm, status.account_key,
+                    status.id, status)
+        }
     }
 
     fun addIntentToMenu(context: Context, menu: Menu, queryIntent: Intent,
@@ -114,29 +147,21 @@ object MenuUtils {
         }
     }
 
-    fun setupForStatus(context: Context,
-                       preferences: SharedPreferencesWrapper,
-                       menu: Menu,
-                       status: ParcelableStatus,
-                       twitter: AsyncTwitterWrapper,
-                       manager: UserColorNameManager) {
+    fun setupForStatus(context: Context, menu: Menu, preferences: SharedPreferences,
+            twitter: AsyncTwitterWrapper, manager: UserColorNameManager, status: ParcelableStatus) {
         val account = AccountUtils.getAccountDetails(AccountManager.get(context),
                 status.account_key, true) ?: return
-        setupForStatus(context, preferences, menu, status, account, twitter, manager)
+        setupForStatus(context, menu, preferences, twitter, manager, status, account)
     }
 
     @UiThread
-    fun setupForStatus(context: Context,
-                       preferences: SharedPreferencesWrapper,
-                       menu: Menu,
-                       status: ParcelableStatus,
-                       details: AccountDetails,
-                       twitter: AsyncTwitterWrapper,
-                       manager: UserColorNameManager) {
+    fun setupForStatus(context: Context, menu: Menu, preferences: SharedPreferences,
+            twitter: AsyncTwitterWrapper, manager: UserColorNameManager, status: ParcelableStatus,
+            details: AccountDetails) {
         if (menu is ContextMenu) {
-            menu.setHeaderTitle(context.getString(R.string.status_menu_title_format,
-                    manager.getDisplayName(status.user_key, status.user_name, status.user_screen_name,
-                            preferences[nameFirstKey]),
+            val displayName = manager.getDisplayName(status.user_key, status.user_name,
+                    status.user_screen_name, preferences[nameFirstKey])
+            menu.setHeaderTitle(context.getString(R.string.status_menu_title_format, displayName,
                     status.text_unescaped))
         }
         val retweetHighlight = ContextCompat.getColor(context, R.color.highlight_retweet)
@@ -171,7 +196,7 @@ object MenuUtils {
                 isFavorite = status.is_favorite
             }
             val provider = MenuItemCompat.getActionProvider(favorite)
-            val useStar = preferences.getBoolean(SharedPreferenceConstants.KEY_I_WANT_MY_STARS_BACK)
+            val useStar = preferences[iWantMyStarsBackKey]
             if (provider is FavoriteItemProvider) {
                 provider.setIsFavorite(favorite, isFavorite)
             } else {
@@ -202,7 +227,7 @@ object MenuUtils {
         val translate = menu.findItem(R.id.translate)
         if (translate != null) {
             val isOfficialKey = Utils.isOfficialCredentials(context, details)
-            setItemAvailability(menu, R.id.translate, isOfficialKey)
+            menu.setItemAvailability(R.id.translate, isOfficialKey)
         }
         val shareItem = menu.findItem(R.id.share)
         val shareProvider = MenuItemCompat.getActionProvider(shareItem)
@@ -224,13 +249,9 @@ object MenuUtils {
 
     }
 
-    fun handleStatusClick(context: Context,
-                          fragment: Fragment?,
-                          fm: FragmentManager,
-                          colorNameManager: UserColorNameManager,
-                          twitter: AsyncTwitterWrapper,
-                          status: ParcelableStatus,
-                          item: MenuItem): Boolean {
+    fun handleStatusClick(context: Context, fragment: Fragment?, fm: FragmentManager,
+            preferences: SharedPreferences, colorNameManager: UserColorNameManager,
+            twitter: AsyncTwitterWrapper, status: ParcelableStatus, item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.copy -> {
                 if (ClipboardUtils.setText(context, status.text_plain)) {
@@ -238,7 +259,7 @@ object MenuUtils {
                 }
             }
             R.id.retweet -> {
-                Utils.retweet(status, twitter)
+                retweet(context, fragment, fm, status)
             }
             R.id.quote -> {
                 val intent = Intent(INTENT_ACTION_QUOTE)
@@ -251,7 +272,7 @@ object MenuUtils {
                 context.startActivity(intent)
             }
             R.id.favorite -> {
-                Utils.favorite(status, twitter, item)
+                favorite(context, fragment, fm, preferences, twitter, status, item)
             }
             R.id.delete -> {
                 DestroyStatusDialogFragment.show(fm, status)
@@ -260,8 +281,8 @@ object MenuUtils {
                 AddStatusFilterDialogFragment.show(fm, status)
             }
             R.id.love -> {
-                Utils.retweet(status, twitter)
-                Utils.favorite(status, twitter, item)
+                retweet(context, fragment, fm, status)
+                favorite(context, fragment, fm, preferences, twitter, status, item)
             }
             R.id.set_color -> {
                 val intent = Intent(context, ColorPickerDialogActivity::class.java)

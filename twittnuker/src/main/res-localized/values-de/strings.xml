@@ -706,6 +706,8 @@
     <string name="preference_summary_streaming_non_metered_network">Nur mit WLAN streamen</string>
     <string name="preference_summary_streaming_power_saving">Nur streamen während der Akku geladen wird</string>
     <string name="preference_summary_trends_location">Du kannst jetzt den Standort in den Tab-Einstellungen separat festlegen.</string>
+    <string name="preference_summary_favorite_confirmation">Nachfragen vorm favorisieren</string>
+    <string name="preference_summary_like_confirmation">Nachfragen vorm liken</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
     <string name="preference_title_auto_refresh_compatibility_mode">Kompatibilitätsmodus</string>
@@ -713,11 +715,13 @@
     <string name="preference_title_background_streaming">Streaming im Hintergrund</string>
     <string name="preference_title_chrome_custom_tab">In-App Browser</string>
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
+    <string name="preference_title_favorite_confirmation">Favorisieren bestätigen</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
     <string name="preference_title_floating_detailed_view">(D) Floating detailed view</string>
     <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_light_font">Light Font</string>
+    <string name="preference_title_like_confirmation">Liken bestätigen</string>
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
     <string name="preference_title_multi_column_tab_width">Tab Breite</string>
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
@@ -817,7 +821,6 @@
     <string name="reset_to_default">Zurücksetzen</string>
     <string name="retry_on_network_issue">Bei Netzwerkproblemen wiederholen</string>
     <string name="retry_on_network_issue_summary">Verbindungen bei Netzwerkproblemen automatisch neu versuchen</string>
-    <string name="retweet_quote_confirm_title">Retweet</string>
     <string name="retweeted_by_count">Retweetet von <xliff:g id="retweet_count">%d</xliff:g> Accounts</string>
     <string name="retweeted_by_name">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
@@ -957,6 +960,7 @@
     <string name="title_error_invalid_account">Ungültiger Account</string>
     <!-- Enhanced (paid) features title -->
     <string name="title_extra_features">Erweiterte Funktionen</string>
+    <string name="title_favorite_confirm">Favorisieren?</string>
     <!-- [noun] Twitter's favorite, in the plural -->
     <string name="title_favorites">Favoriten</string>
     <string name="title_filters">Filter</string>
@@ -974,6 +978,7 @@
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
     <string name="title_quick_action">Quick Action</string>
+    <string name="title_retweet_quote_confirm">Retweet</string>
     <string name="title_scheduled_statuses">Geplante Tweets</string>
     <string name="title_search">Suche</string>
     <string name="title_search_gif">Suche</string>

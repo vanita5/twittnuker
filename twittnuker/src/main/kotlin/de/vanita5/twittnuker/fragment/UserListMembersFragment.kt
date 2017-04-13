@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.UserListMembersLoader
@@ -98,10 +97,10 @@ class UserListMembersFragment : CursorUsersListFragment() {
         menu.setHeaderTitle(userColorNameManager.getDisplayName(user, preferences[nameFirstKey]))
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
+    override fun onContextItemSelected(item: MenuItem): Boolean {
         if (!userVisibleHint) return false
         val userList = userList ?: return false
-        val contextMenuInfo = item!!.menuInfo as ExtendedRecyclerView.ContextMenuInfo
+        val contextMenuInfo = item.menuInfo as ExtendedRecyclerView.ContextMenuInfo
         val user = adapter.getUser(contextMenuInfo.position) ?: return false
         when (item.itemId) {
             R.id.delete_from_list -> {

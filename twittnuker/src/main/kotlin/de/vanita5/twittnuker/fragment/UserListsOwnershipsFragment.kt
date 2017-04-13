@@ -29,6 +29,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import com.squareup.otto.Subscribe
+import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.UserListOwnershipsLoader
@@ -81,10 +82,10 @@ class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
         val accountId = accountKey
         if (accountId == null || item == null) return
         if (accountId == userId) {
-            MenuUtils.setItemAvailability(menu, R.id.new_user_list, true)
+            menu.setItemAvailability(R.id.new_user_list, true)
         } else {
             val screenName = this.screenName
-            MenuUtils.setItemAvailability(menu, R.id.new_user_list, screenName != null &&
+            menu.setItemAvailability(R.id.new_user_list, screenName != null &&
                     Utils.isMyAccount(activity, screenName))
         }
     }
