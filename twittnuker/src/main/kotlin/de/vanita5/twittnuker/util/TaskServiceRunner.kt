@@ -24,11 +24,13 @@ package de.vanita5.twittnuker.util
 
 import android.content.Context
 import android.support.annotation.StringDef
+import android.util.Log
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.ktextension.toNulls
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.constant.stopAutoRefreshWhenBatteryLowKey
@@ -50,6 +52,7 @@ class TaskServiceRunner(
 ) {
 
     fun runTask(@Action action: String, callback: (Boolean) -> Unit): Boolean {
+        Log.d(LOGTAG, "TaskServiceRunner run task $action")
         when (action) {
             ACTION_REFRESH_HOME_TIMELINE, ACTION_REFRESH_NOTIFICATIONS,
             ACTION_REFRESH_DIRECT_MESSAGES, ACTION_REFRESH_FILTERS_SUBSCRIPTIONS -> {
