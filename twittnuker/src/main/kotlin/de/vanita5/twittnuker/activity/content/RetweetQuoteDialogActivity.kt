@@ -22,9 +22,7 @@
 
 package de.vanita5.twittnuker.activity.content
 
-import android.os.Bundle
-import de.vanita5.twittnuker.activity.BaseActivity
-import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TEXT
 import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -32,25 +30,17 @@ import de.vanita5.twittnuker.model.UserKey
 /**
  * Opens [RetweetQuoteDialogFragment] to retweet/quote a status
  */
-class RetweetQuoteDialogActivity : BaseActivity() {
-
-    private val status: ParcelableStatus
-        get() = intent.getParcelableExtra(EXTRA_STATUS)
-
-    private val statusId: String
-        get() = intent.getStringExtra(EXTRA_STATUS_ID)
-
-    private val accountKey: UserKey?
-        get() = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY)
+class RetweetQuoteDialogActivity : AbsStatusDialogActivity() {
 
     private val text: String?
         get() = intent.getStringExtra(EXTRA_TEXT)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            RetweetQuoteDialogFragment.show(supportFragmentManager, accountKey, statusId, status,
-                    text)
+    override fun showDialogFragment(accountKey: UserKey, statusId: String, status: ParcelableStatus?) {
+        val text = this.text
+        executeAfterFragmentResumed {
+            RetweetQuoteDialogFragment.show(it.supportFragmentManager, accountKey, statusId,
+                    status, text)
         }
     }
+
 }

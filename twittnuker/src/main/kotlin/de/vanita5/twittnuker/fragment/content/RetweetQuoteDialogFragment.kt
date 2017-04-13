@@ -22,8 +22,8 @@
 
 package de.vanita5.twittnuker.fragment.content
 
-import android.accounts.AccountManager
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -33,15 +33,19 @@ import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.PopupMenu
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.RelativeLayout
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.twitter.Validator
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.task
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.content.RetweetQuoteDialogActivity
 import de.vanita5.twittnuker.adapter.DummyItemAdapter
@@ -49,18 +53,19 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
-import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.EditTextEnterHandler
 import de.vanita5.twittnuker.util.LinkCreator
 import de.vanita5.twittnuker.util.Utils.isMyRetweet
-import de.vanita5.twittnuker.view.ColorLabelRelativeLayout
+import de.vanita5.twittnuker.util.view.SimpleTextWatcher
 import de.vanita5.twittnuker.view.ComposeEditText
 import de.vanita5.twittnuker.view.StatusTextCountView
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
@@ -69,46 +74,100 @@ import java.util.*
 /**
  * Asks user to retweet/quote a status.
  */
-class RetweetQuoteDialogFragment : BaseDialogFragment() {
+class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
+
+    override val Dialog.loadProgress: View get() = findViewById(R.id.loadProgress)
+    override val Dialog.itemContent: View get() = findViewById(R.id.itemContent)
+
     private lateinit var popupMenu: PopupMenu
 
-    private val PopupMenu.quoteOriginalStatus get() = menu.isItemChecked(R.id.quote_original_status)
-    private val Dialog.loadProgress get() = findViewById(R.id.loadProgress)
-    private val Dialog.itemContent get() = findViewById(R.id.itemContent) as ColorLabelRelativeLayout
     private val Dialog.textCountView get() = findViewById(R.id.commentTextCount) as StatusTextCountView
-    private val Dialog.itemMenu get() = findViewById(R.id.itemMenu) as ImageButton
-    private val Dialog.actionButtons get() = findViewById(R.id.actionButtons) as LinearLayout
+
     private val Dialog.commentContainer get() = findViewById(R.id.commentContainer) as RelativeLayout
     private val Dialog.editComment get() = findViewById(R.id.editComment) as ComposeEditText
     private val Dialog.commentMenu get() = findViewById(R.id.commentMenu) as ImageButton
 
-
-    private val status: ParcelableStatus
-        get() = arguments.getParcelable<ParcelableStatus>(EXTRA_STATUS)
-
-    private val accountKey: UserKey
-        get() = arguments.getParcelable(EXTRA_ACCOUNT_KEY) ?: status.account_key
+    private val PopupMenu.quoteOriginalStatus get() = menu.isItemChecked(R.id.quote_original_status)
 
     private val text: String?
         get() = arguments.getString(EXTRA_TEXT)
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(context)
-        val accountKey = this.accountKey
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true)!!
-        val status = this.status.apply {
-            if (account_key != accountKey) {
-                my_retweet_id = null
-            }
-            account_key = details.key
-            account_color = details.color
-        }
+    override fun AlertDialog.Builder.setupAlertDialog() {
+        setTitle(R.string.title_retweet_quote_confirm)
+        setView(R.layout.dialog_status_quote_retweet)
+        setPositiveButton(R.string.action_retweet, null)
+        setNegativeButton(android.R.string.cancel, null)
+        setNeutralButton(R.string.action_quote, null)
+    }
 
-        builder.setView(R.layout.dialog_status_quote_retweet)
-        builder.setTitle(R.string.title_retweet_quote_confirm)
-        builder.setPositiveButton(R.string.action_retweet, null)
-        builder.setNegativeButton(android.R.string.cancel, null)
-        builder.setNeutralButton(R.string.action_quote) { _, _ ->
+    override fun AlertDialog.onStatusLoaded(details: AccountDetails, status: ParcelableStatus,
+            savedInstanceState: Bundle?) {
+
+        val adapter = DummyItemAdapter(context, requestManager = Glide.with(this@RetweetQuoteDialogFragment))
+        adapter.setShouldShowAccountsColor(true)
+        val holder = StatusViewHolder(adapter, itemContent)
+        holder.displayStatus(status = status, displayInReplyTo = false)
+
+        textCountView.maxLength = details.textLimit
+
+        val useQuote = useQuote(!status.user_is_protected, details)
+
+        commentContainer.visibility = if (useQuote) View.VISIBLE else View.GONE
+        editComment.accountKey = details.key
+
+        val enterHandler = EditTextEnterHandler.attach(editComment, object : EditTextEnterHandler.EnterListener {
+            override fun shouldCallListener(): Boolean {
+                return true
+            }
+
+            override fun onHitEnter(): Boolean {
+                if (retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)) {
+                    dismiss()
+                    return true
+                }
+                return false
+            }
+        }, preferences.getBoolean(KEY_QUICK_SEND))
+        enterHandler.addTextChangedListener(object : SimpleTextWatcher {
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                updateTextCount(getDialog(), s, status, details)
+            }
+        })
+
+        popupMenu = PopupMenu(context, commentMenu, Gravity.NO_GRAVITY,
+                R.attr.actionOverflowMenuStyle, 0).apply {
+            inflate(R.menu.menu_dialog_comment)
+            menu.setItemAvailability(R.id.quote_original_status, status.retweet_id != null || status.quoted_id != null)
+            setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                if (item.isCheckable) {
+                    item.isChecked = !item.isChecked
+                    return@OnMenuItemClickListener true
+                }
+                false
+            })
+        }
+        commentMenu.setOnClickListener { popupMenu.show() }
+        commentMenu.setOnTouchListener(popupMenu.dragToOpenListener)
+        commentMenu.visibility = if (popupMenu.menu.hasVisibleItems()) View.VISIBLE else View.GONE
+
+        getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            var dismissDialog = false
+            if (editComment.length() > 0) {
+                dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
+            } else if (isMyRetweet(status)) {
+                twitterWrapper.cancelRetweetAsync(details.key, status.id, status.my_retweet_id)
+                dismissDialog = true
+            } else if (useQuote(!status.user_is_protected, details)) {
+                dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
+            } else {
+                Analyzer.logException(IllegalStateException(status.toString()))
+            }
+            if (dismissDialog) {
+                dismiss()
+            }
+        }
+        getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener {
             val intent = Intent(INTENT_ACTION_QUOTE)
             val menu = popupMenu.menu
             val quoteOriginalStatus = menu.findItem(R.id.quote_original_status)
@@ -117,96 +176,12 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             startActivity(intent)
         }
 
-        val dialog = builder.create()
-        dialog.setOnShowListener { dialog ->
-            dialog as AlertDialog
-            dialog.applyTheme()
-
-            val adapter = DummyItemAdapter(context, requestManager = Glide.with(this))
-            adapter.setShouldShowAccountsColor(true)
-            val holder = StatusViewHolder(adapter, dialog.itemContent)
-            holder.displayStatus(status = status, displayInReplyTo = false)
-
-            dialog.textCountView.maxLength = details.textLimit
-
-            dialog.loadProgress.visibility = View.GONE
-            dialog.itemMenu.visibility = View.GONE
-            dialog.actionButtons.visibility = View.GONE
-            dialog.itemContent.isFocusable = false
-            val useQuote = useQuote(!status.user_is_protected, details)
-
-            dialog.commentContainer.visibility = if (useQuote) View.VISIBLE else View.GONE
-            dialog.editComment.accountKey = details.key
-
-            val sendByEnter = preferences.getBoolean(KEY_QUICK_SEND)
-            val enterHandler = EditTextEnterHandler.attach(dialog.editComment, object : EditTextEnterHandler.EnterListener {
-                override fun shouldCallListener(): Boolean {
-                    return true
-                }
-
-                override fun onHitEnter(): Boolean {
-                    if (retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)) {
-                        dismiss()
-                        return true
-                    }
-                    return false
-                }
-            }, sendByEnter)
-            enterHandler.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    updateTextCount(getDialog(), s, status, details)
-                }
-
-                override fun afterTextChanged(s: Editable) {
-
-                }
-            })
-
-            popupMenu = PopupMenu(context, dialog.commentMenu, Gravity.NO_GRAVITY,
-                    R.attr.actionOverflowMenuStyle, 0).apply {
-                inflate(R.menu.menu_dialog_comment)
-                menu.setItemAvailability(R.id.quote_original_status, status.retweet_id != null || status.quoted_id != null)
-                setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
-                    if (item.isCheckable) {
-                        item.isChecked = !item.isChecked
-                        return@OnMenuItemClickListener true
-                    }
-                    false
-                })
-            }
-            dialog.commentMenu.setOnClickListener { popupMenu.show() }
-            dialog.commentMenu.setOnTouchListener(popupMenu.dragToOpenListener)
-            dialog.commentMenu.visibility = if (popupMenu.menu.hasVisibleItems()) View.VISIBLE else View.GONE
-
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                var dismissDialog = false
-                if (dialog.editComment.length() > 0) {
-                    dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
-                } else if (isMyRetweet(status)) {
-                    twitterWrapper.cancelRetweetAsync(details.key, status.id, status.my_retweet_id)
-                    dismissDialog = true
-                } else if (useQuote(!status.user_is_protected, details)) {
-                    dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
-                } else {
-                    Analyzer.logException(IllegalStateException(status.toString()))
-                }
-                if (dismissDialog) {
-                    dismiss()
-                }
-            }
-
             if (savedInstanceState == null) {
-                dialog.editComment.setText(text)
+            editComment.setText(text)
             }
-            dialog.editComment.setSelection(dialog.editComment.length())
+        editComment.setSelection(editComment.length())
 
-            updateTextCount(dialog, dialog.editComment.text, status, details)
-        }
-        return dialog
+        updateTextCount(dialog, editComment.text, status, details)
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -314,7 +289,6 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         return preCondition || AccountType.FANFOU == account.type
     }
 
-
     private fun Dialog.saveToDrafts() {
         val text = dialog.editComment.text.toString()
         val draft = Draft()
@@ -394,8 +368,9 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         val FRAGMENT_TAG = "retweet_quote"
         private val SHOW_PROTECTED_CONFIRM = java.lang.Boolean.parseBoolean("false")
 
-        fun show(fm: FragmentManager, accountKey: UserKey? = null, statusId: String,
-                status: ParcelableStatus?, text: String? = null): RetweetQuoteDialogFragment {
+        fun show(fm: FragmentManager, accountKey: UserKey, statusId: String,
+                status: ParcelableStatus? = null, text: String? = null):
+                RetweetQuoteDialogFragment {
             val f = RetweetQuoteDialogFragment()
             f.arguments = Bundle {
                 this[EXTRA_ACCOUNT_KEY] = accountKey
@@ -406,5 +381,26 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             f.show(fm, FRAGMENT_TAG)
             return f
         }
+
+        fun showStatus(context: Context, details: AccountDetails, statusId: String,
+                status: ParcelableStatus?): Promise<ParcelableStatus, Exception> {
+            if (status != null) {
+                status.apply {
+                    if (account_key != details.key) {
+                        my_retweet_id = null
+                    }
+                    account_key = details.key
+                    account_color = details.color
+                }
+                return Promise.ofSuccess(status)
+            }
+            val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+            val profileImageSize = context.getString(R.string.profile_image_size)
+            return task {
+                ParcelableStatusUtils.fromStatus(microBlog.showStatus(statusId), details.key,
+                        details.type, profileImageSize = profileImageSize)
+            }
+        }
+
     }
 }

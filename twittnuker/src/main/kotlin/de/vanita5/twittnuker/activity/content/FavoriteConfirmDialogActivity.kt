@@ -22,9 +22,6 @@
 
 package de.vanita5.twittnuker.activity.content
 
-import android.os.Bundle
-import de.vanita5.twittnuker.activity.BaseActivity
-import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.content.FavoriteConfirmDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -32,21 +29,12 @@ import de.vanita5.twittnuker.model.UserKey
 /**
  * Opens [FavoriteConfirmDialogFragment] to favorite a status
  */
-class FavoriteConfirmDialogActivity : BaseActivity() {
+class FavoriteConfirmDialogActivity : AbsStatusDialogActivity() {
 
-    private val status: ParcelableStatus
-        get() = intent.getParcelableExtra(EXTRA_STATUS)
-
-    private val statusId: String
-        get() = intent.getStringExtra(EXTRA_STATUS_ID)
-
-    private val accountKey: UserKey?
-        get() = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            FavoriteConfirmDialogFragment.show(supportFragmentManager, accountKey, statusId, status)
+    override fun showDialogFragment(accountKey: UserKey, statusId: String, status: ParcelableStatus?) {
+        executeAfterFragmentResumed {
+            FavoriteConfirmDialogFragment.show(it.supportFragmentManager, accountKey, statusId, status)
         }
     }
+
 }
