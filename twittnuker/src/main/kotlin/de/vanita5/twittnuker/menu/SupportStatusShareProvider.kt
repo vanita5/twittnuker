@@ -26,7 +26,6 @@ import android.content.Context
 import android.support.v4.view.ActionProvider
 import android.view.MenuItem
 import android.view.SubMenu
-import android.view.View
 import de.vanita5.twittnuker.Constants.MENU_GROUP_STATUS_SHARE
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.MenuUtils
