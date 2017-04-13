@@ -328,7 +328,7 @@ public final class Utils implements Constants {
         return result;
     }
 
-    public static boolean setLastSeen(Context context, UserKey userId, long time) {
+    public static boolean setLastSeen(Context context, UserKey userKey, long time) {
         final ContentResolver cr = context.getContentResolver();
         final ContentValues values = new ContentValues();
         if (time > 0) {
@@ -338,7 +338,7 @@ public final class Utils implements Constants {
             values.putNull(CachedUsers.LAST_SEEN);
         }
         final String where = Expression.equalsArgs(CachedUsers.USER_KEY).getSQL();
-        final String[] selectionArgs = {userId.toString()};
+        final String[] selectionArgs = {userKey.toString()};
         return cr.update(CachedUsers.CONTENT_URI, values, where, selectionArgs) > 0;
     }
 
@@ -362,7 +362,7 @@ public final class Utils implements Constants {
         UserKey accountKey = string != null ? UserKey.valueOf(string) : null;
         final UserKey[] accountKeys = DataStoreUtils.INSTANCE.getAccountKeys(context);
         int idMatchIdx = -1;
-        for (int i = 0, accountIdsLength = accountKeys.length; i < accountIdsLength; i++) {
+        for (int i = 0, j = accountKeys.length; i < j; i++) {
             if (accountKeys[i].equals(accountKey)) {
                 idMatchIdx = i;
             }
@@ -615,8 +615,8 @@ public final class Utils implements Constants {
                 status.my_retweet_id);
     }
 
-    public static boolean isMyRetweet(final UserKey accountId, final UserKey retweetedById, final String myRetweetId) {
-        return accountId.equals(retweetedById) || myRetweetId != null;
+    public static boolean isMyRetweet(final UserKey accountKey, final UserKey retweetedByKey, final String myRetweetId) {
+        return accountKey.equals(retweetedByKey) || myRetweetId != null;
     }
 
     public static int matchTabCode(@Nullable final Uri uri) {
@@ -907,9 +907,9 @@ public final class Utils implements Constants {
         return null;
     }
 
-    public static int getNotificationId(int baseId, @Nullable UserKey accountId) {
+    public static int getNotificationId(int baseId, @Nullable UserKey accountKey) {
         int result = baseId;
-        result = 31 * result + (accountId != null ? accountId.hashCode() : 0);
+        result = 31 * result + (accountKey != null ? accountKey.hashCode() : 0);
         return result;
     }
 

@@ -22,8 +22,8 @@
 
 package de.vanita5.twittnuker.model.util
 
-import de.vanita5.twittnuker.extension.model.toParcelables
 import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.twittnuker.extension.model.toParcelables
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -36,23 +36,23 @@ object ParcelableActivityUtils {
     /**
      * @param activity        Activity for processing
      * *
-     * @param filteredUserIds Those ids will be removed from source_ids.
+     * @param filteredUserKeys Those ids will be removed from source_ids.
      * *
      * @param followingOnly   Limit following users in sources
      * *
      * @return true if source ids changed, false otherwise
      */
-    fun initAfterFilteredSourceIds(activity: ParcelableActivity, filteredUserIds: Array<UserKey>,
+    fun initAfterFilteredSourceIds(activity: ParcelableActivity, filteredUserKeys: Array<UserKey>,
                                    followingOnly: Boolean): Boolean {
         if (activity.sources == null) return false
         if (activity.after_filtered_source_ids != null) return false
-        if (followingOnly || filteredUserIds.isNotEmpty()) {
+        if (followingOnly || filteredUserKeys.isNotEmpty()) {
             val list = activity.sources.filter { user ->
                 if (followingOnly && !user.is_following) {
                     return@filter false
                 }
 
-                if (!filteredUserIds.contains(user.key)) {
+                if (!filteredUserKeys.contains(user.key)) {
                     return@filter true
                 }
                 return@filter false

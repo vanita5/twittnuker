@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.model.UserKey
 
 class UserListMembershipsLoader(
         context: Context,
-        accountKey: UserKey,
+        accountKey: UserKey?,
         private val userKey: UserKey?,
         private val screenName: String?,
         cursor: Long,

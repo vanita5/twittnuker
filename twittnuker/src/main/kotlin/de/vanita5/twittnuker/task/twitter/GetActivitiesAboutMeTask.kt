@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
-import de.vanita5.twittnuker.task.twitter.GetActivitiesTask
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.Utils
 
@@ -70,7 +69,7 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                 statuses = twitter.getMentionsTimeline(paging)
             }
         }
-        statuses.mapTo(activities) { InternalActivityCreator.status(details.key.id, it) }
+        statuses.mapTo(activities) { InternalActivityCreator.status(it, details.key.id) }
         return activities
     }
 

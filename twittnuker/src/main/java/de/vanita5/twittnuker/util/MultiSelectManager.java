@@ -33,7 +33,7 @@ import java.util.List;
 public class MultiSelectManager {
 
     private final NoDuplicatesArrayList<String> mSelectedStatusIds = new NoDuplicatesArrayList<>();
-    private final NoDuplicatesArrayList<UserKey> mSelectedUserIds = new NoDuplicatesArrayList<>();
+    private final NoDuplicatesArrayList<UserKey> mSelectedUserKeys = new NoDuplicatesArrayList<>();
     private final NoDuplicatesArrayList<Callback> mCallbacks = new NoDuplicatesArrayList<>();
     private final ItemsList mSelectedItems = new ItemsList(this);
     private UserKey mAccountKey;
@@ -72,7 +72,7 @@ public class MultiSelectManager {
     }
 
     public boolean isUserSelected(final UserKey userKey) {
-        return mSelectedUserIds.contains(userKey);
+        return mSelectedUserKeys.contains(userKey);
     }
 
     public void registerCallback(final Callback callback) {
@@ -127,7 +127,7 @@ public class MultiSelectManager {
         return null;
     }
 
-    public static UserKey[] getSelectedUserIds(final List<Object> selectedItems) {
+    public static UserKey[] getSelectedUserKeys(final List<Object> selectedItems) {
         final ArrayList<UserKey> userKeys = new ArrayList<>();
         for (final Object item : selectedItems) {
             if (item instanceof ParcelableUser) {
@@ -163,7 +163,7 @@ public class MultiSelectManager {
             if (object instanceof ParcelableStatus) {
                 manager.mSelectedStatusIds.add(((ParcelableStatus) object).id);
             } else if (object instanceof ParcelableUser) {
-                manager.mSelectedUserIds.add(((ParcelableUser) object).key);
+                manager.mSelectedUserKeys.add(((ParcelableUser) object).key);
             } else
                 return false;
             final boolean ret = super.add(object);
@@ -175,7 +175,7 @@ public class MultiSelectManager {
         public void clear() {
             super.clear();
             manager.mSelectedStatusIds.clear();
-            manager.mSelectedUserIds.clear();
+            manager.mSelectedUserKeys.clear();
             manager.onItemsCleared();
         }
 
@@ -185,7 +185,7 @@ public class MultiSelectManager {
             if (object instanceof ParcelableStatus) {
                 manager.mSelectedStatusIds.remove(((ParcelableStatus) object).id);
             } else if (object instanceof ParcelableUser) {
-                manager.mSelectedUserIds.remove(((ParcelableUser) object).key);
+                manager.mSelectedUserKeys.remove(((ParcelableUser) object).key);
             }
             if (ret) {
                 if (isEmpty()) {

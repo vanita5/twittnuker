@@ -37,10 +37,10 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 
 class AccountActionProvider(
         context: Context,
-        var accounts: Array<AccountDetails>? = AccountUtils.getAllAccountDetails(AccountManager.get(context), true)
+        var accounts: Array<AccountDetails>? = AccountUtils.getAllAccountDetails(AccountManager.get(context), false)
 ) : ActionProvider(context), TwittnukerConstants {
 
-    var selectedAccountIds: Array<UserKey>? = null
+    var selectedAccountKeys: Array<UserKey>? = null
     var isExclusive: Boolean = false
 
     override fun hasSubMenu(): Boolean {
@@ -61,7 +61,7 @@ class AccountActionProvider(
             item.intent = intent
         }
         subMenu.setGroupCheckable(MENU_GROUP, true, isExclusive)
-        selectedAccountIds?.let {
+        selectedAccountKeys?.let {
             for (i in 0 until subMenu.size()) {
                 val item = subMenu.getItem(i)
                 val intent = item.intent

@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -34,12 +33,8 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.DataStoreUtils
 
-class UserBlocksLoader(
-        context: Context,
-        accountKey: UserKey,
-        data: List<ParcelableUser>?,
-        fromUser: Boolean
-) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
+class UserBlocksLoader(context: Context, accountKey: UserKey?, data: List<ParcelableUser>?,
+        fromUser: Boolean) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     private var filteredUsers: Array<UserKey>? = null
 
@@ -56,7 +51,7 @@ class UserBlocksLoader(
     }
 
     override fun onLoadInBackground(): List<ParcelableUser> {
-        filteredUsers = DataStoreUtils.getFilteredUserIds(context)
+        filteredUsers = DataStoreUtils.getFilteredUserKeys(context)
         return super.onLoadInBackground()
     }
 

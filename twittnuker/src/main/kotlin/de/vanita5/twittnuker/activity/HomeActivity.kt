@@ -71,6 +71,7 @@ import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.*
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
@@ -99,7 +100,6 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
-import org.mariotaku.sqliteqb.library.Expression
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
@@ -722,7 +722,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 val tab = adapter.get(i)
                 if (tabType == Tab.getTypeAlias(tab.type)) {
                     val args = tab.args
-                    if (args != null && CustomTabUtils.hasAccountId(this, args,
+                    if (args != null && CustomTabUtils.hasAccountKey(this, args,
                             activatedAccountKeys, accountKey)) {
                         initialTab = i
                         break

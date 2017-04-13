@@ -22,10 +22,10 @@
 
 package de.vanita5.twittnuker.loader
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
-import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -33,13 +33,15 @@ import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -49,7 +51,7 @@ import javax.inject.Inject
 
 abstract class BaseUserListsLoader(
         context: Context,
-        protected val accountId: UserKey,
+        protected val accountKey: UserKey?,
         override val cursor: Long,
         data: List<ParcelableUserList>?
 ) : FixedAsyncTaskLoader<List<ParcelableUserList>>(context), ICursorSupportLoader {
@@ -74,9 +76,12 @@ abstract class BaseUserListsLoader(
     abstract fun getUserLists(twitter: MicroBlog, paging: Paging): List<UserList>
 
     override fun loadInBackground(): List<ParcelableUserList> {
-        val twitter = MicroBlogAPIFactory.getInstance(context, accountId) ?: return data
+        if (accountKey == null) return emptyList()
         var listLoaded: List<UserList>? = null
         try {
+            val am = AccountManager.get(context)
+            val details = AccountUtils.getAccountDetails(am, accountKey, true) ?: return data
+            val twitter = details.newMicroBlogInstance(context, MicroBlog::class.java)
             val paging = Paging()
             paging.count(preferences[loadItemLimitKey].coerceIn(0, 100))
             if (cursor > 0) {
@@ -95,13 +100,13 @@ abstract class BaseUserListsLoader(
                 val dataSize = data.size
                 for (i in 0..listSize - 1) {
                     val list = listLoaded[i]
-                    data.add(ParcelableUserListUtils.from(list, accountId, (dataSize + i).toLong(),
+                    data.add(ParcelableUserListUtils.from(list, accountKey, (dataSize + i).toLong(),
                             isFollowing(list), profileImageSize))
                 }
             } else {
                 for (i in 0..listSize - 1) {
                     val list = listLoaded[i]
-                    data.add(ParcelableUserListUtils.from(listLoaded[i], accountId, i.toLong(),
+                    data.add(ParcelableUserListUtils.from(listLoaded[i], accountKey, i.toLong(),
                             isFollowing(list), profileImageSize))
                 }
             }

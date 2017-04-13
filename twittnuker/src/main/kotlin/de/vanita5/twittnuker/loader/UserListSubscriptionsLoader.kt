@@ -23,18 +23,18 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
+
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
-
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 
 class UserListSubscriptionsLoader(
         context: Context,
-        accountKey: UserKey,
+        accountKey: UserKey?,
         private val userKey: UserKey?,
         private val screenName: String?,
         cursor: Long,

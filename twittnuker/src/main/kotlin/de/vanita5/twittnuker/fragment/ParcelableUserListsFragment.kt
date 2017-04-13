@@ -31,6 +31,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
@@ -45,7 +46,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
-import org.mariotaku.ktextension.set
 
 abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<ParcelableUserListsAdapter>(), LoaderCallbacks<List<ParcelableUserList>>, UserListClickListener, KeyboardShortcutCallback {
 
@@ -73,10 +73,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
     }
 
     protected val accountKey: UserKey?
-        get() {
-            val args = arguments
-            return args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
-        }
+        get() = arguments.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
 
     protected fun hasMoreData(data: List<ParcelableUserList>?): Boolean {
         return data == null || !data.isEmpty()

@@ -218,8 +218,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
 
         override fun onCreateLoader(id: Int, args: Bundle): Loader<SingleResponse<ParcelableUser>> {
             val omitIntentExtra = args.getBoolean(EXTRA_OMIT_INTENT_EXTRA, true)
-            val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
-            val userId = args.getParcelable<UserKey>(EXTRA_USER_KEY)
+            val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
+            val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
             val screenName = args.getString(EXTRA_SCREEN_NAME)
             if (user == null && (!omitIntentExtra || !args.containsKey(EXTRA_USER))) {
                 cardContent.visibility = View.GONE
@@ -229,8 +229,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 errorText.visibility = View.GONE
             }
             val user = this@UserFragment.user
-            val loadFromCache = user == null || !user.is_cache && user.key.maybeEquals(userId)
-            return ParcelableUserLoader(activity, accountKey, userId, screenName, arguments,
+            val loadFromCache = user == null || !user.is_cache && user.key.maybeEquals(userKey)
+            return ParcelableUserLoader(activity, accountKey, userKey, screenName, arguments,
                     omitIntentExtra, loadFromCache)
         }
 
@@ -698,9 +698,12 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 preferences[themeBackgroundOptionKey], preferences[themeBackgroundAlphaKey])
         actionBarShadowColor = 0xA0000000.toInt()
         val args = arguments
-        val accountId: UserKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
-        val userId: UserKey? = args.getParcelable<UserKey>(EXTRA_USER_KEY)
-        val screenName: String? = args.getString(EXTRA_SCREEN_NAME)
+        val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY) ?: run {
+            activity.finish()
+            return
+        }
+        val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
+        val screenName = args.getString(EXTRA_SCREEN_NAME)
 
         Utils.setNdefPushMessageCallback(activity, CreateNdefMessageCallback {
             val user = user ?: return@CreateNdefMessageCallback null
@@ -767,7 +770,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         setupViewStyle()
         setupUserPages()
 
-        getUserInfo(accountId, userId, screenName, false)
+        getUserInfo(accountKey, userKey, screenName, false)
     }
 
 
@@ -1286,8 +1289,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         return false
     }
 
-    override fun onUserColorChanged(userId: UserKey, color: Int) {
-        if (user == null || user!!.key != userId) return
+    override fun onUserColorChanged(userKey: UserKey, color: Int) {
+        if (user?.key != userKey) return
         displayUser(user, account)
     }
 
@@ -1421,7 +1424,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             tabArgs.putString(EXTRA_SCREEN_NAME, user.screen_name)
             tabArgs.putString(EXTRA_PROFILE_URL, user.extras?.statusnet_profile_url)
         } else {
-            userKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
+            userKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
             tabArgs.putParcelable(EXTRA_ACCOUNT_KEY, userKey)
             tabArgs.putParcelable(EXTRA_USER_KEY, args.getParcelable<Parcelable>(EXTRA_USER_KEY))
             tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME))
@@ -1668,6 +1671,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     }
 
     class AddRemoveUserListDialogFragment : BaseDialogFragment() {
+
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val lists = arguments.getParcelableArray(EXTRA_USER_LISTS).toTypedArray(ParcelableUserList.CREATOR)
             val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)

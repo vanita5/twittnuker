@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.loader.UserListOwnershipsLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListDestroyedEvent
-import de.vanita5.twittnuker.util.MenuUtils
 import de.vanita5.twittnuker.util.Utils
 
 class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
@@ -44,12 +43,12 @@ class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
     private val screenName: String?
         get() = arguments.getString(EXTRA_SCREEN_NAME)
 
-    private val userId: UserKey?
-        get() = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
+    private val userKey: UserKey?
+        get() = arguments.getParcelable<UserKey?>(EXTRA_USER_KEY)
 
     override fun onCreateUserListsLoader(context: Context, args: Bundle, fromUser: Boolean): Loader<List<ParcelableUserList>> {
-        val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
-        val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
+        val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
+        val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         return UserListOwnershipsLoader(activity, accountKey, userKey, screenName, nextCursor, data)
     }
@@ -78,13 +77,11 @@ class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val item = menu.findItem(R.id.new_user_list)
-        val accountId = accountKey
-        if (accountId == null || item == null) return
-        if (accountId == userId) {
+        val accountKey = this.accountKey ?: return
+        val screenName = this.screenName
+        if (accountKey == userKey) {
             menu.setItemAvailability(R.id.new_user_list, true)
         } else {
-            val screenName = this.screenName
             menu.setItemAvailability(R.id.new_user_list, screenName != null &&
                     Utils.isMyAccount(activity, screenName))
         }

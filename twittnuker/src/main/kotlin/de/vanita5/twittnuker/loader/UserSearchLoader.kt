@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.model.UserKey
 
 open class UserSearchLoader(
         context: Context,
-        accountKey: UserKey,
+        accountKey: UserKey?,
         val query: String,
         val page: Int,
         data: List<ParcelableUser>?,

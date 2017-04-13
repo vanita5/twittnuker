@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 
 class MutesUsersLoader(
@@ -49,7 +48,7 @@ class MutesUsersLoader(
     }
 
     override fun onLoadInBackground(): List<ParcelableUser> {
-        filteredUsers = DataStoreUtils.getFilteredUserIds(context)
+        filteredUsers = DataStoreUtils.getFilteredUserKeys(context)
         return super.onLoadInBackground()
     }
 
