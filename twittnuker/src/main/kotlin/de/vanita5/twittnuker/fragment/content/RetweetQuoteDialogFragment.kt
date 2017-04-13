@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.content
 
 import android.accounts.AccountManager
 import android.app.Dialog
@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.textLimit
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -221,7 +222,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
     }
 
     private fun updateTextCount(dialog: DialogInterface, s: CharSequence, status: ParcelableStatus,
-            credentials: AccountDetails) {
+                                credentials: AccountDetails) {
         if (dialog !is AlertDialog) return
         val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE) ?: return
         if (s.isNotEmpty()) {
@@ -386,7 +387,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         private val SHOW_PROTECTED_CONFIRM = java.lang.Boolean.parseBoolean("false")
 
         fun show(fm: FragmentManager, status: ParcelableStatus, accountKey: UserKey? = null,
-                text: String? = null): RetweetQuoteDialogFragment {
+                 text: String? = null): RetweetQuoteDialogFragment {
             val f = RetweetQuoteDialogFragment()
             f.arguments = Bundle {
                 this[EXTRA_STATUS] = status

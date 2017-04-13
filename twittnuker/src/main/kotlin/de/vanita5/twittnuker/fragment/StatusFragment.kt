@@ -97,6 +97,7 @@ import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
+import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider

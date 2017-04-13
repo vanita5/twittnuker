@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.activity.content
 import android.os.Bundle
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.fragment.RetweetQuoteDialogFragment
+import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 
