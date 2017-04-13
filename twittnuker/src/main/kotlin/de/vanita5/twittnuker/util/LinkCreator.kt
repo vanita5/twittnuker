@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util
 
 import android.net.Uri
-import android.text.TextUtils
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -99,8 +98,8 @@ object LinkCreator {
     }
 
     fun getStatusWebLink(status: ParcelableStatus): Uri {
-        if (status.extras != null && !TextUtils.isEmpty(status.extras.external_url)) {
-            return Uri.parse(status.extras.external_url)
+        status.extras?.external_url?.takeIf(String::isNotEmpty)?.let {
+            return Uri.parse(it)
         }
         if (USER_TYPE_FANFOU_COM == status.account_key.host) {
             return getFanfouStatusLink(status.id)
@@ -109,11 +108,13 @@ object LinkCreator {
     }
 
     fun getQuotedStatusWebLink(status: ParcelableStatus): Uri {
-        if (status.extras != null) {
-            if (!TextUtils.isEmpty(status.extras.quoted_external_url)) {
-                return Uri.parse(status.extras.quoted_external_url)
-            } else if (!TextUtils.isEmpty(status.extras.external_url)) {
-                return Uri.parse(status.extras.external_url)
+        val extras = status.extras
+        if (extras != null) {
+            extras.quoted_external_url?.takeIf(String::isNotEmpty)?.let {
+                return Uri.parse(it)
+            }
+            extras.external_url?.takeIf(String::isNotEmpty)?.let {
+                return Uri.parse(it)
             }
         }
         if (USER_TYPE_FANFOU_COM == status.account_key.host) {
