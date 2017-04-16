@@ -78,6 +78,9 @@ class DependencyHolder internal constructor(context: Context) {
     @Inject
     lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
         internal set
+    @Inject
+    lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
+        internal set
 
     init {
         GeneralComponentHelper.build(context).inject(this)
