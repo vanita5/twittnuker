@@ -89,7 +89,9 @@ class UpdateStatusTask(
 
     override fun doLongOperation(params: Pair<ParcelableStatusUpdate, ScheduleInfo?>): UpdateStatusResult {
         val (update, info) = params
-        val draftId = saveDraft(update)
+        val draftId = saveDraft(context, update.draft_action ?: Draft.Action.UPDATE_STATUS) {
+            applyUpdateStatus(update)
+        }
         microBlogWrapper.addSendingDraftId(draftId)
         try {
             val result = doUpdateStatus(update, info, draftId)
@@ -513,14 +515,6 @@ class UpdateStatusTask(
     private fun isDuplicate(exception: Exception): Boolean {
         return exception is MicroBlogException && exception.errorCode == ErrorInfo.STATUS_IS_DUPLICATE
     }
-
-
-    private fun saveDraft(statusUpdate: ParcelableStatusUpdate): Long {
-        return saveDraft(context, statusUpdate.draft_action ?: Draft.Action.UPDATE_STATUS) {
-            applyUpdateStatus(statusUpdate)
-        }
-    }
-
 
     class PendingStatusUpdate internal constructor(val length: Int, defaultText: String) {
 
@@ -981,11 +975,11 @@ class UpdateStatusTask(
         }
 
         internal class MediaStreamData(
-                val stream: ContentLengthInputStream?,
-                val type: String?,
-                val geometry: Point?,
-                val deleteOnSuccess: List<MediaDeletionItem>?,
-                val deleteAlways: List<MediaDeletionItem>?
+            val stream: ContentLengthInputStream?,
+            val type: String?,
+            val geometry: Point?,
+            val deleteOnSuccess: List<MediaDeletionItem>?,
+            val deleteAlways: List<MediaDeletionItem>?
         )
 
         inline fun createDraft(@Draft.Action action: String, config: Draft.() -> Unit): Draft {

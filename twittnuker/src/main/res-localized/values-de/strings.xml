@@ -448,11 +448,16 @@
     <string name="label_photos">Fotos</string>
     <string name="label_poll">Umfrage</string>
     <string name="label_powered_by_giphy">Powered by Giphy</string>
+    <string name="label_quote_name">Zitiere <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="label_quote_name_text">Zitiere <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="label_refresh_and_sync_service">Aktualisierungs- &amp; Synchronisierungsdienst</string>
     <string name="label_refresh_service">Dienst aktualisieren</string>
+    <string name="label_reply_name">Antworte <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="label_reply_name_text">Antworte <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="label_schedule_time_buffer_default">Buffer Standard</string>
     <string name="label_send_at">Senden um</string>
     <string name="label_sensitive_content">Sensibler Inhalt</string>
+    <string name="label_status_hint">Schreibe etwas…</string>
     <string name="label_status_not_available">Tweet existiert nicht</string>
     <string name="label_statuses">Tweets</string>
     <string name="label_statuses_replies">Tweets und Antworten</string>
@@ -783,7 +788,6 @@
     <string name="quick_send_summary">Tweet mit \"Enter\" abschicken.</string>
     <string name="quote_format">Zitat-Format</string>
     <string name="quote_format_summary">\"[TEXT]\" = Tweet Text\n \"[NAME]\" = Twitter Username</string>
-    <string name="quote_name_text">Zitat <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="quote_original_status">Tweet zitieren</string>
     <string name="quote_protected_status_warning_message">Dieser Account ist geschützt und es ist vielleicht nicht gewünscht, dass der Tweet öffentlich geteilt wird.</string>
     <string name="quote_user">Zitat <xliff:g id="user_name">%s</xliff:g></string>
@@ -808,8 +812,6 @@
     <string name="remove_from_filter">Entferne aus dem Filter</string>
     <string name="remove_sensitive_mark">#NSFW</string>
     <string name="replies">Antworten</string>
-    <string name="reply_to">Antworten <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="reply_to_name_text"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="report_for_spam">Spam melden</string>
     <string name="report_user"><xliff:g id="name">%s</xliff:g> melden</string>
     <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g> wegen Spam melden? Dadurch wird der User auch geblockt.</string>
@@ -886,7 +888,6 @@
     <string name="state_blocking">Blockieren</string>
     <string name="status_format_source"><xliff:g example="Twittnuker for Android" id="source">%s</xliff:g></string>
     <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twittnuker for Android" id="source">%2$s</xliff:g></string>
-    <string name="status_hint">Schreibe etwas…</string>
     <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
     <string name="status_not_updated">Tweet nicht gesendet.</string>
     <string name="status_not_updated_summary">Tweet wurde nicht gesendet und als Entwurf gespeichert.</string>
