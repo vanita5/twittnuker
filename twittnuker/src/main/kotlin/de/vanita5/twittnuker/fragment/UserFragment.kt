@@ -652,7 +652,6 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val activity = activity
-        userColorNameManager.registerColorChangedListener(this)
         nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
         cardBackgroundColor = ThemeUtils.getCardBackgroundColor(activity,
                 preferences[themeBackgroundOptionKey], preferences[themeBackgroundAlphaKey])
@@ -736,10 +735,12 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     override fun onStart() {
         super.onStart()
         bus.register(this)
+        userColorNameManager.registerColorChangedListener(this)
     }
 
 
     override fun onStop() {
+        userColorNameManager.unregisterColorChangedListener(this)
         bus.unregister(this)
         super.onStop()
     }
@@ -1364,6 +1365,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         } else {
             taskColor = ColorUtils.setAlphaComponent(theme.colorToolbar, 0xFF)
         }
+        val user = this.user
         if (user != null) {
             val name = userColorNameManager.getDisplayName(user, nameFirst)
             ActivitySupport.setTaskDescription(activity, TaskDescriptionCompat(name, null, taskColor))
