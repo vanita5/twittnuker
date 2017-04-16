@@ -89,6 +89,9 @@ public class AccountDetails implements Parcelable, Comparable<AccountDetails> {
     @JsonField(name = "dummy")
     public boolean dummy;
 
+    @JsonField(name = "test")
+    public boolean test;
+
     @JsonField(name = "credentials", typeConverter = JsonStringConverter.class)
     @ParcelableNoThanks
     String credentials_json;

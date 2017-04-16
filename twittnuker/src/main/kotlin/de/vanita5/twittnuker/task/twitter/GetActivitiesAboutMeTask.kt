@@ -30,11 +30,12 @@ import de.vanita5.twittnuker.library.twitter.model.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.ErrorInfoStore
-import de.vanita5.twittnuker.util.Utils
+import java.io.IOException
 
 class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
 
@@ -44,21 +45,9 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
     override val contentUri: Uri
         get() = Activities.AboutMe.CONTENT_URI
 
-    override fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails, twitter: MicroBlog) {
-        if (AccountType.TWITTER == details.type && details.isOfficial(context)) {
-            try {
-                val response = twitter.getActivitiesAboutMeUnread(true)
-                val tag = Utils.getReadPositionTagWithAccount(ReadPositionTag.ACTIVITIES_ABOUT_ME,
-                        accountKey)
-                readStateManager.setPosition(tag, response.cursor, false)
-            } catch (e: MicroBlogException) {
-                // Ignore
-            }
-        }
-    }
-
     @Throws(MicroBlogException::class)
-    override fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity> {
+    override fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging):
+            ResponseList<Activity> {
         if (details.isOfficial(context)) {
             return twitter.getActivitiesAboutMe(paging)
         }
@@ -74,5 +63,16 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
         }
         statuses.mapTo(activities) { InternalActivityCreator.status(it, details.key.id) }
         return activities
+    }
+
+
+    override fun setLocalReadPosition(accountKeys: Array<UserKey>, saveReadPosition: BooleanArray) {
+        val manager = timelineSyncManagerFactory.get() ?: return
+        val tag = InteractionsTimelineFragment.getTimelineSyncTag(accountKeys)
+        try {
+            manager.blockingGetPosition(ReadPositionTag.ACTIVITIES_ABOUT_ME, tag)
+        } catch (e: IOException) {
+            return
+        }
     }
 }

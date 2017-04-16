@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
+import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
 
@@ -53,6 +54,10 @@ class DraftViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1,
             Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.REPLY, Draft.Action.QUOTE -> {
                 val media = draft.media?.mapToArray(::ParcelableMedia)
+                val extras = draft.action_extras as? UpdateStatusActionExtras
+                if (extras != null) {
+                    summaryText = extras.editingText
+                }
                 mediaPreviewContainer.visibility = View.VISIBLE
                 mediaPreviewContainer.displayMedia(requestManager = requestManager,
                         media = media)

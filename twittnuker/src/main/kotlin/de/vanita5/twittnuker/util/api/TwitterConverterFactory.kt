@@ -23,6 +23,9 @@
 package de.vanita5.twittnuker.util.api
 
 import android.support.v4.util.SimpleArrayMap
+import com.bluelinelabs.logansquare.JsonMapper
+import com.bluelinelabs.logansquare.ParameterizedType
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ResponseCode
@@ -48,6 +51,14 @@ object TwitterConverterFactory : LoganSquareConverterFactory<MicroBlogException>
     init {
         responseConverters.put(ResponseCode::class.java, ResponseCode.ResponseConverter())
         responseConverters.put(OAuthToken::class.java, OAuthTokenResponseConverter())
+    }
+
+    override fun <T : Any?> mapperFor(type: ParameterizedType<T>): JsonMapper<T> {
+        return LoganSquareMapperFinder.mapperFor(type)
+    }
+
+    override fun <T : Any?> mapperFor(type: Class<T>): JsonMapper<T> {
+        return LoganSquareMapperFinder.mapperFor(type)
     }
 
     @Throws(RestConverter.ConvertException::class)

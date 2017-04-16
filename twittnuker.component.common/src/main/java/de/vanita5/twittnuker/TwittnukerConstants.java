@@ -53,6 +53,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String ACCOUNT_USER_DATA_EXTRAS = "extras";
     String ACCOUNT_USER_DATA_COLOR = "color";
     String ACCOUNT_USER_DATA_POSITION = "position";
+    String ACCOUNT_USER_DATA_TEST = "test";
 
     String LOGTAG = TWITTNUKER_APP_NAME;
 

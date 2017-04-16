@@ -37,8 +37,6 @@ import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.task
 import okhttp3.Dns
-import org.apache.commons.lang3.concurrent.ConcurrentUtils
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
@@ -62,8 +60,6 @@ import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.sync.DataSyncProvider
 import de.vanita5.twittnuker.util.sync.SyncController
 import java.util.*
-import java.util.concurrent.Callable
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -120,11 +116,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             StrictModeUtils.detectAllVmPolicy()
         }
         super.onCreate()
-        LoganSquareMapperFinder.setDefaultExecutor(object : LoganSquareMapperFinder.FutureExecutor {
-            override fun <T> submit(callable: Callable<T>): Future<T> {
-                return ConcurrentUtils.constantFuture(callable.call())
-            }
-        })
         applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()

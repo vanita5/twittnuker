@@ -45,6 +45,7 @@ import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_CREDS_
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_EXTRAS;
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_KEY;
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_POSITION;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_TEST;
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_TYPE;
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_USER;
 
@@ -59,6 +60,7 @@ public class AccountUtils {
             ACCOUNT_USER_DATA_EXTRAS,
             ACCOUNT_USER_DATA_COLOR,
             ACCOUNT_USER_DATA_POSITION,
+            ACCOUNT_USER_DATA_TEST,
     };
 
     @Nullable

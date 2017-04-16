@@ -26,6 +26,7 @@ import com.twitter.Extractor
 import de.vanita5.twittnuker.extension.model.replyMentions
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUserMention
+import de.vanita5.twittnuker.model.UserKey
 
 fun Extractor.extractMentionsAndNonMentionStartIndex(text: String, mentions: Array<ParcelableUserMention>?): MentionsAndNonMentionStartIndex {
     var nextExpectedPos = 0
@@ -42,7 +43,8 @@ fun Extractor.extractMentionsAndNonMentionStartIndex(text: String, mentions: Arr
     return MentionsAndNonMentionStartIndex(entities, nextExpectedPos)
 }
 
-fun Extractor.extractReplyTextAndMentions(text: String, inReplyTo: ParcelableStatus): ReplyTextAndMentions {
+fun Extractor.extractReplyTextAndMentions(text: String, inReplyTo: ParcelableStatus,
+        accountKey: UserKey = inReplyTo.account_key): ReplyTextAndMentions {
     // First extract mentions and 'real text' start index
     val (textMentions, index) = extractMentionsAndNonMentionStartIndex(text, inReplyTo.replyMentions)
 
@@ -75,7 +77,7 @@ fun Extractor.extractReplyTextAndMentions(text: String, inReplyTo: ParcelableSta
         }
     }
     // Find reply text contains mention to `inReplyTo.user`
-    val mentioningUser = textMentions.any {
+    val mentioningUser = accountKey == inReplyTo.user_key || textMentions.any {
         it.value.equals(inReplyTo.user_screen_name, ignoreCase = true)
     }
     if (!mentioningUser) {

@@ -27,6 +27,7 @@ package de.vanita5.twittnuker.provider;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.DraftTableInfo;
 import de.vanita5.twittnuker.model.FiltersData$BaseItemTableInfo;
@@ -576,6 +577,7 @@ public interface TwidereDataStore {
         String TABLE_NAME = "statuses";
         String CONTENT_PATH = TABLE_NAME;
 
+        @NonNull
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
         /**
@@ -784,6 +786,7 @@ public interface TwidereDataStore {
             String CONTENT_PATH = "activities_about_me";
             String TABLE_NAME = "activities_about_me";
 
+            @NonNull
             Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
         }
 

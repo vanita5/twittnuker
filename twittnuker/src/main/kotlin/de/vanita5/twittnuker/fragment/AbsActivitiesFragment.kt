@@ -427,6 +427,9 @@ abstract class AbsActivitiesFragment protected constructor() :
         @ReadPositionTag
         get() = null
 
+    protected open val timelineSyncTag: String?
+        get() = null
+
     protected abstract fun hasMoreData(data: List<ParcelableActivity>?): Boolean
 
     protected abstract fun onCreateActivitiesLoader(context: Context, args: Bundle,
@@ -445,7 +448,9 @@ abstract class AbsActivitiesFragment protected constructor() :
                 if (readStateManager.setPosition(tag, item.timestamp)) {
                     positionUpdated = true
                 }
-                timelineSyncManager?.setPosition(positionTag, tag, item.position_key)
+            }
+            timelineSyncTag?.let { syncTag ->
+                timelineSyncManager?.setPosition(positionTag, syncTag, item.position_key)
             }
             currentReadPositionTag?.let { currentTag ->
                 readStateManager.setPosition(currentTag, item.timestamp, true)

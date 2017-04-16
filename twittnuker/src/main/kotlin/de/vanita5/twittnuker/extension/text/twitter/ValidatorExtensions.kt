@@ -25,15 +25,17 @@ package de.vanita5.twittnuker.extension.text.twitter
 import com.twitter.Extractor
 import com.twitter.Validator
 import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.UserKey
 
 
-
-fun Validator.getTweetLength(text: String, ignoreMentions: Boolean, inReplyTo: ParcelableStatus?): Int {
-    if (!ignoreMentions || inReplyTo == null) {
+fun Validator.getTweetLength(text: String, ignoreMentions: Boolean, inReplyTo: ParcelableStatus?,
+        accountKey: UserKey? = inReplyTo?.account_key): Int {
+    if (!ignoreMentions || inReplyTo == null || accountKey == null) {
         return getTweetLength(text)
     }
 
-    val (_, replyText, _, _, _) = InternalExtractor.extractReplyTextAndMentions(text, inReplyTo)
+    val (_, replyText, _, _, _) = InternalExtractor.extractReplyTextAndMentions(text, inReplyTo,
+            accountKey)
     return getTweetLength(replyText)
 }
 

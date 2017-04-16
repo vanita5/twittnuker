@@ -22,13 +22,13 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.net.Uri
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_HOME_TIMELINE
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.model.ParameterizedExpression
 import de.vanita5.twittnuker.model.RefreshTaskParam
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -37,17 +37,18 @@ import java.util.*
 
 class HomeTimelineFragment : CursorStatusesFragment() {
 
-    override val errorInfoKey: String
-        get() = ErrorInfoStore.KEY_HOME_TIMELINE
+    override val errorInfoKey = ErrorInfoStore.KEY_HOME_TIMELINE
 
-    override val contentUri: Uri
-        get() = Statuses.CONTENT_URI
+    override val contentUri = Statuses.CONTENT_URI
 
-    override val notificationType: Int
-        get() = NOTIFICATION_ID_HOME_TIMELINE
+    override val notificationType = NOTIFICATION_ID_HOME_TIMELINE
 
-    override val isFilterEnabled: Boolean
-        get() = true
+    override val isFilterEnabled = true
+
+    override val readPositionTag = ReadPositionTag.HOME_TIMELINE
+
+    override val timelineSyncTag: String?
+        get() = getTimelineSyncTag(accountKeys)
 
     override fun updateRefreshState() {
         val twitter = twitterWrapper
@@ -86,6 +87,11 @@ class HomeTimelineFragment : CursorStatusesFragment() {
         return super.processWhere(where, whereArgs)
     }
 
-    override val readPositionTag: String = ReadPositionTag.HOME_TIMELINE
+    companion object {
 
+        fun getTimelineSyncTag(accountKeys: Array<UserKey>): String {
+            return "${ReadPositionTag.HOME_TIMELINE}_${accountKeys.sorted().joinToString(",")}"
+        }
+
+    }
 }
