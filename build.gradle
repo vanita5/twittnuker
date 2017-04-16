@@ -63,6 +63,9 @@ subprojects {
                     Chameleon           : '0.9.17',
                     UniqR               : '0.9.1',
                     SQLiteQB            : '0.9.15',
+                    Glide               : '3.7.0',
+                    GlideOkHttp3        : '1.4.0',
+                    GlideTransformations: '2.0.1',
             ]
         }
 
