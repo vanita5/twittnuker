@@ -20,39 +20,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.graphic;
+package de.vanita5.twittnuker.graphic
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
 
-public class WindowBackgroundDrawable extends Drawable {
+class WindowBackgroundDrawable(private val color: Int) : Drawable() {
 
-    private final int color;
-
-    public WindowBackgroundDrawable(int color) {
-        this.color = color;
+    override fun draw(canvas: Canvas) {
+        canvas.drawColor(color)
     }
 
-    @Override
-    public void draw(@NonNull Canvas canvas) {
-        canvas.drawColor(color);
-    }
-
-    @Override
-    public void setAlpha(int alpha) {
+    override fun setAlpha(alpha: Int) {
         // No-op
     }
 
-    @Override
-    public void setColorFilter(ColorFilter colorFilter) {
+    override fun setColorFilter(colorFilter: ColorFilter?) {
         // No-op
     }
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSLUCENT;
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
     }
+
+    override fun getConstantState(): Drawable.ConstantState {
+        return State(color)
+    }
+
+    class State(private val color: Int) : ConstantState() {
+
+        override fun newDrawable() = WindowBackgroundDrawable(color)
+
+        override fun getChangingConfigurations() = 0
+
+    }
+
 }
