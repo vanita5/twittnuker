@@ -67,7 +67,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+import de.vanita5.twittnuker.util.dagger.GeneralComponent;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 
@@ -80,7 +80,7 @@ public class NotificationHelper implements Constants {
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
-        GeneralComponentHelper.build(context).inject(this);
+        GeneralComponent.Companion.get(context).inject(this);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
