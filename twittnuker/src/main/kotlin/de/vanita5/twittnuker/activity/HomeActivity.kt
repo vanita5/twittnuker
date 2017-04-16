@@ -65,8 +65,7 @@ import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home_content.*
 import kotlinx.android.synthetic.main.layout_empty_tab_hint.*
-import org.mariotaku.abstask.library.AbstractTask
-import org.mariotaku.abstask.library.TaskStarter
+import nl.komponents.kovenant.task
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
@@ -337,6 +336,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         AccountManager.get(this).removeOnAccountsUpdatedListenerSafe(accountUpdatedListener)
         preferences.edit().putInt(KEY_SAVED_TAB_POSITION, mainPager.currentItem).apply()
         timelineSyncManager?.commit()
+
         unregisterReceiver(mGCMRegistrationReceiver)
 
         super.onStop()
@@ -346,16 +346,11 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         if (isFinishing) {
             // Stop only when exiting explicitly
             StreamingService.startOrStopService(this)
-        }
 
-        // Delete unused items in databases.
-        val context = applicationContext
-        TaskStarter.execute(object : AbstractTask<Any?, Any?, Any?>() {
-            override fun doLongOperation(params: Any?): Any? {
-                DataStoreUtils.cleanDatabasesByItemLimit(context)
-                return null
-            }
-        })
+            // Delete unused items in databases.
+            val context = applicationContext
+            task { DataStoreUtils.cleanDatabasesByItemLimit(context) }
+        }
         super.onDestroy()
     }
 
