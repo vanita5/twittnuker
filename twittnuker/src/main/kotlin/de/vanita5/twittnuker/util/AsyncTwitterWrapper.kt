@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.*
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
@@ -382,7 +383,7 @@ class AsyncTwitterWrapper(
             override fun onExecute(params: Any?) {
                 for (accountKey in accountKeys) {
                     val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey) ?: continue
-                    if (!Utils.isOfficialCredentials(context, accountKey)) continue
+                    if (!AccountUtils.isOfficial(context, accountKey)) continue
                     microBlog.setActivitiesAboutMeUnread(cursor)
                 }
             }

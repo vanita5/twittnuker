@@ -96,7 +96,6 @@ import org.mariotaku.sqliteqb.library.Selectable;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -305,18 +304,6 @@ public final class Utils implements Constants {
     public static boolean isComposeNowSupported(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN || context == null) return false;
         return hasNavBar(context);
-    }
-
-    public static boolean isOfficialCredentials(@NonNull final Context context, final UserKey accountKey) {
-        final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true);
-        if (details == null) return false;
-        return AccountDetailsExtensionsKt.isOfficial(details, context);
-    }
-
-
-    public static boolean isOfficialCredentials(@NonNull final Context context,
-                                                @NonNull final AccountDetails account) {
-        return AccountDetailsExtensionsKt.isOfficial(account, context);
     }
 
     public static boolean setLastSeen(Context context, ParcelableUserMention[] entities, long time) {

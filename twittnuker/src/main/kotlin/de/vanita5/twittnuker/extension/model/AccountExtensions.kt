@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.accounts.*
+import android.content.Context
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -46,6 +47,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.AccountUtils.ACCOUNT_USER_DATA_KEYS
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
+import de.vanita5.twittnuker.util.TwitterContentUtils
 import java.io.IOException
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -131,11 +133,21 @@ fun Account.setPosition(am: AccountManager, position: Int) {
     am.setUserData(this, ACCOUNT_USER_DATA_POSITION, position.toString())
 }
 
-fun AccountManager.hasInvalidAccount(): Boolean {
-    for (account in AccountUtils.getAccounts(this)) {
-        if (!isAccountValid(account)) return true
+fun Account.isOfficial(am: AccountManager, context: Context): Boolean {
+    val extras = getAccountExtras(am)
+    if (extras is TwitterAccountExtras) {
+        return extras.isOfficialCredentials
+    }
+    val credentials = getCredentials(am)
+    if (credentials is OAuthCredentials) {
+        return TwitterContentUtils.isOfficialKey(context, credentials.consumer_key,
+                credentials.consumer_secret)
     }
     return false
+}
+
+fun AccountManager.hasInvalidAccount(): Boolean {
+    return AccountUtils.getAccounts(this).none { isAccountValid(it) }
 }
 
 fun AccountManager.isAccountValid(account: Account): Boolean {

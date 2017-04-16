@@ -31,7 +31,6 @@ import android.support.annotation.Nullable;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.annotation.AuthTypeInt;
-import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
@@ -136,9 +135,17 @@ public class AccountUtils {
         return null;
     }
 
+    public static boolean isOfficial(@NonNull final Context context, @NonNull final UserKey accountKey) {
+        AccountManager am = AccountManager.get(context);
+        Account account = AccountUtils.findByAccountKey(am, accountKey);
+        if (account == null) return false;
+        return AccountExtensionsKt.isOfficial(account, am, context);
+    }
+
     public static boolean hasOfficialKeyAccount(Context context) {
-        for (AccountDetails details : getAllAccountDetails(AccountManager.get(context), true)) {
-            if (AccountDetailsExtensionsKt.isOfficial(details, context)) {
+        final AccountManager am = AccountManager.get(context);
+        for (Account account : getAccounts(am)) {
+            if (AccountExtensionsKt.isOfficial(account, am, context)) {
                 return true;
             }
         }

@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.constant.favoriteConfirmationKey
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.content.FavoriteConfirmDialogFragment
 import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
@@ -226,7 +227,7 @@ object MenuUtils {
         }
         val translate = menu.findItem(R.id.translate)
         if (translate != null) {
-            val isOfficialKey = Utils.isOfficialCredentials(context, details)
+            val isOfficialKey = details.isOfficial(context)
             menu.setItemAvailability(R.id.translate, isOfficialKey)
         }
         val shareItem = menu.findItem(R.id.share)
