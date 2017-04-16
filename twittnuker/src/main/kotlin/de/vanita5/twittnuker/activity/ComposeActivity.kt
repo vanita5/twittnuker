@@ -64,13 +64,13 @@ import nl.komponents.kovenant.task
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.SecretConstants
-import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.annotation.AccountType
@@ -888,9 +888,14 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         editText.customSelectionActionModeCallback = this
         editTextContainer.touchDelegate = ComposeEditTextTouchDelegate(editTextContainer, editText)
     }
+
     private fun addMedia(media: List<ParcelableMediaUpdate>) {
         mediaPreviewAdapter.addAll(media)
         updateAttachedMediaView()
+    }
+
+    private fun removeMedia(list: List<ParcelableMediaUpdate>) {
+        mediaPreviewAdapter.removeAll(list)
     }
 
     private fun clearMedia() {
@@ -901,11 +906,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun updateAttachedMediaView() {
         attachedMediaPreview.visibility = if (hasMedia) View.VISIBLE else View.GONE
         setMenu()
-    }
-
-    private fun displayNewDraftNotification(draftUri: Uri) {
-        val notificationUri = Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(draftUri.lastPathSegment)
-        contentResolver.insert(notificationUri, null)
     }
 
     // MARK: Begin intent handling
@@ -1256,10 +1256,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun saveAccountSelection() {
         if (!shouldSaveAccounts) return
-        val editor = preferences.edit()
-
-        editor.putString(KEY_COMPOSE_ACCOUNTS, accountsAdapter.selectedAccountKeys.joinToString(","))
-        editor.apply()
+        preferences[composeAccountsKey] = accountsAdapter.selectedAccountKeys
     }
 
     private fun setMenu() {
@@ -1379,19 +1376,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
     }
 
-    private fun updateLocationState() {
-        if (kPreferences[attachLocationKey]) {
-            locationLabel.visibility = View.VISIBLE
-            if (recentLocation != null) {
-                setRecentLocation(recentLocation)
-            } else {
-                locationLabel.setText(R.string.getting_location)
-            }
-        } else {
-            locationLabel.visibility = View.GONE
-        }
-    }
-
     private fun updateStatus() {
         if (isFinishing || editText == null) return
 
@@ -1412,6 +1396,30 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         LengthyOperationsService.updateStatusesAsync(this, update.draft_action, statuses = update,
                 scheduleInfo = scheduleInfo)
         finishComposing()
+    }
+
+    private fun finishComposing() {
+        if (preferences[noCloseAfterTweetSentKey] && inReplyToStatus == null) {
+            possiblySensitive = false
+            shouldSaveAccounts = true
+            inReplyToStatus = null
+            mentionUser = null
+            draft = null
+            originalText = null
+            editText.text = null
+            clearMedia()
+            val intent = Intent(INTENT_ACTION_COMPOSE)
+            setIntent(intent)
+            handleIntent(intent)
+            showLabelAndHint(intent)
+            setMenu()
+            updateTextCount()
+            shouldSkipDraft = false
+        } else {
+            setResult(Activity.RESULT_OK)
+            shouldSkipDraft = true
+            finish()
+        }
     }
 
     private fun getStatusUpdate(): ParcelableStatusUpdate {
@@ -1464,31 +1472,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return update
     }
 
-
-    private fun finishComposing() {
-        if (preferences[noCloseAfterTweetSentKey] && inReplyToStatus == null) {
-            possiblySensitive = false
-            shouldSaveAccounts = true
-            inReplyToStatus = null
-            mentionUser = null
-            draft = null
-            originalText = null
-            editText.text = null
-            clearMedia()
-            val intent = Intent(INTENT_ACTION_COMPOSE)
-            setIntent(intent)
-            handleIntent(intent)
-            showLabelAndHint(intent)
-            setMenu()
-            updateTextCount()
-            shouldSkipDraft = false
-        } else {
-            setResult(Activity.RESULT_OK)
-            shouldSkipDraft = true
-            finish()
-        }
-    }
-
     private fun updateTextCount() {
         val editable = editText.editableText ?: return
         val text = editable.toString()
@@ -1512,13 +1495,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
     }
 
-    private fun getTwitterReplyTextAndMentions(text: String = editText.text?.toString().orEmpty()):
-            ReplyTextAndMentions? {
-        val inReplyTo = inReplyToStatus ?: return null
-        if (!ignoreMentions) return null
-        return extractor.extractReplyTextAndMentions(text, inReplyTo)
-    }
-
     private fun updateUpdateStatusIcon() {
         if (scheduleInfo != null) {
             updateStatusIcon.setImageResource(R.drawable.ic_action_time)
@@ -1527,8 +1503,24 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
     }
 
-    private fun removeMedia(list: List<ParcelableMediaUpdate>) {
-        mediaPreviewAdapter.removeAll(list)
+    private fun updateLocationState() {
+        if (kPreferences[attachLocationKey]) {
+            locationLabel.visibility = View.VISIBLE
+            if (recentLocation != null) {
+                setRecentLocation(recentLocation)
+            } else {
+                locationLabel.setText(R.string.getting_location)
+            }
+        } else {
+            locationLabel.visibility = View.GONE
+        }
+    }
+
+    private fun getTwitterReplyTextAndMentions(text: String = editText.text?.toString().orEmpty()):
+            ReplyTextAndMentions? {
+        val inReplyTo = inReplyToStatus ?: return null
+        if (!ignoreMentions) return null
+        return extractor.extractReplyTextAndMentions(text, inReplyTo)
     }
 
     private fun saveToDrafts(): Uri? {
@@ -1544,6 +1536,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val draftUri = contentResolver.insert(Drafts.CONTENT_URI, values)
         displayNewDraftNotification(draftUri)
         return draftUri
+    }
+
+    private fun displayNewDraftNotification(draftUri: Uri) {
+        val notificationUri = Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(draftUri.lastPathSegment)
+        contentResolver.insert(notificationUri, null)
     }
 
     private fun ViewAnimator.setupViews() {
@@ -1777,9 +1774,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 val accounts = accounts ?: return emptyArray()
                 return accounts.filter { selection[it.key] ?: false }.toTypedArray()
             }
-
-        val isSelectionEmpty: Boolean
-            get() = selectedAccountKeys.isEmpty()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountIconViewHolder {
             val view = inflater.inflate(R.layout.adapter_item_compose_account, parent, false)
