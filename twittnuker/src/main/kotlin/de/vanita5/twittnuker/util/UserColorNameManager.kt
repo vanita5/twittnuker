@@ -103,7 +103,7 @@ class UserColorNameManager(context: Context) {
     }
 
     fun unregisterColorChangedListener(listener: UserColorChangedListener) {
-        val preferenceChangeListener = colorChangedListeners[listener] ?: return
+        val preferenceChangeListener = colorChangedListeners.remove(listener) ?: return
         colorPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
