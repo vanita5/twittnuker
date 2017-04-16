@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.task.twitter.message
 
 import android.accounts.AccountManager
 import android.content.Context
+import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
@@ -78,7 +79,7 @@ class AddParticipantsTask(
         when (account.type) {
             AccountType.TWITTER -> {
                 if (account.isOfficial(context)) {
-                    val ids = participants.map { it.key.id }.toTypedArray()
+                    val ids = participants.mapToArray { it.key.id }
                     val response = microBlog.addParticipants(conversationId, ids)
                     if (conversation != null) {
                         conversation.addParticipants(participants)

@@ -29,6 +29,7 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
+import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
@@ -40,6 +41,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.fragment.sync.SyncSettingsFragment
+import de.vanita5.twittnuker.model.sync.SyncProviderEntry
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.sync.DataSyncProvider
 
@@ -108,11 +110,11 @@ class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewContro
     class ConnectNetworkStorageSelectionDialogFragment : BaseDialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val providers = DataSyncProvider.Factory.getSupportedProviders(context)
-            val itemNames = providers.map { it.name }.toTypedArray()
+            val itemNames = providers.mapToArray(SyncProviderEntry::name)
 
             val builder = AlertDialog.Builder(context)
             builder.setTitle(R.string.title_dialog_sync_connect_to)
-            builder.setItems(itemNames) { dialog, which ->
+            builder.setItems(itemNames) { _, which ->
                 val activity = activity as PremiumDashboardActivity
                 activity.startActivityForControllerResult(providers[which].authIntent,
                         arguments.getInt(EXTRA_POSITION), REQUEST_CONNECT_NETWORK_STORAGE)

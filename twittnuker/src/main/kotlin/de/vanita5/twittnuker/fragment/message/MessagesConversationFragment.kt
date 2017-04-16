@@ -55,15 +55,14 @@ import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.empty
+import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.set
-import org.mariotaku.ktextension.checkAllSelfPermissionsGranted
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.SecretConstants
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PICK_MEDIA
-import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
@@ -545,7 +544,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
             fragment: MessagesConversationFragment,
             val media: Array<ParcelableMediaUpdate>
     ) : AbsDeleteMediaTask<MessagesConversationFragment>(fragment.context,
-            media.map { Uri.parse(it.uri) }.toTypedArray()) {
+            media.mapToArray { Uri.parse(it.uri) }) {
 
         init {
             callback = fragment

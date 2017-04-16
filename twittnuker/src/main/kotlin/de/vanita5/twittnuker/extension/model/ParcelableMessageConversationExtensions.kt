@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
+import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
@@ -149,6 +150,6 @@ fun ParcelableMessageConversation.addParticipants(users: Collection<ParcelableUs
         }
         this.participants += addingUsers
     }
-    this.participant_keys = this.participants.map(ParcelableUser::key).toTypedArray()
+    this.participant_keys = this.participants.mapToArray(ParcelableUser::key)
     this.participants.sortBy(ParcelableUser::screen_name)
 }

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
@@ -46,7 +47,7 @@ class AddUserListMembersTask(
         try {
             val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey) ?:
                     throw MicroBlogException("No account")
-            val userIds = users.map(ParcelableUser::key).toTypedArray()
+            val userIds = users.mapToArray(ParcelableUser::key)
             val result = microBlog.addUserListMembers(listId, UserKey.getIds(userIds))
             val list = ParcelableUserListUtils.from(result, accountKey)
             return SingleResponse(list)
