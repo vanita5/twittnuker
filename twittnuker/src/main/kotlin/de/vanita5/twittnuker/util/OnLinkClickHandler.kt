@@ -28,15 +28,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.BadParcelableException
-import android.support.customtabs.CustomTabsIntent
-import org.mariotaku.chameleon.Chameleon
-import org.mariotaku.chameleon.ChameleonUtils
+import android.support.v4.content.ContextCompat
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
-import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
@@ -130,7 +127,7 @@ open class OnLinkClickHandler(
 
     protected open fun openLink(link: String) {
         if (manager != null && manager.isActive) return
-        openLink(context, preferences, link)
+        openLink(context, preferences, Uri.parse(link))
     }
 
     protected fun openTwitterLink(link: String, accountKey: UserKey) {
@@ -183,30 +180,13 @@ open class OnLinkClickHandler(
 
     companion object {
 
-        fun openLink(context: Context, preferences: SharedPreferences, link: String) {
-            val uri = Uri.parse(link)
-            if (!preferences[chromeCustomTabKey]) {
-                val viewIntent = Intent(Intent.ACTION_VIEW, uri)
-                viewIntent.addCategory(Intent.CATEGORY_BROWSABLE)
-                try {
-                    return context.startActivity(viewIntent)
-                } catch (e: ActivityNotFoundException) {
-                    // Ignore
-                }
-                return
-            }
-            val builder = CustomTabsIntent.Builder()
-            builder.addDefaultShareMenuItem()
-            (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
-                builder.setToolbarColor(theme.colorToolbar)
-            }
-            val intent = builder.build()
+        fun openLink(context: Context, preferences: SharedPreferences, uri: Uri) {
+            val (intent, options) = IntentUtils.browse(context, preferences, uri = uri)
             try {
-                intent.launchUrl(context, uri)
+                ContextCompat.startActivity(context, intent, options)
             } catch (e: ActivityNotFoundException) {
                 // Ignore
             }
-
         }
     }
 }

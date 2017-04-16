@@ -249,7 +249,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 if (quoted_user_color != 0) {
                     quotedView.drawStart(quoted_user_color)
                 } else {
-                    quotedView.drawStart(ThemeUtils.getColorFromAttribute(context, R.attr.quoteIndicatorBackgroundColor, 0))
+                    quotedView.drawStart(ThemeUtils.getColorFromAttribute(context,
+                            R.attr.quoteIndicatorBackgroundColor))
                 }
 
                 displayQuotedMedia(requestManager, status)
@@ -276,7 +277,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     context.getString(R.string.label_original_status)
                 }
 
-                quotedView.drawStart(ThemeUtils.getColorFromAttribute(context, R.attr.quoteIndicatorBackgroundColor, 0))
+                quotedView.drawStart(ThemeUtils.getColorFromAttribute(context,
+                        R.attr.quoteIndicatorBackgroundColor))
             }
 
             itemContent.drawStart(colorNameManager.getUserColor(status.user_key))

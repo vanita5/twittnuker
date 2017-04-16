@@ -26,19 +26,25 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.text.TextUtils
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
@@ -213,16 +219,15 @@ object IntentUtils {
         val random = Random()
         val range = 'z' - 'a'
         for (i in 0..19) {
-            sb.append(('a' + Math.abs(random.nextInt()) % range).toChar())
+            sb.append(('a' + Math.abs(random.nextInt()) % range))
         }
         sb.append(".com")
         testBuilder.authority(sb.toString())
         intent.data = testBuilder.build()
 
-        val componentName = intent.resolveActivity(context.packageManager)
-        if (componentName == null || componentName.className == null) return null
-        if (TextUtils.equals("android", componentName.packageName)) return null
-        return componentName.packageName
+        return intent.resolveActivity(context.packageManager)?.takeIf {
+            it.className != null && it.packageName != "android"
+        }?.packageName
     }
 
     fun isWebLinkHandled(context: Context, uri: Uri): Boolean {
@@ -677,6 +682,28 @@ object IntentUtils {
         intent.`package` = BuildConfig.APPLICATION_ID
         intent.putExtra(EXTRA_INITIAL_TAB, initialTab)
         context.startActivity(intent)
+    }
+
+    fun browse(context: Context, preferences: SharedPreferences,
+            theme: Chameleon.Theme? = Chameleon.getOverrideTheme(context, ChameleonUtils.getActivity(context)),
+            uri: Uri, forceBrowser: Boolean = true): Pair<Intent, Bundle?> {
+        if (!preferences[chromeCustomTabKey]) {
+            val viewIntent = Intent(Intent.ACTION_VIEW, uri)
+            viewIntent.addCategory(Intent.CATEGORY_BROWSABLE)
+            return Pair(viewIntent, null)
+        }
+        val builder = CustomTabsIntent.Builder()
+        builder.addDefaultShareMenuItem()
+        theme?.let { theme ->
+            builder.setToolbarColor(theme.colorToolbar)
+        }
+        val customTabsIntent = builder.build()
+        val intent = customTabsIntent.intent
+        intent.data = uri
+        if (forceBrowser) {
+            intent.`package` = getDefaultBrowserPackage(context, uri, false)
+        }
+        return Pair(intent, customTabsIntent.startAnimationBundle)
     }
 
     fun applyNewDocument(intent: Intent, enable: Boolean) {

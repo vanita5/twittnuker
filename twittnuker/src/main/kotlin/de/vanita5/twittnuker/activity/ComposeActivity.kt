@@ -1484,8 +1484,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             statusTextCount.textCount = validator.getTweetLength(text)
         } else if (textAndMentions.replyToOriginalUser || replyToSelf) {
             hintLabel.visibility = View.GONE
-            val mentionColor = ThemeUtils.getColorFromAttribute(this,
-                    android.R.attr.textColorSecondary, 0)
+            val mentionColor = ThemeUtils.getTextColorSecondary(this)
             editable.clearSpans(MentionColorSpan::class.java)
             editable.setSpan(MentionColorSpan(mentionColor), 0, textAndMentions.replyStartIndex,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

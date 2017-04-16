@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.annotation.PreviewStyle
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey

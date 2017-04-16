@@ -29,7 +29,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.Rect
 import android.nfc.NfcAdapter
 import android.os.Bundle
@@ -47,15 +46,12 @@ import android.view.View
 import com.squareup.otto.Bus
 import nl.komponents.kovenant.Promise
 import org.mariotaku.chameleon.Chameleon
-import org.mariotaku.chameleon.Chameleon.Theme.LightStatusBarMode
 import org.mariotaku.chameleon.ChameleonActivity
-import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
-import de.vanita5.twittnuker.TwittnukerConstants.VALUE_THEME_BACKGROUND_SOLID
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
@@ -135,29 +131,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     private val controlBarOffsetListeners = ArrayList<IControlBarActivity.ControlBarOffsetListener>()
 
     private val userTheme: Chameleon.Theme by lazy {
-        val theme = Chameleon.Theme.from(this)
-        theme.colorAccent = ThemeUtils.getUserAccentColor(this)
-        theme.colorPrimary = ThemeUtils.getUserAccentColor(this)
-        val backgroundOption = themeBackgroundOption
-        if (theme.isToolbarColored) {
-            theme.colorToolbar = theme.colorPrimary
-        } else if (backgroundOption == VALUE_THEME_BACKGROUND_SOLID) {
-            theme.colorToolbar = if (ThemeUtils.isLightTheme(this)) {
-                Color.WHITE
-            } else {
-                Color.BLACK
-            }
-        }
-
-        if (ThemeUtils.isTransparentBackground(backgroundOption)) {
-            theme.colorToolbar = ColorUtils.setAlphaComponent(theme.colorToolbar,
-                    ThemeUtils.getActionBarAlpha(themePreferences[themeBackgroundAlphaKey]))
-        }
-        theme.statusBarColor = ChameleonUtils.darkenColor(theme.colorToolbar)
-        theme.lightStatusBarMode = LightStatusBarMode.AUTO
-        theme.textColorLink = ThemeUtils.getOptimalAccentColor(theme.colorAccent, theme.colorForeground)
-
-        return@lazy theme
+        return@lazy ThemeUtils.getUserTheme(this, themePreferences)
     }
 
     // Data fields
