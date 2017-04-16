@@ -970,6 +970,7 @@
     <string name="title_following">Folgen</string>
     <string name="title_gif_sharing">GIFs teilen</string>
     <string name="title_home">Home</string>
+    <string name="title_like_confirm">Tweet liken?</string>
     <!-- [noun] Like, Formerly Twitter's favorite, in the plural -->
     <string name="title_likes">Likes</string>
     <string name="title_manage_filter_subscriptions">Filter Abonnements</string>
