@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.text.SafeSpannableStringBuilder
 
 import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.ExternalThemeManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class EmojiEditableFactory(textView: TextView) : Editable.Factory() {
     lateinit internal var externalThemeManager: ExternalThemeManager
 
     init {
-        GeneralComponentHelper.build(textView.context).inject(this)
+        GeneralComponent.get(textView.context).inject(this)
     }
 
     override fun newEditable(source: CharSequence): Editable {

@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.database.CachedUsersQueryBuilder
 import de.vanita5.twittnuker.util.database.SuggestionsCursorCreator
 import java.util.concurrent.Executor
@@ -87,7 +87,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
 
     override fun onCreate(): Boolean {
         val context = context!!
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         handler = Handler(Looper.getMainLooper())
         databaseWrapper = SQLiteDatabaseWrapper(this)
         backgroundExecutor = Executors.newSingleThreadExecutor()

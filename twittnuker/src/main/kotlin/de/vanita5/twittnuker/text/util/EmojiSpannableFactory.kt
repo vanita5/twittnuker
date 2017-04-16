@@ -28,7 +28,7 @@ import de.vanita5.twittnuker.text.SafeSpannableString
 
 import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.ExternalThemeManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class EmojiSpannableFactory(textView: TextView) : Spannable.Factory() {
     lateinit internal var externalThemeManager: ExternalThemeManager
 
     init {
-        GeneralComponentHelper.build(textView.context).inject(this)
+        GeneralComponent.get(textView.context).inject(this)
     }
 
     override fun newSpannable(source: CharSequence): Spannable {

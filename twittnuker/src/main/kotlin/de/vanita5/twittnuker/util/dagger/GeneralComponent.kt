@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.dagger
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import dagger.Component
 import de.vanita5.twittnuker.activity.BaseActivity
@@ -146,4 +147,16 @@ interface GeneralComponent {
     fun inject(service: StreamingService)
 
     fun inject(service: BaseService)
+
+    companion object {
+        private var instance: GeneralComponent? = null
+
+        fun get(context: Context): GeneralComponent {
+            return instance ?: run {
+                val helper = DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build()
+                instance = helper
+                return@run helper
+            }
+        }
+    }
 }

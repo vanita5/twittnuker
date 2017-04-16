@@ -66,7 +66,7 @@ import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.streaming.TwitterTimelineStreamCallback
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -88,7 +88,7 @@ class StreamingService : BaseService() {
 
     override fun onCreate() {
         super.onCreate()
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
         threadPoolExecutor = Executors.newCachedThreadPool(BasicThreadFactory.Builder()
                 .namingPattern("twittnuker-streaming-%d")
                 .priority(Thread.NORM_PRIORITY - 1).build())

@@ -26,7 +26,7 @@ import android.content.Context
 import android.util.AttributeSet
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.findParent
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class PremiumEntryPreferenceCategory(context: Context, attrs: AttributeSet) : Ti
     internal lateinit var extraFeaturesService: ExtraFeaturesService
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         val a = context.obtainStyledAttributes(attrs, R.styleable.PremiumEntryPreference)
         a.recycle()
         isEnabled = extraFeaturesService.isSupported()

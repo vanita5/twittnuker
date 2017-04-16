@@ -33,7 +33,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.util.sync.TimelineSyncManager
@@ -90,7 +90,7 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        GeneralComponentHelper.build(context!!).inject(this)
+        GeneralComponent.get(context!!).inject(this)
     }
 
     override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseFragment) -> Unit)

@@ -34,7 +34,7 @@ import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.view.holder.DraftViewHolder
 
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class DraftsAdapter(
     private var indices: ObjectCursor.CursorIndices<Draft>? = null
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         mediaPreviewStyle = preferences[mediaPreviewStyleKey]
     }
 

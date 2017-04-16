@@ -30,9 +30,9 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.Utils
 
-fun ParcelableUser.getBestProfileBanner(width: Int): String? {
+fun ParcelableUser.getBestProfileBanner(width: Int, height: Int = 0): String? {
     return profile_banner_url?.let {
-        InternalTwitterContentUtils.getBestBannerUrl(it, width)
+        InternalTwitterContentUtils.getBestBannerUrl(it, width, height)
     } ?: if (USER_TYPE_FANFOU_COM == key.host) {
         profile_background_url
     } else {

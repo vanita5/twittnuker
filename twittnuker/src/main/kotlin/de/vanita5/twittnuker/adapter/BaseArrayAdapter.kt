@@ -25,15 +25,15 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v4.text.BidiFormatter
 import com.bumptech.glide.RequestManager
-import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
 
@@ -83,7 +83,7 @@ open class BaseArrayAdapter<T>(
 
     init {
         @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as BaseArrayAdapter<Any>)
+        GeneralComponent.get(context).inject(this as BaseArrayAdapter<Any>)
         linkify = TwidereLinkify(OnLinkClickHandler(context, multiSelectManager, preferences))
         profileImageStyle = preferences[profileImageStyleKey]
         textSize = preferences[textSizeKey].toFloat()

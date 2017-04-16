@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.util.AsyncTaskManager
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
 
@@ -54,7 +54,7 @@ abstract class ManagedAsyncTask<Params, Progress, Result> @JvmOverloads construc
 
     init {
         @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as ManagedAsyncTask<Any, Any, Any>)
+        GeneralComponent.get(context).inject(this as ManagedAsyncTask<Any, Any, Any>)
     }
 
     override fun onCancelled() {

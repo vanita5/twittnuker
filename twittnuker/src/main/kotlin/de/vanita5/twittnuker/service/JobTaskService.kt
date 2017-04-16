@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.TaskServiceRunner
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.support.JobServiceSupport
 import javax.inject.Inject
 
@@ -50,7 +50,7 @@ class JobTaskService : JobService() {
     override fun onCreate() {
         super.onCreate()
         Log.d(LOGTAG, "JobTaskService started")
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
     }
 
     override fun onDestroy() {

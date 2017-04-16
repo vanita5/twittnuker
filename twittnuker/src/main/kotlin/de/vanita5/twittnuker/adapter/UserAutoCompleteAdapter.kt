@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.view.ProfileImageView
 
 import javax.inject.Inject
@@ -70,7 +70,7 @@ class UserAutoCompleteAdapter(
     var accountKey: UserKey? = null
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         displayProfileImage = preferences[displayProfileImageKey]
         profileImageStyle = preferences[profileImageStyleKey]
     }

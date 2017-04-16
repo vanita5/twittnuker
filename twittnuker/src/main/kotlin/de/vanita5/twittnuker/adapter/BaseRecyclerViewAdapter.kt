@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.constant.showAbsoluteTimeKey
 import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
 
@@ -68,7 +68,7 @@ abstract class BaseRecyclerViewAdapter<VH : RecyclerView.ViewHolder>(
 
     init {
         @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as BaseRecyclerViewAdapter<RecyclerView.ViewHolder>)
+        GeneralComponent.get(context).inject(this as BaseRecyclerViewAdapter<RecyclerView.ViewHolder>)
         profileImageStyle = preferences[profileImageStyleKey]
         textSize = preferences[textSizeKey].toFloat()
         profileImageEnabled = preferences[displayProfileImageKey]

@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
 
 class FilteredUsersFragment : BaseFiltersFragment() {
@@ -158,7 +158,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
         private val secondaryTextColor = ThemeUtils.getTextColorSecondary(context)
 
         init {
-            GeneralComponentHelper.build(context).inject(this)
+            GeneralComponent.get(context).inject(this)
             nameFirst = preferences[nameFirstKey]
         }
 

@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.util.*
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class MultiSelectEventHandler(
     private var accountActionProvider: AccountActionProvider? = null
 
     init {
-        GeneralComponentHelper.build(activity).inject(this)
+        GeneralComponent.get(activity).inject(this)
     }
 
     /**

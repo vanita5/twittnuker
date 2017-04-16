@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.model.CacheMetadata
 import de.vanita5.twittnuker.task.SaveFileTask
 import de.vanita5.twittnuker.util.BitmapUtils
 import de.vanita5.twittnuker.util.JsonSerializer
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.io.ByteArrayInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -50,7 +50,7 @@ class CacheProvider : ContentProvider() {
     internal lateinit var fileCache: FileCache
 
     override fun onCreate(): Boolean {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         return true
     }
 

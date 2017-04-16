@@ -29,7 +29,7 @@ import android.view.View
 import android.widget.TextView
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.sync.SyncPreferences
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class SyncItemPreference(
     val syncType: String
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         val a = context.obtainStyledAttributes(attrs, R.styleable.SyncItemPreference)
         syncType = a.getString(R.styleable.SyncItemPreference_syncType)
         key = SyncPreferences.getSyncEnabledKey(syncType)

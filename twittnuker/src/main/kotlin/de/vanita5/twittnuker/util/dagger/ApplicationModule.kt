@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util.dagger
 
-import android.app.Application
 import android.content.Context
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -70,7 +69,7 @@ import java.io.File
 import javax.inject.Singleton
 
 @Module
-class ApplicationModule(private val application: Application) {
+class ApplicationModule(private val context: Context) {
 
     init {
         if (Thread.currentThread() !== Looper.getMainLooper().thread) {
@@ -81,25 +80,25 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun keyboardShortcutsHandler(): KeyboardShortcutsHandler {
-        return KeyboardShortcutsHandler(application)
+        return KeyboardShortcutsHandler(context)
     }
 
     @Provides
     @Singleton
     fun externalThemeManager(preferences: SharedPreferencesWrapper): ExternalThemeManager {
-        return ExternalThemeManager(application, preferences)
+        return ExternalThemeManager(context, preferences)
     }
 
     @Provides
     @Singleton
     fun notificationManagerWrapper(): NotificationManagerWrapper {
-        return NotificationManagerWrapper(application)
+        return NotificationManagerWrapper(context)
     }
 
     @Provides
     @Singleton
     fun sharedPreferences(): SharedPreferencesWrapper {
-        return SharedPreferencesWrapper.getInstance(application, Constants.SHARED_PREFERENCES_NAME,
+        return SharedPreferencesWrapper.getInstance(context, Constants.SHARED_PREFERENCES_NAME,
                 Context.MODE_PRIVATE, SharedPreferenceConstants::class.java)
     }
 
@@ -112,7 +111,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun userColorNameManager(): UserColorNameManager {
-        return UserColorNameManager(application)
+        return UserColorNameManager(context)
     }
 
     @Provides
@@ -157,28 +156,28 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun asyncTwitterWrapper(bus: Bus, preferences: SharedPreferencesWrapper,
             asyncTaskManager: AsyncTaskManager, notificationManagerWrapper: NotificationManagerWrapper): AsyncTwitterWrapper {
-        return AsyncTwitterWrapper(application, bus, preferences, asyncTaskManager, notificationManagerWrapper)
+        return AsyncTwitterWrapper(context, bus, preferences, asyncTaskManager, notificationManagerWrapper)
     }
 
     @Provides
     @Singleton
     fun readStateManager(): ReadStateManager {
-        return ReadStateManager(application)
+        return ReadStateManager(context)
     }
 
     @Provides
     @Singleton
     fun contentNotificationManager(activityTracker: ActivityTracker, userColorNameManager: UserColorNameManager,
             notificationManagerWrapper: NotificationManagerWrapper, preferences: SharedPreferencesWrapper): ContentNotificationManager {
-        return ContentNotificationManager(application, activityTracker, userColorNameManager, notificationManagerWrapper, preferences)
+        return ContentNotificationManager(context, activityTracker, userColorNameManager, notificationManagerWrapper, preferences)
     }
 
     @Provides
     @Singleton
     fun mediaLoaderWrapper(preferences: SharedPreferencesWrapper): MediaPreloader {
-        val preloader = MediaPreloader(application)
+        val preloader = MediaPreloader(context)
         preloader.reloadOptions(preferences)
-        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         preloader.isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
         return preloader
     }
@@ -186,13 +185,13 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun dns(preferences: SharedPreferencesWrapper): Dns {
-        return TwidereDns(application, preferences)
+        return TwidereDns(context, preferences)
     }
 
     @Provides
     @Singleton
     fun mediaDownloader(client: RestHttpClient): MediaDownloader {
-        return TwidereMediaDownloader(application, client)
+        return TwidereMediaDownloader(context, client)
     }
 
     @Provides
@@ -210,7 +209,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun errorInfoStore(): ErrorInfoStore {
-        return ErrorInfoStore(application)
+        return ErrorInfoStore(context)
     }
 
     @Provides
@@ -222,30 +221,30 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !kPreferences[autoRefreshCompatibilityModeKey]) {
-            return JobSchedulerAutoRefreshController(application, kPreferences)
+            return JobSchedulerAutoRefreshController(context, kPreferences)
         }
-        return LegacyAutoRefreshController(application, kPreferences)
+        return LegacyAutoRefreshController(context, kPreferences)
     }
 
     @Provides
     @Singleton
     fun syncController(): SyncController {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return JobSchedulerSyncController(application)
+            return JobSchedulerSyncController(context)
         }
-        return LegacySyncController(application)
+        return LegacySyncController(context)
     }
 
     @Provides
     @Singleton
     fun syncPreferences(): SyncPreferences {
-        return SyncPreferences(application)
+        return SyncPreferences(context)
     }
 
     @Provides
     @Singleton
     fun taskCreator(kPreferences: KPreferences, bus: Bus): TaskServiceRunner {
-        return TaskServiceRunner(application, kPreferences, bus)
+        return TaskServiceRunner(context, kPreferences, bus)
     }
 
     @Provides
@@ -259,23 +258,23 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun extraFeaturesService(): ExtraFeaturesService {
-        return ExtraFeaturesService.newInstance(application)
+        return ExtraFeaturesService.newInstance(context)
     }
 
     @Provides
     @Singleton
     fun etagCache(): ETagCache {
-        return ETagCache(application)
+        return ETagCache(context)
     }
 
     @Provides
     fun locationManager(): LocationManager {
-        return application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     @Provides
     fun connectivityManager(): ConnectivityManager {
-        return application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
     @Provides
@@ -294,7 +293,7 @@ class ApplicationModule(private val application: Application) {
         val conf = HttpClientFactory.HttpClientConfiguration(preferences)
         val builder = OkHttpClient.Builder()
         HttpClientFactory.initOkHttpClient(conf, builder, dns, connectionPool, cache)
-        val userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(application)
+        val userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context)
         return OkHttpDataSourceFactory(builder.build(), userAgent, null)
     }
 
@@ -343,19 +342,21 @@ class ApplicationModule(private val application: Application) {
     }
 
     private fun getCacheDir(dirName: String, sizeInBytes: Long): File {
-        return Utils.getExternalCacheDir(application, dirName, sizeInBytes) ?:
-                Utils.getInternalCacheDir(application, dirName)
+        return Utils.getExternalCacheDir(context, dirName, sizeInBytes) ?:
+                Utils.getInternalCacheDir(context, dirName)
     }
 
     companion object {
 
-        private var sApplicationModule: ApplicationModule? = null
+        private var instance: ApplicationModule? = null
 
         fun get(context: Context): ApplicationModule {
-            if (sApplicationModule != null) return sApplicationModule!!
-            val application = context.applicationContext as Application
-            sApplicationModule = ApplicationModule(application)
-            return sApplicationModule!!
+
+            return instance ?: run {
+                val module = ApplicationModule(context.applicationContext)
+                instance = module
+                return@run module
+            }
         }
     }
 }

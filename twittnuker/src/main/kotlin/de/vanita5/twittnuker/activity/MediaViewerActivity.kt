@@ -64,7 +64,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.PermissionUtils
 import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.view.viewer.MediaSwipeCloseContainer
 import java.io.File
@@ -134,7 +134,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
         super.onCreate(savedInstanceState)
         // KEEP SCREEN ON
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
         mediaViewerHelper = IMediaViewerActivity.Helper(this)
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         mediaViewerHelper.onCreate(savedInstanceState)

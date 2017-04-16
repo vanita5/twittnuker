@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.view.ContainerView
@@ -200,7 +200,7 @@ class PremiumDashboardActivity : BaseActivity() {
 
         override fun onCreate() {
             super.onCreate()
-            GeneralComponentHelper.build(context).inject(this)
+            GeneralComponent.get(context).inject(this)
         }
 
         override fun onCreateView(parent: ContainerView): View {

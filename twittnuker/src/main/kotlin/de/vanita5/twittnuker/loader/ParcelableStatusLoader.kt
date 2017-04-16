@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.deleteActivityStatus
 import javax.inject.Inject
 
@@ -57,7 +57,7 @@ class ParcelableStatusLoader(
     internal lateinit var restHttpClient: RestHttpClient
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun loadInBackground(): SingleResponse<ParcelableStatus> {

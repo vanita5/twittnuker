@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_DIRECT_MESSAGES
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_HOME_TIMELINE
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_NOTIFICATIONS
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 class LegacyTaskService : BaseService() {
 
@@ -42,7 +42,7 @@ class LegacyTaskService : BaseService() {
     override fun onCreate() {
         super.onCreate()
         Log.d(LOGTAG, "LegacyTaskService created")
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
     }
 
     override fun onDestroy() {

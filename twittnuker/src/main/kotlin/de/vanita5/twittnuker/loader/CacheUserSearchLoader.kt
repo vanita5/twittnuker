@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.text.Collator
 import java.util.*
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class CacheUserSearchLoader(
     internal lateinit var userColorNameManager: UserColorNameManager
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun getUsers(twitter: MicroBlog, details: AccountDetails): List<User> {

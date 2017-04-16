@@ -70,7 +70,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.task.SaveFileTask
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import java.io.InputStream
 import javax.inject.Inject
@@ -177,7 +177,7 @@ class ExoPlayerPageFragment : MediaViewerFragment(), IBaseFragment<ExoPlayerPage
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun onStart() {

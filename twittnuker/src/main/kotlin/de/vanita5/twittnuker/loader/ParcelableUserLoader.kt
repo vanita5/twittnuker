@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.task.UpdateAccountInfoTask
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
 
 class ParcelableUserLoader(
@@ -72,7 +72,7 @@ class ParcelableUserLoader(
     lateinit var userColorNameManager: UserColorNameManager
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun loadInBackground(): SingleResponse<ParcelableUser> {

@@ -64,7 +64,7 @@ import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.gifshare.GifShareProvider
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
@@ -204,7 +204,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         super.onCreate(savedInstanceState)
         ActivitySupport.setTaskDescription(this, TaskDescriptionCompat(title.toString(), null,
                 ColorUtils.setAlphaComponent(overrideTheme.colorToolbar, 0xFF)))
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
     }
 
     override fun onResume() {

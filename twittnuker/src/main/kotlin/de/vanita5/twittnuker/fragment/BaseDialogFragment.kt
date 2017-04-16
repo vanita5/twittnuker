@@ -29,7 +29,7 @@ import com.twitter.Validator
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
@@ -56,7 +56,7 @@ open class BaseDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        GeneralComponentHelper.build(context!!).inject(this)
+        GeneralComponent.get(context!!).inject(this)
     }
 
     override fun onDestroy() {

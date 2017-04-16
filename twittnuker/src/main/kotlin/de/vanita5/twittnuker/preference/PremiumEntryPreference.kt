@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.extension.findParent
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ class PremiumEntryPreference(context: Context, attrs: AttributeSet) : Preference
     internal lateinit var extraFeaturesService: ExtraFeaturesService
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         val a = context.obtainStyledAttributes(attrs, R.styleable.PremiumEntryPreference)
         val requiredFeature: String = a.getString(R.styleable.PremiumEntryPreference_requiredFeature)
         a.recycle()

@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+import de.vanita5.twittnuker.util.dagger.GeneralComponent;
 
 import javax.inject.Inject;
 
@@ -74,7 +74,7 @@ public class KeyboardShortcutPreference extends DialogPreference implements IDia
     }
 
     private void init(Context context, AttributeSet set) {
-        GeneralComponentHelper.build(context).inject(this);
+        GeneralComponent.Companion.get(context).inject(this);
         TypedArray a = context.obtainStyledAttributes(set, R.styleable.KeyboardShortcutPreference);
         mContextTag = a.getString(R.styleable.KeyboardShortcutPreference_android_tag);
         mAction = a.getString(R.styleable.KeyboardShortcutPreference_android_action);

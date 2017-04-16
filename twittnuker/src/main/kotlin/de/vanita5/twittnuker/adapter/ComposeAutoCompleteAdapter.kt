@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.view.ProfileImageView
 
 import javax.inject.Inject
@@ -61,7 +61,7 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
     private var token: Char = ' '
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         displayProfileImage = preferences[displayProfileImageKey]
         profileImageStyle = preferences[profileImageStyleKey]
     }

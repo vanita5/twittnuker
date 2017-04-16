@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_PREFERENCES_NAME_PREFIX
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.media.MediaPreloader
 
 import javax.inject.Inject
@@ -92,7 +92,7 @@ abstract class AccountsListPreference(context: Context, attrs: AttributeSet? = n
         internal lateinit var mediaPreloader: MediaPreloader
 
         init {
-            GeneralComponentHelper.build(context).inject(this)
+            GeneralComponent.get(context).inject(this)
             val switchPreferenceName = "$ACCOUNT_PREFERENCES_NAME_PREFIX${account.key}"
             switchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE)
             switchPreference.registerOnSharedPreferenceChangeListener(this)

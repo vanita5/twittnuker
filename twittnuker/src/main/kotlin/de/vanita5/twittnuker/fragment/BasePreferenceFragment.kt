@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.preference.RingtonePreference
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.sync.SyncController
 
 import javax.inject.Inject
@@ -69,7 +69,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragmen
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -26,7 +26,7 @@ import android.app.IntentService
 import com.twitter.Extractor
 import com.twitter.Validator
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
 
 abstract class BaseIntentService(tag: String) : IntentService(tag) {
@@ -46,6 +46,6 @@ abstract class BaseIntentService(tag: String) : IntentService(tag) {
 
     override fun onCreate() {
         super.onCreate()
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
     }
 }

@@ -31,7 +31,7 @@ import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.view.holder.AccountViewHolder
 
 class AccountDetailsAdapter(
@@ -57,7 +57,7 @@ class AccountDetailsAdapter(
     }
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {

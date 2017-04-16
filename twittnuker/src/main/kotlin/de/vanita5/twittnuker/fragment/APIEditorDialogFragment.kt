@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator
 import java.io.IOException
 import javax.inject.Inject
@@ -214,7 +214,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             lateinit var client: RestHttpClient
 
             init {
-                GeneralComponentHelper.build(context).inject(this)
+                GeneralComponent.get(context).inject(this)
             }
 
             override fun loadInBackground(): List<CustomAPIConfig>? {

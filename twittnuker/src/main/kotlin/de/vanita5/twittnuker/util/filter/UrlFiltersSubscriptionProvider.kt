@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util.filter
 
 import android.content.Context
 import android.net.Uri
-import com.bluelinelabs.logansquare.LoganSquare
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import org.mariotaku.restfu.annotation.method.GET
@@ -37,7 +36,7 @@ import de.vanita5.twittnuker.extension.newPullParser
 import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.util.ETagCache
 import de.vanita5.twittnuker.util.JsonSerializer
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.io.IOException
 import javax.inject.Inject
 
@@ -50,7 +49,7 @@ class UrlFiltersSubscriptionProvider(context: Context, val arguments: Arguments)
     private var filters: FiltersData? = null
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     @Throws(IOException::class)

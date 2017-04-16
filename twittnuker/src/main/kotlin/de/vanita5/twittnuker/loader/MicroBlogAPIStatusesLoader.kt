@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.cache.JsonCache
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -84,7 +84,7 @@ abstract class MicroBlogAPIStatusesLoader(
     lateinit var userColorNameManager: UserColorNameManager
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     @SuppressWarnings("unchecked")

@@ -27,7 +27,7 @@ import com.squareup.otto.Bus
 import nl.komponents.kovenant.task
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.util.*
 import javax.inject.Inject
 
@@ -42,7 +42,7 @@ abstract class SyncTaskRunner(val context: Context) {
 
     init {
         @Suppress("LeakingThis")
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
     }
 
     /**

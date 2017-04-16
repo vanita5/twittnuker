@@ -29,7 +29,7 @@ import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
@@ -77,6 +77,6 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
 
     private fun injectMembers() {
         @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as BaseAbstractTask<Any, Any, Any>)
+        GeneralComponent.get(context).inject(this as BaseAbstractTask<Any, Any, Any>)
     }
 }

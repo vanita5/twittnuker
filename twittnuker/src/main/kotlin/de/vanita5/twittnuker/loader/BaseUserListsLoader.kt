@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.util.*
 import javax.inject.Inject
 
@@ -66,7 +66,7 @@ abstract class BaseUserListsLoader(
     override var prevCursor: Long = 0
 
     init {
-        GeneralComponentHelper.build(context).inject(this)
+        GeneralComponent.get(context).inject(this)
         if (data != null) {
             this.data.addAll(data)
         }

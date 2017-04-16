@@ -100,7 +100,7 @@ import de.vanita5.twittnuker.text.MarkForDeleteSpan
 import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.view.ViewAnimator
 import de.vanita5.twittnuker.util.view.ViewProperties
@@ -199,7 +199,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
         nameFirst = preferences[nameFirstKey]
         setContentView(R.layout.activity_compose)
 

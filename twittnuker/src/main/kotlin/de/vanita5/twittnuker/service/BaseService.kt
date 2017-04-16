@@ -27,7 +27,7 @@ import android.net.ConnectivityManager
 import com.twitter.Extractor
 import com.twitter.Validator
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
 
 abstract class BaseService : Service() {
@@ -55,6 +55,6 @@ abstract class BaseService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        GeneralComponentHelper.build(this).inject(this)
+        GeneralComponent.get(this).inject(this)
     }
 }
