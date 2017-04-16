@@ -55,10 +55,10 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
+import de.vanita5.twittnuker.TwittnukerConstants.VALUE_THEME_BACKGROUND_SOLID
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_BACKGROUND_SOLID
 import de.vanita5.twittnuker.constant.themeBackgroundAlphaKey
 import de.vanita5.twittnuker.constant.themeBackgroundOptionKey
 import de.vanita5.twittnuker.constant.themeColorKey
@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.util.support.ActivitySupport
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat
+import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
@@ -107,6 +108,8 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     @Inject
     lateinit var statusScheduleProviderFactory: StatusScheduleProvider.Factory
     @Inject
+    lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
+    @Inject
     lateinit var gifShareProviderFactory: GifShareProvider.Factory
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
@@ -115,6 +118,9 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     protected val statusScheduleProvider: StatusScheduleProvider?
         get() = statusScheduleProviderFactory.newInstance(this)
+
+    protected val timelineSyncManager: TimelineSyncManager?
+        get() = timelineSyncManagerFactory.get()
 
     protected val gifShareProvider: GifShareProvider?
         get() = gifShareProviderFactory.newInstance(this)

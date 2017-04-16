@@ -29,16 +29,15 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.annotation.ReadPositionTag
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
-import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.ErrorInfoStore
+import de.vanita5.twittnuker.util.Utils
+import java.io.IOException
 
 class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
-
-    @Throws(MicroBlogException::class)
-    override fun getStatuses(twitter: MicroBlog, paging: Paging): ResponseList<Status> {
-        return twitter.getHomeTimeline(paging)
-    }
 
     override val contentUri: Uri
         get() = Statuses.CONTENT_URI
@@ -46,4 +45,19 @@ class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
     override val errorInfoKey: String
         get() = ErrorInfoStore.KEY_HOME_TIMELINE
 
+    @Throws(MicroBlogException::class)
+    override fun getStatuses(twitter: MicroBlog, paging: Paging): ResponseList<Status> {
+        return twitter.getHomeTimeline(paging)
+    }
+
+    override fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails, twitter: MicroBlog) {
+        val syncManager = timelineSyncManagerFactory.get() ?: return
+        try {
+            val tag = Utils.getReadPositionTagWithAccount(ReadPositionTag.HOME_TIMELINE, accountKey)
+            val positionKey = syncManager.blockingGetPosition(ReadPositionTag.HOME_TIMELINE, tag)
+            readStateManager
+        }catch (e: IOException) {
+
+        }
+    }
 }

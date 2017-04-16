@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
+import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 import javax.inject.Inject
 
 
@@ -64,6 +65,8 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var scheduleProviderFactory: StatusScheduleProvider.Factory
     @Inject
     lateinit var extractor: Extractor
+    @Inject
+    lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
 
     val scheduleProvider: StatusScheduleProvider?
         get() = scheduleProviderFactory.newInstance(context)

@@ -25,15 +25,18 @@ package de.vanita5.twittnuker.util.sync
 import android.content.Context
 import android.content.SharedPreferences
 import de.vanita5.twittnuker.model.sync.SyncProviderEntry
-import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 
-class OpenSourceSyncProviderInfoFactory : SyncProviderInfoFactory() {
-    override fun getInfoForType(type: String, preferences: SharedPreferences): SyncProviderInfo? {
+class OpenSourceSyncProviderInfoFactory : DataSyncProvider.Factory() {
+    override fun createForType(type: String, preferences: SharedPreferences): DataSyncProvider? {
         return null
     }
 
     override fun getSupportedProviders(context: Context): List<SyncProviderEntry> {
         return emptyList()
+    }
+
+    override fun notifyUpdate(context: Context) {
+
     }
 
 }

@@ -80,18 +80,14 @@ class DummyItemAdapter(
     override var simpleLayout: Boolean = false
     override var showFollow: Boolean = true
 
-    private var showCardActions: Boolean = false
+    var showCardActions: Boolean = false
+
     private var showingActionCardPosition = RecyclerView.NO_POSITION
 
     init {
         GeneralComponentHelper.build(context).inject(this)
         updateOptions()
     }
-
-    fun setShouldShowAccountsColor(shouldShowAccountsColor: Boolean) {
-        this.showAccountsColor = shouldShowAccountsColor
-    }
-
 
     override fun getItemCount(): Int {
         return 0

@@ -48,7 +48,11 @@ class TwidereGlideModule : GlideModule {
         val builder = OkHttpClient.Builder()
         val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
         HttpClientFactory.initOkHttpClient(conf, builder, holder.dns, holder.connectionPool, holder.cache)
-        val userAgent = UserAgentUtils.getDefaultUserAgentString(context)
+        val userAgent = try {
+            UserAgentUtils.getDefaultUserAgentStringSafe(context)
+        } catch (e: Exception) {
+            null
+        }
         builder.addInterceptor(ModifyRequestInterceptor(UserAgentModifier(userAgent)))
         val client = builder.build()
         glide.register(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(client))

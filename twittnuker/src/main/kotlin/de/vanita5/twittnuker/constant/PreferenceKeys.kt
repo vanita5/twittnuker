@@ -39,10 +39,9 @@ import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
-import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
+import de.vanita5.twittnuker.util.sync.DataSyncProvider
 import java.util.*
 
 
@@ -224,19 +223,19 @@ object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {
 
 }
 
-object dataSyncProviderInfoKey : KPreferenceKey<SyncProviderInfo?> {
+object dataSyncProviderInfoKey : KPreferenceKey<DataSyncProvider?> {
     private const val PROVIDER_TYPE_KEY = "sync_provider_type"
 
     override fun contains(preferences: SharedPreferences): Boolean {
         return read(preferences) != null
     }
 
-    override fun read(preferences: SharedPreferences): SyncProviderInfo? {
+    override fun read(preferences: SharedPreferences): DataSyncProvider? {
         val type = preferences.getString(PROVIDER_TYPE_KEY, null) ?: return null
-        return SyncProviderInfoFactory.getInfoForType(type, preferences)
+        return DataSyncProvider.Factory.createForType(type, preferences)
     }
 
-    override fun write(editor: SharedPreferences.Editor, value: SyncProviderInfo?): Boolean {
+    override fun write(editor: SharedPreferences.Editor, value: DataSyncProvider?): Boolean {
         if (value == null) {
             editor.remove(PROVIDER_TYPE_KEY)
         } else {

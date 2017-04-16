@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
+import de.vanita5.twittnuker.util.sync.DataSyncProvider
 import de.vanita5.twittnuker.util.sync.SyncController
 import java.util.*
 import java.util.concurrent.Callable
@@ -144,6 +145,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         loadDefaultFeatures()
 
         Analyzer.preferencesChanged(sharedPreferences)
+        DataSyncProvider.Factory.notifyUpdate(this)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {

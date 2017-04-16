@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.model.referenced_users
+import de.vanita5.twittnuker.extension.model.referencedUsers
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.CreateUserBlockDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -42,7 +42,7 @@ class BlockStatusUsersDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
-        val referencedUsers = status.referenced_users
+        val referencedUsers = status.referencedUsers
         val nameFirst = preferences[nameFirstKey]
         val displayNames = referencedUsers.map {
             userColorNameManager.getDisplayName(it, nameFirst)

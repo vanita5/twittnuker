@@ -41,10 +41,11 @@ import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.fragment.sync.SyncSettingsFragment
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
-import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
+import de.vanita5.twittnuker.util.sync.DataSyncProvider
 
 
 class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewController() {
+
     override fun onCreate() {
         super.onCreate()
         updateSyncSettingActions()
@@ -90,7 +91,7 @@ class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewContro
                 button1.setText(R.string.action_purchase)
             }
         } else {
-            val providerEntry = SyncProviderInfoFactory.getProviderEntry(context, providerInfo.type)!!
+            val providerEntry = DataSyncProvider.Factory.getProviderEntry(context, providerInfo.type)!!
             messageView.text = context.getString(R.string.message_sync_data_synced_with_name, providerEntry.name)
             button1.visibility = View.GONE
             button2.visibility = View.VISIBLE
@@ -106,7 +107,7 @@ class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewContro
 
     class ConnectNetworkStorageSelectionDialogFragment : BaseDialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val providers = SyncProviderInfoFactory.getSupportedProviders(context)
+            val providers = DataSyncProvider.Factory.getSupportedProviders(context)
             val itemNames = providers.map { it.name }.toTypedArray()
 
             val builder = AlertDialog.Builder(context)
@@ -136,5 +137,4 @@ class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewContro
     companion object {
         private val REQUEST_CONNECT_NETWORK_STORAGE: Int = 201
     }
-
 }

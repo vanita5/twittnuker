@@ -35,18 +35,17 @@ import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment
-import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 import de.vanita5.twittnuker.util.TaskServiceRunner
-import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
+import de.vanita5.twittnuker.util.sync.DataSyncProvider
 
 class SyncSettingsFragment : BasePreferenceFragment() {
 
-    private var providerInfo: SyncProviderInfo? = null
+    private var syncProvider: DataSyncProvider? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        providerInfo = kPreferences[dataSyncProviderInfoKey]
+        syncProvider = kPreferences[dataSyncProviderInfoKey]
         setHasOptionsMenu(true)
     }
 
@@ -92,9 +91,10 @@ class SyncSettingsFragment : BasePreferenceFragment() {
     }
 
     private fun cleanupAndDisconnect() {
-        val providerInfo = kPreferences[dataSyncProviderInfoKey]!!
+        val providerInfo = kPreferences[dataSyncProviderInfoKey] ?: return
         syncController.cleanupSyncCache(providerInfo)
         kPreferences[dataSyncProviderInfoKey] = null
+        DataSyncProvider.Factory.notifyUpdate(context)
         activity?.finish()
     }
 
@@ -102,7 +102,7 @@ class SyncSettingsFragment : BasePreferenceFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val builder = AlertDialog.Builder(context)
             val providerInfo = kPreferences[dataSyncProviderInfoKey]!!
-            val entry = SyncProviderInfoFactory.getProviderEntry(context, providerInfo.type)!!
+            val entry = DataSyncProvider.Factory.getProviderEntry(context, providerInfo.type)!!
             builder.setMessage(getString(R.string.message_sync_disconnect_from_name_confirm, entry.name))
             builder.setPositiveButton(R.string.action_sync_disconnect) { _, _ ->
                 (parentFragment as SyncSettingsFragment).cleanupAndDisconnect()

@@ -65,10 +65,7 @@ import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
 import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
-import de.vanita5.twittnuker.util.sync.JobSchedulerSyncController
-import de.vanita5.twittnuker.util.sync.LegacySyncController
-import de.vanita5.twittnuker.util.sync.SyncController
-import de.vanita5.twittnuker.util.sync.SyncPreferences
+import de.vanita5.twittnuker.util.sync.*
 import java.io.File
 import javax.inject.Singleton
 
@@ -241,18 +238,6 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun statusScheduleProviderFactory(): StatusScheduleProvider.Factory {
-        return StatusScheduleProvider.Factory.instance
-    }
-
-    @Provides
-    @Singleton
-    fun gifShareProviderFactory(): GifShareProvider.Factory {
-        return GifShareProvider.Factory.instance
-    }
-
-    @Provides
-    @Singleton
     fun syncPreferences(): SyncPreferences {
         return SyncPreferences(application)
     }
@@ -337,6 +322,24 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun fileCache(): FileCache {
         return DiskLRUFileCache(getCacheDir("media", 100 * 1048576L))
+    }
+
+    @Provides
+    @Singleton
+    fun statusScheduleProviderFactory(): StatusScheduleProvider.Factory {
+        return StatusScheduleProvider.newFactory()
+    }
+
+    @Provides
+    @Singleton
+    fun gifShareProviderFactory(): GifShareProvider.Factory {
+        return GifShareProvider.newFactory()
+    }
+
+    @Provides
+    @Singleton
+    fun timelineSyncManagerFactory(): TimelineSyncManager.Factory {
+        return TimelineSyncManager.newFactory()
     }
 
     private fun getCacheDir(dirName: String, sizeInBytes: Long): File {

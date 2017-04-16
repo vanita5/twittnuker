@@ -23,16 +23,15 @@
 package de.vanita5.twittnuker.util.sync
 
 import android.content.Context
-import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 
 abstract class SyncController(val context: Context) {
     abstract fun appStarted()
 
-    fun performSync(providerInfo: SyncProviderInfo) {
-        providerInfo.newSyncTaskRunner(context).performSync()
+    fun performSync(syncProvider: DataSyncProvider) {
+        syncProvider.newSyncTaskRunner(context).performSync()
     }
 
-    fun cleanupSyncCache(providerInfo: SyncProviderInfo) {
-        providerInfo.newSyncTaskRunner(context).cleanupSyncCache()
+    fun cleanupSyncCache(syncProvider: DataSyncProvider) {
+        syncProvider.newSyncTaskRunner(context).cleanupSyncCache()
     }
 }
