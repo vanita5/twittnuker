@@ -29,10 +29,11 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@StringDef({AccountType.TWITTER, AccountType.STATUSNET, AccountType.FANFOU})
+@StringDef({AccountType.TWITTER, AccountType.STATUSNET, AccountType.FANFOU, AccountType.MASTODON})
 @Retention(RetentionPolicy.SOURCE)
 public @interface AccountType {
     String TWITTER = "twitter";
     String STATUSNET = "statusnet";
     String FANFOU = "fanfou";
+    String MASTODON = "mastodon";
 }
