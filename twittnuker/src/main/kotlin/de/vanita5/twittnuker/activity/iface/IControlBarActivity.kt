@@ -68,7 +68,8 @@ interface IControlBarActivity {
         }
 
         interface ControlBarAnimationListener {
-            fun onControlBarVisibleAnimationFinish(visible: Boolean)
+            fun onControlBarVisibleAnimationStart(visible: Boolean) {}
+            fun onControlBarVisibleAnimationFinish(visible: Boolean) {}
         }
 
         fun setControlBarVisibleAnimate(visible: Boolean, listener: ControlBarAnimationListener? = null) {
@@ -90,7 +91,9 @@ interface IControlBarActivity {
             }
             animator.interpolator = DecelerateInterpolator()
             animator.addListener(object : AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationStart(animation: Animator) {
+                    listener?.onControlBarVisibleAnimationStart(visible)
+                }
 
                 override fun onAnimationEnd(animation: Animator) {
                     controlAnimationDirection = 0

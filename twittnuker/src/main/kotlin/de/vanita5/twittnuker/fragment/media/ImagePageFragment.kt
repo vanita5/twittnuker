@@ -34,6 +34,7 @@ import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder
 import org.mariotaku.mediaviewer.library.CacheDownloadLoader
 import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewerFragment
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.TwidereMathUtils
@@ -97,6 +98,10 @@ class ImagePageFragment : SubsampleImageViewerFragment() {
         imageView.maxScale = resources.displayMetrics.density
         imageView.setBitmapDecoderClass(PreviewBitmapDecoder::class.java)
         imageView.setParallelLoadingEnabled(true)
+        imageView.setOnClickListener {
+            val activity = activity as? MediaViewerActivity ?: return@setOnClickListener
+            activity.toggleBar()
+        }
     }
 
     override fun getImageSource(data: CacheDownloadLoader.Result): ImageSource {
