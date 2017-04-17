@@ -57,15 +57,16 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String LOGTAG = TWITTNUKER_APP_NAME;
 
+    String SHARED_PREFERENCES_NAME = "preferences";
     String USER_COLOR_PREFERENCES_NAME = "user_colors";
     String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
     String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
-    String SHARED_PREFERENCES_NAME = "preferences";
     String SYNC_PREFERENCES_NAME = "sync_preferences";
     String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
-    String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
     String ETAG_CACHE_PREFERENCES_NAME = "etag_cache";
+    String ETAG_MASTODON_APPS_PREFERENCES_NAME = "mastodon_apps";
+    String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
 
     String DEFAULT_TWITTER_API_URL_FORMAT = "https://[DOMAIN.]twitter.com/";
 

@@ -23,14 +23,21 @@
 package de.vanita5.twittnuker.view
 
 import android.content.Context
+import android.support.v13.view.inputmethod.EditorInfoCompat
+import android.support.v13.view.inputmethod.InputConnectionCompat
+import android.support.v13.view.inputmethod.InputContentInfoCompat
+import android.support.v4.os.BuildCompat
 import android.text.InputType
 import android.text.Selection
 import android.text.method.ArrowKeyMovementMethod
 import android.text.method.MovementMethod
 import android.util.AttributeSet
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.AdapterView
 import com.bumptech.glide.Glide
 import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
+import org.mariotaku.ktextension.contains
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.EmojiSupportUtils
@@ -42,6 +49,7 @@ class ComposeEditText(
 ) : ChameleonMultiAutoCompleteTextView(context, attrs) {
 
     private var adapter: ComposeAutoCompleteAdapter? = null
+    var imageInputListener: ((InputContentInfoCompat) -> Unit)? = null
     var accountKey: UserKey? = null
         set(value) {
             field = value
@@ -84,6 +92,30 @@ class ComposeEditText(
             // http://crashes.to/s/69acd0ea0de
             return true
         }
+    }
+
+    override fun onCreateInputConnection(editorInfo: EditorInfo?): InputConnection? {
+        if (editorInfo == null) return null
+        val ic = super.onCreateInputConnection(editorInfo) ?: return null
+        EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf("image/*"))
+
+        val callback = InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
+            // read and display inputContentInfo asynchronously
+            if (BuildCompat.isAtLeastNMR1() && InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION in flags) {
+                try {
+                    inputContentInfo.requestPermission()
+                } catch (e: Exception) {
+                    return@OnCommitContentListener false // return false if failed
+                }
+
+            }
+
+            // read and display inputContentInfo asynchronously.
+            // call inputContentInfo.releasePermission() as needed.
+            imageInputListener?.invoke(inputContentInfo)
+            return@OnCommitContentListener true
+        }
+        return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
     }
 
     private fun updateAccountKey() {
