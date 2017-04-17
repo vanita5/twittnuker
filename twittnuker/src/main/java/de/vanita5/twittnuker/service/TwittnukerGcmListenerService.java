@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -32,6 +34,8 @@ import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.NotificationHelper;
+
+import static de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME;
 
 public class TwittnukerGcmListenerService extends GcmListenerService {
 
@@ -66,7 +70,8 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
         if (accountId == null) return;
         UserKey accountKey = new UserKey(accountId, TwittnukerConstants.USER_TYPE_TWITTER_COM);
 
-        AccountPreferences accountPreferences = new AccountPreferences(this, accountKey);
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        AccountPreferences accountPreferences = new AccountPreferences(this, preferences, accountKey);
 
         NotificationContent content = new NotificationContent();
         content.setAccountKey(accountKey);
