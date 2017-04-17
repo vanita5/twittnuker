@@ -28,9 +28,10 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import com.twitter.Extractor
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUserMention
@@ -53,7 +54,7 @@ class AddStatusFilterDialogFragment : BaseDialogFragment() {
         val builder = AlertDialog.Builder(context)
         filterItems = filterItemsInfo
         val entries = arrayOfNulls<String>(filterItems!!.size)
-        val nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
+        val nameFirst = preferences[nameFirstKey]
         for (i in 0 until entries.size) {
             val info = filterItems!![i]
             when (info.type) {

@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader
 
 import android.accounts.AccountManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.mariotaku.kpreferences.get
@@ -44,7 +45,6 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.DebugLog
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.cache.JsonCache
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
@@ -79,7 +79,7 @@ abstract class MicroBlogAPIStatusesLoader(
     @Inject
     lateinit var jsonCache: JsonCache
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
 

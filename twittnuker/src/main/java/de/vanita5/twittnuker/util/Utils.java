@@ -41,7 +41,6 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
@@ -53,6 +52,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.net.ConnectivityManagerCompat;
 import android.support.v4.view.ActionProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -79,16 +79,18 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 
 import de.vanita5.twittnuker.annotation.ProfileImageSize;
+import de.vanita5.twittnuker.constant.PreferenceKeysKt;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
+
+import org.mariotaku.kpreferences.SharedPreferencesExtensionsKt;
 import org.mariotaku.pickncrop.library.PNCUtils;
 import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -112,9 +114,34 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.DEFAULT_SHARE_FORMAT;
+import static de.vanita5.twittnuker.TwittnukerConstants.FORMAT_PATTERN_TITLE;
+import static de.vanita5.twittnuker.TwittnukerConstants.KEY_SHARE_FORMAT;
+import static de.vanita5.twittnuker.TwittnukerConstants.KEY_TAB_DISPLAY_OPTION;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_USER_KEY;
+import static de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME;
+import static de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_DIRECT_MESSAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_HOME_TIMELINE;
+import static de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_NOTIFICATIONS_TIMELINE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VALUE_TAB_DISPLAY_OPTION_ICON;
+import static de.vanita5.twittnuker.TwittnukerConstants.VALUE_TAB_DISPLAY_OPTION_LABEL;
+import static de.vanita5.twittnuker.constant.CompatibilityConstants.EXTRA_ACCOUNT_ID;
+import static de.vanita5.twittnuker.constant.CompatibilityConstants.QUERY_PARAM_USER_ID;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEYS;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_PEBBLE_NOTIFICATION;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.DEFAULT_QUOTE_FORMAT;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.FORMAT_PATTERN_LINK;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.FORMAT_PATTERN_NAME;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.FORMAT_PATTERN_TEXT;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_BANDWIDTH_SAVING_MODE;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DEFAULT_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_PEBBLE_NOTIFICATIONS;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUOTE_FORMAT;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 
-public final class Utils implements Constants {
+public final class Utils {
 
     public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
     public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)/([\\w_]+)");
@@ -864,12 +891,11 @@ public final class Utils implements Constants {
                 || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
     }
 
-    public static boolean isMediaPreviewEnabled(Context context, SharedPreferencesWrapper preferences) {
-        if (!preferences.getBoolean(KEY_MEDIA_PREVIEW)) return false;
+    public static boolean isMediaPreviewEnabled(Context context, SharedPreferences preferences) {
+        if (!SharedPreferencesExtensionsKt.get(preferences, PreferenceKeysKt.getMediaPreviewKey()))
+            return false;
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null
-                && !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
+        return !ConnectivityManagerCompat.isActiveNetworkMetered(cm) || !preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE, false);
     }
 
     /**

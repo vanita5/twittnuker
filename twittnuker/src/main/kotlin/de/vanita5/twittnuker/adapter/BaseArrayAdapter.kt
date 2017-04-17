@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.text.BidiFormatter
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
@@ -55,7 +56,7 @@ open class BaseArrayAdapter<T>(
     @Inject
     lateinit var multiSelectManager: MultiSelectManager
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
 
     final override val profileImageSize: String = context.getString(R.string.profile_image_size)
     final override val profileImageStyle: Int

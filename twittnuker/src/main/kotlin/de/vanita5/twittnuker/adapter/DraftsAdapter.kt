@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.support.v4.widget.SimpleCursorAdapter
 import android.support.v7.widget.RecyclerViewAccessor
@@ -33,7 +34,6 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.view.holder.DraftViewHolder
 
@@ -45,7 +45,7 @@ class DraftsAdapter(
 ) : SimpleCursorAdapter(context, DraftViewHolder.layoutResource, null, emptyArray(), intArrayOf(), 0) {
 
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
 
     private val mediaPreviewStyle: Int
 

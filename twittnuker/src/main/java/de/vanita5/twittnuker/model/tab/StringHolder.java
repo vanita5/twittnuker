@@ -3,12 +3,14 @@ package de.vanita5.twittnuker.model.tab;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-public abstract class StringHolder implements Parcelable {
+public abstract class StringHolder {
 
     public abstract String createString(Context context);
 
+    @NonNull
     public static StringHolder resource(@StringRes int resourceId) {
         return new Resource(resourceId);
     }

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -52,7 +53,7 @@ abstract class BaseRecyclerViewAdapter<VH : RecyclerView.ViewHolder>(
     @Inject
     override final lateinit var bidiFormatter: BidiFormatter
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var readStateManager: ReadStateManager
     @Inject

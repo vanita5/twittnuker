@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.support.annotation.NonNull;
@@ -86,11 +87,10 @@ public class KeyboardShortcutsHandler implements KeyboardShortcutConstants {
         sMetaNameMap.put(KeyEvent.META_SHIFT_ON, "shift");
     }
 
-    private final SharedPreferencesWrapper mPreferences;
+    private final SharedPreferences mPreferences;
 
     public KeyboardShortcutsHandler(final Context context) {
-        mPreferences = SharedPreferencesWrapper.getInstance(context,
-                KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public String findAction(@NonNull KeyboardShortcutSpec spec) {

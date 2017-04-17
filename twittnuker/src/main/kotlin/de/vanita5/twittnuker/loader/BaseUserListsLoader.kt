@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader
 
 import android.accounts.AccountManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
 import org.mariotaku.kpreferences.get
@@ -42,7 +43,6 @@ import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.util.*
@@ -56,7 +56,7 @@ abstract class BaseUserListsLoader(
         data: List<ParcelableUserList>?
 ) : FixedAsyncTaskLoader<List<ParcelableUserList>>(context), ICursorSupportLoader {
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
 
     protected val data = NoDuplicatesArrayList<ParcelableUserList>()
 

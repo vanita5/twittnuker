@@ -107,7 +107,7 @@ public class CustomTabUtils implements Constants {
             if (tabExtras != null) {
                 args.putParcelable(EXTRA_EXTRAS, tabExtras);
             }
-            final TabConfiguration conf = TabConfiguration.ofType(type);
+            final TabConfiguration conf = TabConfiguration.Companion.ofType(type);
             final Class<? extends Fragment> cls = conf != null ? conf.getFragmentClass() : InvalidTabFragment.class;
             final String tabTypeName = getTabTypeName(context, type);
             final DrawableHolder icon = DrawableHolder.parse(iconType);
@@ -192,7 +192,7 @@ public class CustomTabUtils implements Constants {
 
     public static String getTabTypeName(final Context context, @CustomTabType final String type) {
         if (context == null) return null;
-        final TabConfiguration conf = TabConfiguration.ofType(type);
+        final TabConfiguration conf = TabConfiguration.Companion.ofType(type);
         if (conf == null) return null;
         return conf.getName().createString(context);
     }
@@ -210,7 +210,7 @@ public class CustomTabUtils implements Constants {
     }
 
     public static boolean isTabTypeValid(@NonNull final String tabType) {
-        return TabConfiguration.ofType(Tab.getTypeAlias(tabType)) != null;
+        return TabConfiguration.Companion.ofType(Tab.getTypeAlias(tabType)) != null;
     }
 
     public static boolean hasAccountKey(final Context context, @NonNull final Bundle args,

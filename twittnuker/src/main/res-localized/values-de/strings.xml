@@ -999,6 +999,7 @@
     <string name="title_sync_settings">Sync. Einstellungen</string>
     <string name="title_user">User</string>
     <string name="title_user_colors">Account-Farbschema</string>
+    <string name="title_user_list">Liste</string>
     <string name="title_user_list_memberships">Mitglied von</string>
     <string name="title_user_list_ownerships">Erstellte</string>
     <string name="title_user_list_subscriptions">Abonnements</string>
@@ -1038,7 +1039,6 @@
     <string name="updating_status_notification">Sende Tweet…</string>
     <string name="user_blocked">Dieser Account wurde blockiert.</string>
     <string name="user_filter_name">Username: <xliff:g id="name">%s</xliff:g></string>
-    <string name="user_list">Liste</string>
     <string name="user_list_details">Listendetails</string>
     <!-- User list description -->
     <string name="user_list_details_description">Beschreibung</string>

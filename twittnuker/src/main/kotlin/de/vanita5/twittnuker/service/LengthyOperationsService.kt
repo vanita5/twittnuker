@@ -43,6 +43,7 @@ import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.ManualTaskStarter
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.ktextension.toTypedArray
@@ -58,6 +59,7 @@ import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.constant.refreshAfterTweetKey
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
@@ -321,7 +323,7 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
                 })
             }
         }
-        if (preferences.getBoolean(KEY_REFRESH_AFTER_TWEET)) {
+        if (preferences[refreshAfterTweetKey]) {
             handler.post { twitterWrapper.refreshAll() }
         }
         stopForeground(false)

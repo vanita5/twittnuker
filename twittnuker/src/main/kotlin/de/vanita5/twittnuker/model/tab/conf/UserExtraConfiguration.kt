@@ -41,7 +41,8 @@ import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 
-class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(key) {
+class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(key,
+        R.string.title_user) {
     var value: ParcelableUser? = null
         private set
 
@@ -79,8 +80,8 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
     override fun onActivityResult(fragment: TabEditorDialogFragment, requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             1 -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val user: ParcelableUser = data!!.getParcelableExtra(EXTRA_USER)
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val user: ParcelableUser = data.getParcelableExtra(EXTRA_USER)
                     viewHolder.displayUser(user)
                     viewHolder.itemView.visibility = View.VISIBLE
                     hintView.visibility = View.GONE

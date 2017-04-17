@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util.dagger
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.twitter.Validator
 import okhttp3.Cache
 import okhttp3.ConnectionPool
@@ -55,7 +56,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var validator: Validator
         internal set
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
         internal set
     @Inject
     lateinit var connectionPool: ConnectionPool
@@ -78,13 +79,17 @@ class DependencyHolder internal constructor(context: Context) {
     @Inject
     lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
         internal set
-    @Inject
-    lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
-        internal set
 
     init {
         GeneralComponent.get(context).inject(this)
     }
+
+    /**
+     * For Twittnuker NotificationActionReceiver
+     */
+    @Inject
+    lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
+        internal set
 
     companion object {
 

@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.annotation.PreviewStyle
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey
@@ -94,6 +93,22 @@ val multiColumnWidthKey = KStringKey("multi_column_tab_width", "normal")
 val streamingEnabledKey = KBooleanKey("streaming_enabled", true)
 val streamingNonMeteredNetworkKey = KBooleanKey("streaming_non_metered_network", false)
 val streamingPowerSavingKey = KBooleanKey("streaming_power_saving", false)
+val quickSendKey = KBooleanKey(KEY_QUICK_SEND, false)
+val refreshAfterTweetKey = KBooleanKey(KEY_REFRESH_AFTER_TWEET, false)
+val homeRefreshMentionsKey = KBooleanKey(KEY_HOME_REFRESH_MENTIONS, true)
+val homeRefreshDirectMessagesKey = KBooleanKey(KEY_HOME_REFRESH_DIRECT_MESSAGES, true)
+val homeRefreshSavedSearchesKey = KBooleanKey(KEY_HOME_REFRESH_SAVED_SEARCHES, false)
+
+object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
+    override fun read(preferences: SharedPreferences) = preferences.getInt(key, def).coerceIn(100,
+            500)
+
+    override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
+        editor.putInt(key, value)
+        return true
+    }
+
+}
 
 object overrideLanguageKey : KSimpleKey<Locale?>("override_language", null) {
     override fun read(preferences: SharedPreferences): Locale? {

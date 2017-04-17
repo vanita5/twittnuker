@@ -27,11 +27,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableUser
 
@@ -49,7 +50,7 @@ class DestroyFriendshipDialogFragment : BaseDialogFragment(), DialogInterface.On
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
-        val nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
+        val nameFirst = preferences[nameFirstKey]
         val displayName = userColorNameManager.getDisplayName(user, nameFirst)
         builder.setTitle(getString(R.string.unfollow_user, displayName))
         builder.setMessage(getString(R.string.unfollow_user_confirm_message, displayName))

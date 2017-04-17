@@ -29,6 +29,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -76,12 +77,12 @@ public class NotificationHelper implements Constants {
     private Context mContext;
     @Inject
     ActivityTracker mActivityTracker;
-    private SharedPreferencesWrapper mSharedPreferences;
+    private SharedPreferences mSharedPreferences;
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
         GeneralComponent.Companion.get(context).inject(this);
-        mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     @Nullable
@@ -173,7 +174,7 @@ public class NotificationHelper implements Constants {
         //with the last notification from the db
         if (pendingNotifications != null && !pendingNotifications.isEmpty()) {
             NotificationContent notification = pendingNotifications.get(0);
-            AccountPreferences[] prefs = AccountPreferences.Companion.getAccountPreferences(mContext, userKeys);
+            AccountPreferences[] prefs = AccountPreferences.Companion.getAccountPreferences(mContext, mSharedPreferences, userKeys);
 
             //Should always contains just one pref
             if (prefs.length == 1) {

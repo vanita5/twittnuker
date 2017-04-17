@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.service
 
 import android.app.Service
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import com.twitter.Extractor
 import com.twitter.Validator
@@ -33,7 +34,7 @@ import javax.inject.Inject
 abstract class BaseService : Service() {
 
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var twitterWrapper: AsyncTwitterWrapper
     @Inject

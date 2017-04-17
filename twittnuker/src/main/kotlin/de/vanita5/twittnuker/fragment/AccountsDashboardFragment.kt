@@ -77,6 +77,7 @@ import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
+import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileBanner
@@ -304,7 +305,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             noAccountContainer.visibility = View.VISIBLE
             profileContainer.visibility = View.INVISIBLE
         }
-        useStarsForLikes = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)
+        useStarsForLikes = preferences[iWantMyStarsBackKey]
         accountsAdapter.accounts = accounts
         val defaultKey = preferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null)?.let(UserKey::valueOf)
                 ?: accounts.firstOrNull { it.activated }?.key

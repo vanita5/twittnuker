@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.annotation.TabAccountFlags
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
@@ -145,7 +146,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
             val subMenu = itemAdd.subMenu
             subMenu.clear()
             for ((type, conf) in TabConfiguration.all()) {
-                val accountRequired = TabConfiguration.FLAG_ACCOUNT_REQUIRED in conf.accountFlags
+                val accountRequired = TabAccountFlags.FLAG_ACCOUNT_REQUIRED in conf.accountFlags
                 val subItem = subMenu.add(0, 0, conf.sortPosition, conf.name.createString(context))
                 val disabledByNoAccount = accountRequired && accounts.none(conf::checkAccountAvailability)
                 val disabledByDuplicateTab = conf.isSingleTab && CustomTabUtils.isTabAdded(context, type)
@@ -285,11 +286,11 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
 
             val editMode = tag == TAG_EDIT_TAB
 
-            val hasAccount = TabConfiguration.FLAG_HAS_ACCOUNT in conf.accountFlags
-            val accountMutable = TabConfiguration.FLAG_ACCOUNT_MUTABLE in conf.accountFlags
+            val hasAccount = TabAccountFlags.FLAG_HAS_ACCOUNT in conf.accountFlags
+            val accountMutable = TabAccountFlags.FLAG_ACCOUNT_MUTABLE in conf.accountFlags
             if (hasAccount && (accountMutable || !editMode)) {
                 accountContainer.visibility = View.VISIBLE
-                val accountRequired = TabConfiguration.FLAG_ACCOUNT_REQUIRED in conf.accountFlags
+                val accountRequired = TabAccountFlags.FLAG_ACCOUNT_REQUIRED in conf.accountFlags
                 accountsAdapter.clear()
                 if (!accountRequired) {
                     accountsAdapter.add(AccountDetails.dummy())
@@ -361,7 +362,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
                 if (tab.extras == null) {
                     tab.extras = CustomTabUtils.newTabExtras(tabType)
                 }
-                if (hasAccount && (!editMode || TabConfiguration.FLAG_ACCOUNT_MUTABLE in conf.accountFlags)) {
+                if (hasAccount && (!editMode || TabAccountFlags.FLAG_ACCOUNT_MUTABLE in conf.accountFlags)) {
                     val account = accountSpinner.selectedItem as? AccountDetails ?: return@setOnClickListener
                     if (!account.dummy) {
                         tab.arguments?.accountKeys = arrayOf(account.key)

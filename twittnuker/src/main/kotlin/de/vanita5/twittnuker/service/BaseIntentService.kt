@@ -23,16 +23,19 @@
 package de.vanita5.twittnuker.service
 
 import android.app.IntentService
+import android.content.SharedPreferences
 import com.twitter.Extractor
 import com.twitter.Validator
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
+import de.vanita5.twittnuker.util.NotificationManagerWrapper
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
 
 abstract class BaseIntentService(tag: String) : IntentService(tag) {
 
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var twitterWrapper: AsyncTwitterWrapper
     @Inject

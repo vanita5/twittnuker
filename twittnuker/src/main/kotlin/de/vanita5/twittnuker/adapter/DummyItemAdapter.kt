@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -36,7 +37,6 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
@@ -52,7 +52,7 @@ class DummyItemAdapter(
 ) : IStatusesAdapter<Any>, IUsersAdapter<Any>, IUserListsAdapter<Any> {
 
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     override lateinit var twitterWrapper: AsyncTwitterWrapper
     @Inject

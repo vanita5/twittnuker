@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.NavUtils
@@ -50,7 +51,6 @@ import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.Analyzer
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
@@ -188,7 +188,7 @@ class PremiumDashboardActivity : BaseActivity() {
         protected lateinit var extraFeaturesService: ExtraFeaturesService
 
         @Inject
-        protected lateinit var preferences: SharedPreferencesWrapper
+        protected lateinit var preferences: SharedPreferences
 
         @Inject
         protected lateinit var mScheduleProviderFactory: StatusScheduleProvider.Factory

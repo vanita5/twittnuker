@@ -7,16 +7,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.mariotaku.kpreferences.SharedPreferencesExtensionsKt;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.constant.PreferenceKeysKt;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_I_WANT_MY_STARS_BACK;
-
 public abstract class DrawableHolder {
-
 
     private String name;
 
@@ -170,23 +169,41 @@ public abstract class DrawableHolder {
     }
 
     public static class Builtin extends DrawableHolder {
+        @NonNull
         public static final DrawableHolder HOME = new Builtin("home", R.drawable.ic_action_home);
+        @NonNull
         public static final DrawableHolder HEART = new Builtin("heart", R.drawable.ic_action_heart);
+        @NonNull
         public static final DrawableHolder HASHTAG = new Builtin("hashtag", R.drawable.ic_action_hashtag);
+        @NonNull
         public static final DrawableHolder ACCOUNTS = new Builtin("accounts", R.drawable.ic_action_accounts);
+        @NonNull
         public static final DrawableHolder LIST = new Builtin("list", R.drawable.ic_action_list);
+        @NonNull
         public static final DrawableHolder MENTION = new Builtin("mention", R.drawable.ic_action_at);
+        @NonNull
         public static final DrawableHolder NOTIFICATIONS = new Builtin("notifications", R.drawable.ic_action_notification);
+        @NonNull
         public static final DrawableHolder GALLERY = new Builtin("gallery", R.drawable.ic_action_gallery);
+        @NonNull
         public static final DrawableHolder MESSAGE = new Builtin("message", R.drawable.ic_action_message);
+        @NonNull
         public static final DrawableHolder QUOTE = new Builtin("quote", R.drawable.ic_action_quote);
+        @NonNull
         public static final DrawableHolder SEARCH = new Builtin("search", R.drawable.ic_action_search);
+        @NonNull
         public static final DrawableHolder STAGGERED = new Builtin("staggered", R.drawable.ic_action_view_quilt);
+        @NonNull
         public static final DrawableHolder STAR = new Builtin("star", R.drawable.ic_action_star);
+        @NonNull
         public static final DrawableHolder TRENDS = new Builtin("trends", R.drawable.ic_action_trends);
+        @NonNull
         public static final DrawableHolder TWITTNUKER = new Builtin("twittnuker", R.drawable.ic_action_twitter);
+        @NonNull
         public static final DrawableHolder TWITTER = new Builtin("twitter", R.drawable.ic_action_twitter);
+        @NonNull
         public static final DrawableHolder USER = new Builtin("user", R.drawable.ic_action_user);
+        @NonNull
         public static final DrawableHolder FAVORITE = new DrawableHolder() {
             @NonNull
             @Override
@@ -203,20 +220,29 @@ public abstract class DrawableHolder {
             @NonNull
             @Override
             public Drawable createDrawable(Context context) {
-                if (DependencyHolder.Companion.get(context).preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
+                final DependencyHolder holder = DependencyHolder.Companion.get(context);
+                if (SharedPreferencesExtensionsKt.get(holder.preferences, PreferenceKeysKt.getIWantMyStarsBackKey())) {
                     return ContextCompat.getDrawable(context, R.drawable.ic_action_star);
                 }
                 return ContextCompat.getDrawable(context, R.drawable.ic_action_heart);
             }
         };
 
+        @NonNull
         public static final DrawableHolder COMP = new Builtin("comp", R.drawable.ic_action_comp);
+        @NonNull
         public static final DrawableHolder CTHULHU = new Builtin("cthulhu", R.drawable.ic_action_cthulhu);
+        @NonNull
         public static final DrawableHolder HARVEY = new Builtin("harvey", R.drawable.ic_action_harvey);
+        @NonNull
         public static final DrawableHolder MAJORA = new Builtin("majora", R.drawable.ic_action_heart_z);
+        @NonNull
         public static final DrawableHolder METROID = new Builtin("metroid", R.drawable.ic_action_metroid);
+        @NonNull
         public static final DrawableHolder NYARLATHOREPIRYCX = new Builtin("nyarlathorepirycx", R.drawable.ic_action_nyarlathorepirycx);
+        @NonNull
         public static final DrawableHolder POKEBALL = new Builtin("pokeball", R.drawable.ic_action_pokeball);
+        @NonNull
         public static final DrawableHolder TRIFORCE = new Builtin("triforce", R.drawable.ic_action_triforce);
 
         private final String key;

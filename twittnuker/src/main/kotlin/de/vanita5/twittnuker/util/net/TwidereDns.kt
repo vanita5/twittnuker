@@ -31,7 +31,6 @@ import org.mariotaku.ktextension.toIntOr
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.HOST_MAPPING_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import org.xbill.DNS.*
 import java.io.IOException
 import java.net.InetAddress
@@ -42,15 +41,14 @@ import javax.inject.Singleton
 @Singleton
 class TwidereDns(context: Context, private val preferences: SharedPreferences) : Dns {
 
-    private val hostMapping: SharedPreferences
-    private val systemHosts: SystemHosts
+    private val hostMapping = context.getSharedPreferences(HOST_MAPPING_PREFERENCES_NAME,
+            Context.MODE_PRIVATE)
+    private val systemHosts = SystemHosts()
 
     private var resolver: Resolver? = null
     private var useResolver: Boolean = false
 
     init {
-        hostMapping = SharedPreferencesWrapper.getInstance(context, HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        systemHosts = SystemHosts()
         reloadDnsSettings()
     }
 

@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.provider
 
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.database.SQLException
@@ -68,7 +69,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
     @Inject
     lateinit internal var notificationManager: NotificationManagerWrapper
     @Inject
-    lateinit internal var preferences: SharedPreferencesWrapper
+    lateinit internal var preferences: SharedPreferences
     @Inject
     lateinit internal var dns: Dns
     @Inject
@@ -439,21 +440,23 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         val context = context ?: return
         if (valuesArray.isNullOrEmpty()) return
         when (tableId) {
-            TABLE_ID_STATUSES -> {
-                if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
-                backgroundExecutor.execute {
-//                    val prefs = AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context))
+//            TABLE_ID_STATUSES -> {
+//                if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
+//                backgroundExecutor.execute {
+//                    val prefs = AccountPreferences.getAccountPreferences(context, preferences,
+//                            DataStoreUtils.getAccountKeys(context))
 //                    prefs.filter { it.isNotificationEnabled && it.isHomeTimelineNotificationEnabled }.forEach {
 //                        val positionTag = getPositionTag(CustomTabType.HOME_TIMELINE, it.accountKey)
 //                        contentNotificationManager.showTimeline(it, positionTag)
 //                    }
-                    notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE)
-                }
-            }
+//                    notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE)
+//                }
+//            }
             TABLE_ID_ACTIVITIES_ABOUT_ME -> {
                 if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
                 backgroundExecutor.execute {
-                    val prefs = AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context))
+                    val prefs = AccountPreferences.getAccountPreferences(context, preferences,
+                            DataStoreUtils.getAccountKeys(context))
                     prefs.filter { it.isNotificationEnabled && it.isInteractionsNotificationEnabled }.forEach {
                         val positionTag = getPositionTag(ReadPositionTag.ACTIVITIES_ABOUT_ME, it.accountKey)
                         contentNotificationManager.showInteractions(it, positionTag)
@@ -464,7 +467,8 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
             TABLE_ID_MESSAGES_CONVERSATIONS -> {
                 if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
                 backgroundExecutor.execute {
-                    val prefs = AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context))
+                    val prefs = AccountPreferences.getAccountPreferences(context, preferences,
+                            DataStoreUtils.getAccountKeys(context))
                     prefs.filter { it.isNotificationEnabled && it.isDirectMessagesNotificationEnabled }.forEach {
                         contentNotificationManager.showMessages(it)
                     }

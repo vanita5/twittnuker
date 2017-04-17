@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v7.widget.RecyclerView
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
@@ -32,7 +33,8 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 
-class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPreferencesWrapper) : OnLinkClickHandler(context, null, preferences), Constants {
+class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPreferences) :
+        OnLinkClickHandler(context, null, preferences), Constants {
 
     private var adapter: IStatusesAdapter<D>? = null
 

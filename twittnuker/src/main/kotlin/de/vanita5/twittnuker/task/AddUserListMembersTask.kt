@@ -23,10 +23,11 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.SingleResponse
@@ -62,7 +63,7 @@ class AddUserListMembersTask(
             val message: String
             if (users.size == 1) {
                 val user = users.first()
-                val nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
+                val nameFirst = preferences[nameFirstKey]
                 val displayName = userColorNameManager.getDisplayName(user.key, user.name,
                         user.screen_name, nameFirst)
                 message = context.getString(R.string.message_toast_added_user_to_list, displayName, result.data.name)

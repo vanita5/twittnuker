@@ -23,13 +23,16 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Base64
 import okhttp3.*
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.restfu.http.RestHttpClient
 import org.mariotaku.restfu.okhttp3.OkHttpRestClient
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
+import de.vanita5.twittnuker.constant.cacheSizeLimitKey
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -59,12 +62,12 @@ object HttpClientFactory {
         builder.cache(cache)
     }
 
-    class HttpClientConfiguration(val prefs: SharedPreferencesWrapper) {
+    class HttpClientConfiguration(val prefs: SharedPreferences) {
 
         var readTimeoutSecs: Long = -1
         var writeTimeoutSecs: Long = -1
         var connectionTimeoutSecs: Long = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10).toLong()
-        var cacheSize: Int = prefs.getInt(KEY_CACHE_SIZE_LIMIT, 300).coerceIn(100..500)
+        var cacheSize: Int = prefs[cacheSizeLimitKey]
 
         internal fun applyTo(builder: OkHttpClient.Builder) {
             if (connectionTimeoutSecs >= 0) {
@@ -171,7 +174,7 @@ object HttpClientFactory {
      * `[PATH]`, `[/PATH]`, `[QUERY]`, `[?QUERY]`, `[FRAGMENT]`, `[#FRAGMENT]` will be empty when
      * it's null, values and base64-encoded will be string `"null"`.
      *
-     * A valid format might looks like
+     * A valid format looks like
      *
      * `https://proxy.com/[SCHEME]/[AUTHORITY]/[PATH][?QUERY][#FRAGMENT]`,
      *

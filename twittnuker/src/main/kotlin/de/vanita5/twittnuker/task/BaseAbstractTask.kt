@@ -23,12 +23,16 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.squareup.otto.Bus
 import com.twitter.Extractor
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.model.DefaultFeatures
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
+import de.vanita5.twittnuker.util.ErrorInfoStore
+import de.vanita5.twittnuker.util.ReadStateManager
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -46,7 +50,7 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     @Inject
     lateinit var mediaPreloader: MediaPreloader
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var kPreferences: KPreferences
     @Inject

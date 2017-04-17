@@ -27,9 +27,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableUser
 
@@ -50,7 +51,7 @@ class ReportSpamDialogFragment : BaseDialogFragment(), DialogInterface.OnClickLi
         val builder = AlertDialog.Builder(context)
         val user = user
         if (user != null) {
-            val nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
+            val nameFirst = preferences[nameFirstKey]
             val displayName = userColorNameManager.getDisplayName(user, nameFirst)
             builder.setTitle(getString(R.string.report_user, displayName))
             builder.setMessage(getString(R.string.report_user_confirm_message, displayName))

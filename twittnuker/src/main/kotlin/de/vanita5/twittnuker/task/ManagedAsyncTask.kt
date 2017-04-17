@@ -23,14 +23,13 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.AsyncTask
-
 import com.squareup.otto.Bus
 
 import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
 import de.vanita5.twittnuker.util.AsyncTaskManager
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
@@ -48,7 +47,7 @@ abstract class ManagedAsyncTask<Params, Progress, Result> @JvmOverloads construc
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
 

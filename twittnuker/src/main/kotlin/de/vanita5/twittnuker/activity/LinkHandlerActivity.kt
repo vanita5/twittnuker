@@ -70,7 +70,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.Utils.LINK_ID_FILTERS_IMPORT_BLOCKS
 import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
@@ -359,7 +358,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 setTitle(R.string.title_statuses)
             }
             LINK_ID_USER_FAVORITES -> {
-                if (preferences.getBoolean(SharedPreferenceConstants.KEY_I_WANT_MY_STARS_BACK)) {
+                if (preferences[iWantMyStarsBackKey]) {
                     setTitle(R.string.title_favorites)
                 } else {
                     setTitle(R.string.title_likes)
@@ -378,7 +377,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 setTitle(R.string.action_twitter_muted_users)
             }
             LINK_ID_USER_LIST -> {
-                setTitle(R.string.user_list)
+                setTitle(R.string.title_user_list)
             }
             LINK_ID_GROUP -> {
                 setTitle(R.string.group)

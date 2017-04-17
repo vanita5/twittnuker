@@ -42,6 +42,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.layout_draggable_list_with_empty_view.*
 import nl.komponents.kovenant.task
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Expression
@@ -51,7 +52,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.setActivated
@@ -67,6 +68,9 @@ import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.deleteAccountData
 import de.vanita5.twittnuker.util.support.removeAccountSupport
 
+/**
+ * Sort and toggle account availability
+ */
 class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
         AdapterView.OnItemClickListener {
 
@@ -167,8 +171,8 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
         val account = adapter.getItem(position)
-        IntentUtils.openUserProfile(context, account.user, preferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.SELF_PROFILE,
-                null)
+        IntentUtils.openUserProfile(context, account.user, preferences[newDocumentApiKey],
+                Referral.SELF_PROFILE, null)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<AccountDetails>> {

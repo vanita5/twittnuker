@@ -35,14 +35,15 @@ import de.vanita5.twittnuker.activity.TrendsLocationSelectorActivity
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_LOCATION
-import de.vanita5.twittnuker.fragment.CustomTabsFragment
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.tab.StringHolder
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 
 open class TrendsLocationExtraConfiguration(
-        key: String
-) : TabConfiguration.ExtraConfiguration(key) {
+        key: String,
+        title: StringHolder
+) : TabConfiguration.ExtraConfiguration(key, title) {
 
     open var value: Place? = null
         set(value) {
@@ -56,6 +57,8 @@ open class TrendsLocationExtraConfiguration(
         }
 
     private lateinit var summaryView: TextView
+
+    constructor(key: String, titleRes: Int) : this(key, StringHolder.resource(titleRes))
 
     override fun onCreateView(context: Context, parent: ViewGroup): View {
         return LayoutInflater.from(context).inflate(R.layout.layout_extra_config_checkbox, parent, false)
