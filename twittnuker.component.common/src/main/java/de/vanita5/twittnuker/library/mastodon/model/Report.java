@@ -22,23 +22,42 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model.util;
+package de.vanita5.twittnuker.library.mastodon.model;
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.Date;
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#report}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
+@JsonObject
+public class Report {
+    /**
+     * The ID of the report
+     */
+    @JsonField(name = "id")
+    String id;
+    /**
+     * The action taken in response to the report
+     */
+    @JsonField(name = "action_taken")
+    boolean actionTaken;
 
+    public String getId() {
+        return id;
+    }
 
-public class UnixEpochMillisDateConverter extends LongBasedTypeConverter<Date> {
-    @Override
-    public Date getFromLong(final long l) {
-        return new Date(l);
+    public boolean isActionTaken() {
+        return actionTaken;
     }
 
     @Override
-    public long convertToLong(final Date object) {
-        if (object == null) return -1;
-        return object.getTime();
+    public String toString() {
+        return "Report{" +
+                "id='" + id + '\'' +
+                ", actionTaken=" + actionTaken +
+                '}';
     }
-
 }

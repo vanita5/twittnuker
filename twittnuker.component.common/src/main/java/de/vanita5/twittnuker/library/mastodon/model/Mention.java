@@ -22,24 +22,62 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.library.mastodon.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#mention}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
 @JsonObject
-public class StatusTargetObjectEvent extends StreamEvent {
-    @JsonField(name = "target_object")
-    Status targetObject;
+public class Mention {
+    /**
+     * URL of user's profile (can be remote)
+     */
+    @JsonField(name = "url")
+    String url;
+    /**
+     * The username of the account
+     */
+    @JsonField(name = "username")
+    String username;
+    /**
+     * Equals {@code username} for local users, includes {@code @domain} for remote ones
+     */
+    @JsonField(name = "acct")
+    String acct;
+    /**
+     * Account ID
+     */
+    @JsonField(name = "id")
+    String id;
 
-    public Status getTargetObject() {
-        return targetObject;
+    public String getUrl() {
+        return url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getAcct() {
+        return acct;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
     public String toString() {
-        return "StatusTargetObjectEvent{" +
-                "targetObject=" + targetObject +
-                "} " + super.toString();
+        return "Mention{" +
+                "url='" + url + '\'' +
+                ", username='" + username + '\'' +
+                ", acct='" + acct + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

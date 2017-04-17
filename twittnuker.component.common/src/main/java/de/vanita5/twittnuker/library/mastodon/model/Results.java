@@ -22,24 +22,54 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.library.mastodon.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-@JsonObject
-public class StatusTargetObjectEvent extends StreamEvent {
-    @JsonField(name = "target_object")
-    Status targetObject;
+import java.util.Arrays;
 
-    public Status getTargetObject() {
-        return targetObject;
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#results}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
+@JsonObject
+public class Results {
+    /**
+     * An array of matched {@link Account}
+     */
+    @JsonField(name = "accounts")
+    Account[] accounts;
+    /**
+     * An array of matched {@link Status}
+     */
+    @JsonField(name = "statuses")
+    Status[] statuses;
+    /**
+     * An array of matched hashtags, as strings
+     */
+    @JsonField(name = "hashtags")
+    String[] hashtags;
+
+    public Account[] getAccounts() {
+        return accounts;
+    }
+
+    public Status[] getStatuses() {
+        return statuses;
+    }
+
+    public String[] getHashtags() {
+        return hashtags;
     }
 
     @Override
     public String toString() {
-        return "StatusTargetObjectEvent{" +
-                "targetObject=" + targetObject +
-                "} " + super.toString();
+        return "Results{" +
+                "accounts=" + Arrays.toString(accounts) +
+                ", statuses=" + Arrays.toString(statuses) +
+                ", hashtags=" + Arrays.toString(hashtags) +
+                '}';
     }
 }

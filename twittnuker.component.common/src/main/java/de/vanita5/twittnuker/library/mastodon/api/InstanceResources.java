@@ -22,23 +22,7 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model.util;
+package de.vanita5.twittnuker.library.mastodon.api;
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
-
-import java.util.Date;
-
-
-public class UnixEpochMillisDateConverter extends LongBasedTypeConverter<Date> {
-    @Override
-    public Date getFromLong(final long l) {
-        return new Date(l);
-    }
-
-    @Override
-    public long convertToLong(final Date object) {
-        if (object == null) return -1;
-        return object.getTime();
-    }
-
+public interface InstanceResources {
 }

@@ -22,24 +22,44 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.library.mastodon.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-@JsonObject
-public class StatusTargetObjectEvent extends StreamEvent {
-    @JsonField(name = "target_object")
-    Status targetObject;
+import java.util.Arrays;
 
-    public Status getTargetObject() {
-        return targetObject;
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#context}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
+@JsonObject
+public class Context {
+    /**
+     * The ancestors of the status in the conversation, as a list of {@link Status}
+     */
+    @JsonField(name = "ancestors")
+    Status[] ancestors;
+    /**
+     * The descendants of the status in the conversation, as a list of {@link Status}
+     */
+    @JsonField(name = "descendants")
+    Status[] descendants;
+
+    public Status[] getAncestors() {
+        return ancestors;
+    }
+
+    public Status[] getDescendants() {
+        return descendants;
     }
 
     @Override
     public String toString() {
-        return "StatusTargetObjectEvent{" +
-                "targetObject=" + targetObject +
-                "} " + super.toString();
+        return "Context{" +
+                "ancestors=" + Arrays.toString(ancestors) +
+                ", descendants=" + Arrays.toString(descendants) +
+                '}';
     }
 }

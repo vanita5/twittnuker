@@ -22,23 +22,32 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model.util;
+package de.vanita5.twittnuker.library.mastodon.model;
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.Date;
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#error}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
+@JsonObject
+public class Error {
+    /**
+     * A textual description of the error
+     */
+    @JsonField(name = "error")
+    String error;
 
-
-public class UnixEpochMillisDateConverter extends LongBasedTypeConverter<Date> {
-    @Override
-    public Date getFromLong(final long l) {
-        return new Date(l);
+    public String getError() {
+        return error;
     }
 
     @Override
-    public long convertToLong(final Date object) {
-        if (object == null) return -1;
-        return object.getTime();
+    public String toString() {
+        return "Error{" +
+                "error='" + error + '\'' +
+                '}';
     }
-
 }

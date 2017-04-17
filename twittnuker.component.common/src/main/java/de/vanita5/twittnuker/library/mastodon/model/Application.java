@@ -22,23 +22,42 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model.util;
+package de.vanita5.twittnuker.library.mastodon.model;
 
-import com.bluelinelabs.logansquare.typeconverters.LongBasedTypeConverter;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.Date;
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#application}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
+@JsonObject
+public class Application {
+    /**
+     * Name of the app
+     */
+    @JsonField(name = "name")
+    String name;
+    /**
+     * Homepage URL of the app
+     */
+    @JsonField(name = "website")
+    String website;
 
+    public String getName() {
+        return name;
+    }
 
-public class UnixEpochMillisDateConverter extends LongBasedTypeConverter<Date> {
-    @Override
-    public Date getFromLong(final long l) {
-        return new Date(l);
+    public String getWebsite() {
+        return website;
     }
 
     @Override
-    public long convertToLong(final Date object) {
-        if (object == null) return -1;
-        return object.getTime();
+    public String toString() {
+        return "Application{" +
+                "name='" + name + '\'' +
+                ", website='" + website + '\'' +
+                '}';
     }
-
 }

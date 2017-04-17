@@ -22,24 +22,62 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.library.mastodon.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#card}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
 @JsonObject
-public class StatusTargetObjectEvent extends StreamEvent {
-    @JsonField(name = "target_object")
-    Status targetObject;
+public class Card {
+    /**
+     * The url associated with the card
+     */
+    @JsonField(name = "url")
+    String url;
+    /**
+     * The title of the card
+     */
+    @JsonField(name = "title")
+    String title;
+    /**
+     * The card description
+     */
+    @JsonField(name = "description")
+    String description;
+    /**
+     * The image associated with the card, if any
+     */
+    @JsonField(name = "image")
+    String image;
 
-    public Status getTargetObject() {
-        return targetObject;
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     @Override
     public String toString() {
-        return "StatusTargetObjectEvent{" +
-                "targetObject=" + targetObject +
-                "} " + super.toString();
+        return "Card{" +
+                "url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                '}';
     }
 }

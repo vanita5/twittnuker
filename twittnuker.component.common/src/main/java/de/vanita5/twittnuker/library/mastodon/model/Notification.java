@@ -22,42 +22,74 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.library.mastodon.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.library.twitter.util.TwitterDateConverter;
-
 import java.util.Date;
 
+/**
+ * {@see https://github.com/tootsuite/documentation/blob/master/Using-the-API/API.md#notification}
+ *
+ * Created by mariotaku on 2017/4/17.
+ */
 @JsonObject
-public class StreamEvent {
-    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
+public class Notification {
+    /**
+     * The notification ID
+     */
+    @JsonField(name = "id")
+    String id;
+    /**
+     * One of: {@code mention}, {@code reblog}, {@code favourite}, {@code follow}
+     */
+    @JsonField(name = "type")
+    String type;
+    /**
+     * The time the notification was created
+     */
+    @JsonField(name = "created_at")
     Date createdAt;
-    @JsonField(name = "source")
-    User source;
-    @JsonField(name = "target")
-    User target;
+    /**
+     * The {@link Account} sending the notification to the user
+     */
+    @JsonField(name = "account")
+    Account account;
+    /**
+     * The {@link Status} associated with the notification, if applicable
+     */
+    @JsonField(name = "status")
+    Status status;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
     }
 
-    public User getSource() {
-        return source;
+    public Account getAccount() {
+        return account;
     }
 
-    public User getTarget() {
-        return target;
+    public Status getStatus() {
+        return status;
     }
 
     @Override
     public String toString() {
-        return "StreamEvent{" +
-                "createdAt=" + createdAt +
-                ", source=" + source +
-                ", target=" + target +
+        return "Notification{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", createdAt=" + createdAt +
+                ", account=" + account +
+                ", status=" + status +
                 '}';
     }
 }
