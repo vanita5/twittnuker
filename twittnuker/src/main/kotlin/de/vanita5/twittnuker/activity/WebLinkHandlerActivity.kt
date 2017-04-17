@@ -357,6 +357,12 @@ class WebLinkHandlerActivity : Activity() {
                     }
                 }
             }
+            "redirect" -> {
+                val url = uri.getQueryParameter("url")?.let(Uri::parse) ?: return Pair(null, false)
+                val preferences = DependencyHolder.get(this).preferences
+                val (intent, _) = IntentUtils.browse(this, preferences, userTheme, url, false)
+                return Pair(intent, true)
+            }
         }
         return Pair(null, false)
     }
