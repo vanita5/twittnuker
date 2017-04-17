@@ -51,10 +51,9 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATIO
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.util.DeviceUtils
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.Utils
-
 import java.util.*
 
 class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartFragmentCallback {
@@ -206,7 +205,7 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
                 R.xml.preferences_theme)
         entriesAdapter.addPreference("cards", R.drawable.ic_action_card, getString(R.string.cards),
                 R.xml.preferences_cards)
-        if (Utils.isDeviceTablet(this)) {
+        if (DeviceUtils.isDeviceTablet(this)) {
             entriesAdapter.addPreference("tablet_mode", R.drawable.ic_action_tablet, getString(R.string.preference_title_tablet_mode),
                     R.xml.preferences_tablet_mode)
         }

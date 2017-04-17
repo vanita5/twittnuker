@@ -20,23 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.extension
 
-import android.content.ContentResolver
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Rect
-import android.net.Uri
-import java.io.IOException
+import java.lang.reflect.Field
 
-object BitmapFactoryUtils {
 
-    @Throws(IOException::class)
-    fun decodeUri(contentResolver: ContentResolver, uri: Uri, outPadding: Rect? = null,
-                  opts: BitmapFactory.Options? = null): Bitmap? {
-        return contentResolver.openInputStream(uri).use {
-            BitmapFactory.decodeStream(it, outPadding, opts)
-        }
+operator fun Any.get(field: Field): Any? {
+    val accessible = field.isAccessible
+    try {
+        field.isAccessible = true
+        return field[this]
+    } finally {
+        field.isAccessible = accessible
     }
-
 }
