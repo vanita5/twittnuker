@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import de.vanita5.twittnuker.library.mastodon.model.Account
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 
@@ -47,6 +48,7 @@ fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUse
     obj.favorites_count = -1
     obj.listed_count = -1
     obj.media_count = -1
+    obj.user_type = AccountType.MASTODON
     return obj
 }
 

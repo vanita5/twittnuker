@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model.util
 
 import android.text.TextUtils
+import de.vanita5.twittnuker.annotation.AccountType
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
@@ -49,8 +50,8 @@ object ParcelableUserUtils {
     }
 
 
-    private fun fromUserInternal(user: User, accountKey: UserKey?, accountType: String?, position: Long = 0,
-            profileImageSize: String = "normal"): ParcelableUser {
+    private fun fromUserInternal(user: User, accountKey: UserKey?, @AccountType accountType: String?,
+                                 position: Long = 0, profileImageSize: String = "normal"): ParcelableUser {
         val urlEntities = user.urlEntities
         val obj = ParcelableUser()
         obj.position = position
