@@ -48,6 +48,7 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.View.OnClickListener
 import android.widget.*
+import de.vanita5.twittnuker.BuildConfig
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
@@ -667,8 +668,12 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             val dialog = dialog ?: return
             val listView = dialog.findViewById(R.id.expandableList) as ExpandableListView
             val configGroup = data.groupBy { it.type ?: AccountType.TWITTER }
-            (listView.expandableListAdapter as LoginTypeAdapter).data = arrayOf(AccountType.TWITTER,
-                    AccountType.FANFOU, AccountType.MASTODON, AccountType.STATUSNET).mapNotNull { type ->
+            val supportedAccountTypes = if (BuildConfig.DEBUG) {
+                arrayOf(AccountType.TWITTER, AccountType.FANFOU, AccountType.MASTODON, AccountType.STATUSNET)
+            } else {
+                arrayOf(AccountType.TWITTER, AccountType.FANFOU, AccountType.STATUSNET)
+            }
+            (listView.expandableListAdapter as LoginTypeAdapter).data = supportedAccountTypes.mapNotNull { type ->
                 if (type == AccountType.MASTODON) return@mapNotNull LoginType(type,
                         listOf(CustomAPIConfig.mastodon(context)))
                 return@mapNotNull configGroup[type]?.let { list -> LoginType(type, list) }

@@ -111,6 +111,7 @@ import de.vanita5.twittnuker.view.holder.compose.MediaPreviewViewHolder
 import xyz.klinker.giphy.Giphy
 import java.io.IOException
 import java.lang.ref.WeakReference
+import java.text.Normalizer
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -1381,7 +1382,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (accountKeys.isEmpty()) throw NoAccountException()
         val update = ParcelableStatusUpdate()
         val media = this.media
-        val text = editText.text?.toString().orEmpty()
+        val text = editText.string?.let { Normalizer.normalize(it, Normalizer.Form.NFC) }.orEmpty()
         val accounts = AccountUtils.getAllAccountDetails(AccountManager.get(this), accountKeys, true)
         val maxLength = statusTextCount.maxLength
         val inReplyTo = inReplyToStatus
