@@ -147,9 +147,12 @@ public interface IntentConstants {
     String EXTRA_TAB_POSITION = "tab_position";
     String EXTRA_TAB_ID = "tab_id";
     String EXTRA_OAUTH_VERIFIER = "oauth_verifier";
+    String EXTRA_CODE = "code";
     String EXTRA_ACCESS_TOKEN = "access_token";
     String EXTRA_REQUEST_TOKEN = "request_token";
     String EXTRA_REQUEST_TOKEN_SECRET = "request_token_secret";
+    String EXTRA_CLIENT_ID = "client_id";
+    String EXTRA_CLIENT_SECRET = "client_secret";
     String EXTRA_OMIT_INTENT_EXTRA = "omit_intent_extra";
     String EXTRA_COMMAND = "command";
     String EXTRA_WIDTH = "width";
@@ -223,6 +226,7 @@ public interface IntentConstants {
     String EXTRA_PLACE_NAME = "place_name";
     String EXTRA_SCHEDULE_INFO = "schedule_info";
     String EXTRA_SAVE_DRAFT = "save_draft";
+    String EXTRA_HOST = "host";
 
     /* Twittnuker */
     String GCM_REGISTRATION_COMPLETE = INTENT_PACKAGE_PREFIX + "GCM_REGISTRATION_COMPLETE";

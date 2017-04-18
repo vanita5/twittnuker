@@ -22,23 +22,20 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.mastodon.api;
+package de.vanita5.twittnuker.library.mastodon.annotation;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.mastodon.model.RegisteredApplication;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Param;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by mariotaku on 2017/4/17.
+ * Created by mariotaku on 2017/4/18.
  */
-
-public interface ApplicationResources {
-    @POST("/v1/apps")
-    RegisteredApplication registerApplication(@Param("client_name") String clientName,
-            @Param("redirect_uris") String redirectUris,
-            @Param(value = "scopes", arrayDelimiter = ' ') String[] scopes,
-            @Nullable @Param("website") String website) throws MicroBlogException;
+@StringDef({AuthScope.READ, AuthScope.WRITE, AuthScope.FOLLOW})
+@Retention(RetentionPolicy.SOURCE)
+public @interface AuthScope {
+    String READ = "read";
+    String WRITE = "write";
+    String FOLLOW = "follow";
 }

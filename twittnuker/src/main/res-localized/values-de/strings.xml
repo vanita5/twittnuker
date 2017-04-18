@@ -1064,6 +1064,8 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
+    <string name="message_toast_invalid_mastodon_username">Ungültiger Mastodon Login (username@mastodon-site)</string>
+
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

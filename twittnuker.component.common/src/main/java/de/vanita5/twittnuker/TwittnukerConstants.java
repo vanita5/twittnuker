@@ -172,13 +172,13 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String OAUTH_CALLBACK_OOB = "oob";
     String OAUTH_CALLBACK_URL = PROTOCOL_TWITTNUKER + "com.twitter.oauth/";
+    String MASTODON_CALLBACK_URL = "https://de.vanita5.twittnuker/auth/callback/mastodon";
 
     int REQUEST_TAKE_PHOTO = 1;
     int REQUEST_PICK_MEDIA = 2;
     int REQUEST_SELECT_ACCOUNT = 3;
     int REQUEST_COMPOSE = 4;
     int REQUEST_EDIT_API = 5;
-    int REQUEST_BROWSER_SIGN_IN = 6;
     int REQUEST_SET_COLOR = 7;
     int REQUEST_EDIT_IMAGE = 9;
     int REQUEST_ADD_TAB = 11;

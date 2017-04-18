@@ -28,6 +28,8 @@ import android.text.TextUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.fanfou.FanfouStream
+import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.mastodon.MastodonOAuth2
 import de.vanita5.twittnuker.library.twitter.*
 import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization
@@ -39,12 +41,10 @@ import org.mariotaku.restfu.http.MultiValueMap
 import org.mariotaku.restfu.oauth.OAuthAuthorization
 import org.mariotaku.restfu.oauth.OAuthEndpoint
 import org.mariotaku.restfu.oauth.OAuthToken
+import org.mariotaku.restfu.oauth2.OAuth2Authorization
 import de.vanita5.twittnuker.TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.model.account.cred.BasicCredentials
-import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
-import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.model.account.cred.*
 import de.vanita5.twittnuker.util.HttpClientFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sFanfouConstantPool
@@ -69,6 +69,9 @@ fun Credentials.getAuthorization(cls: Class<*>?): Authorization {
         is OAuthCredentials -> {
             return OAuthAuthorization(consumer_key, consumer_secret, OAuthToken(access_token,
                     access_token_secret))
+        }
+        is OAuth2Credentials -> {
+            return OAuth2Authorization(access_token)
         }
         is BasicCredentials -> {
             return BasicAuthorization(username, password)
@@ -127,6 +130,14 @@ fun Credentials.getEndpoint(cls: Class<*>): Endpoint {
             domain = null
             versionSuffix = null
         }
+        Mastodon::class.java.isAssignableFrom(cls) -> {
+            domain = null
+            versionSuffix = null
+        }
+        MastodonOAuth2::class.java.isAssignableFrom(cls) -> {
+            domain = null
+            versionSuffix = null
+        }
         else -> throw UnsupportedOperationException("Unsupported class $cls")
     }
     val endpointUrl = MicroBlogAPIFactory.getApiUrl(apiUrlFormat, domain, versionSuffix)
@@ -144,8 +155,7 @@ fun Credentials.getEndpoint(cls: Class<*>): Endpoint {
 
 fun <T> Credentials.newMicroBlogInstance(context: Context, @AccountType accountType: String? = null,
         cls: Class<T>): T {
-    return newMicroBlogInstance(context, getEndpoint(cls), getAuthorization(cls), accountType,
-            cls)
+    return newMicroBlogInstance(context, getEndpoint(cls), getAuthorization(cls), accountType, cls)
 }
 
 fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authorization,

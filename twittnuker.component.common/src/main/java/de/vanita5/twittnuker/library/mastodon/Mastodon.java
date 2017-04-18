@@ -24,5 +24,24 @@
 
 package de.vanita5.twittnuker.library.mastodon;
 
-public interface Mastodon {
+import de.vanita5.twittnuker.library.mastodon.api.AccountResources;
+import de.vanita5.twittnuker.library.mastodon.api.ApplicationResources;
+import de.vanita5.twittnuker.library.mastodon.api.BlockResources;
+import de.vanita5.twittnuker.library.mastodon.api.FavouriteResources;
+import de.vanita5.twittnuker.library.mastodon.api.FollowRequestResources;
+import de.vanita5.twittnuker.library.mastodon.api.FollowResources;
+import de.vanita5.twittnuker.library.mastodon.api.InstanceResources;
+import de.vanita5.twittnuker.library.mastodon.api.MediaResources;
+import de.vanita5.twittnuker.library.mastodon.api.MuteResources;
+import de.vanita5.twittnuker.library.mastodon.api.NotificationResources;
+import de.vanita5.twittnuker.library.mastodon.api.ReportResources;
+import de.vanita5.twittnuker.library.mastodon.api.SearchResources;
+import de.vanita5.twittnuker.library.mastodon.api.StatusResources;
+import de.vanita5.twittnuker.library.mastodon.api.TimelineResources;
+
+public interface Mastodon extends AccountResources, ApplicationResources, BlockResources,
+        FavouriteResources, FollowRequestResources, FollowResources, InstanceResources,
+        MediaResources, MuteResources, NotificationResources, ReportResources, SearchResources,
+        StatusResources, TimelineResources {
+
 }
