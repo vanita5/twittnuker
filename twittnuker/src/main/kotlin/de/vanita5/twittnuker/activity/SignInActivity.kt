@@ -35,7 +35,9 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v4.app.LoaderManager
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.Loader
 import android.support.v4.util.ArraySet
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
@@ -43,13 +45,9 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.OnClickListener
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
@@ -65,7 +63,6 @@ import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.restfu.http.Endpoint
-import org.mariotaku.restfu.oauth.OAuthAuthorization
 import org.mariotaku.restfu.oauth.OAuthToken
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -77,11 +74,13 @@ import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.extension.model.getColor
+import de.vanita5.twittnuker.extension.model.getOAuthAuthorization
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.fragment.APIEditorDialogFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
+import de.vanita5.twittnuker.loader.DefaultAPIConfigLoader
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
@@ -106,6 +105,7 @@ import java.util.*
 
 class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         APIEditorDialogFragment.APIEditorCallback {
+
     private lateinit var apiConfig: CustomAPIConfig
     private var apiChangeTimestamp: Long = 0
     private var signInTask: AbstractSignInTask? = null
@@ -120,15 +120,6 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
         setContentView(R.layout.activity_sign_in)
 
-        if (savedInstanceState != null) {
-            apiConfig = savedInstanceState.getParcelable(EXTRA_API_CONFIG)
-            apiChangeTimestamp = savedInstanceState.getLong(EXTRA_API_LAST_CHANGE)
-        } else {
-            apiConfig = kPreferences[defaultAPIConfigKey]
-        }
-
-        val isTwipOMode = apiConfig.credentialsType == Credentials.Type.EMPTY
-        usernamePasswordContainer.visibility = if (isTwipOMode) View.GONE else View.VISIBLE
 
         editUsername.addTextChangedListener(this)
         editPassword.addTextChangedListener(this)
@@ -140,6 +131,14 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         val color = ColorStateList.valueOf(ContextCompat.getColor(this,
                 R.color.material_light_green))
         ViewCompat.setBackgroundTintList(signIn, color)
+
+
+        if (savedInstanceState != null) {
+            apiConfig = savedInstanceState.getParcelable(EXTRA_API_CONFIG)
+            apiChangeTimestamp = savedInstanceState.getLong(EXTRA_API_LAST_CHANGE)
+        } else {
+            apiConfig = kPreferences[defaultAPIConfigKey]
+        }
 
         updateSignInType()
         setSignInButton()
@@ -164,8 +163,8 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_EDIT_API -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    apiConfig = data!!.getParcelableExtra(EXTRA_API_CONFIG)
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    apiConfig = data.getParcelableExtra(EXTRA_API_CONFIG)
                     updateSignInType()
                 }
                 setSignInButton()
@@ -212,10 +211,13 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                     editUsername.text = null
                     editPassword.text = null
                 }
-                if (apiConfig.credentialsType == Credentials.Type.OAUTH) {
-                    doBrowserLogin()
-                } else {
-                    doLogin()
+                when (apiConfig.credentialsType) {
+                    Credentials.Type.OAUTH -> {
+                        doBrowserLogin()
+                    }
+                    else -> {
+                        doLogin()
+                    }
                 }
             }
             passwordSignIn -> {
@@ -284,20 +286,6 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         invalidateOptionsMenu()
     }
 
-    internal fun updateSignInType() {
-        when (apiConfig.credentialsType) {
-            Credentials.Type.XAUTH, Credentials.Type.BASIC -> {
-                usernamePasswordContainer.visibility = View.VISIBLE
-            }
-            Credentials.Type.EMPTY -> {
-                usernamePasswordContainer.visibility = View.GONE
-            }
-            else -> {
-                usernamePasswordContainer.visibility = View.GONE
-            }
-        }
-    }
-
     internal fun doBrowserLogin(): Boolean {
         if (apiConfig.credentialsType != Credentials.Type.OAUTH || signInTask != null && signInTask!!.status == AsyncTask.Status.RUNNING)
             return true
@@ -327,8 +315,9 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             Toast.makeText(this, R.string.message_toast_already_logged_in, Toast.LENGTH_SHORT).show()
         } else {
             result.addAccount(am, preferences[randomizeAccountNameKey])
-            Analyzer.log(SignIn(true, accountType = result.typeExtras.first, credentialsType = apiConfig.credentialsType,
-                    officialKey = result.typeExtras.second?.official ?: false))
+            val (type, extras) = result.typeExtras
+            Analyzer.log(SignIn(true, accountType = type, credentialsType = apiConfig.credentialsType,
+                    officialKey = extras?.official ?: false))
             finishSignIn()
         }
     }
@@ -343,7 +332,6 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             Unit
         }
     }
-
 
     internal fun onSignInError(exception: Exception) {
         DebugLog.w(LOGTAG, "Sign in error", exception)
@@ -371,6 +359,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         Analyzer.log(SignIn(false, credentialsType = apiConfig.credentialsType,
                 errorReason = errorReason, accountType = apiConfig.type))
     }
+
 
     internal fun onSignInStart() {
         showSignInProgressDialog()
@@ -420,6 +409,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                 val fm = activity.supportFragmentManager
                 val df = fm.findFragmentByTag(FRAGMENT_TAG_LOADING_DEFAULT_FEATURES) as? DialogFragment
                 df?.dismiss()
+            } and activity.executeAfterFragmentResumed { activity ->
+                val fm = activity.supportFragmentManager
+                val df = LoginTypeChooserDialogFragment()
+                df.show(fm, "login_type_chooser")
             }
         }
     }
@@ -466,10 +459,37 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         if (defaultApiChanged) {
             apiChangeTimestamp = apiLastChange
         }
+        updateSignInType()
+        setSignInButton()
+    }
+
+    private fun updateSignInType() {
+        // Mastodon have different case
+        if (apiConfig.type == AccountType.MASTODON) {
+            usernamePasswordContainer.visibility = View.VISIBLE
+            editPassword.visibility = View.GONE
+            editUsername.hint = getString(R.string.label_username_mastodon_host)
+        } else when (apiConfig.credentialsType) {
+            Credentials.Type.XAUTH, Credentials.Type.BASIC -> {
+                usernamePasswordContainer.visibility = View.VISIBLE
+                editPassword.visibility = View.VISIBLE
+                editUsername.hint = getString(R.string.label_username)
+            }
+            Credentials.Type.EMPTY -> {
+                usernamePasswordContainer.visibility = View.GONE
+            }
+            else -> {
+                usernamePasswordContainer.visibility = View.GONE
+            }
+        }
     }
 
     private fun setSignInButton() {
-        when (apiConfig.credentialsType) {
+        // Mastodon have different case
+        if (apiConfig.type == AccountType.MASTODON) {
+            passwordSignIn.visibility = View.GONE
+            signIn.isEnabled = true
+        } else when (apiConfig.credentialsType) {
             Credentials.Type.XAUTH, Credentials.Type.BASIC -> {
                 passwordSignIn.visibility = View.GONE
                 signIn.isEnabled = editPassword.text.isNotEmpty() && editUsername.text.isNotEmpty()
@@ -510,119 +530,116 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         finish()
     }
 
-    internal abstract class AbstractSignInTask(activity: SignInActivity) : AsyncTask<Any, Runnable, SingleResponse<SignInResponse>>() {
+    class LoginTypeChooserDialogFragment : BaseDialogFragment(),
+            LoaderManager.LoaderCallbacks<List<CustomAPIConfig>> {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val builder = AlertDialog.Builder(context)
+            builder.setView(R.layout.dialog_expandable_list)
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+                val listView = it.findViewById(R.id.expandableList) as ExpandableListView
+                val adapter = LoginTypeAdapter(context)
+                listView.setAdapter(adapter)
+                listView.setOnGroupClickListener { _, _, groupPosition, _ ->
+                    val type = adapter.getGroup(groupPosition)
+                    if (type.hasChildren) return@setOnGroupClickListener false
+                    val activity = activity as? SignInActivity
+                    val config = type.configs.single()
+                    activity?.let {
+                        it.apiConfig = config
+                        it.updateSignInType()
+                        it.setSignInButton()
+                    }
+                    dismiss()
+                    return@setOnGroupClickListener true
+                }
+                listView.setOnChildClickListener { _, _, groupPosition, childPosition, _ ->
+                    val config = adapter.getChild(groupPosition, childPosition)
+                    val activity = activity as? SignInActivity
+                    activity?.let {
+                        it.apiConfig = config
+                        it.updateSignInType()
+                        it.setSignInButton()
+                    }
+                    dismiss()
+                    return@setOnChildClickListener true
+                }
 
-        protected val activityRef = WeakReference(activity)
-        protected val profileImageSize = activity.getString(R.string.profile_image_size)
+                loaderManager.initLoader(0, null, this)
+            }
+            return dialog
+        }
 
-        override final fun doInBackground(vararg args: Any?): SingleResponse<SignInResponse> {
-            try {
-                return SingleResponse.getInstance(performLogin())
-            } catch (e: Exception) {
-                return SingleResponse.getInstance(e)
+        override fun onLoadFinished(loader: Loader<List<CustomAPIConfig>>, data: List<CustomAPIConfig>) {
+            val dialog = dialog ?: return
+            val listView = dialog.findViewById(R.id.expandableList) as ExpandableListView
+            val configGroup = data.groupBy { it.type ?: AccountType.TWITTER }
+            (listView.expandableListAdapter as LoginTypeAdapter).data = arrayOf(AccountType.TWITTER,
+                    AccountType.FANFOU, AccountType.MASTODON, AccountType.STATUSNET).mapNotNull { type ->
+                if (type == AccountType.MASTODON) return@mapNotNull LoginType(type,
+                        listOf(CustomAPIConfig.mastodon(context)))
+                return@mapNotNull configGroup[type]?.let { list -> LoginType(type, list) }
             }
         }
 
-        abstract fun performLogin(): SignInResponse
+        override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CustomAPIConfig>> {
+            return DefaultAPIConfigLoader(context)
+        }
 
-        override fun onPostExecute(result: SingleResponse<SignInResponse>) {
-            val activity = activityRef.get()
-            activity?.dismissDialogFragment(FRAGMENT_TAG_SIGN_IN_PROGRESS)
-            if (result.hasData()) {
-                activity?.onSignInResult(result.data!!)
-            } else {
-                activity?.onSignInError(result.exception!!)
+        override fun onLoaderReset(loader: Loader<List<CustomAPIConfig>>) {
+
+        }
+
+        private data class LoginType(val type: String, val configs: List<CustomAPIConfig>) {
+            val hasChildren = configs.size > 1
+        }
+
+        private class LoginTypeAdapter(val context: Context) : BaseExpandableListAdapter() {
+
+            private val inflater = LayoutInflater.from(context)
+
+            var data: List<LoginType>? = null
+
+            override fun getGroupCount() = data?.count() ?: 0
+            override fun getGroup(groupPosition: Int) = data!![groupPosition]
+            override fun getChild(groupPosition: Int, childPosition: Int) =
+                    getGroup(groupPosition).configs[childPosition]
+
+            override fun getChildrenCount(groupPosition: Int): Int {
+                val size = getGroup(groupPosition).configs.size
+                if (size > 1) return size
+                return 0
             }
-        }
 
-        override fun onPreExecute() {
-            val activity = activityRef.get()
-            activity?.onSignInStart()
-        }
+            override fun isChildSelectable(groupPosition: Int, childPosition: Int) = true
+            override fun hasStableIds() = false
+            override fun getGroupId(groupPosition: Int) = groupPosition.toLong()
+            override fun getChildId(groupPosition: Int, childPosition: Int): Long =
+                    groupPosition.toLong().shl(32) or childPosition.toLong()
 
-        override fun onProgressUpdate(vararg values: Runnable) {
-            for (value in values) {
-                value.run()
+
+            override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?,
+                    parent: ViewGroup): View {
+                val view = convertView ?: inflater.inflate(android.R.layout.simple_expandable_list_item_1, parent, false)
+                val text1 = view.findViewById(android.R.id.text1) as TextView
+                text1.text = APIEditorDialogFragment.getTypeTitle(context, getGroup(groupPosition).type)
+                return view
             }
-        }
 
-        @Throws(MicroBlogException::class)
-        internal fun analyseUserProfileColor(user: User?): Int {
-            if (user == null) throw MicroBlogException("Unable to get user info")
-            return ParcelableUserUtils.parseColor(user.profileLinkColor)
-        }
+            override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean,
+                    convertView: View?, parent: ViewGroup): View {
+                val view = convertView ?: inflater.inflate(android.R.layout.simple_list_item_1, parent, false)
+                val config = getChild(groupPosition, childPosition)
+                val text1 = view.findViewById(android.R.id.text1) as TextView
+                text1.text = config.name
+                return view
+            }
 
+        }
     }
 
-    /**
-     * Created by mariotaku on 16/7/7.
-     */
-    internal class BrowserSignInTask(
-            context: SignInActivity,
-            private val apiConfig: CustomAPIConfig,
-            private val requestToken: OAuthToken,
-            private val oauthVerifier: String?
-    ) : AbstractSignInTask(context) {
-
-        private val context: Context
-
-        init {
-            this.context = context
-        }
-
-        @Throws(Exception::class)
-        override fun performLogin(): SignInResponse {
-            val versionSuffix = if (apiConfig.isNoVersionSuffix) null else "1.1"
-            var endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiConfig.apiUrlFormat,
-                    apiConfig.isSameOAuthUrl)
-            val oauth = newMicroBlogInstance(context, endpoint = endpoint,
-                    auth = OAuthAuthorization(apiConfig.consumerKey, apiConfig.consumerSecret),
-                    accountType = apiConfig.type,
-                    cls = TwitterOAuth::class.java)
-            val accessToken: OAuthToken
-            if (oauthVerifier != null) {
-                accessToken = oauth.getAccessToken(requestToken, oauthVerifier)
-            } else {
-                accessToken = oauth.getAccessToken(requestToken)
-            }
-            val auth = OAuthAuthorization(apiConfig.consumerKey,
-                    apiConfig.consumerSecret, accessToken)
-            endpoint = MicroBlogAPIFactory.getOAuthEndpoint(apiConfig.apiUrlFormat, "api", versionSuffix,
-                    apiConfig.isSameOAuthUrl)
-
-            val twitter = newMicroBlogInstance(context, endpoint = endpoint, auth = auth,
-                    accountType = apiConfig.type, cls = MicroBlog::class.java)
-            val apiUser = twitter.verifyCredentials()
-            var color = analyseUserProfileColor(apiUser)
-            val typeExtras = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
-            val userId = apiUser.id
-            val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
-            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, typeExtras.first,
-                    profileImageSize = profileImageSize)
-            val am = AccountManager.get(context)
-            val account = AccountUtils.findByAccountKey(am, accountKey)
-            if (account != null) {
-                color = account.getColor(am)
-            }
-            val credentials = OAuthCredentials()
-            credentials.api_url_format = apiConfig.apiUrlFormat
-            credentials.no_version_suffix = apiConfig.isNoVersionSuffix
-
-            credentials.same_oauth_signing_url = apiConfig.isSameOAuthUrl
-
-            credentials.consumer_key = apiConfig.consumerKey
-            credentials.consumer_secret = apiConfig.consumerSecret
-            credentials.access_token = accessToken.oauthToken
-            credentials.access_token_secret = accessToken.oauthTokenSecret
-
-            return SignInResponse(account != null, Credentials.Type.OAUTH, credentials, user, color,
-                    typeExtras)
-        }
-    }
-
-    /**
-     * Created by mariotaku on 16/7/7.
-     */
     class InputLoginVerificationDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener, DialogInterface.OnShowListener {
 
         private var callback: SignInTask.InputLoginVerificationCallback? = null
@@ -696,17 +713,17 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
     }
 
     class PasswordSignInDialogFragment : BaseDialogFragment() {
+
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val builder = AlertDialog.Builder(context)
             builder.setView(R.layout.dialog_password_sign_in)
-            builder.setPositiveButton(R.string.sign_in) { dialog, _ ->
+            builder.setPositiveButton(R.string.action_sign_in) { dialog, _ ->
                 val alertDialog = dialog as AlertDialog
-                val editUsername = alertDialog.findViewById(R.id.username) as EditText?
-                val editPassword = alertDialog.findViewById(R.id.password) as EditText?
-                assert(editUsername != null && editPassword != null)
+                val editUsername = alertDialog.findViewById(R.id.username) as EditText
+                val editPassword = alertDialog.findViewById(R.id.password) as EditText
                 val activity = activity as SignInActivity
-                activity.setUsernamePassword(editUsername!!.text.toString(),
-                        editPassword!!.text.toString())
+                activity.setUsernamePassword(editUsername.text.toString(),
+                        editPassword.text.toString())
                 activity.doLogin()
             }
             builder.setNegativeButton(android.R.string.cancel, null)
@@ -715,9 +732,8 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             alertDialog.setOnShowListener {
                 (it as AlertDialog)
                 it.applyTheme()
-                val editUsername = it.findViewById(R.id.username) as EditText?
-                val editPassword = it.findViewById(R.id.password) as EditText?
-                assert(editUsername != null && editPassword != null)
+                val editUsername = it.findViewById(R.id.username) as EditText
+                val editPassword = it.findViewById(R.id.password) as EditText
                 val textWatcher = object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
@@ -725,7 +741,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                         val button = it.getButton(DialogInterface.BUTTON_POSITIVE) ?: return
-                        button.isEnabled = editUsername!!.length() > 0 && editPassword!!.length() > 0
+                        button.isEnabled = editUsername.length() > 0 && editPassword.length() > 0
                     }
 
                     override fun afterTextChanged(s: Editable) {
@@ -733,11 +749,123 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                     }
                 }
 
-                editUsername!!.addTextChangedListener(textWatcher)
-                editPassword!!.addTextChangedListener(textWatcher)
+                editUsername.addTextChangedListener(textWatcher)
+                editPassword.addTextChangedListener(textWatcher)
             }
             return alertDialog
         }
+    }
+
+    internal abstract class AbstractSignInTask(activity: SignInActivity) : AsyncTask<Any, Runnable, SingleResponse<SignInResponse>>() {
+        protected val activityRef = WeakReference(activity)
+
+        protected val profileImageSize: String = activity.getString(R.string.profile_image_size)
+
+        override final fun doInBackground(vararg args: Any?): SingleResponse<SignInResponse> {
+            try {
+                return SingleResponse.getInstance(performLogin())
+            } catch (e: Exception) {
+                return SingleResponse.getInstance(e)
+            }
+        }
+
+        abstract fun performLogin(): SignInResponse
+
+        override fun onPostExecute(result: SingleResponse<SignInResponse>) {
+            val activity = activityRef.get()
+            activity?.dismissDialogFragment(FRAGMENT_TAG_SIGN_IN_PROGRESS)
+            if (result.hasData()) {
+                activity?.onSignInResult(result.data!!)
+            } else {
+                activity?.onSignInError(result.exception!!)
+            }
+        }
+
+        override fun onPreExecute() {
+            val activity = activityRef.get()
+            activity?.onSignInStart()
+        }
+
+        override fun onProgressUpdate(vararg values: Runnable) {
+            for (value in values) {
+                value.run()
+            }
+        }
+
+        @Throws(MicroBlogException::class)
+        internal fun analyseUserProfileColor(user: User?): Int {
+            if (user == null) throw MicroBlogException("Unable to get user info")
+            return ParcelableUserUtils.parseColor(user.profileLinkColor)
+        }
+
+    }
+
+    /**
+     * Created by mariotaku on 16/7/7.
+     */
+    internal class BrowserSignInTask(
+            context: SignInActivity,
+            private val apiConfig: CustomAPIConfig,
+            private val requestToken: OAuthToken,
+            private val oauthVerifier: String?
+    ) : AbstractSignInTask(context) {
+
+        private val context: Context
+
+        init {
+            this.context = context
+        }
+
+        @Throws(Exception::class)
+        override fun performLogin(): SignInResponse {
+            val versionSuffix = if (apiConfig.isNoVersionSuffix) null else "1.1"
+            val apiUrlFormat = apiConfig.apiUrlFormat ?: throw MicroBlogException("No API URL format")
+            var auth = apiConfig.getOAuthAuthorization() ?:
+                    throw MicroBlogException("Invalid OAuth credential")
+            var endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiUrlFormat,
+                    apiConfig.isSameOAuthUrl)
+            val oauth = newMicroBlogInstance(context, endpoint = endpoint, auth = auth,
+                    accountType = apiConfig.type, cls = TwitterOAuth::class.java)
+            val accessToken: OAuthToken
+            if (oauthVerifier != null) {
+                accessToken = oauth.getAccessToken(requestToken, oauthVerifier)
+            } else {
+                accessToken = oauth.getAccessToken(requestToken)
+            }
+            auth = apiConfig.getOAuthAuthorization(accessToken) ?:
+                    throw MicroBlogException("Invalid OAuth credential")
+            endpoint = MicroBlogAPIFactory.getOAuthEndpoint(apiUrlFormat, "api", versionSuffix,
+                    apiConfig.isSameOAuthUrl)
+
+            val twitter = newMicroBlogInstance(context, endpoint = endpoint, auth = auth,
+                    accountType = apiConfig.type, cls = MicroBlog::class.java)
+            val apiUser = twitter.verifyCredentials()
+            var color = analyseUserProfileColor(apiUser)
+            val typeExtras = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
+            val userId = apiUser.id
+            val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
+            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, typeExtras.first,
+                    profileImageSize = profileImageSize)
+            val am = AccountManager.get(context)
+            val account = AccountUtils.findByAccountKey(am, accountKey)
+            if (account != null) {
+                color = account.getColor(am)
+            }
+            val credentials = OAuthCredentials()
+            credentials.api_url_format = apiUrlFormat
+            credentials.no_version_suffix = apiConfig.isNoVersionSuffix
+
+            credentials.same_oauth_signing_url = apiConfig.isSameOAuthUrl
+
+            credentials.consumer_key = auth.consumerKey
+            credentials.consumer_secret = auth.consumerSecret
+            credentials.access_token = accessToken.oauthToken
+            credentials.access_token_secret = accessToken.oauthTokenSecret
+
+            return SignInResponse(account != null, Credentials.Type.OAUTH, credentials, user, color,
+                    typeExtras)
+        }
+
     }
 
     internal data class SignInResponse(
@@ -825,8 +953,8 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             val activity = activityRef.get() ?: throw InterruptedException()
             val endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiUrlFormat,
                     apiConfig.isSameOAuthUrl)
-            val auth = OAuthAuthorization(apiConfig.consumerKey,
-                    apiConfig.consumerSecret)
+            val auth = apiConfig.getOAuthAuthorization() ?:
+                    throw MicroBlogException("Invalid OAuth credential")
             val oauth = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
                     accountType = apiConfig.type, cls = TwitterOAuth::class.java)
             val authenticator = OAuthPasswordAuthenticator(oauth,
@@ -841,17 +969,17 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             val activity = activityRef.get() ?: throw InterruptedException()
             var endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiUrlFormat,
                     apiConfig.isSameOAuthUrl)
-            var auth = OAuthAuthorization(apiConfig.consumerKey,
-                    apiConfig.consumerSecret)
+            var auth = apiConfig.getOAuthAuthorization() ?:
+                    throw MicroBlogException("Invalid OAuth credential")
             val oauth = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
                     accountType = apiConfig.type, cls = TwitterOAuth::class.java)
             val accessToken = oauth.getAccessToken(username, password)
             val userId = accessToken.userId ?: run {
                 // Trying to fix up userId if accessToken doesn't contain one.
-                auth = OAuthAuthorization(apiConfig.consumerKey,
-                        apiConfig.consumerSecret, accessToken)
-                endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat, apiConfig.isSameOAuthUrl,
-                        apiConfig.isNoVersionSuffix)
+                auth = apiConfig.getOAuthAuthorization(accessToken) ?:
+                        throw MicroBlogException("Invalid OAuth credential")
+                endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat,
+                        apiConfig.isSameOAuthUrl, apiConfig.isNoVersionSuffix)
                 val microBlog = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
                         accountType = apiConfig.type, cls = MicroBlog::class.java)
                 return@run microBlog.verifyCredentials().id
@@ -931,11 +1059,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         }
 
         @Throws(MicroBlogException::class)
-        private fun getOAuthSignInResponse(activity: SignInActivity,
-                                           accessToken: OAuthToken,
+        private fun getOAuthSignInResponse(activity: SignInActivity, accessToken: OAuthToken,
                                            userId: String, @Credentials.Type authType: String): SignInResponse {
-            val auth = OAuthAuthorization(apiConfig.consumerKey,
-                    apiConfig.consumerSecret, accessToken)
+            val auth = apiConfig.getOAuthAuthorization(accessToken) ?:
+                    throw MicroBlogException("Invalid OAuth credential")
             val endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat,
                     apiConfig.isSameOAuthUrl, apiConfig.isNoVersionSuffix)
             val twitter = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
@@ -957,8 +1084,8 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
             credentials.same_oauth_signing_url = apiConfig.isSameOAuthUrl
 
-            credentials.consumer_key = apiConfig.consumerKey
-            credentials.consumer_secret = apiConfig.consumerSecret
+            credentials.consumer_key = auth.consumerKey
+            credentials.consumer_secret = auth.consumerSecret
             credentials.access_token = accessToken.oauthToken
             credentials.access_token_secret = accessToken.oauthTokenSecret
 
@@ -1070,13 +1197,14 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             }
             return Pair(AccountType.TWITTER, extras)
         }
-    }
 
-    private val CustomAPIConfig.signUpUrlOrDefault: String?
-        get() = signUpUrl ?: when (type) {
-            AccountType.TWITTER -> "https://twitter.com/signup"
-            AccountType.FANFOU -> "http://fanfou.com/register"
-            else -> null
-        }
+        private val CustomAPIConfig.signUpUrlOrDefault: String?
+            get() = signUpUrl ?: when (type) {
+                AccountType.TWITTER -> "https://twitter.com/signup"
+                AccountType.FANFOU -> "http://fanfou.com/register"
+                else -> null
+            }
+
+    }
 
 }

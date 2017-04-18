@@ -12,6 +12,18 @@
     "sign_up_url": "https://twitter.com/signup"
   },
   {
+    "name": "Fanfou",
+    "type": "fanfou",
+    "localized_name": "@string/provider_fanfou",
+    "api_url_format": "http://api.fanfou.com/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "a51624a67585267ab72086984869fb9b",
+    "consumer_secret": "d4f0ad96bae1e5104ae34f5ff9690fb7",
+    "sign_up_url": "http://fanfou.com/register"
+  },
+  {
     "name": "Quitter.se",
     "type": "statusnet",
     "localized_name": "@string/provider_quitter_se",
@@ -54,18 +66,6 @@
     "no_version_suffix": true,
     "consumer_key": "aa05285b6664f8f570d8a228e35cdcc58bb8c3c5cceeef2870464a37c7f81645",
     "consumer_secret": "f08057acb88215db65c10bb7cab5e3d58492208ed543d31e6a41911d1dcad564"
-  },
-  {
-    "name": "Fanfou",
-    "type": "fanfou",
-    "localized_name": "@string/provider_fanfou",
-    "api_url_format": "http://api.fanfou.com/",
-    "auth_type": "oauth",
-    "same_oauth_url": true,
-    "no_version_suffix": true,
-    "consumer_key": "a51624a67585267ab72086984869fb9b",
-    "consumer_secret": "d4f0ad96bae1e5104ae34f5ff9690fb7",
-    "sign_up_url": "http://fanfou.com/register"
   },
   {
     "name": "Twitter for Android",

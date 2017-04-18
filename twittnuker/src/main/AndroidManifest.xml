@@ -240,7 +240,7 @@
         <activity
             android:name=".activity.SignInActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/sign_in"
+            android:label="@string/action_sign_in"
             android:theme="@style/Theme.Twidere"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

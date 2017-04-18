@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="account_options">Account Einstellungen</string>
     <string name="account_type_fanfou">Fanfou</string>
+    <string name="account_type_mastodon">Mastodon</string>
     <string name="account_type_statusnet">StatusNet</string>
     <string name="account_type_twitter">Twitter</string>
     <!-- [verb] Accept a friend request (follow request) -->
@@ -94,6 +95,7 @@
     <string name="action_refreshing_direct_messages">Aktualisiere Direktnachrichten</string>
     <string name="action_refreshing_home_timeline">Aktualisiere Timeline</string>
     <string name="action_refreshing_mentions">Aktualisiere Erwähnungen</string>
+    <string name="action_register">Registrieren</string>
     <string name="action_remove_conversation_avatar">Bild entfernen</string>
     <string name="action_removing_profile_banner_image">lösche Profilheaderbild</string>
     <string name="action_reply">Antworten</string>
@@ -118,6 +120,7 @@
     <string name="action_set_color">Farbe</string>
     <string name="action_set_nickname">Spitznamen eingeben</string>
     <string name="action_share">Teilen</string>
+    <string name="action_sign_in">Login</string>
     <string name="action_signing_in">Anmelden</string>
     <!-- [verb] Used for skip some settings -->
     <string name="action_skip">Überspringen</string>
@@ -206,6 +209,7 @@
     <string name="appearance">Aussehen</string>
     <string name="auth_type_basic">Basic</string>
     <string name="auth_type_oauth">OAuth</string>
+    <string name="auth_type_oauth2">OAuth 2</string>
     <string name="auth_type_twip_o">twip O Mode</string>
     <string name="auth_type_xauth">xAuth</string>
     <string name="auto_refresh">Automatisch aktualisieren</string>
@@ -467,6 +471,7 @@
     <string name="label_translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Übersetzung</string>
     <string name="label_username">Benutzername</string>
+    <string name="label_username_mastodon_host">Username@Mastodon-Instanz</string>
     <string name="label_video">Video</string>
     <string name="label_your_profile_image">Dein Profilbild</string>
     <string name="large">Groß</string>
@@ -775,6 +780,7 @@
     <string name="provider_gnusocial_de">GNUSocial.de</string>
     <string name="provider_gnusocial_net">GNUSocial.net</string>
     <string name="provider_loadaverage_org">LoadAverage.org</string>
+    <string name="provider_mastodon">Mastodon</string>
     <string name="provider_quitter_se">Quitter.se</string>
     <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy Host</string>
@@ -805,7 +811,6 @@
     <string name="refresh_type_interactions">Interaktionen</string>
     <string name="refresh_type_messages">Nachrichten</string>
     <string name="refresh_type_trends">Trends</string>
-    <string name="register">Registrieren</string>
     <string name="remember_position">Position merken</string>
     <string name="remember_position_summary">Listen/Tabposition beim Beenden merken</string>
     <string name="remove">Entfernen</string>
@@ -867,7 +872,6 @@
     <string name="show_absolute_time">Zeit anzeigen</string>
     <string name="show_absolute_time_summary">Zeitpunkt der Veröffentlichung von Tweets anzeigen statt vergangener Zeitspanne</string>
     <string name="show_in_timeline">Anzeigen</string>
-    <string name="sign_in">Einloggen</string>
     <string name="sign_in_service_email">E-Mail</string>
     <string name="sign_in_service_google_id">Google ID</string>
     <string name="sign_in_service_twitter">Twitter</string>

@@ -27,7 +27,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
-import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.view.View
@@ -35,9 +34,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.rengwuxian.materialedittext.MaterialEditText
-import org.mariotaku.restfu.annotation.method.GET
-import org.mariotaku.restfu.http.HttpRequest
-import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter
@@ -46,14 +42,11 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.setSelectedItem
+import de.vanita5.twittnuker.loader.DefaultAPIConfigLoader
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator
-import java.io.IOException
-import javax.inject.Inject
 
 class APIEditorDialogFragment : BaseDialogFragment() {
 
@@ -170,12 +163,11 @@ class APIEditorDialogFragment : BaseDialogFragment() {
 
 
     class LoadDefaultsChooserDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener,
-            LoaderManager.LoaderCallbacks<List<CustomAPIConfig>?> {
+            LoaderManager.LoaderCallbacks<List<CustomAPIConfig>> {
         private lateinit var adapter: ArrayAdapter<CustomAPIConfig>
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val configs = CustomAPIConfig.listDefault(context)
-            adapter = CustomAPIConfigArrayAdapter(context, configs)
+            adapter = CustomAPIConfigArrayAdapter(context)
             val builder = AlertDialog.Builder(context)
             builder.setAdapter(adapter, this)
             loaderManager.initLoader(0, null, this)
@@ -194,60 +186,21 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             dismiss()
         }
 
-        override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CustomAPIConfig>?> {
+        override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CustomAPIConfig>> {
             return DefaultAPIConfigLoader(context)
         }
 
-        override fun onLoadFinished(loader: Loader<List<CustomAPIConfig>?>, data: List<CustomAPIConfig>?) {
-            if (data != null) {
-                adapter.clear()
-                adapter.addAll(data)
-            }
+        override fun onLoadFinished(loader: Loader<List<CustomAPIConfig>>, data: List<CustomAPIConfig>) {
+            adapter.clear()
+            adapter.addAll(data)
         }
 
         override fun onLoaderReset(loader: Loader<List<CustomAPIConfig>?>) {
 
         }
 
-        class DefaultAPIConfigLoader(context: Context) : FixedAsyncTaskLoader<List<CustomAPIConfig>?>(context) {
-            @Inject
-            lateinit var client: RestHttpClient
-
-            init {
-                GeneralComponent.get(context).inject(this)
-            }
-
-            override fun loadInBackground(): List<CustomAPIConfig>? {
-                val request = HttpRequest(GET.METHOD, DEFAULT_API_CONFIGS_URL,
-                        null, null, null)
-                try {
-                    client.newCall(request).execute().use { response ->
-                        // Save to cache
-                        if (!response.isSuccessful) {
-                            return null
-                        }
-                        // Save to cache
-                        return JsonSerializer.parseList(response.body.stream(), CustomAPIConfig::class.java)
-                    }
-                } catch (e: IOException) {
-                    // Ignore
-                }
-                return null
-            }
-
-            override fun onStartLoading() {
-                forceLoad()
-            }
-
-            companion object {
-                const val DEFAULT_API_CONFIGS_URL = "https://raw.githubusercontent.com/vanita5/twittnuker/master/twittnuker/src/main/assets/data/default_api_configs.json"
-            }
-        }
-
-        private inner class CustomAPIConfigArrayAdapter(
-                context: Context,
-                defaultItems: List<CustomAPIConfig>
-        ) : ArrayAdapter<CustomAPIConfig>(context, android.R.layout.simple_list_item_1, defaultItems) {
+        private class CustomAPIConfigArrayAdapter(context: Context) :
+                ArrayAdapter<CustomAPIConfig>(context, android.R.layout.simple_list_item_1) {
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent)
@@ -266,31 +219,24 @@ class APIEditorDialogFragment : BaseDialogFragment() {
         init {
             add(AccountType.TWITTER)
             add(AccountType.FANFOU)
+            add(AccountType.MASTODON)
             add(AccountType.STATUSNET)
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val view = super.getView(position, convertView, parent)
             val textView = view.findViewById(android.R.id.text1) as TextView
-            textView.text = getTypeTitle(getItem(position))
+            textView.text = getTypeTitle(context, getItem(position))
             return view
         }
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val view = super.getDropDownView(position, convertView, parent)
             val textView = view.findViewById(android.R.id.text1) as TextView
-            textView.text = getTypeTitle(getItem(position))
+            textView.text = getTypeTitle(context, getItem(position))
             return view
         }
 
-        private fun getTypeTitle(item: String): CharSequence {
-            return when (item) {
-                AccountType.TWITTER -> context.getString(R.string.account_type_twitter)
-                AccountType.FANFOU -> context.getString(R.string.account_type_fanfou)
-                AccountType.STATUSNET -> context.getString(R.string.account_type_statusnet)
-                else -> throw UnsupportedOperationException(item)
-            }
-        }
     }
 
     companion object {
@@ -309,6 +255,9 @@ class APIEditorDialogFragment : BaseDialogFragment() {
                 R.id.twipO -> {
                     return Credentials.Type.EMPTY
                 }
+                R.id.oauth2 -> {
+                    return Credentials.Type.OAUTH2
+                }
                 else -> {
                     return Credentials.Type.OAUTH
                 }
@@ -326,9 +275,22 @@ class APIEditorDialogFragment : BaseDialogFragment() {
                 Credentials.Type.EMPTY -> {
                     return R.id.twipO
                 }
+                Credentials.Type.OAUTH2 -> {
+                    return R.id.oauth2
+                }
                 else -> {
                     return R.id.oauth
                 }
+            }
+        }
+
+        fun getTypeTitle(context: Context, @AccountType type: String): CharSequence {
+            return when (type) {
+                AccountType.TWITTER -> context.getString(R.string.account_type_twitter)
+                AccountType.FANFOU -> context.getString(R.string.account_type_fanfou)
+                AccountType.MASTODON -> context.getString(R.string.account_type_mastodon)
+                AccountType.STATUSNET -> context.getString(R.string.account_type_statusnet)
+                else -> throw UnsupportedOperationException(type)
             }
         }
     }
