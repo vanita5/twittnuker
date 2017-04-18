@@ -26,8 +26,10 @@ package de.vanita5.twittnuker.library.mastodon;
 
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.auth.OAuth2Token;
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
 
 /**
  * Created by mariotaku on 2017/4/18.
@@ -35,8 +37,8 @@ import org.mariotaku.restfu.annotation.param.Query;
 
 public interface MastodonOAuth2 {
 
-    @GET("/v1/oauth/token")
-    OAuth2Token getToken(@Query("client_id") String clientId, @Query("client_secret") String clientSecret,
-                         @Query("grant_type") String grantType, @Query("code") String code,
-                         @Query("redirect_uri") String redirectUri) throws MicroBlogException;
+    @POST("/oauth/token")
+    @Params({@KeyValue(key = "grant_type", value = "authorization_code")})
+    OAuth2Token getToken(@Param("client_id") String clientId, @Param("client_secret") String clientSecret,
+            @Param("code") String code, @Param("redirect_uri") String redirectUri) throws MicroBlogException;
 }

@@ -444,6 +444,7 @@
     <string name="label_location_no_location">Kein Standort</string>
     <string name="label_location_precise">Genau (Koordinaten)</string>
     <string name="label_location_your_coarse_location">Deine ungefähre Position</string>
+    <string name="label_mastodon_host">Mastodon Instanz</string>
     <string name="label_media">Medien</string>
     <string name="label_original_status">Original-Tweet</string>
     <string name="label_password">Passwort</string>
@@ -471,7 +472,6 @@
     <string name="label_translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Übersetzung</string>
     <string name="label_username">Benutzername</string>
-    <string name="label_username_mastodon_host">Username@Mastodon-Instanz</string>
     <string name="label_video">Video</string>
     <string name="label_your_profile_image">Dein Profilbild</string>
     <string name="large">Groß</string>
@@ -569,6 +569,7 @@
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
     <string name="message_toast_filters_import_hint">Drücke \"+\" zum importieren</string>
+    <string name="message_toast_invalid_mastodon_host">Keine Mastodon Instanz</string>
     <string name="message_toast_link_copied_to_clipboard">Link in die Zwischenablage kopiert</string>
     <string name="message_toast_livewp_daydream_enabled_message">Ich hab ein kleines Geschenk für dich in den Systemeinstellungen versteckt :)</string>
     <string name="message_toast_login_verification_failed">Login-Verifizierung fehlgeschlagen.</string>
@@ -1064,7 +1065,6 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="message_toast_invalid_mastodon_username">Ungültiger Mastodon Login (username@mastodon-site)</string>
 
 
     <!-- Twittnuker -->
