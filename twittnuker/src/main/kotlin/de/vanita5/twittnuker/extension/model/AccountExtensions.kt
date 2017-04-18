@@ -39,10 +39,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
-import de.vanita5.twittnuker.model.account.cred.BasicCredentials
-import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
-import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.model.account.cred.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.AccountUtils.ACCOUNT_USER_DATA_KEYS
 import de.vanita5.twittnuker.util.JsonSerializer
@@ -187,13 +184,12 @@ private fun AccountManager.getNonNullUserData(account: Account, key: String): St
     }
 }
 
-private fun parseCredentials(authToken: String, @Credentials.Type authType: String): Credentials {
-    when (authType) {
-        Credentials.Type.OAUTH, Credentials.Type.XAUTH -> return JsonSerializer.parse(authToken, OAuthCredentials::class.java)
-        Credentials.Type.BASIC -> return JsonSerializer.parse(authToken, BasicCredentials::class.java)
-        Credentials.Type.EMPTY -> return JsonSerializer.parse(authToken, EmptyCredentials::class.java)
-    }
-    throw UnsupportedOperationException()
+private fun parseCredentials(authToken: String, @Credentials.Type authType: String) = when (authType) {
+    Credentials.Type.OAUTH, Credentials.Type.XAUTH -> JsonSerializer.parse(authToken, OAuthCredentials::class.java)
+    Credentials.Type.BASIC -> JsonSerializer.parse(authToken, BasicCredentials::class.java)
+    Credentials.Type.EMPTY -> JsonSerializer.parse(authToken, EmptyCredentials::class.java)
+    Credentials.Type.OAUTH2 -> JsonSerializer.parse(authToken, OAuth2Credentials::class.java)
+    else -> throw UnsupportedOperationException()
 }
 
 internal object AccountDataQueue {

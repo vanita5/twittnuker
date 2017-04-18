@@ -27,20 +27,13 @@ import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches
 
 object ContentValuesCreator {
-
-    fun createCachedUser(user: User, accountType: String, profileImageSize: String = "normal"): ContentValues {
-        return ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java)
-                .create(ParcelableUserUtils.fromUser(user, accountType, profileImageSize = profileImageSize))
-    }
 
     fun createFilteredUser(status: ParcelableStatus): ContentValues {
         val values = ContentValues()
