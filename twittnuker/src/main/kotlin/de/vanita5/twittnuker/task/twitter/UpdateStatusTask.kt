@@ -44,8 +44,13 @@ import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.fanfou.model.PhotoStatusUpdate
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
+import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
+import de.vanita5.twittnuker.library.twitter.model.NewMediaMetadata
+import de.vanita5.twittnuker.library.twitter.model.StatusUpdate
+import de.vanita5.twittnuker.library.mastodon.model.StatusUpdate as MastodonStatusUpdate
 import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.FileBody
@@ -55,6 +60,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.applyUpdateStatus
 import de.vanita5.twittnuker.extension.model.mediaSizeLimit
@@ -309,10 +315,11 @@ class UpdateStatusTask(
         for (i in 0 until pendingUpdate.length) {
             val account = statusUpdate.accounts[i]
             result.accountTypes[i] = account.type
-            val microBlog = MicroBlogAPIFactory.getInstance(context, account.key)
+
             try {
-                val requestResult = when (account.type) {
+                val status = when (account.type) {
                     AccountType.FANFOU -> {
+                        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
                         // Call uploadPhoto if media present
                         if (statusUpdate.media.isNotNullOrEmpty()) {
                             // Fanfou only allow one photo
@@ -322,11 +329,16 @@ class UpdateStatusTask(
                             twitterUpdateStatus(microBlog, statusUpdate, pendingUpdate, i)
                         }
                     }
+                    AccountType.MASTODON -> {
+                        val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
+                        mastodonUpdateStatus(mastodon, statusUpdate, pendingUpdate, i)
+                    }
                     else -> {
+                        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
                         twitterUpdateStatus(microBlog, statusUpdate, pendingUpdate, i)
                     }
                 }
-                result.statuses[i] = requestResult.toParcelable(account.key, account.type)
+                result.statuses[i] = status
             } catch (e: MicroBlogException) {
                 result.exceptions[i] = e
             }
@@ -336,18 +348,19 @@ class UpdateStatusTask(
 
     @Throws(MicroBlogException::class, UploadException::class)
     private fun fanfouUpdateStatusWithPhoto(microBlog: MicroBlog, statusUpdate: ParcelableStatusUpdate,
-            pendingUpdate: PendingStatusUpdate, sizeLimit: SizeLimit?, updateIndex: Int): Status {
+            pendingUpdate: PendingStatusUpdate, sizeLimit: SizeLimit?, updateIndex: Int): ParcelableStatus {
         if (statusUpdate.media.size > 1) {
             throw MicroBlogException(context.getString(R.string.error_too_many_photos_fanfou))
         }
         val media = statusUpdate.media.first()
         try {
+            val details = statusUpdate.accounts[updateIndex]
             return getBodyFromMedia(context, media, sizeLimit, false, ContentLengthInputStream.ReadListener { length, position ->
                 stateCallback.onUploadingProgressChanged(-1, position, length)
             }).use { (body) ->
                 val photoUpdate = PhotoStatusUpdate(body, pendingUpdate.overrideTexts[updateIndex])
                 return@use microBlog.uploadPhoto(photoUpdate)
-            }
+            }.toParcelable(details.key, details.type)
         } catch (e: IOException) {
             throw UploadException(e)
         }
@@ -407,15 +420,15 @@ class UpdateStatusTask(
 
     @Throws(MicroBlogException::class)
     private fun twitterUpdateStatus(microBlog: MicroBlog, statusUpdate: ParcelableStatusUpdate,
-            pendingUpdate: PendingStatusUpdate, index: Int): Status {
+            pendingUpdate: PendingStatusUpdate, index: Int): ParcelableStatus {
         val overrideText = pendingUpdate.overrideTexts[index]
         val status = StatusUpdate(overrideText)
         val inReplyToStatus = statusUpdate.in_reply_to_status
 
+        val details = statusUpdate.accounts[index]
         if (statusUpdate.draft_action == Draft.Action.REPLY && inReplyToStatus != null) {
             status.inReplyToStatusId(inReplyToStatus.id)
 
-            val details = statusUpdate.accounts[index]
             if (details.type == AccountType.TWITTER && statusUpdate.extended_reply_mode) {
                 status.autoPopulateReplyMetadata(true)
                 if (statusUpdate.excluded_reply_user_ids.isNotNullOrEmpty()) {
@@ -440,7 +453,28 @@ class UpdateStatusTask(
         if (statusUpdate.is_possibly_sensitive) {
             status.possiblySensitive(statusUpdate.is_possibly_sensitive)
         }
-        return microBlog.updateStatus(status)
+        return microBlog.updateStatus(status).toParcelable(details.key, details.type)
+    }
+
+    @Throws(MicroBlogException::class)
+    private fun mastodonUpdateStatus(mastodon: Mastodon, statusUpdate: ParcelableStatusUpdate,
+            pendingUpdate: PendingStatusUpdate, index: Int): ParcelableStatus {
+        val overrideText = pendingUpdate.overrideTexts[index]
+        val status = MastodonStatusUpdate(overrideText)
+        val inReplyToStatus = statusUpdate.in_reply_to_status
+
+        val details = statusUpdate.accounts[index]
+        if (statusUpdate.draft_action == Draft.Action.REPLY && inReplyToStatus != null) {
+            status.inReplyToId(inReplyToStatus.id)
+        }
+        val mediaIds = pendingUpdate.mediaIds[index]
+        if (mediaIds != null) {
+            status.mediaIds(mediaIds)
+        }
+        if (statusUpdate.is_possibly_sensitive) {
+            status.sensitive(statusUpdate.is_possibly_sensitive)
+        }
+        return mastodon.postStatus(status).toParcelable(details.key)
     }
 
     private fun statusShortenCallback(shortener: StatusShortenerInterface?,

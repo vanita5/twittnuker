@@ -27,6 +27,8 @@ package de.vanita5.twittnuker.library.mastodon.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.library.mastodon.annotation.StatusVisibility;
+
 import java.util.Arrays;
 import java.util.Date;
 
@@ -113,8 +115,10 @@ public class Status {
     @JsonField(name = "spoiler_text")
     String spoilerText;
     /**
-     * One of: {@code public}, {@code unlisted}, {@code private}, {@code direct}
+     * One of: {@link StatusVisibility#PUBLIC}, {@link StatusVisibility#UNLISTED},
+     * {@link StatusVisibility#PRIVATE}, {@link StatusVisibility#DIRECT}
      */
+    @StatusVisibility
     @JsonField(name = "visibility")
     String visibility;
     /**
@@ -198,6 +202,7 @@ public class Status {
         return spoilerText;
     }
 
+    @StatusVisibility
     public String getVisibility() {
         return visibility;
     }
