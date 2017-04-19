@@ -53,10 +53,10 @@ import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
@@ -292,8 +292,9 @@ class StreamingService : BaseService() {
                     homeInsertGap = true
                     return false
                 }
-                val parcelableStatus = ParcelableStatusUtils.fromStatus(status, account.key,
-                        account.type, homeInsertGap, profileImageSize)
+                val parcelableStatus = status.toParcelable(account.key, account.type,
+                        profileImageSize = profileImageSize)
+                parcelableStatus.is_gap = homeInsertGap
                 parcelableStatus.account_color = account.color
 
                 val currentTimeMillis = System.currentTimeMillis()

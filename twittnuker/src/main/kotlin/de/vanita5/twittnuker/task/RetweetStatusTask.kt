@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -70,8 +71,7 @@ class RetweetStatusTask(
         val microBlog = details.newMicroBlogInstance(
                 context, MicroBlog::class.java)
         try {
-            val result = ParcelableStatusUtils.fromStatus(microBlog.retweetStatus(statusId),
-                    accountKey, details.type, false)
+            val result = microBlog.retweetStatus(statusId).toParcelable(accountKey, details.type)
             ParcelableStatusUtils.updateExtraInformation(result, details)
             Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
             val values = ContentValues()

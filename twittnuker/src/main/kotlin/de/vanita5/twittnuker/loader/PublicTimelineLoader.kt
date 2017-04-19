@@ -25,12 +25,12 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -46,12 +46,20 @@ class PublicTimelineLoader(
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : MicroBlogAPIStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
+) : RequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Status> {
-        return microBlog.getPublicTimeline(paging)
+    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        when (account.type) {
+            AccountType.MASTODON -> throw MicroBlogException("STUB")
+            else -> {
+                val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
+                return microBlog.getPublicTimeline(paging).map {
+                    it.toParcelable(account.key, account.type, profileImageSize = profileImageSize)
+                }
+            }
+        }
     }
 
     @WorkerThread

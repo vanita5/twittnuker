@@ -46,13 +46,13 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.databaseItemLimitKey
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras
 import de.vanita5.twittnuker.model.tab.extra.TabExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
@@ -929,7 +929,7 @@ object DataStoreUtils {
                 Expression.equalsArgs(Statuses.STATUS_ID)).sql
         val whereArgs = arrayOf(accountKey.toString(), statusId)
         val resolver = context.contentResolver
-        val status = ParcelableStatusUtils.fromStatus(result, accountKey, details.type, false)
+        val status = result.toParcelable(accountKey, details.type)
         resolver.delete(CachedStatuses.CONTENT_URI, where, whereArgs)
         resolver.insert(CachedStatuses.CONTENT_URI, ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java).create(status))
         return status

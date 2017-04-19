@@ -32,6 +32,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -73,12 +74,10 @@ class CreateFavoriteTask(
         try {
             val result = when (details.type) {
                 AccountType.FANFOU -> {
-                    ParcelableStatusUtils.fromStatus(microBlog.createFanfouFavorite(statusId), accountKey,
-                            details.type, false)
+                    microBlog.createFanfouFavorite(statusId).toParcelable(accountKey, details.type)
                 }
                 else -> {
-                    ParcelableStatusUtils.fromStatus(microBlog.createFavorite(statusId), accountKey,
-                            details.type, false)
+                    microBlog.createFavorite(statusId).toParcelable(accountKey, details.type)
                 }
             }
             ParcelableStatusUtils.updateExtraInformation(result, details)

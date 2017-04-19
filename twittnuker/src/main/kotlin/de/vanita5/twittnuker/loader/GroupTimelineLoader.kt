@@ -25,12 +25,12 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -48,13 +48,22 @@ class GroupTimelineLoader(
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : MicroBlogAPIStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
+) : RequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(microBlog: MicroBlog,
-                             details: AccountDetails,
-                             paging: Paging): ResponseList<Status> {
+    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        return getMicroBlogStatuses(account, paging).map {
+            it.toParcelable(account.key, account.type, profileImageSize)
+        }
+    }
+    @WorkerThread
+    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
+        return InternalTwitterContentUtils.isFiltered(database, status, true)
+    }
+
+    private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): List<Status> {
+        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         when {
             groupId != null -> {
                 return microBlog.getGroupStatuses(groupId, paging)
@@ -66,11 +75,6 @@ class GroupTimelineLoader(
                 throw MicroBlogException("No group name or id given")
             }
         }
-    }
-
-    @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
-        return InternalTwitterContentUtils.isFiltered(database, status, true)
     }
 
 }

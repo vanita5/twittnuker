@@ -42,13 +42,13 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import java.lang.ref.WeakReference
 
@@ -141,10 +141,8 @@ abstract class AbsStatusDialogFragment : BaseDialogFragment() {
             val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
             val profileImageSize = context.getString(R.string.profile_image_size)
             return task {
-                return@task ParcelableStatusUtils.fromStatus(microBlog.showStatus(statusId),
-                        details.key, details.type, profileImageSize = profileImageSize).also {
-                    it.account_color = details.color
-                }
+                microBlog.showStatus(statusId).toParcelable(details.key, details.type,
+                        profileImageSize).also { it.account_color = details.color }
             }
         }
 

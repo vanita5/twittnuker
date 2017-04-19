@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.extension.model
 
 import org.mariotaku.ktextension.addAllTo
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserMention
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 
 val ParcelableStatus.media_type: Int
     get() = media?.firstOrNull()?.type ?: 0
@@ -67,7 +67,7 @@ val ParcelableStatus.replyMentions: Array<ParcelableUserMention>
     }
 
 fun Array<Status>.toParcelables(accountKey: UserKey, accountType: String, profileImageSize: String) = Array(size) { i ->
-    ParcelableStatusUtils.fromStatus(this[i], accountKey, accountType, false, profileImageSize)
+    this[i].toParcelable(accountKey, accountType, profileImageSize)
 }
 
 private fun parcelableUserMention(key: UserKey, name: String, screenName: String) = ParcelableUserMention().also {

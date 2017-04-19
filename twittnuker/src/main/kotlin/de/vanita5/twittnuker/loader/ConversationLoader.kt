@@ -32,7 +32,9 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.SearchQuery
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -49,28 +51,35 @@ class ConversationLoader(
         adapterData: List<ParcelableStatus>?,
         fromUser: Boolean,
         loadingMore: Boolean
-) : MicroBlogAPIStatusesLoader(context, status.account_key, sinceId, maxId, -1, adapterData, null,
+) : RequestStatusesLoader(context, status.account_key, sinceId, maxId, -1, adapterData, null,
         -1, fromUser, loadingMore) {
 
-    private val status: ParcelableStatus
+    private val status = ParcelUtils.clone(status)
     private var canLoadAllReplies: Boolean = false
 
     init {
-        this.status = ParcelUtils.clone(status)
         ParcelableStatusUtils.makeOriginalStatus(this.status)
     }
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): List<Status> {
+    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        return getMicroBlogStatuses(account, paging).map {
+            it.toParcelable(account.key, account.type, profileImageSize)
+        }
+    }
+
+    @Throws(MicroBlogException::class)
+    private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): List<Status> {
+        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         canLoadAllReplies = false
-        when (details.type) {
+        when (account.type) {
             AccountType.TWITTER -> {
-                val isOfficial = details.isOfficial(context)
+                val isOfficial = account.isOfficial(context)
                 canLoadAllReplies = isOfficial
                 if (isOfficial) {
                     return microBlog.showConversation(status.id, paging)
                 }
-                return showConversationCompat(microBlog, details, status, true)
+                return showConversationCompat(microBlog, account, status, true)
             }
             AccountType.STATUSNET -> {
                 canLoadAllReplies = true
@@ -85,7 +94,7 @@ class ConversationLoader(
         }
         // Set to true because there's no conversation support on this platform
         canLoadAllReplies = true
-        return showConversationCompat(microBlog, details, status, false)
+        return showConversationCompat(microBlog, account, status, false)
     }
 
     @Throws(MicroBlogException::class)

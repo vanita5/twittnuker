@@ -93,6 +93,7 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
@@ -2103,8 +2104,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                                 Expression.equalsArgs(Activities.STATUS_ID),
                                 Expression.equalsArgs(Activities.STATUS_RETWEET_ID)))
 
-                val pStatus = ParcelableStatusUtils.fromStatus(status, accountKey, details.type,
-                        false)
+                val pStatus = status.toParcelable(accountKey, details.type)
                 cr.insert(CachedStatuses.CONTENT_URI, ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java).create(pStatus))
 
                 val activityCursor = cr.query(Activities.AboutMe.CONTENT_URI,

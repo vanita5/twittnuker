@@ -27,6 +27,7 @@ import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
@@ -76,8 +77,7 @@ object ContentValuesCreator {
     fun createStatus(orig: Status, accountKey: UserKey, accountType: String,
             profileImageSize: String): ContentValues {
         return ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
-                .create(ParcelableStatusUtils.fromStatus(orig, accountKey, accountType, false,
-                        profileImageSize))
+                .create(orig.toParcelable(accountKey, accountType, profileImageSize))
     }
 
     fun createActivity(activity: ParcelableActivity, details: AccountDetails): ContentValues {

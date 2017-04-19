@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -187,8 +188,7 @@ abstract class GetStatusesTask(
             val creator = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
             for (i in 0 until statuses.size) {
                 val item = statuses[i]
-                val status = ParcelableStatusUtils.fromStatus(item, accountKey, details.type, false,
-                        profileImageSize)
+                val status = item.toParcelable(accountKey, details.type, profileImageSize)
                 ParcelableStatusUtils.updateExtraInformation(status, details)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)

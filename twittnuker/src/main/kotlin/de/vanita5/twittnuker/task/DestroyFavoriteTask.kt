@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
@@ -38,7 +39,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.Companion.calculateHashCode
@@ -60,12 +60,12 @@ class DestroyFavoriteTask(
             val result: ParcelableStatus
             when (details.type) {
                 AccountType.FANFOU -> {
-                    result = ParcelableStatusUtils.fromStatus(microBlog.destroyFanfouFavorite(statusId),
-                            accountKey, details.type, false)
+                    result = microBlog.destroyFanfouFavorite(statusId).toParcelable(accountKey,
+                            details.type)
                 }
                 else -> {
-                    result = ParcelableStatusUtils.fromStatus(microBlog.destroyFavorite(statusId),
-                            accountKey, details.type, false)
+                    result = microBlog.destroyFavorite(statusId).toParcelable(accountKey,
+                            details.type)
                 }
             }
             val values = ContentValues()

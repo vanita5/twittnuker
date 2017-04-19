@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
+import de.vanita5.twittnuker.loader.RequestStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -132,7 +132,7 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
         if (adapter.itemCount > 0) {
             showContent()
-        } else if (loader is MicroBlogAPIStatusesLoader) {
+        } else if (loader is RequestStatusesLoader) {
             val e = loader.exception
             if (e != null) {
                 showError(R.drawable.ic_info_error_generic, Utils.getErrorMessage(context, e) ?:

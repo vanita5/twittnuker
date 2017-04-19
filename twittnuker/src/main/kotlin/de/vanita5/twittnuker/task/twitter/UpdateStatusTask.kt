@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.applyUpdateStatus
 import de.vanita5.twittnuker.extension.model.mediaSizeLimit
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
@@ -65,7 +66,6 @@ import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.BaseAbstractTask
@@ -326,8 +326,7 @@ class UpdateStatusTask(
                         twitterUpdateStatus(microBlog, statusUpdate, pendingUpdate, i)
                     }
                 }
-                result.statuses[i] = ParcelableStatusUtils.fromStatus(requestResult,
-                        account.key, account.type, false)
+                result.statuses[i] = requestResult.toParcelable(account.key, account.type)
             } catch (e: MicroBlogException) {
                 result.exceptions[i] = e
             }

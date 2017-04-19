@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.quickSendKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -390,8 +391,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
             val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
             val profileImageSize = context.getString(R.string.profile_image_size)
             return task {
-                ParcelableStatusUtils.fromStatus(microBlog.showStatus(statusId), details.key,
-                        details.type, profileImageSize = profileImageSize)
+                microBlog.showStatus(statusId).toParcelable(details.key, details.type, profileImageSize)
             }
         }
 

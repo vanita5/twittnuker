@@ -28,6 +28,7 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
@@ -54,8 +55,7 @@ class DestroyStatusTask(
         var status: ParcelableStatus? = null
         var deleteStatus: Boolean = false
         try {
-            status = ParcelableStatusUtils.fromStatus(microBlog.destroyStatus(statusId),
-                    accountKey, details.type,false)
+            status = microBlog.destroyStatus(statusId).toParcelable(accountKey, details.type)
             ParcelableStatusUtils.updateExtraInformation(status, details)
             deleteStatus = true
             return SingleResponse(status)
