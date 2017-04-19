@@ -28,6 +28,8 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.test.R
 import de.vanita5.twittnuker.util.JsonSerializer
@@ -42,14 +44,12 @@ class ParcelableStatusUtilsTest {
         val context = InstrumentationRegistry.getContext()
         val status_8754050 = context.resources.openRawResource(R.raw.status_8754050).use {
             val status = JsonSerializer.parse(it, Status::class.java)
-            return@use ParcelableStatusUtils.fromStatus(status, UserKey("1234567", "gnusocial.de"),
-                    "statusnet", false)
+            return@use status.toParcelable(UserKey("1234567", "gnusocial.de"), AccountType.STATUSNET)
         }
 
         val status_9171447 = context.resources.openRawResource(R.raw.status_9171447).use {
             val status = JsonSerializer.parse(it, Status::class.java)
-            return@use ParcelableStatusUtils.fromStatus(status, UserKey("1234567", "gnusocial.de"),
-                    "statusnet", false)
+            return@use status.toParcelable(UserKey("1234567", "gnusocial.de"), AccountType.STATUSNET)
         }
 
         Assert.assertEquals(status_8754050.text_unescaped, expectedStatusText)

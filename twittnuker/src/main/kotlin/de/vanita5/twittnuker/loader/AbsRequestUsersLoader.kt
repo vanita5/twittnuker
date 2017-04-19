@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import java.util.*
 
-abstract class MicroBlogAPIUsersLoader(
+abstract class AbsRequestUsersLoader(
         context: Context,
         val accountKey: UserKey?,
         data: List<ParcelableUser>?,

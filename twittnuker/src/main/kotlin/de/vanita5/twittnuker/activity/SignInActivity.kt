@@ -93,6 +93,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.AccountExtras
+import de.vanita5.twittnuker.model.account.MastodonAccountExtras
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.*
@@ -937,7 +938,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
             credentials.access_token = token.accessToken
             return SignInResponse(account != null, Credentials.Type.OAUTH2, credentials, user,
-                    color, AccountType.MASTODON, null)
+                    color, AccountType.MASTODON, getMastodonAccountExtras(mastodon))
         }
     }
 
@@ -1275,10 +1276,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         internal fun detectAccountType(twitter: MicroBlog, user: User, type: String?): Pair<String, AccountExtras?> {
             when (type) {
                 AccountType.STATUSNET -> {
-                    return getStatusNetAccountType(twitter)
+                    return Pair(type, getStatusNetAccountExtras(twitter))
                 }
                 AccountType.TWITTER -> {
-                    return getTwitterAccountType(twitter)
+                    return Pair(type, getTwitterAccountExtras(twitter))
                 }
                 AccountType.FANFOU -> {
                     return Pair(AccountType.FANFOU, null)
@@ -1292,7 +1293,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             return Pair(AccountType.TWITTER, null)
         }
 
-        private fun getStatusNetAccountType(twitter: MicroBlog): Pair<String, StatusNetAccountExtras> {
+        private fun getStatusNetAccountExtras(twitter: MicroBlog): StatusNetAccountExtras {
             // Get StatusNet specific resource
             val config = twitter.statusNetConfig
             val extras = StatusNetAccountExtras()
@@ -1300,10 +1301,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             if (site != null) {
                 extras.textLimit = site.textLimit
             }
-            return Pair(AccountType.STATUSNET, extras)
+            return extras
         }
 
-        private fun getTwitterAccountType(twitter: MicroBlog): Pair<String, TwitterAccountExtras> {
+        private fun getTwitterAccountExtras(twitter: MicroBlog): TwitterAccountExtras {
             val extras = TwitterAccountExtras()
             try {
                 // Get Twitter official only resource
@@ -1314,7 +1315,11 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             } catch (e: MicroBlogException) {
                 // Ignore
             }
-            return Pair(AccountType.TWITTER, extras)
+            return extras
+        }
+
+        private fun getMastodonAccountExtras(mastodon: Mastodon): MastodonAccountExtras {
+            return MastodonAccountExtras()
         }
 
         private val CustomAPIConfig.signUpUrlOrDefault: String?

@@ -27,6 +27,7 @@ import com.twitter.Validator
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.account.AccountExtras
+import de.vanita5.twittnuker.model.account.MastodonAccountExtras
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
@@ -88,6 +89,12 @@ val AccountDetails.textLimit: Int get() {
             val extras = this.extras as? StatusNetAccountExtras
             if (extras != null) {
                 return extras.textLimit
+            }
+        }
+        AccountType.MASTODON -> {
+            val extras = this.extras as? MastodonAccountExtras
+            if (extras != null) {
+                return extras.statusTextLimit
             }
         }
     }

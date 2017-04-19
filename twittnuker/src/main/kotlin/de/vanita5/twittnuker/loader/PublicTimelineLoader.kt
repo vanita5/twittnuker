@@ -46,7 +46,7 @@ class PublicTimelineLoader(
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : RequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
+) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)

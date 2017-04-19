@@ -20,12 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model.api.mastodon
+package de.vanita5.twittnuker.extension.model
 
-import de.vanita5.twittnuker.library.mastodon.model.Application
-import de.vanita5.twittnuker.util.HtmlEscapeHelper
+import de.vanita5.twittnuker.model.UserKey
 
-val Application.sourceHtml: String get() {
-    if (website == null) return HtmlEscapeHelper.escape(name)
-    return "<a href='${HtmlEscapeHelper.escape(website)}'>${HtmlEscapeHelper.escape(name)}</a>"
-}
+
+private const val mastodonPlaceholderId = "#mastodon*placeholder#"
+
+val UserKey.isMastodonPlaceholder get() = mastodonPlaceholderId == id && host != null

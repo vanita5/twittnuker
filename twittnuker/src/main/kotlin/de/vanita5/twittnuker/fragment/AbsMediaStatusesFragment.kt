@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.extension.reachingEnd
 import de.vanita5.twittnuker.extension.reachingStart
-import de.vanita5.twittnuker.loader.RequestStatusesLoader
+import de.vanita5.twittnuker.loader.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.IntentUtils
@@ -136,7 +136,7 @@ abstract class AbsMediaStatusesFragment : AbsContentRecyclerViewFragment<Stagger
 
     protected open fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
             data: List<ParcelableStatus>?, changed: Boolean): Boolean {
-        if (loader !is RequestStatusesLoader) return false
+        if (loader !is AbsRequestStatusesLoader) return false
         val maxId = loader.maxId?.takeIf(String::isNotEmpty)
         val sinceId = loader.sinceId?.takeIf(String::isNotEmpty)
         if (sinceId == null && maxId != null) {

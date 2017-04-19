@@ -31,8 +31,10 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -51,11 +53,16 @@ class UserFavoritesLoader(
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : RequestStatusesLoader(context, accountKey, sinceId, maxId, page, data, savedStatusesArgs,
+) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, page, data, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        when (account.type) {
+            AccountType.MASTODON -> {
+                return getMastodonStatuses(account, paging)
+            }
+        }
         return getMicroBlogStatuses(account, paging).map {
             it.toParcelable(account.key, account.type, profileImageSize)
         }
@@ -88,5 +95,16 @@ class UserFavoritesLoader(
             return microBlog.getFavoritesByScreenName(screenName, paging)
         }
         throw MicroBlogException("Null user")
+    }
+
+    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        if (userKey != null && userKey != account.key) {
+            throw MicroBlogException("Only current account favorites is supported")
+        }
+        if (screenName != null && !screenName.equals(account.user?.screen_name, ignoreCase = true)) {
+            throw MicroBlogException("Only current account favorites is supported")
+        }
+        val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
+        return mastodon.getFavourites(paging).map { it.toParcelable(account.key) }
     }
 }

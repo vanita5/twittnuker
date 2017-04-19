@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.isMastodonPlaceholder
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -161,8 +162,14 @@ class ParcelableUserLoader(
 
     private fun showMastodonUser(details: AccountDetails): ParcelableUser {
         val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
-        if (userKey != null) return mastodon.getAccount(userKey.id).toParcelable(details.key)
-        throw MicroBlogException("No user id")
+        if (userKey == null) throw MicroBlogException("Invalid user id")
+        if (!userKey.isMastodonPlaceholder) {
+            return mastodon.getAccount(userKey.id).toParcelable(details.key)
+        }
+        if (screenName == null) throw MicroBlogException("Screen name required")
+        val resultItem = mastodon.searchAccounts("$screenName@${userKey.host}").firstOrNull() ?:
+                throw MicroBlogException("User not found")
+        return resultItem.toParcelable(details.key)
     }
 
     private fun showMicroBlogUser(details: AccountDetails): ParcelableUser {

@@ -26,6 +26,7 @@ package de.vanita5.twittnuker.util.model;
 
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.account.AccountExtras;
+import de.vanita5.twittnuker.model.account.MastodonAccountExtras;
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras;
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras;
 import de.vanita5.twittnuker.model.account.cred.BasicCredentials;
@@ -70,6 +71,9 @@ public class AccountDetailsUtils {
                 }
                 case AccountType.STATUSNET: {
                     return JsonSerializer.parse(json, StatusNetAccountExtras.class);
+                }
+                case AccountType.MASTODON: {
+                    return JsonSerializer.parse(json, MastodonAccountExtras.class);
                 }
             }
         } catch (IOException e) {

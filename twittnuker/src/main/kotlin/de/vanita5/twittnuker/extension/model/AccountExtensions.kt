@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils.ACCOUNT_USER_DATA_KEYS
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.TwitterContentUtils
+import de.vanita5.twittnuker.util.model.AccountDetailsUtils
 import java.io.IOException
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -98,15 +99,7 @@ fun Account.getPosition(am: AccountManager): Int {
 
 fun Account.getAccountExtras(am: AccountManager): AccountExtras? {
     val json = AccountDataQueue.getUserData(am, this, ACCOUNT_USER_DATA_EXTRAS) ?: return null
-    when (getAccountType(am)) {
-        AccountType.TWITTER -> {
-            return JsonSerializer.parse(json, TwitterAccountExtras::class.java)
-        }
-        AccountType.STATUSNET -> {
-            return JsonSerializer.parse(json, StatusNetAccountExtras::class.java)
-        }
-    }
-    return null
+    return AccountDetailsUtils.parseAccountExtras(json, getAccountType(am))
 }
 
 @AccountType

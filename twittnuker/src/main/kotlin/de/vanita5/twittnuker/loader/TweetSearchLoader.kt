@@ -53,7 +53,7 @@ open class TweetSearchLoader(
         fromUser: Boolean,
         override val isGapEnabled: Boolean,
         loadingMore: Boolean
-) : RequestStatusesLoader(context, accountKey, sinceId, maxId, page, adapterData, savedStatusesArgs,
+) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, page, adapterData, savedStatusesArgs,
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)

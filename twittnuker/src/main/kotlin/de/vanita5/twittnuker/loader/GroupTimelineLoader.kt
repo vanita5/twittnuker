@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -36,23 +37,16 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
-class GroupTimelineLoader(
-        context: Context,
-        accountKey: UserKey?,
-        private val groupId: String?,
-        private val groupName: String?,
-        sinceId: String?,
-        maxId: String?,
-        adapterData: List<ParcelableStatus>?,
-        savedStatusesArgs: Array<String>?,
-        tabPosition: Int,
-        fromUser: Boolean,
-        loadingMore: Boolean
-) : RequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+class GroupTimelineLoader(context: Context, accountKey: UserKey?, private val groupId: String?,
+        private val groupName: String?, sinceId: String?, maxId: String?,
+        adapterData: List<ParcelableStatus>?, savedStatusesArgs: Array<String>?,
+        tabPosition: Int, fromUser: Boolean, loadingMore: Boolean) : AbsRequestStatusesLoader(context,
+        accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs, tabPosition, fromUser,
+        loadingMore) {
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+        if (account.type != AccountType.STATUSNET) throw MicroBlogException("Not supported")
         return getMicroBlogStatuses(account, paging).map {
             it.toParcelable(account.key, account.type, profileImageSize)
         }

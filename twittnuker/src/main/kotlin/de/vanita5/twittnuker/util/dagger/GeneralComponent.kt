@@ -102,7 +102,7 @@ interface GeneralComponent {
 
     fun inject(provider: CacheProvider)
 
-    fun inject(loader: RequestStatusesLoader)
+    fun inject(loader: AbsRequestStatusesLoader)
 
     fun inject(activity: MediaViewerActivity)
 
