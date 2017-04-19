@@ -24,5 +24,21 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.mastodon.model.Attachment;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.http.BodyType;
+import org.mariotaku.restfu.http.mime.Body;
+
+/**
+ * Created by mariotaku on 2017/4/17.
+ */
+
 public interface MediaResources {
+
+    @POST("/v1/media")
+    @BodyType(BodyType.MULTIPART)
+    Attachment uploadMediaAttachment(@Param("file") Body body) throws MicroBlogException;
+
 }

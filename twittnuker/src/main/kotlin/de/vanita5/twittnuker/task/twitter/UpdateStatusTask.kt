@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
 import de.vanita5.twittnuker.library.twitter.model.NewMediaMetadata
 import de.vanita5.twittnuker.library.twitter.model.StatusUpdate
-import de.vanita5.twittnuker.library.mastodon.model.StatusUpdate as MastodonStatusUpdate
 import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.FileBody
@@ -67,6 +66,7 @@ import de.vanita5.twittnuker.extension.model.mediaSizeLimit
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
+import de.vanita5.twittnuker.library.mastodon.model.Attachment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
@@ -84,6 +84,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
+import de.vanita5.twittnuker.library.mastodon.model.StatusUpdate as MastodonStatusUpdate
 
 /**
  * Update status
@@ -388,7 +389,7 @@ class UpdateStatusTask(
                     if (pendingUpdate.sharedMediaIds != null) {
                         mediaIds = pendingUpdate.sharedMediaIds
                     } else {
-                        val (ids, deleteOnSuccess, deleteAlways) = uploadAllMediaShared(context,
+                        val (ids, deleteOnSuccess, deleteAlways) = uploadMicroBlogMediaShared(context,
                                 upload, account, update.media, ownerIds, true, stateCallback)
                         mediaIds = ids
                         deleteOnSuccess.addAllTo(pendingUpdate.deleteOnSuccess)
@@ -403,8 +404,16 @@ class UpdateStatusTask(
                 AccountType.STATUSNET -> {
                     // TODO use their native API
                     val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
-                    val (ids, deleteOnSuccess, deleteAlways) = uploadAllMediaShared(context,
+                    val (ids, deleteOnSuccess, deleteAlways) = uploadMicroBlogMediaShared(context,
                             upload, account, update.media, ownerIds, false, stateCallback)
+                    mediaIds = ids
+                    deleteOnSuccess.addAllTo(pendingUpdate.deleteOnSuccess)
+                    deleteAlways.addAllTo(pendingUpdate.deleteAlways)
+                }
+                AccountType.MASTODON -> {
+                    val mastodon = account.newMicroBlogInstance(context, cls = Mastodon::class.java)
+                    val (ids, deleteOnSuccess, deleteAlways) = uploadMastodonMedia(context,
+                            mastodon, account, update.media, false, stateCallback)
                     mediaIds = ids
                     deleteOnSuccess.addAllTo(pendingUpdate.deleteOnSuccess)
                     deleteAlways.addAllTo(pendingUpdate.deleteAlways)
@@ -708,18 +717,13 @@ class UpdateStatusTask(
         private val BULK_SIZE = 256 * 1024// 256 Kib
 
         @Throws(UploadException::class)
-        fun uploadAllMediaShared(
-                context: Context,
-                upload: TwitterUpload,
-                account: AccountDetails,
-                media: Array<ParcelableMediaUpdate>,
-                ownerIds: Array<String>?,
-                chucked: Boolean,
-                callback: UploadCallback?
-        ): SharedMediaUploadResult {
+        fun uploadMicroBlogMediaShared(context: Context, upload: TwitterUpload,
+                account: AccountDetails, media: Array<ParcelableMediaUpdate>,
+                ownerIds: Array<String>?, chucked: Boolean, callback: UploadCallback?):
+                SharedMediaUploadResult {
             val deleteOnSuccess = ArrayList<MediaDeletionItem>()
             val deleteAlways = ArrayList<MediaDeletionItem>()
-            val mediaIds = media.mapIndexed { index, media ->
+            val mediaIds = media.mapIndexedToArray { index, media ->
                 val resp: MediaUploadResponse
                 //noinspection TryWithIdenticalCatches
                 var body: MediaStreamBody? = null
@@ -754,9 +758,44 @@ class UpdateStatusTask(
                         // Ignore
                     }
                 }
-                return@mapIndexed resp.id
+                return@mapIndexedToArray resp.id
             }
-            return SharedMediaUploadResult(mediaIds.toTypedArray(), deleteOnSuccess, deleteAlways)
+            return SharedMediaUploadResult(mediaIds, deleteOnSuccess, deleteAlways)
+        }
+
+        @Throws(UploadException::class)
+        fun uploadMastodonMedia(context: Context, mastodon: Mastodon,
+                account: AccountDetails, media: Array<ParcelableMediaUpdate>,
+                chucked: Boolean, callback: UploadCallback?): SharedMediaUploadResult {
+            val deleteOnSuccess = ArrayList<MediaDeletionItem>()
+            val deleteAlways = ArrayList<MediaDeletionItem>()
+            val mediaIds = media.mapIndexedToArray { index, media ->
+                val resp: Attachment
+                //noinspection TryWithIdenticalCatches
+                var body: MediaStreamBody? = null
+                try {
+                    val sizeLimit = account.mediaSizeLimit
+                    body = getBodyFromMedia(context, media, sizeLimit, chucked,
+                            ContentLengthInputStream.ReadListener { length, position ->
+                                callback?.onUploadingProgressChanged(index, position, length)
+                            })
+                    resp = mastodon.uploadMediaAttachment(body.body)
+                } catch (e: IOException) {
+                    throw UploadException(e).apply {
+                        this.deleteAlways = deleteAlways
+                    }
+                } catch (e: MicroBlogException) {
+                    throw UploadException(e).apply {
+                        this.deleteAlways = deleteAlways
+                    }
+                } finally {
+                    body?.close()
+                }
+                body?.deleteOnSuccess?.addAllTo(deleteOnSuccess)
+                body?.deleteAlways?.addAllTo(deleteAlways)
+                return@mapIndexedToArray resp.id
+            }
+            return SharedMediaUploadResult(mediaIds, deleteOnSuccess, deleteAlways)
         }
 
         @Throws(IOException::class)
@@ -794,7 +833,9 @@ class UpdateStatusTask(
             }
             cis.setReadListener(readListener)
             val mimeType = data?.type ?: mediaType ?: "application/octet-stream"
-            val body = FileBody(cis, "attachment", cis.length(), ContentType.parse(mimeType))
+            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: ".bin"
+            val fileName = mediaUri.lastPathSegment?.substringBeforeLast(".") ?: "attachment"
+            val body = FileBody(cis, "$fileName.$extension", cis.length(), ContentType.parse(mimeType))
             val deleteOnSuccess: MutableList<MediaDeletionItem> = mutableListOf()
             val deleteAlways: MutableList<MediaDeletionItem> = mutableListOf()
             if (media.delete_always) {
@@ -876,11 +917,9 @@ class UpdateStatusTask(
                 return null
             }
 
-            if (imageLimit != null) {
-                if (imageLimit.checkGeomentry(o.outWidth, o.outHeight)) return null
+            if (imageLimit == null || imageLimit.checkGeomentry(o.outWidth, o.outHeight)) return null
                 o.inSampleSize = BitmapUtils.calculateInSampleSize(o.outWidth, o.outHeight,
                         imageLimit.maxWidth, imageLimit.maxHeight)
-            }
             o.inJustDecodeBounds = false
             // Do actual image decoding
             val bitmap = context.contentResolver.openInputStream(mediaUri).use {
