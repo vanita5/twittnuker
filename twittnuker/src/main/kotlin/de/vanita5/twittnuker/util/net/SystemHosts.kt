@@ -33,9 +33,9 @@ class SystemHosts {
     @Throws(IOException::class)
     fun resolve(hostToResolve: String): List<InetAddress> {
         File(HOSTS_PATH).bufferedReader().use {
-            var line: String?
-            do {
-                line = it.readLine()
+            var line: String
+            while (true) {
+                line = it.readLine() ?: break
                 val scanner = Scanner(line)
                 if (!scanner.hasNext()) continue
                 val address = scanner.next()
@@ -48,7 +48,7 @@ class SystemHosts {
                         return listOf(resolved)
                     }
                 }
-            } while (line != null)
+            }
         }
         throw UnknownHostException(hostToResolve)
     }

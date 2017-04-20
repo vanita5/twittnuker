@@ -63,7 +63,6 @@ import org.mariotaku.ktextension.toLocalizedString
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
-import de.vanita5.twittnuker.fragment.AbsStatusesFragment
 import org.mariotaku.pickncrop.library.PNCUtils
 import org.mariotaku.sqliteqb.library.AllColumns
 import org.mariotaku.sqliteqb.library.Columns
@@ -81,10 +80,13 @@ import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.constant.CompatibilityConstants.EXTRA_ACCOUNT_ID
 import de.vanita5.twittnuker.constant.CompatibilityConstants.QUERY_PARAM_USER_ID
-import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEYS
+import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_PEBBLE_NOTIFICATION
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.constant.defaultAccountKey
 import de.vanita5.twittnuker.constant.mediaPreviewKey
+import de.vanita5.twittnuker.fragment.AbsStatusesFragment
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUserMention
@@ -252,7 +254,7 @@ object Utils {
     }
 
 
-    fun getColumnsFromProjection(vararg projection: String): Selectable {
+    fun getColumnsFromProjection(projection: Array<String>?): Selectable {
         if (projection == null) return AllColumns()
         val length = projection.size
         val columns = arrayOfNulls<Column>(length)
