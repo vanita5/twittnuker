@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -49,7 +48,6 @@ import org.mariotaku.ktextension.dismissDialogFragment
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ProfileUpdate
-import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
@@ -62,7 +60,6 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.task.*
 import de.vanita5.twittnuker.util.*
@@ -164,10 +161,8 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
                 val description = ParseUtils.parseString(editDescription.text)
                 val linkColor = linkColor.color
                 val backgroundColor = backgroundColor.color
-                val task = UpdateProfileTaskInternal(accountKey, user, name, url, location,
+                val task = UpdateProfileTaskInternal(this, accountKey, user, name, url, location,
                         description, linkColor, backgroundColor)
-                task.params = activity
-                task.callback = this
                 TaskStarter.execute(task)
                 this.currentTask = task
                 return true
@@ -351,7 +346,8 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
     }
 
     internal class UpdateProfileTaskInternal(
-            private val accountKey: UserKey,
+            fragment: UserProfileEditorFragment,
+            accountKey: UserKey,
             private val original: ParcelableUser?,
             private val name: String,
             private val url: String,
@@ -359,66 +355,50 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             private val description: String,
             private val linkColor: Int,
             private val backgroundColor: Int
-    ) : AbstractTask<Context, SingleResponse<ParcelableUser>, UserProfileEditorFragment>() {
+    ) : AbsAccountRequestTask<Any?, Pair<ParcelableUser, AccountDetails>,
+            UserProfileEditorFragment>(fragment.context, accountKey) {
 
+        init {
+            this.callback = fragment
+        }
 
-        override fun doLongOperation(context: Context): SingleResponse<ParcelableUser> {
-            try {
-                val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey,
-                        true) ?: throw MicroBlogException("No account")
-                val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
-                var user: User? = null
-                if (isProfileChanged) {
-                    val profileUpdate = ProfileUpdate()
-                    profileUpdate.name(HtmlEscapeHelper.escapeBasic(name))
-                    profileUpdate.location(HtmlEscapeHelper.escapeBasic(location))
-                    profileUpdate.description(HtmlEscapeHelper.escapeBasic(description))
-                    profileUpdate.url(url)
-                    profileUpdate.linkColor(linkColor)
-                    profileUpdate.backgroundColor(backgroundColor)
-                    user = microBlog.updateProfile(profileUpdate)
-                }
-                if (user == null) {
-                    // User profile unchanged
-                    return SingleResponse()
-                }
-                val profileImageSize = context.getString(R.string.profile_image_size)
-                val response = SingleResponse(ParcelableUserUtils.fromUser(user, accountKey,
-                        details.type, profileImageSize = profileImageSize))
-                response.extras.putParcelable(EXTRA_ACCOUNT, details)
-                return response
-            } catch (e: MicroBlogException) {
-                return SingleResponse(e)
+        override fun onExecute(account: AccountDetails, params: Any?): Pair<ParcelableUser, AccountDetails> {
+            val microBlog = account.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+            val orig = this.original
+            if (orig != null && !orig.isProfileChanged()) {
+                return Pair(orig, account)
             }
+            val profileUpdate = ProfileUpdate()
+            profileUpdate.name(HtmlEscapeHelper.escapeBasic(name))
+            profileUpdate.location(HtmlEscapeHelper.escapeBasic(location))
+            profileUpdate.description(HtmlEscapeHelper.escapeBasic(description))
+            profileUpdate.url(url)
+            profileUpdate.linkColor(linkColor)
+            profileUpdate.backgroundColor(backgroundColor)
+            val user = microBlog.updateProfile(profileUpdate)
+            val profileImageSize = context.getString(R.string.profile_image_size)
+            return Pair(ParcelableUserUtils.fromUser(user, account.key,
+                    account.type, profileImageSize = profileImageSize), account)
 
         }
 
-        private val isProfileChanged: Boolean
-            get() {
-                val orig = original ?: return true
-                if (linkColor != orig.link_color) return true
-                if (backgroundColor != orig.background_color) return true
-                if (!TextUtils.equals(name, orig.name)) return true
-                if (!TextUtils.equals(description, ParcelableUserUtils.getExpandedDescription(orig)))
-                    return true
-                if (!TextUtils.equals(location, orig.location)) return true
-                if (!TextUtils.equals(url, if (isEmpty(orig.url_expanded)) orig.url else orig.url_expanded))
-                    return true
-                return false
-            }
+        private fun ParcelableUser.isProfileChanged(): Boolean {
+            if (linkColor != link_color) return true
+            if (backgroundColor != background_color) return true
+            if (!TextUtils.equals(this@UpdateProfileTaskInternal.name, name)) return true
+            if (!TextUtils.equals(description, ParcelableUserUtils.getExpandedDescription(this)))
+                return true
+            if (!TextUtils.equals(this@UpdateProfileTaskInternal.location, location)) return true
+            if (!TextUtils.equals(this@UpdateProfileTaskInternal.url, if (isEmpty(url_expanded)) url else url_expanded))
+                return true
+            return false
+        }
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>) {
-            if (callback == null) return
-            val activity = callback.activity ?: return
-            if (result.hasData()) {
-                val account: AccountDetails? = result.extras.getParcelable(EXTRA_ACCOUNT)
-                if (account != null) {
-                    val task = UpdateAccountInfoTask(activity)
-                    task.params = Pair(account, result.data!!)
-                    TaskStarter.execute(task)
-                }
-            }
-            callback.executeAfterFragmentResumed { fragment ->
+        override fun afterExecute(callback: UserProfileEditorFragment?,
+                result: Pair<ParcelableUser, AccountDetails>?, exception: MicroBlogException?) {
+            super.afterExecute(callback, result, exception)
+
+            callback?.executeAfterFragmentResumed { fragment ->
                 fragment.childFragmentManager.dismissDialogFragment(DIALOG_FRAGMENT_TAG)
                 fragment.activity.finish()
             }
@@ -430,6 +410,15 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
                 val df = ProgressDialogFragment.show(fragment.childFragmentManager, DIALOG_FRAGMENT_TAG)
                 df.isCancelable = false
             }
+        }
+
+        override fun onSucceed(callback: UserProfileEditorFragment?, result: Pair<ParcelableUser, AccountDetails>) {
+            if (callback == null) return
+            val activity = callback.activity ?: return
+            val (user, account) = result
+            val task = UpdateAccountInfoTask(activity)
+            task.params = Pair(account, user)
+            TaskStarter.execute(task)
         }
 
         companion object {

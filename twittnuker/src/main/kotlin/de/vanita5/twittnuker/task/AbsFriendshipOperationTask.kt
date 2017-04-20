@@ -25,10 +25,11 @@ package de.vanita5.twittnuker.task
 import android.accounts.AccountManager
 import android.content.Context
 import android.widget.Toast
-import de.vanita5.twittnuker.extension.getErrorMessage
+import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -72,7 +73,7 @@ abstract class AbsFriendshipOperationTask(
     override fun onExecute(params: Arguments): ParcelableUser {
         val am = AccountManager.get(context)
         val details = AccountUtils.getAccountDetails(am, params.accountKey, true)
-                ?: throw MicroBlogException("No account")
+                ?: throw AccountNotFoundException()
         val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         val user = perform(twitter, details, params)
         val parcelableUser = ParcelableUserUtils.fromUser(user, params.accountKey, details.type)
@@ -85,10 +86,8 @@ abstract class AbsFriendshipOperationTask(
                                    details: AccountDetails,
                                    args: Arguments): User
 
-    protected abstract fun succeededWorker(twitter: MicroBlog,
-                                           details: AccountDetails,
-                                           args: Arguments,
-                                           user: ParcelableUser)
+    protected abstract fun succeededWorker(twitter: MicroBlog, details: AccountDetails,
+            args: Arguments, user: ParcelableUser)
 
     protected abstract fun showSucceededMessage(params: Arguments, user: ParcelableUser)
 

@@ -22,42 +22,43 @@
 
 package de.vanita5.twittnuker.task
 
-import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
+import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.event.StatusRetweetedEvent
-import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.updateActivityStatus
 
 /**
  * Retweet status
  */
 class RetweetStatusTask(
         context: Context,
-        private val accountKey: UserKey,
+        accountKey: UserKey,
         private val status: ParcelableStatus
-) : BaseAbstractTask<Any, SingleResponse<ParcelableStatus>, Any?>(context) {
+) : AbsAccountRequestTask<Any?, ParcelableStatus, Any?>(context, accountKey) {
 
     private val statusId = status.id
 
-    override fun doLongOperation(params: Any?): SingleResponse<ParcelableStatus> {
+    override fun onExecute(account: AccountDetails, params: Any?): ParcelableStatus {
         val draftId = UpdateStatusTask.saveDraft(context, Draft.Action.RETWEET) {
             this@saveDraft.account_keys = arrayOf(accountKey)
             this@saveDraft.action_extras = StatusObjectActionExtras().apply {
@@ -66,13 +67,10 @@ class RetweetStatusTask(
         }
         microBlogWrapper.addSendingDraftId(draftId)
         val resolver = context.contentResolver
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context),
-                accountKey, true) ?: return SingleResponse.getInstance<ParcelableStatus>(MicroBlogException("No account"))
-        val microBlog = details.newMicroBlogInstance(
-                context, MicroBlog::class.java)
+        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         try {
-            val result = microBlog.retweetStatus(statusId).toParcelable(accountKey, details.type)
-            ParcelableStatusUtils.updateExtraInformation(result, details)
+            val result = microBlog.retweetStatus(statusId).toParcelable(account.key, account.type)
+            ParcelableStatusUtils.updateExtraInformation(result, account)
             Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
             val values = ContentValues()
             values.put(TwidereDataStore.Statuses.MY_RETWEET_ID, result.id)
@@ -87,7 +85,7 @@ class RetweetStatusTask(
             for (uri in DataStoreUtils.STATUSES_URIS) {
                 resolver.update(uri, values, where.sql, whereArgs)
             }
-            resolver.updateActivityStatus(accountKey, statusId) { activity ->
+            resolver.updateActivityStatus(account.key, statusId) { activity ->
                 val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
                 activity.status_my_retweet_id = result.my_retweet_id
                 for (statusesArray in statusesMatrix) {
@@ -104,10 +102,7 @@ class RetweetStatusTask(
                 }
             }
             UpdateStatusTask.deleteDraft(context, draftId)
-            return SingleResponse(result)
-        } catch (e: MicroBlogException) {
-            DebugLog.w(TwittnukerConstants.LOGTAG, tr = e)
-            return SingleResponse(e)
+            return result
         } finally {
             microBlogWrapper.removeSendingDraftId(draftId)
         }
@@ -122,14 +117,12 @@ class RetweetStatusTask(
         bus.post(StatusListChangedEvent())
     }
 
-
-    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableStatus>) {
+    override fun afterExecute(callback: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {
         creatingRetweetIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
-        if (result.hasData()) {
-            val status = result.data
-            bus.post(StatusRetweetedEvent(status))
+        if (result != null) {
+            bus.post(StatusRetweetedEvent(result))
         } else {
-            Utils.showErrorMessage(context, R.string.action_retweeting, result.exception, true)
+            Toast.makeText(context, exception?.getErrorMessage(context), Toast.LENGTH_SHORT).show()
         }
     }
 
