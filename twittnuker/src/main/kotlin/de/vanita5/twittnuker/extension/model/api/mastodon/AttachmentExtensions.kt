@@ -25,6 +25,13 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 import de.vanita5.twittnuker.library.mastodon.model.Attachment
 import de.vanita5.twittnuker.model.ParcelableMedia
 
+/**
+ * Extension functions for `Attachment` class
+ */
+
+/**
+ * @return [ParcelableMedia] converted media for Twidere
+ */
 fun Attachment.toParcelable(): ParcelableMedia {
     val result = ParcelableMedia()
     result.type = when (type) {

@@ -145,12 +145,26 @@
             tools:textSize="@dimen/text_size_extra_small" />
 
         <de.vanita5.twittnuker.view.TimelineContentTextView
-            android:id="@+id/text"
+            android:id="@+id/summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/name"
             android:layout_alignStart="@+id/name"
             android:layout_below="@+id/name"
+            android:paddingTop="@dimen/element_spacing_small"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:attr/textColorPrimary"
+            android:visibility="visible"
+            tools:text="@string/sample_summary_text"
+            tools:visibility="visible"/>
+
+        <de.vanita5.twittnuker.view.TimelineContentTextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/name"
+            android:layout_alignStart="@+id/name"
+            android:layout_below="@+id/summary"
             android:paddingTop="@dimen/element_spacing_small"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"

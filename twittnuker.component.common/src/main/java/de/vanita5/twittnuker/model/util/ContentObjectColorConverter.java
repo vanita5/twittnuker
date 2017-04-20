@@ -30,8 +30,10 @@ import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
 import java.util.Locale;
 
-
-public class RGBHexColorConverter extends StringBasedTypeConverter<Integer> {
+/**
+ * This converter converts color to #RRGGBB format, to null if color is fully transparent
+ */
+public class ContentObjectColorConverter extends StringBasedTypeConverter<Integer> {
     @Override
     public Integer getFromString(final String string) {
         if (string == null) return 0;
@@ -43,7 +45,7 @@ public class RGBHexColorConverter extends StringBasedTypeConverter<Integer> {
 
     @Override
     public String convertToString(final Integer object) {
-        if (object == null) return null;
+        if (object == null || object == 0) return null;
         return String.format(Locale.US, "#%06X", 0xFFFFFF & object);
     }
 }

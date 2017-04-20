@@ -9,6 +9,7 @@
     <string name="font_family_condensed" translatable="false">Condensed</string>
     <string name="font_family_light" translatable="false">Light</string>
     <string name="font_family_thin" translatable="false">Thin</string>
+    <string name="sample_summary_text">Lorem ipsum dolor sit amet.</string>
     <string name="sample_status_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus quis purus ac malesuada. Duis id vulputate magna, a eleifend amet.</string>
     <string name="unsupported_activity_action_title"><xliff:g id="action">%s</xliff:g> action</string>
     <string name="fanfou_repost_format"><xliff:g id="text">%1$s</xliff:g> 转 \@<xliff:g id="screen_name">%2$s</xliff:g> <xliff:g id="orig_text">%3$s</xliff:g></string>
