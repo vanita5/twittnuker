@@ -31,7 +31,10 @@ import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.activity.PremiumDashboardActivity
 import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
-import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
+import de.vanita5.twittnuker.fragment.BaseFragment
+import de.vanita5.twittnuker.fragment.BasePreferenceFragment
+import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
 import de.vanita5.twittnuker.fragment.media.ExoPlayerPageFragment
 import de.vanita5.twittnuker.loader.*
@@ -44,7 +47,6 @@ import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.*
 import de.vanita5.twittnuker.task.BaseAbstractTask
-import de.vanita5.twittnuker.task.ManagedAsyncTask
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory
 import de.vanita5.twittnuker.util.MultiSelectEventHandler
@@ -85,8 +87,6 @@ interface GeneralComponent {
     fun inject(obj: BaseArrayAdapter<Any>)
 
     fun inject(obj: DraftsAdapter)
-
-    fun inject(obj: ManagedAsyncTask<Any, Any, Any>)
 
     fun inject(obj: BasePreferenceFragment)
 

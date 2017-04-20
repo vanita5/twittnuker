@@ -28,19 +28,19 @@ import android.support.annotation.WorkerThread
 import org.mariotaku.ktextension.isNullOrEmpty
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.library.twitter.model.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.library.mastodon.model.TimelineOption as MastodonTimelineOption
 
 class MediaTimelineLoader(
@@ -105,8 +105,7 @@ class MediaTimelineLoader(
                     val screenName = this.screenName ?: run {
                         return@run this.user ?: run fetchUser@ {
                             if (userKey == null) throw MicroBlogException("Invalid parameters")
-                            val user = TwitterWrapper.tryShowUser(microBlog, userKey.id, null,
-                                    account.type)
+                            val user = microBlog.tryShowUser(userKey.id, null, account.type)
                             this.user = user
                             return@fetchUser user
                         }.screenName

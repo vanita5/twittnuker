@@ -29,10 +29,10 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.sprite.library.AnimatedBitmapLayer;
 import de.vanita5.twittnuker.sprite.library.Layer;
 import de.vanita5.twittnuker.sprite.library.LayeredCanvasView;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.Utils;
 
 public final class BirthdayView extends LayeredCanvasView {
@@ -86,7 +86,7 @@ public final class BirthdayView extends LayeredCanvasView {
     @SuppressWarnings("deprecation")
     @Override
     protected boolean fitSystemWindows(@NonNull Rect insets) {
-        final int stripTop = Utils.getInsetsTopWithoutActionBarHeight(getContext(), insets.top);
+        final int stripTop = Utils.INSTANCE.getInsetsTopWithoutActionBarHeight(getContext(), insets.top);
         final Layer[] layers = getLayers();
         ((AnimatedBitmapLayer) layers[2]).setPosition(0, stripTop);
         return super.fitSystemWindows(insets);

@@ -39,7 +39,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 import org.mariotaku.library.objectcursor.ObjectCursor;
-
+import org.mariotaku.restfu.RestFuUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.annotation.PreferenceType;
@@ -137,8 +137,8 @@ public class DataImportExportUtils implements Constants {
             zos.finish();
             zos.flush();
         } finally {
-            Utils.closeSilently(zos);
-            Utils.closeSilently(fos);
+            RestFuUtils.closeSilently(zos);
+            RestFuUtils.closeSilently(fos);
         }
     }
 

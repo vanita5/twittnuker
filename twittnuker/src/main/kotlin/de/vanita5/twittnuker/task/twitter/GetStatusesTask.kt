@@ -43,10 +43,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.RefreshTaskParam
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -60,7 +57,7 @@ import java.util.*
 
 abstract class GetStatusesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, (Boolean) -> Unit>(context) {
+) : BaseAbstractTask<RefreshTaskParam, List<StatusListResponse>, (Boolean) -> Unit>(context) {
 
     private val profileImageSize = context.getString(R.string.profile_image_size)
 
@@ -71,14 +68,14 @@ abstract class GetStatusesTask(
 
     protected abstract val errorInfoKey: String
 
-    override fun doLongOperation(param: RefreshTaskParam): List<TwitterWrapper.StatusListResponse> {
+    override fun doLongOperation(param: RefreshTaskParam): List<StatusListResponse> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys
         val maxIds = param.maxIds
         val sinceIds = param.sinceIds
         val maxSortIds = param.maxSortIds
         val sinceSortIds = param.sinceSortIds
-        val result = ArrayList<TwitterWrapper.StatusListResponse>()
+        val result = ArrayList<StatusListResponse>()
         val loadItemLimit = preferences[loadItemLimitKey]
         var saveReadPosition = false
         for (i in 0 until accountKeys.size) {
@@ -132,7 +129,7 @@ abstract class GetStatusesTask(
                 val cacheTask = CacheUsersStatusesTask(context, accountKey, details.type, statuses)
                 TaskStarter.execute(cacheTask)
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
-                result.add(TwitterWrapper.StatusListResponse(accountKey, statuses))
+                result.add(StatusListResponse(accountKey, statuses))
                 if (storeResult != 0) {
                     throw GetTimelineException(storeResult)
                 }
@@ -143,15 +140,15 @@ abstract class GetStatusesTask(
                 } else if (e.statusCode == 401) {
                     // Unauthorized
                 }
-                result.add(TwitterWrapper.StatusListResponse(accountKey, e))
+                result.add(StatusListResponse(accountKey, e))
             } catch (e: GetTimelineException) {
-                result.add(TwitterWrapper.StatusListResponse(accountKey, e))
+                result.add(StatusListResponse(accountKey, e))
             }
         }
         return result
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<TwitterWrapper.StatusListResponse>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<StatusListResponse>) {
         context.contentResolver.notifyChange(contentUri, null)
         val exception = AsyncTwitterWrapper.getException(result)
         bus.post(GetStatusesTaskEvent(contentUri, false, exception))

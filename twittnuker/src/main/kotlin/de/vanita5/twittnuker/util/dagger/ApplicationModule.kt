@@ -51,6 +51,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
+import de.vanita5.twittnuker.extension.model.load
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.cache.DiskLRUFileCache
@@ -141,12 +142,6 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun asyncTaskManager(): AsyncTaskManager {
-        return AsyncTaskManager()
-    }
-
-    @Provides
-    @Singleton
     fun activityTracker(): ActivityTracker {
         return ActivityTracker()
     }
@@ -154,8 +149,8 @@ class ApplicationModule(private val context: Context) {
     @Provides
     @Singleton
     fun asyncTwitterWrapper(bus: Bus, preferences: SharedPreferences,
-            asyncTaskManager: AsyncTaskManager, notificationManagerWrapper: NotificationManagerWrapper): AsyncTwitterWrapper {
-        return AsyncTwitterWrapper(context, bus, preferences, asyncTaskManager, notificationManagerWrapper)
+            notificationManagerWrapper: NotificationManagerWrapper): AsyncTwitterWrapper {
+        return AsyncTwitterWrapper(context, bus, preferences, notificationManagerWrapper)
     }
 
     @Provides

@@ -23,12 +23,13 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import de.vanita5.twittnuker.annotation.AccountType
+import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -59,15 +60,10 @@ class DestroyFriendshipTask(context: Context) : AbsFriendshipOperationTask(conte
         resolver.delete(Statuses.CONTENT_URI, where.sql, whereArgs)
     }
 
-    override fun showErrorMessage(params: AbsFriendshipOperationTask.Arguments, exception: Exception?) {
-        Utils.showErrorMessage(context, R.string.action_unfollowing, exception, false)
-    }
-
     override fun showSucceededMessage(params: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
         val nameFirst = kPreferences[nameFirstKey]
-        val message = context.getString(R.string.unfollowed_user,
-                manager.getDisplayName(user, nameFirst))
-        Utils.showInfoMessage(context, message, false)
+        val message = context.getString(R.string.unfollowed_user, manager.getDisplayName(user, nameFirst))
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 }

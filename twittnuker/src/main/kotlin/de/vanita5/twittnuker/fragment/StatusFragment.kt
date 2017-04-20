@@ -31,7 +31,6 @@ import android.graphics.Rect
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter.CreateNdefMessageCallback
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.support.v4.app.LoaderManager.LoaderCallbacks
@@ -59,18 +58,21 @@ import android.view.*
 import android.view.View.OnClickListener
 import android.widget.Space
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.adapter_item_status_count_label.view.*
 import kotlinx.android.synthetic.main.fragment_status.*
-import kotlinx.android.synthetic.main.header_status_common.view.*
+import kotlinx.android.synthetic.main.header_status.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
+import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.contains
 import org.mariotaku.ktextension.findPositionByItemId
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.TranslationResult
@@ -92,12 +94,10 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.applyTo
-import de.vanita5.twittnuker.extension.model.getAccountType
-import de.vanita5.twittnuker.extension.model.isOfficial
-import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
 import de.vanita5.twittnuker.loader.ConversationLoader
@@ -110,6 +110,7 @@ import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.task.AbsAccountRequestTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -123,6 +124,7 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener
+import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -564,11 +566,12 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     private fun loadTranslation(status: ParcelableStatus?) {
         if (status == null) return
-        if (AsyncTaskUtils.isTaskRunning(loadTranslationTask)) {
-            loadTranslationTask!!.cancel(true)
+        if (loadTranslationTask?.isFinished ?: false) return
+        loadTranslationTask = run {
+            val task = LoadTranslationTask(this, status)
+            TaskStarter.execute(task)
+            return@run task
         }
-        loadTranslationTask = LoadTranslationTask(this)
-        AsyncTaskUtils.executeTask<LoadTranslationTask, ParcelableStatus>(loadTranslationTask, status)
     }
 
 
@@ -709,41 +712,35 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         }
     }
 
-    internal class LoadTranslationTask(val fragment: StatusFragment) : AsyncTask<ParcelableStatus, Any, SingleResponse<TranslationResult>>() {
-        private val context = fragment.activity
+    internal class LoadTranslationTask(fragment: StatusFragment, val status: ParcelableStatus) :
+            AbsAccountRequestTask<Any?, TranslationResult, Any?>(fragment.context, status.account_key) {
 
-        override fun doInBackground(vararg params: ParcelableStatus): SingleResponse<TranslationResult> {
-            val status = params[0]
-            val twitter = MicroBlogAPIFactory.getInstance(context, status.account_key
-            )
-            val prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-                    Context.MODE_PRIVATE)
-            if (twitter == null) return SingleResponse.Companion.getInstance<TranslationResult>()
-            try {
-                val prefDest = prefs.getString(SharedPreferenceConstants.KEY_TRANSLATION_DESTINATION, null)
-                val dest: String
-                if (TextUtils.isEmpty(prefDest)) {
-                    dest = twitter.accountSettings.language
-                    val editor = prefs.edit()
-                    editor.putString(SharedPreferenceConstants.KEY_TRANSLATION_DESTINATION, dest)
-                    editor.apply()
-                } else {
-                    dest = prefDest
-                }
-                val statusId = if (status.is_retweet) status.retweet_id else status.id
-                return SingleResponse.Companion.getInstance(twitter.showTranslation(statusId, dest))
-            } catch (e: MicroBlogException) {
-                return SingleResponse.Companion.getInstance<TranslationResult>(e)
+        val weakFragment = WeakReference(fragment)
+
+        override fun onExecute(account: AccountDetails, params: Any?): TranslationResult {
+            val twitter = account.newMicroBlogInstance(context, MicroBlog::class.java)
+            val prefDest = preferences.getString(KEY_TRANSLATION_DESTINATION, null)
+            val dest: String
+            if (TextUtils.isEmpty(prefDest)) {
+                dest = twitter.accountSettings.language
+                val editor = preferences.edit()
+                editor.putString(KEY_TRANSLATION_DESTINATION, dest)
+                editor.apply()
+            } else {
+                dest = prefDest
             }
-
+            val statusId = if (status.is_retweet) status.retweet_id else status.id
+            return twitter.showTranslation(statusId, dest)
         }
 
-        override fun onPostExecute(result: SingleResponse<TranslationResult>) {
-            if (result.data != null) {
-                fragment.displayTranslation(result.data)
-            } else if (result.hasException()) {
-                Utils.showErrorMessage(context, R.string.action_translate, result.exception, false)
-            }
+        override fun onSucceed(callback: Any?, result: TranslationResult) {
+            val fragment = weakFragment.get() ?: return
+            fragment.displayTranslation(result)
+        }
+
+        override fun onException(callback: Any?, exception: MicroBlogException) {
+            val context = this.context ?: return
+            Toast.makeText(context, exception.getErrorMessage(context), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -1639,9 +1636,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     if (detachedStatusViewHolder != null) {
                         return detachedStatusViewHolder
                     }
-                    val view = inflater.inflate(R.layout.header_status_compact, parent, false)
-                    val cardView = view.findViewById(R.id.compact_card)
-                    cardView.setBackgroundColor(cardBackgroundColor)
+                    val view = inflater.inflate(R.layout.header_status, parent, false)
+                    view.setBackgroundColor(cardBackgroundColor)
                     return DetailStatusViewHolder(this, view)
                 }
                 VIEW_TYPE_LIST_STATUS -> {

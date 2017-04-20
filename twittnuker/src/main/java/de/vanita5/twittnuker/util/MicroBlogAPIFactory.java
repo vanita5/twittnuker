@@ -89,7 +89,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     @WorkerThread
     public static MicroBlog getDefaultTwitterInstance(final Context context) {
         if (context == null) return null;
-        final UserKey accountKey = Utils.getDefaultAccountKey(context);
+        final UserKey accountKey = Utils.INSTANCE.getDefaultAccountKey(context);
         if (accountKey == null) return null;
         return getInstance(context, accountKey);
     }

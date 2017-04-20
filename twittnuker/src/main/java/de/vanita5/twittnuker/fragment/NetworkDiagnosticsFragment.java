@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import org.mariotaku.restfu.RestAPIFactory;
+import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpRequest;
@@ -65,7 +66,6 @@ import de.vanita5.twittnuker.model.account.cred.OAuthCredentials;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
@@ -257,7 +257,7 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
                 } catch (IOException e) {
                     publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
                 } finally {
-                    Utils.closeSilently(response);
+                    RestFuUtils.closeSilently(response);
                 }
                 publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 

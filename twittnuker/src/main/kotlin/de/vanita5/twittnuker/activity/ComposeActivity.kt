@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getCachedLocation
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyUpdateStatus
 import de.vanita5.twittnuker.extension.model.textLimit
@@ -802,7 +803,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 accountProfileImage.setImageDrawable(null)
             }
 
-            accountProfileImage.setBorderColors(*Utils.getAccountColors(accounts))
+            accountProfileImage.setBorderColors(*IntArray(accounts.size) { accounts[it].color })
         }
 
         if (displayDoneIcon) {
@@ -1006,7 +1007,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
         val extraSubject = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT)
         val extraText = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)
-        editText.setText(Utils.getShareStatus(this, extraSubject, extraText))
+        if (extraSubject != null && extraText != null) {
+            editText.setText("$extraSubject - $extraText")
+        } else if (extraText != null){
+            editText.setText(extraText)
+        }
+
         val selectionEnd = editText.length()
         editText.setSelection(selectionEnd)
         return true
@@ -1266,7 +1272,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             locationLabel.setText(R.string.getting_location)
             locationListener = ComposeLocationListener(this)
             locationManager.requestLocationUpdates(provider, 0, 0f, locationListener)
-            val location = Utils.getCachedLocation(this)
+            val location = locationManager.getCachedLocation()
             if (location != null) {
                 locationListener?.onLocationChanged(location)
             }

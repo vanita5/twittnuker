@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import android.widget.Toast
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.model.ParcelableUserList
@@ -56,7 +57,7 @@ class DestroyUserListTask(
         val context = context
         if (result.data != null) {
             val message = context.getString(R.string.deleted_list, result.data.name)
-            Utils.showInfoMessage(context, message, false)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             bus.post(UserListDestroyedEvent(result.data))
         } else {
             Utils.showErrorMessage(context, R.string.action_deleting, result.exception, true)

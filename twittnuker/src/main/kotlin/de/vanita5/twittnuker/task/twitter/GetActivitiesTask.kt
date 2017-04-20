@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse
+import de.vanita5.twittnuker.model.TwitterListResponse
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import java.util.*
 

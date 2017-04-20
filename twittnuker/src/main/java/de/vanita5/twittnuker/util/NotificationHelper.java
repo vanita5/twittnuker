@@ -165,7 +165,7 @@ public class NotificationHelper implements Constants {
 
     private void rebuildNotification(final UserKey userKey) {
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.cancel(getAccountNotificationId(NOTIFICATION_ID_PUSH, userKey.getId()));
+        notificationManager.cancel(Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH, userKey.getId()));
 
         List<NotificationContent> pendingNotifications = getCachedNotifications(userKey);
         UserKey[] userKeys = {userKey};
@@ -252,7 +252,7 @@ public class NotificationHelper implements Constants {
                     //Reply Intent
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
                     replyIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+                    replyIntent.putExtra(EXTRA_NOTIFICATION_ID, Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH,
                             notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -338,7 +338,7 @@ public class NotificationHelper implements Constants {
                     //Reply Intent
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
                     replyIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+                    replyIntent.putExtra(EXTRA_NOTIFICATION_ID, Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH,
                             notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -524,7 +524,7 @@ public class NotificationHelper implements Constants {
             builder.setDefaults(defaults);
         }
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.notify(getAccountNotificationId(NOTIFICATION_ID_PUSH,
+        notificationManager.notify(Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH,
                 notification.getAccountKey().getId()), builder.build());
     }
 
@@ -636,7 +636,7 @@ public class NotificationHelper implements Constants {
         Intent intent = new Intent(mContext, NotificationActionReceiver.class);
         intent.setAction(INTENT_ACTION_RETWEET);
         intent.putExtra(EXTRA_STATUS, status);
-        intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+        intent.putExtra(EXTRA_NOTIFICATION_ID, Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH,
                 status.account_key.getId()));
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
@@ -645,7 +645,7 @@ public class NotificationHelper implements Constants {
         Intent intent = new Intent(mContext, NotificationActionReceiver.class);
         intent.setAction(INTENT_ACTION_FAVORITE);
         intent.putExtra(EXTRA_STATUS, status);
-        intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+        intent.putExtra(EXTRA_NOTIFICATION_ID, Companion.getAccountNotificationId(NOTIFICATION_ID_PUSH,
                 status.account_key.getId()));
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }

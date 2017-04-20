@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.loader.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -135,8 +136,7 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
         } else if (loader is AbsRequestStatusesLoader) {
             val e = loader.exception
             if (e != null) {
-                showError(R.drawable.ic_info_error_generic, Utils.getErrorMessage(context, e) ?:
-                        context.getString(R.string.error_unknown_error))
+                showError(R.drawable.ic_info_error_generic, e.getErrorMessage(context))
             } else {
                 showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh))
             }

@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.task
 
 import android.accounts.AccountManager
 import android.content.Context
+import android.widget.Toast
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -61,7 +63,7 @@ abstract class AbsFriendshipOperationTask(
             showSucceededMessage(params, user)
             event.isSucceeded = true
             event.user = user
-        } else {
+        } else if (exception != null) {
             showErrorMessage(params, exception)
         }
         bus.post(event)
@@ -90,7 +92,9 @@ abstract class AbsFriendshipOperationTask(
 
     protected abstract fun showSucceededMessage(params: Arguments, user: ParcelableUser)
 
-    protected abstract fun showErrorMessage(params: Arguments, exception: Exception?)
+    protected open fun showErrorMessage(params: Arguments, exception: Exception) {
+        Toast.makeText(context, exception.getErrorMessage(context), Toast.LENGTH_SHORT).show()
+    }
 
     fun setup(accountKey: UserKey, userKey: UserKey) {
         params = Arguments(accountKey, userKey)

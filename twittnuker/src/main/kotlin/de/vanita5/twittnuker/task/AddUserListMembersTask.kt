@@ -23,61 +23,49 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import android.widget.Toast
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListMembersChangedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
-import de.vanita5.twittnuker.util.Utils
 
 class AddUserListMembersTask(
         context: Context,
-        private val accountKey: UserKey,
+        accountKey: UserKey,
         private val listId: String,
         private val users: Array<out ParcelableUser>
-) : BaseAbstractTask<Any?, SingleResponse<ParcelableUserList>, Any?>(context) {
+) : AbsAccountRequestTask<Any?, ParcelableUserList, Any?>(context, accountKey) {
 
-    override fun doLongOperation(params: Any?): SingleResponse<ParcelableUserList> {
-        try {
-            val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey) ?:
-                    throw MicroBlogException("No account")
-            val userIds = users.mapToArray(ParcelableUser::key)
-            val result = microBlog.addUserListMembers(listId, UserKey.getIds(userIds))
-            val list = ParcelableUserListUtils.from(result, accountKey)
-            return SingleResponse(list)
-        } catch (e: MicroBlogException) {
-            return SingleResponse(e)
-        }
-
+    override fun onExecute(account: AccountDetails, params: Any?): ParcelableUserList {
+        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
+        val userIds = users.mapToArray(ParcelableUser::key)
+        val result = microBlog.addUserListMembers(listId, UserKey.getIds(userIds))
+        return ParcelableUserListUtils.from(result, account.key)
     }
 
-    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableUserList>) {
-        if (result.data != null) {
-            val message: String
-            if (users.size == 1) {
-                val user = users.first()
-                val nameFirst = preferences[nameFirstKey]
-                val displayName = userColorNameManager.getDisplayName(user.key, user.name,
-                        user.screen_name, nameFirst)
-                message = context.getString(R.string.message_toast_added_user_to_list, displayName, result.data.name)
-            } else {
-                val res = context.resources
-                message = res.getQuantityString(R.plurals.added_N_users_to_list, users.size, users.size,
-                        result.data.name)
-            }
-            Utils.showOkMessage(context, message, false)
-            bus.post(UserListMembersChangedEvent(UserListMembersChangedEvent.Action.ADDED, result.data,
-                    users))
+    override fun onSucceed(callback: Any?, result: ParcelableUserList) {
+        val message: String
+        if (users.size == 1) {
+            val user = users.first()
+            val nameFirst = preferences[nameFirstKey]
+            val displayName = userColorNameManager.getDisplayName(user.key, user.name,
+                    user.screen_name, nameFirst)
+            message = context.getString(R.string.message_toast_added_user_to_list, displayName, result.name)
         } else {
-            Utils.showErrorMessage(context, R.string.action_adding_member, result.exception, true)
+            val res = context.resources
+            message = res.getQuantityString(R.plurals.added_N_users_to_list, users.size, users.size,
+                    result.name)
         }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        bus.post(UserListMembersChangedEvent(UserListMembersChangedEvent.Action.ADDED, result, users))
     }
 
 }

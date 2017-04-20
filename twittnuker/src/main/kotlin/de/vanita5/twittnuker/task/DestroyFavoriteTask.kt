@@ -22,83 +22,76 @@
 
 package de.vanita5.twittnuker.task
 
-import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
+import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
-import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.Companion.calculateHashCode
 import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.updateActivityStatus
 
 class DestroyFavoriteTask(
         context: Context,
-        private val accountKey: UserKey,
+        accountKey: UserKey,
         private val statusId: String
-) : BaseAbstractTask<Any?, SingleResponse<ParcelableStatus>, Any?>(context) {
-    override fun doLongOperation(params: Any?): SingleResponse<ParcelableStatus> {
+) : AbsAccountRequestTask<Any?, ParcelableStatus, Any?>(context, accountKey) {
+    override fun onExecute(account: AccountDetails, params: Any?): ParcelableStatus {
         val resolver = context.contentResolver
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true)
-                ?: return SingleResponse.getInstance<ParcelableStatus>()
-        val microBlog = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-        try {
-            val result: ParcelableStatus
-            when (details.type) {
-                AccountType.FANFOU -> {
-                    result = microBlog.destroyFanfouFavorite(statusId).toParcelable(accountKey,
-                            details.type)
-                }
-                else -> {
-                    result = microBlog.destroyFavorite(statusId).toParcelable(accountKey,
-                            details.type)
-                }
+        val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
+        val result: ParcelableStatus
+        when (account.type) {
+            AccountType.FANFOU -> {
+                    result = microBlog.destroyFanfouFavorite(statusId).toParcelable(account.key,
+                            account.type)
             }
-            val values = ContentValues()
-            values.put(TwidereDataStore.Statuses.IS_FAVORITE, false)
-            values.put(TwidereDataStore.Statuses.FAVORITE_COUNT, result.favorite_count - 1)
-            values.put(TwidereDataStore.Statuses.RETWEET_COUNT, result.retweet_count)
-            values.put(TwidereDataStore.Statuses.REPLY_COUNT, result.reply_count)
-
-            val where = Expression.and(Expression.equalsArgs(TwidereDataStore.Statuses.ACCOUNT_KEY),
-                    Expression.or(Expression.equalsArgs(TwidereDataStore.Statuses.STATUS_ID),
-                            Expression.equalsArgs(TwidereDataStore.Statuses.RETWEET_ID)))
-            val whereArgs = arrayOf(accountKey.toString(), statusId, statusId)
-            for (uri in DataStoreUtils.STATUSES_URIS) {
-                resolver.update(uri, values, where.sql, whereArgs)
+            else -> {
+                    result = microBlog.destroyFavorite(statusId).toParcelable(account.key,
+                            account.type)
             }
-
-            resolver.updateActivityStatus(accountKey, statusId) { activity ->
-                val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
-                for (statusesArray in statusesMatrix) {
-                    if (statusesArray == null) continue
-                    for (status in statusesArray) {
-                        if (result.id != status.id) continue
-                        status.is_favorite = false
-                        status.reply_count = result.reply_count
-                        status.retweet_count = result.retweet_count
-                        status.favorite_count = result.favorite_count - 1
-                    }
-                }
-            }
-            return SingleResponse.getInstance(result)
-        } catch (e: MicroBlogException) {
-            return SingleResponse.getInstance<ParcelableStatus>(e)
         }
+        val values = ContentValues()
+        values.put(TwidereDataStore.Statuses.IS_FAVORITE, false)
+        values.put(TwidereDataStore.Statuses.FAVORITE_COUNT, result.favorite_count - 1)
+        values.put(TwidereDataStore.Statuses.RETWEET_COUNT, result.retweet_count)
+        values.put(TwidereDataStore.Statuses.REPLY_COUNT, result.reply_count)
+
+        val where = Expression.and(Expression.equalsArgs(TwidereDataStore.Statuses.ACCOUNT_KEY),
+                Expression.or(Expression.equalsArgs(TwidereDataStore.Statuses.STATUS_ID),
+                        Expression.equalsArgs(TwidereDataStore.Statuses.RETWEET_ID)))
+        val whereArgs = arrayOf(accountKey.toString(), statusId, statusId)
+        for (uri in DataStoreUtils.STATUSES_URIS) {
+            resolver.update(uri, values, where.sql, whereArgs)
+        }
+
+        resolver.updateActivityStatus(account.key, statusId) { activity ->
+            val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
+            for (statusesArray in statusesMatrix) {
+                if (statusesArray == null) continue
+                for (status in statusesArray) {
+                    if (result.id != status.id) continue
+                    status.is_favorite = false
+                    status.reply_count = result.reply_count
+                    status.retweet_count = result.retweet_count
+                    status.favorite_count = result.favorite_count - 1
+                }
+            }
+        }
+        return result
 
     }
 
@@ -110,18 +103,18 @@ class DestroyFavoriteTask(
         bus.post(StatusListChangedEvent())
     }
 
-    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableStatus>) {
+    override fun afterExecute(callback: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {
         destroyingFavoriteIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         val taskEvent = FavoriteTaskEvent(FavoriteTaskEvent.Action.DESTROY, accountKey, statusId)
         taskEvent.isFinished = true
-        if (result.hasData()) {
-            val status = result.data
+        if (result != null) {
+            val status = result
             taskEvent.status = status
             taskEvent.isSucceeded = true
-            Utils.showInfoMessage(context, R.string.message_toast_status_unfavorited, false)
+            Toast.makeText(context, R.string.message_toast_status_unfavorited, Toast.LENGTH_SHORT).show()
         } else {
             taskEvent.isSucceeded = false
-            Utils.showErrorMessage(context, R.string.action_unfavoriting, result.exception, true)
+            Toast.makeText(context, exception?.getErrorMessage(context), Toast.LENGTH_SHORT).show()
         }
         bus.post(taskEvent)
         bus.post(StatusListChangedEvent())

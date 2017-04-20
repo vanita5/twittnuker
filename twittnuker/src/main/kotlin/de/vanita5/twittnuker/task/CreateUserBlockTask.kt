@@ -24,13 +24,14 @@ package de.vanita5.twittnuker.task
 
 import android.content.ContentValues
 import android.content.Context
-import de.vanita5.twittnuker.annotation.AccountType
+import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -93,11 +94,8 @@ open class CreateUserBlockTask(
         val nameFirst = kPreferences[nameFirstKey]
         val message = context.getString(R.string.message_blocked_user, manager.getDisplayName(user,
                 nameFirst))
-        Utils.showInfoMessage(context, message, false)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
     }
 
-    override fun showErrorMessage(params: Arguments, exception: Exception?) {
-        Utils.showErrorMessage(context, R.string.action_blocking, exception, true)
-    }
 }

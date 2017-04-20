@@ -29,8 +29,6 @@ import android.net.Uri
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-import de.vanita5.twittnuker.util.Utils.showErrorMessage
-
 open class DefaultWebViewClient<out A : Activity>(val activity: A) : WebViewClient() {
 
     @Suppress("OverridingDeprecatedMember")
@@ -39,7 +37,7 @@ open class DefaultWebViewClient<out A : Activity>(val activity: A) : WebViewClie
         try {
             activity.startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
-            showErrorMessage(activity, null, e, false)
+            return false
         }
         return true
     }

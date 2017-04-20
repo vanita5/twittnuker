@@ -24,17 +24,17 @@ package de.vanita5.twittnuker.task
 
 import android.content.ContentValues
 import android.content.Context
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.constant.nameFirstKey
+import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
-import de.vanita5.twittnuker.util.Utils
 
 class DestroyUserBlockTask(context: Context) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.UNBLOCK) {
 
@@ -65,13 +65,8 @@ class DestroyUserBlockTask(context: Context) : AbsFriendshipOperationTask(contex
 
     override fun showSucceededMessage(params: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
         val nameFirst = kPreferences[nameFirstKey]
-        val message = context.getString(R.string.unblocked_user, manager.getDisplayName(user,
-                nameFirst))
-        Utils.showInfoMessage(context, message, false)
+        val message = context.getString(R.string.unblocked_user, manager.getDisplayName(user, nameFirst))
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-    }
-
-    override fun showErrorMessage(params: AbsFriendshipOperationTask.Arguments, exception: Exception?) {
-        Utils.showErrorMessage(context, R.string.action_unblocking, exception, true)
     }
 }

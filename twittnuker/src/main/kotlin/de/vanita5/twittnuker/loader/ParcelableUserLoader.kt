@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.isMastodonPlaceholder
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
@@ -52,7 +53,6 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
-import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import javax.inject.Inject
@@ -181,7 +181,7 @@ class ParcelableUserLoader(
                 && details.key.host != userKey.host) {
             microBlog.showExternalProfile(profileUrl)
         } else {
-            TwitterWrapper.tryShowUser(microBlog, userKey?.id, screenName, details.type)
+            microBlog.tryShowUser(userKey?.id, screenName, details.type)
         }
         return ParcelableUserUtils.fromUser(response, details.key, details.type,
                 profileImageSize = profileImageSize)

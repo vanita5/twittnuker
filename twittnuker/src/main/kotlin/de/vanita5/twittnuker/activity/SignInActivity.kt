@@ -78,12 +78,10 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.getNonEmptyString
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
-import de.vanita5.twittnuker.extension.model.getColor
-import de.vanita5.twittnuker.extension.model.getOAuthAuthorization
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.fragment.APIEditorDialogFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
@@ -446,10 +444,8 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         } else if (exception is LoginVerificationException) {
             Toast.makeText(this, R.string.message_toast_login_verification_failed, Toast.LENGTH_SHORT).show()
             errorReason = "login_verification_failed"
-        } else if (exception is AuthenticationException) {
-            Utils.showErrorMessage(this, getString(R.string.action_signing_in), exception.cause, true)
         } else {
-            Utils.showErrorMessage(this, getString(R.string.action_signing_in), exception, true)
+            Toast.makeText(this, exception.getErrorMessage(this), Toast.LENGTH_SHORT).show()
         }
         Analyzer.log(SignIn(false, credentialsType = apiConfig.credentialsType,
                 errorReason = errorReason, accountType = apiConfig.type))

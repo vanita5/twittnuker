@@ -38,7 +38,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import java.util.*
 
@@ -155,9 +154,8 @@ class WebLinkHandlerActivity : Activity() {
                 "share" -> {
                     val handledIntent = Intent(this, ComposeActivity::class.java)
                     handledIntent.action = Intent.ACTION_SEND
-                    val text = uri.getQueryParameter("text")
-                    val url = uri.getQueryParameter("url")
-                    handledIntent.putExtra(Intent.EXTRA_TEXT, Utils.getShareStatus(this, text, url))
+                    handledIntent.putExtra(Intent.EXTRA_TEXT, uri.getQueryParameter("text"))
+                    handledIntent.putExtra(Intent.EXTRA_SUBJECT, uri.getQueryParameter("url"))
                     return Pair(handledIntent, true)
                 }
                 "search" -> {

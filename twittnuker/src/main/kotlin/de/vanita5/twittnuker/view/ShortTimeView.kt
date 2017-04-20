@@ -23,19 +23,16 @@
 package de.vanita5.twittnuker.view
 
 import android.content.Context
-import android.os.Handler
 import android.os.SystemClock
 import android.support.v7.widget.AppCompatTextView
-import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.AttributeSet
 
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.util.Utils.formatSameDayTime
 
 import java.lang.ref.WeakReference
-
-import de.vanita5.twittnuker.util.Utils.formatSameDayTime
 
 class ShortTimeView(
         context: Context,
@@ -80,8 +77,8 @@ class ShortTimeView(
         }
     }
 
-    private fun setTextIfChanged(text: CharSequence) {
-        if (TextUtils.equals(text, getText())) return
+    private fun setTextIfChanged(text: CharSequence?) {
+        if (text == this.text) return
         setText(text)
     }
 

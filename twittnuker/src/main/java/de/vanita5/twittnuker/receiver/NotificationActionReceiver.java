@@ -55,7 +55,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
 
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
                 if (twitter == null || status == null) return;
-                Utils.retweet(status, twitter);
+                Utils.INSTANCE.retweet(status, twitter);
 
                 cancelNotificationById(context, intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
                 break;
@@ -65,7 +65,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
                 AsyncTwitterWrapper twitter = holder.getAsyncTwitterWrapper();
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
                 if (twitter == null || status == null) return;
-                Utils.favorite(status, twitter, null);
+                Utils.INSTANCE.favorite(status, twitter, null);
 
                 cancelNotificationById(context, intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
                 break;

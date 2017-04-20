@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.task
 
 import android.content.ContentValues
 import android.content.Context
+import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -33,8 +34,8 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
-import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
 
 class CreateUserMuteTask(
@@ -86,11 +87,8 @@ class CreateUserMuteTask(
         val nameFirst = kPreferences[nameFirstKey]
         val message = context.getString(R.string.muted_user, manager.getDisplayName(user,
                 nameFirst))
-        Utils.showInfoMessage(context, message, false)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
     }
 
-    override fun showErrorMessage(params: AbsFriendshipOperationTask.Arguments, exception: Exception?) {
-        Utils.showErrorMessage(context, R.string.action_muting, exception, true)
-    }
 }

@@ -23,15 +23,14 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import android.text.TextUtils
-import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.constant.nameFirstKey
+import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
@@ -54,19 +53,6 @@ class CreateFriendshipTask(context: Context) : AbsFriendshipOperationTask(contex
         Utils.setLastSeen(context, user.key, System.currentTimeMillis())
     }
 
-    override fun showErrorMessage(params: AbsFriendshipOperationTask.Arguments, exception: Exception?) {
-        if (USER_TYPE_FANFOU_COM == params.accountKey.host) {
-            // Fanfou returns 403 for follow request
-            if (exception is MicroBlogException) {
-                if (exception.statusCode == 403 && !TextUtils.isEmpty(exception.errorMessage)) {
-                    Utils.showErrorMessage(context, exception.errorMessage, false)
-                    return
-                }
-            }
-        }
-        Utils.showErrorMessage(context, R.string.action_following, exception, false)
-    }
-
     override fun showSucceededMessage(params: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
         val nameFirst = kPreferences[nameFirstKey]
         val message: String
@@ -77,7 +63,7 @@ class CreateFriendshipTask(context: Context) : AbsFriendshipOperationTask(contex
             message = context.getString(R.string.followed_user,
                     manager.getDisplayName(user, nameFirst))
         }
-        Utils.showOkMessage(context, message, false)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 }
