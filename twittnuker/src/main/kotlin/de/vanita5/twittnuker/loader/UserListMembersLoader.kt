@@ -26,9 +26,13 @@ import android.content.Context
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
+import de.vanita5.twittnuker.library.mastodon.model.Account
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -45,14 +49,31 @@ class UserListMembersLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): PageableResponseList<User> {
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
+        when (details.type) {
+            AccountType.MASTODON -> return getMastodonUsers(details, paging).map {
+                it.toParcelable(details.key)
+            }
+            else -> return getMicroBlogUsers(details, paging).map {
+                it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+            }
+        }
+    }
+
+    private fun getMastodonUsers(details: AccountDetails, paging: Paging): List<Account> {
+        throw MicroBlogException("Not supported")
+    }
+
+    @Throws(MicroBlogException::class)
+    private fun getMicroBlogUsers(details: AccountDetails, paging: Paging): List<User> {
+        val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
         if (listId != null) {
-            return twitter.getUserListMembers(listId, paging)
+            return microBlog.getUserListMembers(listId, paging)
         } else if (listName != null) {
             if (userKey != null) {
-                return twitter.getUserListMembers(listName.replace(' ', '-'), userKey.id, paging)
+                return microBlog.getUserListMembers(listName.replace(' ', '-'), userKey.id, paging)
             } else if (screenName != null) {
-                return twitter.getUserListMembersByScreenName(listName.replace(' ', '-'), screenName, paging)
+                return microBlog.getUserListMembersByScreenName(listName.replace(' ', '-'), screenName, paging)
             }
         }
         throw MicroBlogException("list_id or list_name and user_id (or screen_name) required")

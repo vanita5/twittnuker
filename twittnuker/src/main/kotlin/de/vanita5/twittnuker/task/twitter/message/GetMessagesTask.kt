@@ -41,6 +41,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
@@ -247,8 +249,8 @@ class GetMessagesTask(
             // Sender is our self, treat as outgoing message
             val message = ParcelableMessageUtils.fromMessage(accountKey, dm, dm.senderId == accountKey.id,
                     1.0 - (i.toDouble() / result.size))
-            val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey, accountType)
-            val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey, accountType)
+            val sender = dm.sender.toParcelable(accountKey, accountType)
+            val recipient = dm.recipient.toParcelable(accountKey, accountType)
             val mc = conversations.addConversation(message.conversation_id, details, message,
                     setOf(sender, recipient))
             mc?.request_cursor = "page:$page"
@@ -414,8 +416,7 @@ class GetMessagesTask(
                 val participants = respUsers.filterKeys { userId ->
                     v.participants.any { it.userId == userId }
                 }.values.map {
-                    ParcelableUserUtils.fromUser(it, accountKey, account.type,
-                            profileImageSize = profileImageSize)
+                    it.toParcelable(accountKey, account.type, profileImageSize = profileImageSize)
                 }
                 val conversationType = when (v.type?.toUpperCase(Locale.US)) {
                     DMResponse.Conversation.Type.ONE_TO_ONE -> ConversationType.ONE_TO_ONE
@@ -597,10 +598,8 @@ class GetMessagesTask(
             val message = ParcelableMessageUtils.fromMessage(accountKey, dm, outgoing,
                     1.0 - (index.toDouble() / size))
             messages.add(message)
-            val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey, accountType,
-                    profileImageSize = profileImageSize)
-            val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey, accountType,
-                    profileImageSize = profileImageSize)
+            val sender = dm.sender.toParcelable(accountKey, accountType, profileImageSize = profileImageSize)
+            val recipient = dm.recipient.toParcelable(accountKey, accountType, profileImageSize = profileImageSize)
             val conversation = conversations.addConversation(message.conversation_id, details,
                     message, setOf(sender, recipient), updateLastRead = updateLastRead) ?: return
             conversation.conversation_extras_type = ParcelableMessageConversation.ExtrasType.DEFAULT

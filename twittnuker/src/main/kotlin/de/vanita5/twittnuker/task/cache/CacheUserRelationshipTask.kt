@@ -31,6 +31,8 @@ import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -57,7 +59,7 @@ class CacheUserRelationshipTask(
         fun cacheUserRelationships(cr: ContentResolver, accountKey: UserKey, accountType: String,
                 users: Collection<User>) {
 
-            val parcelableUsers = users.map { ParcelableUserUtils.fromUser(it, accountKey, accountType) }
+            val parcelableUsers = users.map { it.toParcelable(accountKey, accountType) }
 
             val userValuesCreator = ObjectCursor.valuesCreatorFrom(ParcelableUser::class.java)
             ContentResolverUtils.bulkInsert(cr, CachedUsers.CONTENT_URI, parcelableUsers.map(userValuesCreator::create))

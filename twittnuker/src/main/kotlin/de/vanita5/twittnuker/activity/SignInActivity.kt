@@ -48,7 +48,6 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.View.OnClickListener
 import android.widget.*
-import de.vanita5.twittnuker.BuildConfig
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
@@ -70,6 +69,7 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.restfu.http.Endpoint
 import org.mariotaku.restfu.oauth.OAuthToken
 import org.mariotaku.restfu.oauth2.OAuth2Authorization
+import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
@@ -81,6 +81,8 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.fragment.APIEditorDialogFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -882,8 +884,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             val (type, extras) = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
             val userId = apiUser.id
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
-            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, type,
-                    profileImageSize = profileImageSize)
+            val user = apiUser.toParcelable(accountKey, type, profileImageSize = profileImageSize)
             val am = AccountManager.get(context)
             val account = AccountUtils.findByAccountKey(am, accountKey)
             if (account != null) {
@@ -1023,8 +1024,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             var color = analyseUserProfileColor(apiUser)
             val (type, extras) = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
-            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, type,
-                    profileImageSize = profileImageSize)
+            val user = apiUser.toParcelable(accountKey, type, profileImageSize = profileImageSize)
             val am = AccountManager.get(activity)
             val account = AccountUtils.findByAccountKey(am, accountKey)
             if (account != null) {
@@ -1054,8 +1054,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             var color = analyseUserProfileColor(apiUser)
             val (type, extras) = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
-            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, type,
-                    profileImageSize = profileImageSize)
+            val user = apiUser.toParcelable(accountKey, type, profileImageSize = profileImageSize)
             val am = AccountManager.get(activity)
             val account = AccountUtils.findByAccountKey(am, accountKey)
             if (account != null) {
@@ -1082,8 +1081,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             var color = analyseUserProfileColor(apiUser)
             val (type, extras) = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
-            val user = ParcelableUserUtils.fromUser(apiUser, accountKey, type,
-                    profileImageSize = profileImageSize)
+            val user = apiUser.toParcelable(accountKey, type, profileImageSize = profileImageSize)
             val am = AccountManager.get(activity)
             val account = AccountUtils.findByAccountKey(am, accountKey)
             if (account != null) {

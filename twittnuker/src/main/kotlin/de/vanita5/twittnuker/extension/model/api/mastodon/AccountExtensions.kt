@@ -24,8 +24,12 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import de.vanita5.twittnuker.library.mastodon.model.Account
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.isHtml
+import de.vanita5.twittnuker.extension.model.api.spanItems
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.util.HtmlEscapeHelper
+import de.vanita5.twittnuker.util.HtmlSpanBuilder
 
 
 fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUser {
@@ -37,8 +41,15 @@ fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUse
     obj.is_protected = isLocked
     obj.name = displayName?.takeIf(String::isNotEmpty) ?: username
     obj.screen_name = username
-    obj.description_plain = note
-    obj.description_unescaped = note
+    if (note?.isHtml ?: false) {
+        val descriptionHtml = HtmlSpanBuilder.fromHtml(note, note)
+        obj.description_unescaped = descriptionHtml?.toString()
+        obj.description_plain = obj.description_unescaped
+        obj.description_spans = descriptionHtml?.spanItems
+    } else {
+        obj.description_unescaped = HtmlEscapeHelper.unescape(note)
+        obj.description_plain = obj.description_unescaped
+    }
     obj.url = url
     obj.profile_image_url = avatar
     obj.profile_banner_url = header

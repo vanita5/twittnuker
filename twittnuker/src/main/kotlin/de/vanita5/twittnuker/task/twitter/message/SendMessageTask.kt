@@ -32,6 +32,8 @@ import de.vanita5.twittnuker.library.twitter.model.NewDm
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -39,7 +41,6 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableNewMessage
 import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
@@ -179,10 +180,8 @@ class SendMessageTask(
         val conversations = hashMapOf<String, ParcelableMessageConversation>()
         conversations.addLocalConversations(context, accountKey, conversationIds)
         val message = ParcelableMessageUtils.fromMessage(accountKey, dm, true)
-        val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey, details.type,
-                profileImageSize = profileImageSize)
-        val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey, details.type,
-                profileImageSize = profileImageSize)
+        val sender = dm.sender.toParcelable(accountKey, details.type, profileImageSize = profileImageSize)
+        val recipient = dm.recipient.toParcelable(accountKey, details.type, profileImageSize = profileImageSize)
         conversations.addConversation(message.conversation_id, details, message, setOf(sender, recipient), appendUsers = true)
         return GetMessagesTask.DatabaseUpdateData(conversations.values, listOf(message))
     }

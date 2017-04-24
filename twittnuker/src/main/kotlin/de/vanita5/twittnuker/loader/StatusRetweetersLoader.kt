@@ -25,8 +25,12 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.IDs
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -40,11 +44,25 @@ class StatusRetweetersLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getIDs(twitter: MicroBlog, details: AccountDetails, paging: Paging): IDs {
-        return twitter.getRetweetersIDs(statusId, paging)
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
+        when (details.type) {
+            AccountType.MASTODON -> {
+                val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+                return mastodon.getStatusFavouritedBy(statusId).map {
+                    it.toParcelable(details.key)
+                }
+            }
+            AccountType.TWITTER -> {
+                val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                val ids = microBlog.getRetweetersIDs(statusId, paging).iDs
+                return microBlog.lookupUsers(ids).map {
+                    it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+                }
+            }
+            else -> {
+                throw MicroBlogException("Not supported")
+            }
+        }
     }
 
-    override fun useIDs(details: AccountDetails): Boolean {
-        return true
-    }
 }

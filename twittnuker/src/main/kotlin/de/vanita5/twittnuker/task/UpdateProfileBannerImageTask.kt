@@ -29,13 +29,14 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.DebugLog
 import java.io.IOException
@@ -67,8 +68,7 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
             DebugLog.w(LOGTAG, tr = e)
         }
         val user = microBlog.verifyCredentials()
-        return ParcelableUserUtils.fromUser(user, account.key, account.type,
-                profileImageSize = profileImageSize)
+        return user.toParcelable(account.key, account.type, profileImageSize = profileImageSize)
     }
 
     override fun onSucceed(callback: ResultHandler?, result: ParcelableUser) {

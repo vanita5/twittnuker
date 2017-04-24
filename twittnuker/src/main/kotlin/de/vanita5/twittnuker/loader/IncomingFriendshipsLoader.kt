@@ -26,11 +26,13 @@ import android.content.Context
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.IDs
+import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -43,21 +45,29 @@ class IncomingFriendshipsLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getIDs(twitter: MicroBlog, details: AccountDetails, paging: Paging): IDs {
-        return twitter.getIncomingFriendships(paging)
-    }
-
-    @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<User> {
-        return twitter.getFriendshipsRequests(paging)
-    }
-
-    override fun useIDs(details: AccountDetails): Boolean {
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
         when (details.type) {
+            AccountType.MASTODON -> {
+                val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+                return mastodon.getFollowRequests(paging).map {
+                    it.toParcelable(details.key)
+                }
+            }
             AccountType.FANFOU -> {
-                return false
+                val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return microBlog.getFriendshipsRequests(paging).map {
+                    it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+                }
+            }
+            else -> {
+                val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return microBlog.lookupUsers(microBlog.getIncomingFriendships(paging).also {
+                    setCursors(it as? CursorSupport)
+                }.iDs).map {
+                    it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+                }
             }
         }
-        return true
     }
+
 }

@@ -24,19 +24,14 @@ package de.vanita5.twittnuker.loader
 
 import android.accounts.AccountManager
 import android.content.Context
-import android.util.Log
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ListResponse
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
+import de.vanita5.twittnuker.util.DebugLog
 import java.util.*
 
 abstract class AbsRequestUsersLoader(
@@ -46,7 +41,7 @@ abstract class AbsRequestUsersLoader(
         fromUser: Boolean
 ) : ParcelableUsersLoader(context, data, fromUser) {
 
-    private val profileImageSize = context.getString(R.string.profile_image_size)
+    protected val profileImageSize: String = context.getString(R.string.profile_image_size)
 
     override fun loadInBackground(): List<ParcelableUser> {
         if (accountKey == null) {
@@ -55,27 +50,25 @@ abstract class AbsRequestUsersLoader(
         val am = AccountManager.get(context)
         val details = AccountUtils.getAccountDetails(am, accountKey, true) ?:
                 return ListResponse.getListInstance(MicroBlogException("No Account"))
-        val twitter: MicroBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
         val data = data
-        val users: List<User>
+        val users: List<ParcelableUser>
         try {
-            users = getUsers(twitter, details)
+            users = getUsers(details)
         } catch (e: MicroBlogException) {
-            Log.w(TwittnukerConstants.LOGTAG, e)
+            DebugLog.w(tr = e)
             return ListResponse.getListInstance(data)
         }
 
         var pos = data.size
         for (user in users) {
-            if (hasId(user.id)) {
+            if (hasId(user.key)) {
                 continue
             }
-            val item = ParcelableUserUtils.fromUser(user, accountKey, details.type, pos.toLong(),
-                    profileImageSize = profileImageSize)
-            processUser(details, item)
-            data.add(item)
+            user.position = pos.toLong()
+            processUser(details, user)
             pos++
         }
+        data.addAll(users)
         processUsersData(details, data)
         return ListResponse.getListInstance(data)
     }
@@ -85,7 +78,7 @@ abstract class AbsRequestUsersLoader(
     }
 
     @Throws(MicroBlogException::class)
-    protected abstract fun getUsers(twitter: MicroBlog, details: AccountDetails): List<User>
+    protected abstract fun getUsers(details: AccountDetails): List<ParcelableUser>
 
     protected open fun processUsersData(details: AccountDetails, list: MutableList<ParcelableUser>) {
         Collections.sort(data)

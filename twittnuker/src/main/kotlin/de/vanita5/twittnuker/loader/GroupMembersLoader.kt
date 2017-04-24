@@ -26,9 +26,12 @@ import android.content.Context
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -43,11 +46,20 @@ class GroupMembersLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<User> {
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
+        return getMicroBlogUsers(details, paging).also {
+            setCursors(it as? CursorSupport)
+        }.map {
+            it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+        }
+    }
+
+    private fun getMicroBlogUsers(details: AccountDetails, paging: Paging): ResponseList<User> {
+        val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
         if (groupId != null)
-            return twitter.getGroupMembers(groupId, paging)
+            return microBlog.getGroupMembers(groupId, paging)
         else if (groupName != null)
-            return twitter.getGroupMembersByName(groupName, paging)
+            return microBlog.getGroupMembersByName(groupName, paging)
         throw MicroBlogException("list_id or list_name and user_id (or screen_name) required")
     }
 

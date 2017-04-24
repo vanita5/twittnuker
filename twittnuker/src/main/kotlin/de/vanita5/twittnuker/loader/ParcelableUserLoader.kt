@@ -34,6 +34,7 @@ import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -41,6 +42,8 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.api.tryShowUser
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.isMastodonPlaceholder
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
@@ -167,8 +170,8 @@ class ParcelableUserLoader(
             return mastodon.getAccount(userKey.id).toParcelable(details.key)
         }
         if (screenName == null) throw MicroBlogException("Screen name required")
-        val resultItem = mastodon.searchAccounts("$screenName@${userKey.host}").firstOrNull() ?:
-                throw MicroBlogException("User not found")
+        val resultItem = mastodon.searchAccounts("$screenName@${userKey.host}", Paging().count(1))
+                .firstOrNull() ?: throw MicroBlogException("User not found")
         return resultItem.toParcelable(details.key)
     }
 
@@ -183,8 +186,7 @@ class ParcelableUserLoader(
         } else {
             microBlog.tryShowUser(userKey?.id, screenName, details.type)
         }
-        return ParcelableUserUtils.fromUser(response, details.key, details.type,
-                profileImageSize = profileImageSize)
+        return response.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
     }
 
     override fun onStartLoading() {

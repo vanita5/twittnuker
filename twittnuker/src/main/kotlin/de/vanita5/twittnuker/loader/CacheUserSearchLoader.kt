@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.loader
 import android.annotation.SuppressLint
 import android.content.Context
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.AccountDetails
@@ -55,9 +53,9 @@ class CacheUserSearchLoader(
         GeneralComponent.get(context).inject(this)
     }
 
-    override fun getUsers(twitter: MicroBlog, details: AccountDetails): List<User> {
+    override fun getUsers(details: AccountDetails): List<ParcelableUser> {
         if (query.isEmpty() || !fromNetwork) return emptyList()
-        return super.getUsers(twitter, details)
+        return super.getUsers(details)
     }
 
     override fun processUsersData(details: AccountDetails, list: MutableList<ParcelableUser>) {

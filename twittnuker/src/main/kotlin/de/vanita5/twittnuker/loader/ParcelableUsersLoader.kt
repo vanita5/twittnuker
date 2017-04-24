@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.loader
 
 import android.content.Context
 import android.support.v4.content.FixedAsyncTaskLoader
-import android.text.TextUtils
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import java.util.*
 
@@ -48,8 +48,8 @@ abstract class ParcelableUsersLoader(
         forceLoad()
     }
 
-    protected fun hasId(id: String): Boolean {
-        return data.indices.any { TextUtils.equals(data[it].key.id, id) }
+    protected fun hasId(key: UserKey): Boolean {
+        return data.indices.any { data[it].key == key }
     }
 
 }

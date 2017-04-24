@@ -25,18 +25,19 @@ package de.vanita5.twittnuker.task
 import android.accounts.AccountManager
 import android.content.Context
 import android.widget.Toast
-import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.getErrorMessage
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 
 abstract class AbsFriendshipOperationTask(
         context: Context,
@@ -76,7 +77,7 @@ abstract class AbsFriendshipOperationTask(
                 ?: throw AccountNotFoundException()
         val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         val user = perform(twitter, details, params)
-        val parcelableUser = ParcelableUserUtils.fromUser(user, params.accountKey, details.type)
+        val parcelableUser = user.toParcelable(params.accountKey, details.type)
         succeededWorker(twitter, details, params, parcelableUser)
         return parcelableUser
     }

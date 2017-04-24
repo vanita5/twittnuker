@@ -25,10 +25,15 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.mastodon.model.Account
+import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -43,22 +48,48 @@ class UserFollowersLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<User> {
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
+        when (details.type) {
+            AccountType.MASTODON -> return getMastodonUsers(details, paging).map {
+                it.toParcelable(details.key)
+            }
+            else -> return getMicroBlogUsers(details, paging).map {
+                it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+            }
+        }
+    }
+
+    private fun getMastodonUsers(details: AccountDetails, paging: Paging): List<Account> {
+        val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+        if (userKey == null) throw MicroBlogException("Only ID supported")
+        return mastodon.getFollowers(userKey.id, paging)
+    }
+
+    private fun getMicroBlogUsers(details: AccountDetails, paging: Paging): List<User> {
+        val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
         when (details.type) {
             AccountType.STATUSNET -> if (userKey != null) {
-                return twitter.getStatusesFollowersList(userKey.id, paging)
+                return microBlog.getStatusesFollowersList(userKey.id, paging).also {
+                    setCursors(it as? CursorSupport)
+                }
             } else if (screenName != null) {
-                return twitter.getStatusesFollowersListByScreenName(screenName, paging)
+                return microBlog.getStatusesFollowersListByScreenName(screenName, paging).also {
+                    setCursors(it as? CursorSupport)
+                }
             }
             AccountType.FANFOU -> if (userKey != null) {
-                return twitter.getUsersFollowers(userKey.id, paging)
+                return microBlog.getUsersFollowers(userKey.id, paging)
             } else if (screenName != null) {
-                return twitter.getUsersFollowers(screenName, paging)
+                return microBlog.getUsersFollowers(screenName, paging)
             }
             else -> if (userKey != null) {
-                return twitter.getFollowersList(userKey.id, paging)
+                return microBlog.getFollowersList(userKey.id, paging).also {
+                    setCursors(it as? CursorSupport)
+                }
             } else if (screenName != null) {
-                return twitter.getFollowersListByScreenName(screenName, paging)
+                return microBlog.getFollowersListByScreenName(screenName, paging).also {
+                    setCursors(it as? CursorSupport)
+                }
             }
         }
         throw MicroBlogException("user_id or screen_name required")

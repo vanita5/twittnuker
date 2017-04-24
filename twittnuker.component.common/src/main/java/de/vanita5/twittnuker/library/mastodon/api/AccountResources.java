@@ -23,6 +23,8 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
+import android.support.annotation.Nullable;
+
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.mastodon.model.Account;
 import de.vanita5.twittnuker.library.mastodon.model.AccountUpdate;
@@ -88,5 +90,5 @@ public interface AccountResources {
     List<Relationship> getRelationships(@Path("id") String id) throws MicroBlogException;
 
     @GET("/v1/accounts/search")
-    List<Account> searchAccounts(@Query("q") String query) throws MicroBlogException;
+    List<Account> searchAccounts(@Query("q") String query, @Nullable @Query Paging paging) throws MicroBlogException;
 }

@@ -25,9 +25,13 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -39,15 +43,29 @@ class UserBlocksLoader(context: Context, accountKey: UserKey?, data: List<Parcel
     private var filteredUsers: Array<UserKey>? = null
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog,
-                                  details: AccountDetails,
-                                  paging: Paging): List<User> {
+    override fun getUsers(details: AccountDetails, paging: Paging): List<ParcelableUser> {
         when (details.type) {
+            AccountType.MASTODON -> {
+                val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+                return mastodon.getBlocks(paging).map {
+                    it.toParcelable(details.key)
+                }
+            }
             AccountType.FANFOU -> {
-                return twitter.getFanfouBlocking(paging)
+                val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return microBlog.getFanfouBlocking(paging).map {
+                    it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
             }
         }
-        return twitter.getBlocksList(paging)
+            else -> {
+                val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return microBlog.getBlocksList(paging).also {
+                    setCursors(it as? CursorSupport)
+                }.map {
+                    it.toParcelable(details.key, details.type, profileImageSize = profileImageSize)
+                }
+            }
+        }
     }
 
     override fun onLoadInBackground(): List<ParcelableUser> {
