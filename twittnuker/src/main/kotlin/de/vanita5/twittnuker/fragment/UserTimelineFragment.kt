@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.userTimelineFilterKey
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.loader.UserTimelineLoader
+import de.vanita5.twittnuker.loader.statuses.UserTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.timeline.TimelineFilter

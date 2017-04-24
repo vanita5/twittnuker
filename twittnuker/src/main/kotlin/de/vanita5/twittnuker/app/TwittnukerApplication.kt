@@ -47,6 +47,8 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.extension.model.loadRemoteSettings
+import de.vanita5.twittnuker.extension.model.save
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.receiver.ConnectivityStateReceiver
 import de.vanita5.twittnuker.service.StreamingService

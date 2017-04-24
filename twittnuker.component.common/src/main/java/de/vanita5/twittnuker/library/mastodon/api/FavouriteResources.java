@@ -24,12 +24,11 @@
 package de.vanita5.twittnuker.library.mastodon.api;
 
 import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
 import de.vanita5.twittnuker.library.mastodon.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.param.Query;
-
-import java.util.List;
 
 
 public interface FavouriteResources {
@@ -38,6 +37,6 @@ public interface FavouriteResources {
      * @return An array of {@link Status} favourited by the authenticated user.
      */
     @GET("/v1/favourites")
-    List<Status> getFavourites(@Query Paging paging) throws MicroBlogException;
+    LinkHeaderList<Status> getFavourites(@Query Paging paging) throws MicroBlogException;
 
 }

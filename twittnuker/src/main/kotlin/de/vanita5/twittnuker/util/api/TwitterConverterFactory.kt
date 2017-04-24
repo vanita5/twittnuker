@@ -28,6 +28,7 @@ import com.bluelinelabs.logansquare.ParameterizedType
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList
 import de.vanita5.twittnuker.library.twitter.model.ResponseCode
 import de.vanita5.twittnuker.library.twitter.model.TwitterResponse
 import de.vanita5.twittnuker.library.twitter.util.OAuthTokenResponseConverter
@@ -46,7 +47,7 @@ import java.lang.reflect.Type
 object TwitterConverterFactory : LoganSquareConverterFactory<MicroBlogException>() {
 
     private val responseConverters = SimpleArrayMap<Type, RestConverter<HttpResponse, *, MicroBlogException>>()
-    private val sBodyConverters = SimpleArrayMap<Type, RestConverter<*, Body, MicroBlogException>>()
+    private val bodyConverters = SimpleArrayMap<Type, RestConverter<*, Body, MicroBlogException>>()
 
     init {
         responseConverters.put(ResponseCode::class.java, ResponseCode.ResponseConverter())
@@ -72,7 +73,7 @@ object TwitterConverterFactory : LoganSquareConverterFactory<MicroBlogException>
 
     @Throws(RestConverter.ConvertException::class)
     override fun forRequest(type: Type): RestConverter<*, Body, MicroBlogException> {
-        val converter = sBodyConverters.get(type)
+        val converter = bodyConverters.get(type)
         if (converter != null) {
             return converter
         }
@@ -83,8 +84,9 @@ object TwitterConverterFactory : LoganSquareConverterFactory<MicroBlogException>
     }
 
     override fun processParsedObject(obj: Any, httpResponse: HttpResponse) {
-        if (obj is TwitterResponse) {
-            obj.processResponseHeader(httpResponse)
+        when (obj) {
+            is TwitterResponse -> obj.processResponseHeader(httpResponse)
+            is LinkHeaderList<*> -> obj.processResponseHeader(httpResponse)
         }
     }
 }

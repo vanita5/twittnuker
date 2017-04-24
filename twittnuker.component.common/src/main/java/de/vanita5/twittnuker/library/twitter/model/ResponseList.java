@@ -23,12 +23,10 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
-import org.mariotaku.restfu.http.HttpResponse;
-
 import de.vanita5.twittnuker.library.annotation.NoObfuscate;
 import de.vanita5.twittnuker.library.twitter.util.InternalParseUtil;
+import org.mariotaku.restfu.http.HttpResponse;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,48 +34,16 @@ import java.util.List;
  * Response list
  */
 @NoObfuscate
-public class ResponseList<T> extends AbstractList<T> implements TwitterResponse {
+public class ResponseList<T> extends ArrayList<T> implements TwitterResponse {
 
-    private List<T> list;
     private int accessLevel;
     private RateLimitStatus rateLimitStatus;
 
     public ResponseList(List<T> list) {
-        this.list = list;
-    }
-
-    @Override
-    public void add(int location, T object) {
-        list.add(location, object);
-    }
-
-    @Override
-    public T set(int location, T object) {
-        return list.set(location, object);
-    }
-
-    @Override
-    public T get(int location) {
-        return list.get(location);
-    }
-
-    @Override
-    public T remove(int location) {
-        return list.remove(location);
-    }
-
-    @Override
-    public void clear() {
-        list.clear();
-    }
-
-    @Override
-    public int size() {
-        return list.size();
+        super(list);
     }
 
     public ResponseList() {
-        this(new ArrayList<T>());
     }
 
     @Override

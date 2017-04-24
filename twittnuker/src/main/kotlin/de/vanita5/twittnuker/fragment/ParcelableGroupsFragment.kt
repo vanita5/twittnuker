@@ -37,8 +37,10 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
+import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -49,8 +51,12 @@ abstract class ParcelableGroupsFragment : AbsContentListRecyclerViewFragment<Par
         LoaderCallbacks<List<ParcelableGroup>?>, GroupAdapterListener, KeyboardShortcutCallback {
 
     private lateinit var navigationHelper: RecyclerViewNavigationHelper
-    val nextCursor: Long = 0
-    val prevCursor: Long = 0
+
+    protected var nextPagination: Pagination? = null
+    protected var prevPagination: Pagination? = null
+
+    protected val data: List<ParcelableGroup>?
+        get() = adapter.getData()
 
     override var refreshing: Boolean
         get() {
@@ -85,6 +91,10 @@ abstract class ParcelableGroupsFragment : AbsContentListRecyclerViewFragment<Par
         if (loader is IExtendedLoader) {
             loader.fromUser = false
         }
+        if (loader is IPaginationLoader) {
+            nextPagination = loader.nextPagination
+            prevPagination = loader.prevPagination
+        }
         showContent()
         refreshEnabled = true
         refreshing = false
@@ -98,16 +108,9 @@ abstract class ParcelableGroupsFragment : AbsContentListRecyclerViewFragment<Par
         if (position == 0L) return
         val loaderArgs = Bundle(arguments)
         loaderArgs.putBoolean(EXTRA_FROM_USER, true)
-        loaderArgs.putLong(EXTRA_NEXT_CURSOR, nextCursor)
+        loaderArgs.putParcelable(EXTRA_PAGINATION, nextPagination)
         loaderManager.restartLoader(0, loaderArgs, this)
     }
-
-    protected fun removeUsers(vararg ids: Long) {
-        //TODO remove from adapter
-    }
-
-    val data: List<ParcelableGroup>?
-        get() = adapter.getData()
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)

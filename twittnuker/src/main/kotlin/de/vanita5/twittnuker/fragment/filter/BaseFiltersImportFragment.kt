@@ -48,14 +48,14 @@ import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
-import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_COUNT
+import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
-import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
+import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -65,18 +65,16 @@ import java.lang.ref.WeakReference
 abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<SelectableUsersAdapter>(),
         LoaderManager.LoaderCallbacks<List<ParcelableUser>?> {
 
-    protected var nextCursor: Long = -1
+    protected var nextPagination: Pagination? = null
         private set
-    protected var prevCursor: Long = -1
-        private set
-    protected var nextPage = 1
+    protected var prevPagination: Pagination? = null
         private set
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
         val loaderArgs = Bundle(arguments)
-        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true)
         loaderManager.initLoader(0, loaderArgs, this)
     }
 
@@ -145,8 +143,8 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableUser>?> {
-        val fromUser = args.getBoolean(IntentConstants.EXTRA_FROM_USER)
-        args.remove(IntentConstants.EXTRA_FROM_USER)
+        val fromUser = args.getBoolean(EXTRA_FROM_USER)
+        args.remove(EXTRA_FROM_USER)
         return onCreateUsersLoader(context, args, fromUser)
     }
 
@@ -185,10 +183,9 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
         refreshEnabled = data.isNullOrEmpty()
         refreshing = false
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
-        val cursorLoader = loader as CursorSupportUsersLoader
-        nextCursor = cursorLoader.nextCursor
-        prevCursor = cursorLoader.prevCursor
-        nextPage = cursorLoader.nextPage
+        val cursorLoader = loader as AbsRequestUsersLoader
+        nextPagination = cursorLoader.nextPagination
+        prevPagination = cursorLoader.prevPagination
         activity.supportInvalidateOptionsMenu()
     }
 
@@ -198,9 +195,8 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
         super.onLoadMoreContents(position)
         if (position == 0L) return
         val loaderArgs = Bundle(arguments)
-        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
-        loaderArgs.putLong(IntentConstants.EXTRA_NEXT_CURSOR, nextCursor)
-        loaderArgs.putInt(IntentConstants.EXTRA_PAGE, nextPage)
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true)
+        loaderArgs.putParcelable(EXTRA_NEXT_PAGINATION, nextPagination)
         loaderManager.restartLoader(0, loaderArgs, this)
     }
 

@@ -40,6 +40,7 @@ import org.mariotaku.ktextension.isNotNullOrEmpty
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter
+import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.CacheUserSearchLoader
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -103,7 +104,7 @@ class UserSelectorActivity : BaseActivity(), OnItemClickListener, LoaderManager.
         val list = view as ListView
         val user = adapter.getItem(position - list.headerViewsCount) ?: return
         val data = Intent()
-        data.setExtrasClassLoader(classLoader)
+        data.setExtrasClassLoader(TwittnukerApplication::class.java.classLoader)
         data.putExtra(EXTRA_USER, user)
         data.putExtra(EXTRA_EXTRAS, intent.getBundleExtra(EXTRA_EXTRAS))
         setResult(Activity.RESULT_OK, data)

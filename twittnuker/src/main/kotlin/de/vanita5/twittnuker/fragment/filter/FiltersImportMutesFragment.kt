@@ -24,18 +24,20 @@ package de.vanita5.twittnuker.fragment.filter
 
 import android.content.Context
 import android.os.Bundle
+import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
-import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
-import de.vanita5.twittnuker.loader.MutesUsersLoader
+import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
+import de.vanita5.twittnuker.loader.users.MutesUsersLoader
 import de.vanita5.twittnuker.model.UserKey
 
 class FiltersImportMutesFragment : BaseFiltersImportFragment() {
+
     override fun onCreateUsersLoader(context: Context, args: Bundle, fromUser: Boolean):
-            CursorSupportUsersLoader {
+            AbsRequestUsersLoader {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
-        val loader = MutesUsersLoader(context, accountKey, adapter.data, fromUser)
-        loader.cursor = nextCursor
-        loader.page = nextPage
-        return loader
+        return MutesUsersLoader(context, accountKey, adapter.data, fromUser).apply {
+            pagination = args.getParcelable(IntentConstants.EXTRA_PAGINATION)
+        }
     }
+
 }

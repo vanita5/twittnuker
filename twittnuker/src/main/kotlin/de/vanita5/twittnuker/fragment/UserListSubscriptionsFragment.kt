@@ -26,7 +26,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.UserListSubscriptionsLoader
+import de.vanita5.twittnuker.loader.userlists.UserListSubscriptionsLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 
@@ -36,8 +36,9 @@ class UserListSubscriptionsFragment : ParcelableUserListsFragment() {
         val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
-        val cursor = args.getLong(EXTRA_NEXT_CURSOR, -1)
-        return UserListSubscriptionsLoader(activity, accountKey, userKey, screenName, cursor, data)
+        return UserListSubscriptionsLoader(activity, accountKey, userKey, screenName, data).apply {
+            pagination = args.getParcelable(EXTRA_PAGINATION)
+        }
     }
 
 }

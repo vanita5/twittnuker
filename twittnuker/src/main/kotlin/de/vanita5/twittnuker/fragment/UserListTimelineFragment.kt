@@ -27,7 +27,7 @@ import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.UserListTimelineLoader
+import de.vanita5.twittnuker.loader.statuses.UserListTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.Utils

@@ -28,6 +28,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
+import de.vanita5.twittnuker.library.annotation.NoObfuscate;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ import java.util.List;
  *  Mapper for IDs object
  */
 @SuppressWarnings("unused")
+@NoObfuscate
 public class IDs$$JsonObjectMapper extends JsonMapper<IDs> {
 
     @SuppressWarnings("TryWithIdenticalCatches")

@@ -23,6 +23,8 @@
 
 package de.vanita5.twittnuker.library.twitter.util;
 
+import android.support.annotation.NonNull;
+
 import de.vanita5.twittnuker.library.MicroBlogException;
 import org.mariotaku.restfu.RestConverter;
 import org.mariotaku.restfu.RestFuUtils;
@@ -37,8 +39,9 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 
 public class OAuthTokenResponseConverter implements RestConverter<HttpResponse, OAuthToken, MicroBlogException> {
+    @NonNull
     @Override
-    public OAuthToken convert(HttpResponse response) throws IOException, ConvertException {
+    public OAuthToken convert(@NonNull HttpResponse response) throws IOException, ConvertException {
         final Body body = response.getBody();
         try {
             final ContentType contentType = body.contentType();

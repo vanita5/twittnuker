@@ -32,7 +32,7 @@ import com.squareup.otto.Subscribe
 import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.UserListOwnershipsLoader
+import de.vanita5.twittnuker.loader.userlists.UserListOwnershipsLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListDestroyedEvent
@@ -50,7 +50,9 @@ class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
         val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
-        return UserListOwnershipsLoader(activity, accountKey, userKey, screenName, nextCursor, data)
+        return UserListOwnershipsLoader(activity, accountKey, userKey, screenName, data).apply {
+            pagination = args.getParcelable(EXTRA_PAGINATION)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

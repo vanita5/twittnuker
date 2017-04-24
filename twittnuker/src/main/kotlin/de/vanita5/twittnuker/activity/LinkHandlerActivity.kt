@@ -65,6 +65,8 @@ import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
 import de.vanita5.twittnuker.fragment.message.MessageNewConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
+import de.vanita5.twittnuker.fragment.status.StatusFavoritersListFragment
+import de.vanita5.twittnuker.fragment.users.*
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
@@ -524,7 +526,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
 
     @Throws(Utils.NoAccountException::class)
     private fun createFragmentForIntent(context: Context, linkId: Int, intent: Intent): Fragment? {
-        intent.setExtrasClassLoader(context.classLoader)
+        intent.setExtrasClassLoader(classLoader)
         val extras = intent.extras
         val uri = intent.data
         val fragment: Fragment

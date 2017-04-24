@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.library.statusnet.model.Group
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.fragment.users.GroupMembersFragment
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey

@@ -24,14 +24,40 @@ package de.vanita5.twittnuker.extension.api
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.model.IDs
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
-
+import de.vanita5.twittnuker.model.pagination.CursorPagination
+import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 
 
 @Throws(MicroBlogException::class)
-fun MicroBlog.showUser(id: String?, screenName: String?, accountType: String?): User {
+fun MicroBlog.tryShowUser(id: String?, screenName: String?, accountType: String?): User {
+    try {
+        return showUser(id, screenName, accountType)
+    } catch (e: MicroBlogException) {
+        // Twitter specific error for private API calling through proxy
+        if (e.statusCode == 200) {
+            return showUserAlternative(id, screenName)
+        }
+        throw e
+    }
+
+}
+
+@Throws(MicroBlogException::class)
+inline fun <R> MicroBlog.lookupUsersMapPaginated(ids: IDs, transform: (User) -> R): PaginatedList<R> {
+    val response = lookupUsers(ids.iDs)
+    val result = response.mapTo(PaginatedArrayList(response.size), transform)
+    result.previousPage = CursorPagination.valueOf(ids.previousCursor)
+    result.nextPage = CursorPagination.valueOf(ids.nextCursor)
+    return result
+}
+
+@Throws(MicroBlogException::class)
+private fun MicroBlog.showUser(id: String?, screenName: String?, accountType: String?): User {
     if (id != null) {
         if (AccountType.FANFOU == accountType) {
             return showFanfouUser(id)
@@ -47,7 +73,7 @@ fun MicroBlog.showUser(id: String?, screenName: String?, accountType: String?): 
 }
 
 @Throws(MicroBlogException::class)
-fun MicroBlog.showUserAlternative(id: String?, screenName: String?): User {
+private fun MicroBlog.showUserAlternative(id: String?, screenName: String?): User {
     val searchScreenName: String = screenName ?: run {
         if (id == null) throw IllegalArgumentException()
         return@run showFriendship(id).targetUserScreenName
@@ -66,18 +92,4 @@ fun MicroBlog.showUserAlternative(id: String?, screenName: String?): User {
         if (status != null) return status.user
     }
     throw MicroBlogException("Can't find user")
-}
-
-@Throws(MicroBlogException::class)
-fun MicroBlog.tryShowUser(id: String?, screenName: String?, accountType: String?): User {
-    try {
-        return showUser(id, screenName, accountType)
-    } catch (e: MicroBlogException) {
-        // Twitter specific error for private API calling through proxy
-        if (e.statusCode == 200) {
-            return showUserAlternative(id, screenName)
-        }
-        throw e
-    }
-
 }

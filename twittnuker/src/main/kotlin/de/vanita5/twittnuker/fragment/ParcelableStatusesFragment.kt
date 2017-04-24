@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.getErrorMessage
-import de.vanita5.twittnuker.loader.AbsRequestStatusesLoader
+import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam

@@ -23,6 +23,7 @@
 
 package de.vanita5.twittnuker.library.statusnet;
 
+import de.vanita5.twittnuker.library.statusnet.api.TimelineResources;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.library.statusnet.api.GroupResources;
@@ -32,7 +33,8 @@ import de.vanita5.twittnuker.library.statusnet.api.UserResources;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
 
-public interface StatusNet extends StatusNetResources, GroupResources, SearchResources, UserResources {
+public interface StatusNet extends StatusNetResources, GroupResources, SearchResources,
+        UserResources, TimelineResources {
 
     @GET("/externalprofile/show.json")
     User showExternalProfile(@Query("profileurl") String profileUrl) throws MicroBlogException;

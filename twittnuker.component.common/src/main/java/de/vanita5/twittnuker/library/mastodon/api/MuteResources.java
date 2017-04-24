@@ -24,14 +24,13 @@
 package de.vanita5.twittnuker.library.mastodon.api;
 
 import de.vanita5.twittnuker.library.mastodon.model.Account;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.param.Query;
 
-import java.util.List;
-
 
 public interface MuteResources {
     @GET("/v1/mutes")
-    List<Account> getMutes(@Query Paging paging);
+    LinkHeaderList<Account> getMutes(@Query Paging paging);
 }

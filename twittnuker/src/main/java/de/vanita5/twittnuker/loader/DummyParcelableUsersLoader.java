@@ -27,6 +27,7 @@ import android.content.Context;
 import java.util.Collections;
 import java.util.List;
 
+import de.vanita5.twittnuker.loader.users.ParcelableUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 public final class DummyParcelableUsersLoader extends ParcelableUsersLoader {

@@ -37,10 +37,11 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter.UserListClickListener
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
+import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -50,10 +51,17 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder
 abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<ParcelableUserListsAdapter>(), LoaderCallbacks<List<ParcelableUserList>>, UserListClickListener, KeyboardShortcutCallback {
 
     private lateinit var navigationHelper: RecyclerViewNavigationHelper
-    var nextCursor: Long = 0
+
+    var nextPagination: Pagination? = null
         private set
-    var prevCursor: Long = 0
+    var prevPagination: Pagination? = null
         private set
+
+    protected val accountKey: UserKey?
+        get() = arguments.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
+
+    val data: List<ParcelableUserList>?
+        get() = adapter.getData()
 
     override var refreshing: Boolean
         get() {
@@ -72,9 +80,6 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         super.setupRecyclerView(context, recyclerView)
     }
 
-    protected val accountKey: UserKey?
-        get() = arguments.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
-
     protected fun hasMoreData(data: List<ParcelableUserList>?): Boolean {
         return data == null || !data.isEmpty()
     }
@@ -88,9 +93,9 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         if (loader is IExtendedLoader) {
             loader.fromUser = false
         }
-        if (loader is ICursorSupportLoader) {
-            nextCursor = loader.nextCursor
-            prevCursor = loader.nextCursor
+        if (loader is IPaginationLoader) {
+            nextPagination = loader.nextPagination
+            prevPagination = loader.nextPagination
         }
         showContent()
         refreshEnabled = true
@@ -105,16 +110,9 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         if (position == 0L) return
         val loaderArgs = Bundle(arguments)
         loaderArgs.putBoolean(EXTRA_FROM_USER, true)
-        loaderArgs.putLong(EXTRA_NEXT_CURSOR, nextCursor)
+        loaderArgs.putParcelable(EXTRA_PAGINATION, nextPagination)
         loaderManager.restartLoader(0, loaderArgs, this)
     }
-
-    protected fun removeUsers(vararg ids: Long) {
-        //TODO remove from adapter
-    }
-
-    val data: List<ParcelableUserList>?
-        get() = adapter.getData()
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)

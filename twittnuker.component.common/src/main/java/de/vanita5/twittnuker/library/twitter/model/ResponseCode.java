@@ -23,10 +23,11 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
-import org.mariotaku.restfu.RestConverter;
-import org.mariotaku.restfu.http.HttpResponse;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.library.MicroBlogException;
+import org.mariotaku.restfu.RestConverter;
+import org.mariotaku.restfu.http.HttpResponse;
 
 /**
  * Created by mariotaku on 15/6/15.
@@ -49,8 +50,9 @@ public class ResponseCode {
 
     public static class ResponseConverter implements RestConverter<HttpResponse, ResponseCode, MicroBlogException> {
 
+        @NonNull
         @Override
-        public ResponseCode convert(HttpResponse response) {
+        public ResponseCode convert(@NonNull HttpResponse response) {
             return new ResponseCode(response);
         }
     }

@@ -28,6 +28,7 @@ import android.support.annotation.Nullable;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.mastodon.model.Account;
 import de.vanita5.twittnuker.library.mastodon.model.AccountUpdate;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
 import de.vanita5.twittnuker.library.mastodon.model.Relationship;
 import de.vanita5.twittnuker.library.mastodon.model.Status;
 import de.vanita5.twittnuker.library.mastodon.model.TimelineOption;
@@ -38,8 +39,6 @@ import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Path;
 import org.mariotaku.restfu.annotation.param.Query;
-
-import java.util.List;
 
 /**
  * Created by mariotaku on 2017/4/17.
@@ -57,15 +56,15 @@ public interface AccountResources {
     Account updateCredentials(@Param AccountUpdate update) throws MicroBlogException;
 
     @GET("/v1/accounts/{id}/followers")
-    List<Account> getFollowers(@Path("id") String id, @Query Paging paging)
+    LinkHeaderList<Account> getFollowers(@Path("id") String id, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/v1/accounts/{id}/following")
-    List<Account> getFollowing(@Path("id") String id, @Query Paging paging)
+    LinkHeaderList<Account> getFollowing(@Path("id") String id, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/v1/accounts/{id}/statuses")
-    List<Status> getStatuses(@Path("id") String id, @Query Paging paging,
+    LinkHeaderList<Status> getStatuses(@Path("id") String id, @Query Paging paging,
                              @Query TimelineOption option) throws MicroBlogException;
 
     @POST("/v1/accounts/{id}/follow")
@@ -87,8 +86,8 @@ public interface AccountResources {
     Relationship unmuteUser(@Path("id") String id) throws MicroBlogException;
 
     @GET("/v1/accounts/relationships")
-    List<Relationship> getRelationships(@Path("id") String id) throws MicroBlogException;
+    LinkHeaderList<Relationship> getRelationships(@Path("id") String id) throws MicroBlogException;
 
     @GET("/v1/accounts/search")
-    List<Account> searchAccounts(@Query("q") String query, @Nullable @Query Paging paging) throws MicroBlogException;
+    LinkHeaderList<Account> searchAccounts(@Query("q") String query, @Nullable @Query Paging paging) throws MicroBlogException;
 }

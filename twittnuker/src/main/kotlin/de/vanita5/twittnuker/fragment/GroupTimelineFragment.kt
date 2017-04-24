@@ -32,7 +32,7 @@ import android.view.MenuItem
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ComposeActivity
-import de.vanita5.twittnuker.loader.GroupTimelineLoader
+import de.vanita5.twittnuker.loader.statuses.GroupTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Utils
 import java.util.*

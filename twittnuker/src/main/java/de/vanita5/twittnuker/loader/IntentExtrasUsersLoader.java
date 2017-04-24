@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.os.Bundle;
 
+import de.vanita5.twittnuker.loader.users.ParcelableUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.Collections;

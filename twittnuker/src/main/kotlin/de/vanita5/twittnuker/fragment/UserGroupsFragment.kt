@@ -26,7 +26,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.UserGroupsLoader
+import de.vanita5.twittnuker.loader.group.UserGroupsLoader
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.model.UserKey
 
@@ -35,7 +35,7 @@ class UserGroupsFragment : ParcelableGroupsFragment() {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
-        return UserGroupsLoader(context, accountKey, userKey, screenName, data)
+        return UserGroupsLoader(context, accountKey, userKey, screenName, adapter.getData())
     }
 
 }

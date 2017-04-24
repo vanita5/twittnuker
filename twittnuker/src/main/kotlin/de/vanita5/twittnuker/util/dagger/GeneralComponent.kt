@@ -38,6 +38,8 @@ import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
 import de.vanita5.twittnuker.fragment.media.ExoPlayerPageFragment
 import de.vanita5.twittnuker.loader.*
+import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
+import de.vanita5.twittnuker.loader.userlists.BaseUserListsLoader
 import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.preference.PremiumEntryPreference

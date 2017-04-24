@@ -25,11 +25,15 @@ package de.vanita5.twittnuker.loader
 import android.annotation.SuppressLint
 import android.content.Context
 import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.twittnuker.loader.users.UserSearchLoader
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
@@ -45,7 +49,7 @@ class CacheUserSearchLoader(
         private val fromNetwork: Boolean,
         private val fromCache: Boolean,
         fromUser: Boolean
-) : UserSearchLoader(context, accountKey, query, 0, null, fromUser) {
+) : UserSearchLoader(context, accountKey, query, null, fromUser) {
     @Inject
     internal lateinit var userColorNameManager: UserColorNameManager
 
@@ -53,9 +57,9 @@ class CacheUserSearchLoader(
         GeneralComponent.get(context).inject(this)
     }
 
-    override fun getUsers(details: AccountDetails): List<ParcelableUser> {
-        if (query.isEmpty() || !fromNetwork) return emptyList()
-        return super.getUsers(details)
+    override fun getUsers(details: AccountDetails, paging: Paging): PaginatedList<ParcelableUser> {
+        if (query.isEmpty() || !fromNetwork) return PaginatedArrayList()
+        return super.getUsers(details, paging)
     }
 
     override fun processUsersData(details: AccountDetails, list: MutableList<ParcelableUser>) {
