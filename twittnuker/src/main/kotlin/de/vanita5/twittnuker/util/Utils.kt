@@ -225,6 +225,10 @@ object Utils {
         return DateUtils.formatDateTime(context, timestamp, formatFlags)
     }
 
+    fun getAccountNotificationId(notificationType: Int, accountId: String): Int {
+        return Arrays.hashCode(longArrayOf(notificationType.toLong(), java.lang.Long.parseLong(accountId)))
+    }
+
     fun isComposeNowSupported(context: Context): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return false
         return hasNavBar(context)
