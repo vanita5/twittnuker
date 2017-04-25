@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.util
 
 import android.accounts.AccountManager
 import android.support.test.InstrumentationRegistry
-import de.vanita5.twittnuker.extensions.model.updateDetails
+import de.vanita5.twittnuker.extension.model.updateDetails
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.test.R

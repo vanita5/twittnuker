@@ -111,6 +111,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.*
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.originalProfileImage
@@ -1541,7 +1542,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             do {
                 val resp = microBlog.getUserListOwnerships(paging)
                 resp.mapTo(ownedLists) { item ->
-                    val userList = ParcelableUserListUtils.from(item, user.account_key)
+                    val userList = item.toParcelable( user.account_key)
                     userList.is_user_inside = listMemberships.any { it.id == item.id }
                     return@mapTo userList
                 }

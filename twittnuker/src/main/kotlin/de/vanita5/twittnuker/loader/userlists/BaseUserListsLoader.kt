@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.library.twitter.model.UserList
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
@@ -43,7 +44,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.pagination.CursorPagination
 import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import java.util.*
@@ -102,13 +102,13 @@ abstract class BaseUserListsLoader(
                 val dataSize = data.size
                 for (i in 0..listSize - 1) {
                     val list = listLoaded[i]
-                    data.add(ParcelableUserListUtils.from(list, accountKey, (dataSize + i).toLong(),
+                    data.add(list.toParcelable(accountKey, (dataSize + i).toLong(),
                             isFollowing(list), profileImageSize))
                 }
             } else {
                 for (i in 0..listSize - 1) {
                     val list = listLoaded[i]
-                    data.add(ParcelableUserListUtils.from(listLoaded[i], accountKey, i.toLong(),
+                    data.add(listLoaded[i].toParcelable(accountKey, i.toLong(),
                             isFollowing(list), profileImageSize))
                 }
             }

@@ -29,13 +29,13 @@ import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListMembersChangedEvent
-import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 
 class AddUserListMembersTask(
         context: Context,
@@ -48,7 +48,7 @@ class AddUserListMembersTask(
         val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         val userIds = users.mapToArray(ParcelableUser::key)
         val result = microBlog.addUserListMembers(listId, UserKey.getIds(userIds))
-        return ParcelableUserListUtils.from(result, account.key)
+        return result.toParcelable(account.key)
     }
 
     override fun onSucceed(callback: Any?, result: ParcelableUserList) {

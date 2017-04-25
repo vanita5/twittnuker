@@ -26,12 +26,12 @@ import android.content.Context
 import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListDestroyedEvent
-import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 
 class DestroyUserListTask(
         context: Context,
@@ -42,7 +42,7 @@ class DestroyUserListTask(
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableUserList {
         val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
             val userList = microBlog.destroyUserList(listId)
-        return ParcelableUserListUtils.from(userList, account.key)
+        return userList.toParcelable(account.key)
     }
 
     override fun onSucceed(callback: Any?, result: ParcelableUserList) {

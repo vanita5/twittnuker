@@ -27,12 +27,12 @@ import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
-import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 
 class UpdateUserListDetailsTask(
         context: Context,
@@ -44,7 +44,7 @@ class UpdateUserListDetailsTask(
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableUserList {
         val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         val list = microBlog.updateUserList(listId, update)
-        return ParcelableUserListUtils.from(list, account.key)
+        return list.toParcelable(account.key)
     }
 
     override fun onSucceed(callback: Any?, result: ParcelableUserList) {

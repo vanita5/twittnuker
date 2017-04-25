@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.users.UserListMembersFragment
@@ -68,7 +69,6 @@ import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListSubscriptionEvent
 import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
-import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.*
 
@@ -416,7 +416,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
                         return SingleResponse(MicroBlogException("Invalid argument"))
                     }
                 }
-                return SingleResponse(ParcelableUserListUtils.from(list, accountKey))
+                return SingleResponse(list.toParcelable(accountKey))
             } catch (e: MicroBlogException) {
                 return SingleResponse(e)
             }

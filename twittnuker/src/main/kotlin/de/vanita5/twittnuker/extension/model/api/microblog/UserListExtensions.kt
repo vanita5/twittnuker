@@ -20,13 +20,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.extension.model.api.microblog
 
 import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
+import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
+import de.vanita5.twittnuker.model.util.UserKeyUtils
 
-
-fun Array<UserList>.toParcelables(accountKey: UserKey, profileImageSize: String = "normal") = Array(size) {
-    this[it].toParcelable(accountKey, profileImageSize = profileImageSize)
+fun UserList.toParcelable(accountKey: UserKey, position: Long = 0, isFollowing: Boolean = false,
+                          profileImageSize: String = "normal"): ParcelableUserList {
+    val obj = ParcelableUserList()
+    val user = user
+    obj.position = position
+    obj.account_key = accountKey
+    obj.id = id
+    obj.is_public = UserList.Mode.PUBLIC == mode
+    obj.is_following = isFollowing
+    obj.name = name
+    obj.description = description
+    obj.user_key = UserKeyUtils.fromUser(user)
+    obj.user_name = user.name
+    obj.user_screen_name = user.screenName
+    obj.user_profile_image_url = user.getProfileImageOfSize(profileImageSize)
+    obj.members_count = memberCount
+    obj.subscribers_count = subscriberCount
+    return obj
 }
