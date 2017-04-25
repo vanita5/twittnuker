@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.model.util
 
-import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.extension.model.toParcelables
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -60,7 +58,7 @@ object ParcelableActivityUtils {
             activity.after_filtered_source_ids = list.toTypedArray()
             return true
         } else {
-            activity.after_filtered_source_ids = activity.source_ids
+            activity.after_filtered_source_ids = activity.source_keys
             return false
         }
     }
@@ -74,46 +72,6 @@ object ParcelableActivityUtils {
             return@Array activity.sources.find { it.key == activity.after_filtered_source_ids[idx] }!!
         }
         activity.after_filtered_sources = result
-        return result
-    }
-
-    fun fromActivity(activity: Activity, accountKey: UserKey, accountType: String,
-            isGap: Boolean = false, profileImageSize: String = "normal"): ParcelableActivity {
-        val result = ParcelableActivity()
-        result.account_key = accountKey
-        result.timestamp = activity.createdAt.time
-        result.action = activity.action
-        result.max_sort_position = activity.maxSortPosition
-        result.min_sort_position = activity.minSortPosition
-        result.max_position = activity.maxPosition
-        result.min_position = activity.minPosition
-        result.sources = activity.sources?.toParcelables(accountKey, accountType,
-                profileImageSize)
-        result.target_users = activity.targetUsers?.toParcelables(accountKey,
-                accountType, profileImageSize)
-        result.target_user_lists = activity.targetUserLists?.toParcelables(accountKey,
-                profileImageSize)
-        result.target_statuses = activity.targetStatuses?.toParcelables(accountKey,
-                accountType, profileImageSize)
-        result.target_object_statuses = activity.targetObjectStatuses?.toParcelables(accountKey,
-                accountType, profileImageSize)
-        result.target_object_user_lists = activity.targetObjectUserLists?.toParcelables(accountKey,
-                profileImageSize)
-        result.target_object_users = activity.targetObjectUsers?.toParcelables(accountKey, accountType,
-                profileImageSize)
-        result.has_following_source = activity.sources?.fold(false) { folded, item ->
-            if (item.isFollowing == true) {
-                return@fold true
-            }
-            return@fold folded
-        } ?: false
-        if (result.sources != null) {
-            result.source_ids = arrayOfNulls<UserKey>(result.sources.size)
-            for (i in result.sources.indices) {
-                result.source_ids[i] = result.sources[i].key
-            }
-        }
-        result.is_gap = isGap
         return result
     }
 

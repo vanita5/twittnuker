@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
+import de.vanita5.twittnuker.model.task.GetTimelineResult
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
@@ -60,13 +61,13 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
 abstract class GetStatusesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<GetStatusesTask.GetStatusesResult?>, (Boolean) -> Unit>(context) {
+) : BaseAbstractTask<RefreshTaskParam, List<GetTimelineResult?>, (Boolean) -> Unit>(context) {
 
     protected abstract val contentUri: Uri
 
     protected abstract val errorInfoKey: String
 
-    override fun doLongOperation(param: RefreshTaskParam): List<GetStatusesResult?> {
+    override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys
         val loadItemLimit = preferences[loadItemLimitKey]
@@ -109,7 +110,7 @@ abstract class GetStatusesTask(
                 if (storeResult != 0) {
                     throw GetTimelineException(storeResult)
                 }
-                return@mapIndexed GetStatusesResult(null)
+                return@mapIndexed GetTimelineResult(null)
             } catch (e: MicroBlogException) {
                 DebugLog.w(LOGTAG, tr = e)
                 if (e.isCausedByNetworkIssue) {
@@ -117,14 +118,14 @@ abstract class GetStatusesTask(
                 } else if (e.statusCode == 401) {
                     // Unauthorized
                 }
-                return@mapIndexed GetStatusesResult(e)
+                return@mapIndexed GetTimelineResult(e)
             } catch (e: GetTimelineException) {
-                return@mapIndexed GetStatusesResult(e)
+                return@mapIndexed GetTimelineResult(e)
             }
         }
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetStatusesResult?>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetTimelineResult?>) {
         context.contentResolver.notifyChange(contentUri, null)
         val exception = result.firstOrNull { it?.exception != null }?.exception
         bus.post(GetStatusesTaskEvent(contentUri, false, exception))
@@ -160,8 +161,7 @@ abstract class GetStatusesTask(
             val sortDiff = firstSortId - lastSortId
 
             val creator = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
-            for (i in 0 until statuses.size) {
-                val status = statuses[i]
+            statuses.forEachIndexed { i, status ->
                 ParcelableStatusUtils.updateExtraInformation(status, account)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
@@ -228,8 +228,6 @@ abstract class GetStatusesTask(
             return context.getString(R.string.error_unknown_error)
         }
     }
-
-    data class GetStatusesResult(val exception: Exception?)
 
     companion object {
 

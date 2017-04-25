@@ -23,6 +23,8 @@
 
 package de.vanita5.twittnuker.library.mastodon.model;
 
+import android.support.annotation.StringDef;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
@@ -41,7 +43,8 @@ public class Notification {
     @JsonField(name = "id")
     String id;
     /**
-     * One of: {@code mention}, {@code reblog}, {@code favourite}, {@code follow}
+     * One of: {@link Type#MENTION}, {@link Type#REBLOG}, {@link Type#FAVOURITE},
+     * {@link Type#FOLLOW}
      */
     @JsonField(name = "type")
     String type;
@@ -90,5 +93,10 @@ public class Notification {
                 ", account=" + account +
                 ", status=" + status +
                 '}';
+    }
+
+    @StringDef({Type.MENTION, Type.REBLOG, Type.FAVOURITE, Type.FOLLOW})
+    public @interface Type {
+        String MENTION = "mention", REBLOG = "reblog", FAVOURITE = "favourite", FOLLOW = "follow";
     }
 }

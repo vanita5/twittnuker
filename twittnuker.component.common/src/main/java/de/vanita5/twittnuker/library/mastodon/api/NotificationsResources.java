@@ -23,5 +23,15 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
+import de.vanita5.twittnuker.library.mastodon.model.Notification;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Query;
+
+
 public interface NotificationsResources {
+    @GET("/v1/notifications")
+    LinkHeaderList<Notification> getNotifications(@Query Paging paging) throws MicroBlogException;
 }

@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
@@ -338,8 +339,8 @@ class StreamingService : BaseService() {
                     } else {
                         insertGap = false
                     }
-                    val curActivity = ParcelableActivityUtils.fromActivity(activity, account.key,
-                            account.type, insertGap, profileImageSize)
+                    val curActivity = activity.toParcelable(account.key, account.type, insertGap,
+                            profileImageSize)
                     curActivity.account_color = account.color
                     curActivity.position_key = curActivity.timestamp
                     var updateId = -1L

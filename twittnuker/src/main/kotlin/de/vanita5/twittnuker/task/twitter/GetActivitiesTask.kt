@@ -23,17 +23,13 @@
 package de.vanita5.twittnuker.task.twitter
 
 import android.accounts.AccountManager
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
@@ -42,14 +38,13 @@ import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.getMaxId
 import de.vanita5.twittnuker.extension.model.getMaxSortId
 import de.vanita5.twittnuker.extension.model.getSinceId
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.RefreshTaskParam
-import de.vanita5.twittnuker.model.TwitterListResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetActivitiesTaskEvent
+import de.vanita5.twittnuker.model.task.GetTimelineResult
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
@@ -58,26 +53,21 @@ import java.util.*
 
 abstract class GetActivitiesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<TwitterListResponse<Activity>>, (Boolean) -> Unit>(context) {
-
-    private val profileImageSize = context.getString(R.string.profile_image_size)
+) : BaseAbstractTask<RefreshTaskParam, List<GetTimelineResult?>, (Boolean) -> Unit>(context) {
 
     protected abstract val errorInfoKey: String
 
     protected abstract val contentUri: Uri
 
-    override fun doLongOperation(param: RefreshTaskParam): List<TwitterListResponse<Activity>> {
+    override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys
-        val cr = context.contentResolver
-        val result = ArrayList<TwitterListResponse<Activity>>()
         val loadItemLimit = preferences[loadItemLimitKey]
         val saveReadPosition = BooleanArray(accountKeys.size)
-        accountKeys.forEachIndexed { i, accountKey ->
+        val result = accountKeys.mapIndexed { i, accountKey ->
             val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri, accountKey) <= 0
             val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey,
-                    true) ?: return@forEachIndexed
-            val microBlog = credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+                    true) ?: return@mapIndexed null
             val paging = Paging()
             paging.count(loadItemLimit)
             val maxId = param.getMaxId(i)
@@ -95,9 +85,9 @@ abstract class GetActivitiesTask(
             }
             // We should delete old activities has intersection with new items
             try {
-                val activities = getActivities(microBlog, credentials, paging)
-                val storeResult = storeActivities(cr, loadItemLimit, credentials, noItemsBefore,
-                        activities, sinceId, maxId, false)
+                val activities = getActivities(credentials, paging)
+                val storeResult = storeActivities(credentials, activities, sinceId, maxId,
+                        loadItemLimit, noItemsBefore, false)
                 if (saveReadPosition[i]) {
 
                 }
@@ -112,17 +102,19 @@ abstract class GetActivitiesTask(
                 } else if (e.isCausedByNetworkIssue) {
                     errorInfoStore[errorInfoKey, accountKey] = ErrorInfoStore.CODE_NETWORK_ERROR
                 }
+                return@mapIndexed GetTimelineResult(e)
             } catch (e: GetStatusesTask.GetTimelineException) {
-                result.add(TwitterListResponse(accountKey, e))
+                return@mapIndexed GetTimelineResult(e)
             }
+            return@mapIndexed GetTimelineResult(null)
         }
         setLocalReadPosition(accountKeys, saveReadPosition)
         return result
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<TwitterListResponse<Activity>>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetTimelineResult?>) {
         context.contentResolver.notifyChange(contentUri, null)
-        val exception = AsyncTwitterWrapper.getException(result)
+        val exception = result.firstOrNull { it?.exception != null }?.exception
         bus.post(GetActivitiesTaskEvent(contentUri, false, exception))
         handler?.invoke(true)
     }
@@ -133,26 +125,24 @@ abstract class GetActivitiesTask(
     }
 
     @Throws(MicroBlogException::class)
-    protected abstract fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity>
+    protected abstract fun getActivities(account: AccountDetails, paging: Paging): List<ParcelableActivity>
 
     protected abstract fun setLocalReadPosition(accountKeys: Array<UserKey>, saveReadPosition: BooleanArray)
 
-    private fun storeActivities(cr: ContentResolver, loadItemLimit: Int, details: AccountDetails,
-                                noItemsBefore: Boolean, activities: ResponseList<Activity>,
-                                sinceId: String?, maxId: String?, notify: Boolean): Int {
+    private fun storeActivities(details: AccountDetails, activities: List<ParcelableActivity>,
+            sinceId: String?, maxId: String?, loadItemLimit: Int, noItemsBefore: Boolean,
+            notify: Boolean): Int {
+        val cr = context.contentResolver
         val deleteBound = LongArray(2) { -1 }
         val valuesList = ArrayList<ContentValues>()
         var minIdx = -1
         var minPositionKey: Long = -1
         if (!activities.isEmpty()) {
-            val firstSortId = activities.first().createdAt.time
-            val lastSortId = activities.last().createdAt.time
+            val firstSortId = activities.first().timestamp
+            val lastSortId = activities.last().timestamp
             // Get id diff of first and last item
             val sortDiff = firstSortId - lastSortId
-            for (i in activities.indices) {
-                val item = activities[i]
-                val activity = ParcelableActivityUtils.fromActivity(item, details.key, details.type,
-                        false, profileImageSize)
+            activities.forEachIndexed { i, activity ->
                 mediaPreloader.preloadActivity(activity)
                 activity.position_key = GetStatusesTask.getPositionKey(activity.timestamp,
                         activity.timestamp, lastSortId, sortDiff, i, activities.size)
@@ -166,7 +156,7 @@ abstract class GetActivitiesTask(
                 } else {
                     deleteBound[1] = Math.max(deleteBound[1], activity.max_sort_position)
                 }
-                if (minIdx == -1 || item < activities[minIdx]) {
+                if (minIdx == -1 || activity < activities[minIdx]) {
                     minIdx = i
                     minPositionKey = activity.position_key
                 }
