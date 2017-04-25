@@ -26,62 +26,57 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.Status
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
-import de.vanita5.twittnuker.extension.model.*
-import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.extension.model.api.applyLoadLimit
+import de.vanita5.twittnuker.extension.model.getMaxId
+import de.vanita5.twittnuker.extension.model.getMaxSortId
+import de.vanita5.twittnuker.extension.model.getSinceId
+import de.vanita5.twittnuker.extension.model.getSinceSortId
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.RefreshTaskParam
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.BaseAbstractTask
-import de.vanita5.twittnuker.task.cache.CacheUsersStatusesTask
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.ErrorInfoStore
+import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import java.util.*
 
 abstract class GetStatusesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<StatusListResponse>, (Boolean) -> Unit>(context) {
-
-    private val profileImageSize = context.getString(R.string.profile_image_size)
-
-    @Throws(MicroBlogException::class)
-    abstract fun getStatuses(twitter: MicroBlog, paging: Paging): ResponseList<Status>
+) : BaseAbstractTask<RefreshTaskParam, List<GetStatusesTask.GetStatusesResult?>, (Boolean) -> Unit>(context) {
 
     protected abstract val contentUri: Uri
 
     protected abstract val errorInfoKey: String
 
-    override fun doLongOperation(param: RefreshTaskParam): List<StatusListResponse> {
+    override fun doLongOperation(param: RefreshTaskParam): List<GetStatusesResult?> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys
-        val result = ArrayList<StatusListResponse>()
         val loadItemLimit = preferences[loadItemLimitKey]
         var saveReadPosition = false
-        for (i in 0 until accountKeys.size) {
-            val accountKey = accountKeys[i]
-            val details = AccountUtils.getAccountDetails(AccountManager.get(context),
-                    accountKey, true) ?: continue
-            val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+        return accountKeys.mapIndexed { i, accountKey ->
+            val account = AccountUtils.getAccountDetails(AccountManager.get(context),
+                    accountKey, true) ?: return@mapIndexed null
             try {
                 val paging = Paging()
-                paging.count(loadItemLimit)
+                paging.applyLoadLimit(account, loadItemLimit)
                 val maxId = param.getMaxId(i)
                 val sinceId = param.getSinceId(i)
                 val maxSortId = param.getMaxSortId(i)
@@ -103,20 +98,18 @@ abstract class GetStatusesTask(
                     }
                     saveReadPosition = true
                 }
-                val statuses = getStatuses(microBlog, paging)
-                val storeResult = storeStatus(accountKey, details, statuses, sinceId, maxId,
-                        sinceSortId, maxSortId, loadItemLimit, false)
+                val statuses = getStatuses(account, paging)
+                val storeResult = storeStatus(account, statuses, sinceId, maxId, sinceSortId,
+                        maxSortId, loadItemLimit, false)
                 if (saveReadPosition) {
-                    setLocalReadPosition(accountKey, details, microBlog)
+                    setLocalReadPosition(accountKey, account)
                 }
                 // TODO cache related data and preload
-                val cacheTask = CacheUsersStatusesTask(context, accountKey, details.type, statuses)
-                TaskStarter.execute(cacheTask)
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
-                result.add(StatusListResponse(accountKey, statuses))
                 if (storeResult != 0) {
                     throw GetTimelineException(storeResult)
                 }
+                return@mapIndexed GetStatusesResult(null)
             } catch (e: MicroBlogException) {
                 DebugLog.w(LOGTAG, tr = e)
                 if (e.isCausedByNetworkIssue) {
@@ -124,17 +117,16 @@ abstract class GetStatusesTask(
                 } else if (e.statusCode == 401) {
                     // Unauthorized
                 }
-                result.add(StatusListResponse(accountKey, e))
+                return@mapIndexed GetStatusesResult(e)
             } catch (e: GetTimelineException) {
-                result.add(StatusListResponse(accountKey, e))
+                return@mapIndexed GetStatusesResult(e)
             }
         }
-        return result
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<StatusListResponse>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetStatusesResult?>) {
         context.contentResolver.notifyChange(contentUri, null)
-        val exception = AsyncTwitterWrapper.getException(result)
+        val exception = result.firstOrNull { it?.exception != null }?.exception
         bus.post(GetStatusesTaskEvent(contentUri, false, exception))
         handler?.invoke(true)
     }
@@ -143,14 +135,15 @@ abstract class GetStatusesTask(
         bus.post(GetStatusesTaskEvent(contentUri, true, null))
     }
 
-    protected abstract fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails,
-            twitter: MicroBlog)
+    @Throws(MicroBlogException::class)
+    protected abstract fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus>
 
-    private fun storeStatus(accountKey: UserKey, details: AccountDetails,
-                            statuses: List<Status>,
-                            sinceId: String?, maxId: String?,
-                            sinceSortId: Long, maxSortId: Long,
-                            loadItemLimit: Int, notify: Boolean): Int {
+    protected abstract fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails)
+
+    private fun storeStatus(account: AccountDetails, statuses: List<ParcelableStatus>,
+            sinceId: String?, maxId: String?, sinceSortId: Long, maxSortId: Long,
+            loadItemLimit: Int, notify: Boolean): Int {
+        val accountKey = account.key
         val uri = contentUri
         val writeUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY_CHANGE, notify)
         val resolver = context.contentResolver
@@ -161,29 +154,28 @@ abstract class GetStatusesTask(
         var minPositionKey: Long = -1
         var hasIntersection = false
         if (!statuses.isEmpty()) {
-            val firstSortId = statuses.first().sortId
-            val lastSortId = statuses.last().sortId
+            val firstSortId = statuses.first().sort_id
+            val lastSortId = statuses.last().sort_id
             // Get id diff of first and last item
             val sortDiff = firstSortId - lastSortId
 
             val creator = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
             for (i in 0 until statuses.size) {
-                val item = statuses[i]
-                val status = item.toParcelable(accountKey, details.type, profileImageSize)
-                ParcelableStatusUtils.updateExtraInformation(status, details)
+                val status = statuses[i]
+                ParcelableStatusUtils.updateExtraInformation(status, account)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
                 status.inserted_date = System.currentTimeMillis()
                 mediaPreloader.preloadStatus(status)
                 values[i] = creator.create(status)
-                if (minIdx == -1 || item < statuses[minIdx]) {
+                if (minIdx == -1 || status < statuses[minIdx]) {
                     minIdx = i
                     minPositionKey = status.position_key
                 }
-                if (sinceId != null && item.sortId <= sinceSortId) {
+                if (sinceId != null && status.sort_id <= sinceSortId) {
                     hasIntersection = true
                 }
-                statusIds[i] = item.id
+                statusIds[i] = status.id
             }
         }
         // Delete all rows conflicting before new data inserted.
@@ -236,6 +228,8 @@ abstract class GetStatusesTask(
             return context.getString(R.string.error_unknown_error)
         }
     }
+
+    data class GetStatusesResult(val exception: Exception?)
 
     companion object {
 

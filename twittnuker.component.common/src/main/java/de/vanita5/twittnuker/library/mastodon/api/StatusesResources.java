@@ -36,7 +36,7 @@ import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Path;
 
 
-public interface StatusResources {
+public interface StatusesResources {
     @GET("/v1/statuses/{id}")
     Status fetchStatus(@Path("id") String id) throws MicroBlogException;
 

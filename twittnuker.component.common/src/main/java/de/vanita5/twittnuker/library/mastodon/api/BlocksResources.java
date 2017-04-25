@@ -29,7 +29,8 @@ import de.vanita5.twittnuker.library.twitter.model.Paging;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.param.Query;
 
-public interface FollowRequestResources {
-    @GET("/v1/follow_requests")
-    LinkHeaderList<Account> getFollowRequests(@Query Paging paging);
+
+public interface BlocksResources {
+    @GET("/v1/blocks")
+    LinkHeaderList<Account> getBlocks(@Query Paging paging);
 }

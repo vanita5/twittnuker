@@ -23,14 +23,5 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
-import de.vanita5.twittnuker.library.mastodon.model.Account;
-import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
-
-
-public interface BlockResources {
-    @GET("/v1/blocks")
-    LinkHeaderList<Account> getBlocks(@Query Paging paging);
+public interface InstancesResources {
 }

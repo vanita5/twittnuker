@@ -23,21 +23,24 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
-import android.support.annotation.Nullable;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.mastodon.model.RegisteredApplication;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Param;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
+import de.vanita5.twittnuker.library.mastodon.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Query;
 
-/**
- * Created by mariotaku on 2017/4/17.
- */
 
-public interface ApplicationResources {
-    @POST("/v1/apps")
-    RegisteredApplication registerApplication(@Param("client_name") String clientName,
-            @Param("redirect_uris") String redirectUris,
-            @Param(value = "scopes", arrayDelimiter = ' ') String[] scopes,
-            @Nullable @Param("website") String website) throws MicroBlogException;
+public interface TimelinesResources {
+    @GET("/v1/timelines/home")
+    LinkHeaderList<Status> getHomeTimeline(@Query Paging paging) throws MicroBlogException;
+
+    @GET("/v1/timelines/public")
+    LinkHeaderList<Status> getPublicTimeline(@Query Paging paging, @Query("local") boolean local)
+            throws MicroBlogException;
+
+    @GET("/v1/timelines/tag/{tag}")
+    LinkHeaderList<Status> getHashtagTimeline(@Path("tag") String hashtag, @Query Paging paging,
+                                              @Query("local") boolean local) throws MicroBlogException;
 }

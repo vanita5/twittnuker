@@ -23,5 +23,13 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
-public interface FollowResources {
+import de.vanita5.twittnuker.library.mastodon.model.Account;
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Query;
+
+public interface FollowRequestsResources {
+    @GET("/v1/follow_requests")
+    LinkHeaderList<Account> getFollowRequests(@Query Paging paging);
 }

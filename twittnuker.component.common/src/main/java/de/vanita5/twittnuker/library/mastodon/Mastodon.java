@@ -23,24 +23,24 @@
 
 package de.vanita5.twittnuker.library.mastodon;
 
-import de.vanita5.twittnuker.library.mastodon.api.AccountResources;
-import de.vanita5.twittnuker.library.mastodon.api.ApplicationResources;
-import de.vanita5.twittnuker.library.mastodon.api.BlockResources;
-import de.vanita5.twittnuker.library.mastodon.api.FavouriteResources;
-import de.vanita5.twittnuker.library.mastodon.api.FollowRequestResources;
-import de.vanita5.twittnuker.library.mastodon.api.FollowResources;
-import de.vanita5.twittnuker.library.mastodon.api.InstanceResources;
+import de.vanita5.twittnuker.library.mastodon.api.AccountsResources;
+import de.vanita5.twittnuker.library.mastodon.api.AppsResources;
+import de.vanita5.twittnuker.library.mastodon.api.BlocksResources;
+import de.vanita5.twittnuker.library.mastodon.api.FavouritesResources;
+import de.vanita5.twittnuker.library.mastodon.api.FollowRequestsResources;
+import de.vanita5.twittnuker.library.mastodon.api.FollowsResources;
+import de.vanita5.twittnuker.library.mastodon.api.InstancesResources;
 import de.vanita5.twittnuker.library.mastodon.api.MediaResources;
-import de.vanita5.twittnuker.library.mastodon.api.MuteResources;
-import de.vanita5.twittnuker.library.mastodon.api.NotificationResources;
-import de.vanita5.twittnuker.library.mastodon.api.ReportResources;
+import de.vanita5.twittnuker.library.mastodon.api.MutesResources;
+import de.vanita5.twittnuker.library.mastodon.api.NotificationsResources;
+import de.vanita5.twittnuker.library.mastodon.api.ReportsResources;
 import de.vanita5.twittnuker.library.mastodon.api.SearchResources;
-import de.vanita5.twittnuker.library.mastodon.api.StatusResources;
-import de.vanita5.twittnuker.library.mastodon.api.TimelineResources;
+import de.vanita5.twittnuker.library.mastodon.api.StatusesResources;
+import de.vanita5.twittnuker.library.mastodon.api.TimelinesResources;
 
-public interface Mastodon extends AccountResources, ApplicationResources, BlockResources,
-        FavouriteResources, FollowRequestResources, FollowResources, InstanceResources,
-        MediaResources, MuteResources, NotificationResources, ReportResources, SearchResources,
-        StatusResources, TimelineResources {
+public interface Mastodon extends AccountsResources, AppsResources, BlocksResources,
+        FavouritesResources, FollowRequestsResources, FollowsResources, InstancesResources,
+        MediaResources, MutesResources, NotificationsResources, ReportsResources, SearchResources,
+        StatusesResources, TimelinesResources {
 
 }

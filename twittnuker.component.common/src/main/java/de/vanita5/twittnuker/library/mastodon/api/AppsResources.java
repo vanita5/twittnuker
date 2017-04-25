@@ -23,14 +23,21 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
-import de.vanita5.twittnuker.library.mastodon.model.Account;
-import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
+import android.support.annotation.Nullable;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.mastodon.model.RegisteredApplication;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
 
-public interface MuteResources {
-    @GET("/v1/mutes")
-    LinkHeaderList<Account> getMutes(@Query Paging paging);
+/**
+ * Created by mariotaku on 2017/4/17.
+ */
+
+public interface AppsResources {
+    @POST("/v1/apps")
+    RegisteredApplication registerApplication(@Param("client_name") String clientName,
+            @Param("redirect_uris") String redirectUris,
+            @Param(value = "scopes", arrayDelimiter = ' ') String[] scopes,
+            @Nullable @Param("website") String website) throws MicroBlogException;
 }

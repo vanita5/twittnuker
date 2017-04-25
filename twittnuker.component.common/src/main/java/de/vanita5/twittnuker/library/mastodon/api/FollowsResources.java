@@ -23,5 +23,5 @@
 
 package de.vanita5.twittnuker.library.mastodon.api;
 
-public interface NotificationResources {
+public interface FollowsResources {
 }
