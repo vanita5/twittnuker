@@ -37,8 +37,10 @@ import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.constant.stopAutoRefreshWhenBatteryLowKey
 import de.vanita5.twittnuker.model.AccountPreferences
-import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
+import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
@@ -124,7 +126,8 @@ class TaskServiceRunner(
             val preferences: SharedPreferences,
             val refreshable: (AccountPreferences) -> Boolean,
             val getSinceIds: (Array<UserKey>) -> Array<String?>?
-    ) : SimpleRefreshTaskParam() {
+    ) : RefreshTaskParam {
+
         override val accountKeys: Array<UserKey> by lazy {
             return@lazy AccountPreferences.getAccountPreferences(context, preferences,
                     DataStoreUtils.getAccountKeys(context)).filter {
@@ -132,8 +135,10 @@ class TaskServiceRunner(
             }.mapToArray(AccountPreferences::accountKey)
         }
 
-        override val sinceIds: Array<String?>?
-            get() = getSinceIds(accountKeys)
+        override val pagination: Array<Pagination?>?
+            get() = getSinceIds(accountKeys)?.mapToArray { sinceId ->
+                SinceMaxPagination().also { it.sinceId = sinceId }
+            }
 
     }
 

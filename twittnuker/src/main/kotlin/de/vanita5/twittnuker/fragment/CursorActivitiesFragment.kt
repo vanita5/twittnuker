@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.*
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
@@ -144,27 +145,21 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         super.onLoadMoreContents(position)
         if (position == 0L) return
         val contentUri = this.contentUri
-        getActivities(object : SimpleRefreshTaskParam() {
-            override val accountKeys: Array<UserKey> by lazy {
+        getActivities(object : RefreshTaskParam {
+            override val accountKeys by lazy {
                 this@CursorActivitiesFragment.accountKeys
             }
 
-            override val maxIds: Array<String?>?
-                get() {
-                    val context = context ?: return null
-                    return DataStoreUtils.getRefreshOldestActivityMaxPositions(context, contentUri,
-                            accountKeys.toNulls())
+            override val pagination by lazy {
+                val keys = accountKeys.toNulls()
+                val maxIds = DataStoreUtils.getRefreshOldestActivityMaxPositions(context, contentUri,
+                        keys)
+                val maxSortIds = DataStoreUtils.getRefreshOldestActivityMaxSortPositions(context,
+                        contentUri, keys)
+                return@lazy Array(keys.size) { idx ->
+                    SinceMaxPagination.maxId(maxIds[idx], maxSortIds[idx])
                 }
-
-            override val maxSortIds: LongArray?
-                get() {
-                    val context = context ?: return null
-                    return DataStoreUtils.getRefreshOldestActivityMaxSortPositions(context,
-                            contentUri, accountKeys.toNulls())
-                }
-
-            override val hasMaxIds: Boolean
-                get() = true
+            }
 
             override val shouldAbort: Boolean
                 get() = context == null
@@ -175,27 +170,21 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
         val contentUri = this.contentUri
-        getActivities(object : SimpleRefreshTaskParam() {
-            override val accountKeys: Array<UserKey> by lazy {
+        getActivities(object : RefreshTaskParam {
+            override val accountKeys by lazy {
                 this@CursorActivitiesFragment.accountKeys
             }
 
-            override val sinceIds: Array<String?>?
-                get() {
-                    val context = context ?: return null
-                    return DataStoreUtils.getRefreshNewestActivityMaxPositions(context, contentUri,
-                        accountKeys.toNulls())
+            override val pagination by lazy {
+                val keys = accountKeys.toNulls()
+                val sinceIds = DataStoreUtils.getRefreshNewestActivityMaxPositions(context,
+                        contentUri, keys)
+                val sinceSortIds = DataStoreUtils.getRefreshNewestActivityMaxSortPositions(context,
+                        contentUri, keys)
+                return@lazy Array(keys.size) { idx ->
+                    SinceMaxPagination.sinceId(sinceIds[idx], sinceSortIds[idx])
                 }
-
-            override val sinceSortIds: LongArray?
-                get() {
-                    val context = context ?: return null
-                    return DataStoreUtils.getRefreshNewestActivityMaxSortPositions(context,
-                            contentUri, accountKeys.toNulls())
-                }
-
-            override val hasSinceIds: Boolean
-                get() = true
+            }
 
             override val shouldAbort: Boolean
                 get() = context == null

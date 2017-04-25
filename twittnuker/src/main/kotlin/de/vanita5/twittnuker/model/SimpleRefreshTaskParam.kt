@@ -22,31 +22,15 @@
 
 package de.vanita5.twittnuker.model
 
+import de.vanita5.twittnuker.model.pagination.Pagination
+
 abstract class SimpleRefreshTaskParam : RefreshTaskParam {
 
-    internal var cached: Array<UserKey>? = null
+    override val pagination: Array<out Pagination?>? = null
 
-    override val maxIds: Array<String?>?
-        get() = null
+    override val extraId: Long = -1
 
-    override val sinceIds: Array<String?>?
-        get() = null
+    override val isLoadingMore: Boolean = false
 
-    override val cursors: Array<String?>?
-        get() = null
-
-    override val sinceSortIds: LongArray?
-        get() = null
-
-    override val maxSortIds: LongArray?
-        get() = null
-
-    override val extraId: Long
-        get() = -1
-
-    override val isLoadingMore: Boolean
-        get() = false
-
-    override val shouldAbort: Boolean
-        get() = false
+    override val shouldAbort: Boolean = false
 }

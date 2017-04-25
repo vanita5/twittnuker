@@ -97,7 +97,6 @@ import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment.Companion.toPagination
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.loader.statuses.ConversationLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
@@ -106,6 +105,8 @@ import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.analyzer.StatusView
 import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
+import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.AbsAccountRequestTask
@@ -154,13 +155,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             adapter.isConversationsLoading = true
             adapter.updateItemDecoration()
             val status: ParcelableStatus = args.getParcelable(EXTRA_STATUS)
-            val maxId = args.getString(EXTRA_MAX_ID)
-            val sinceId = args.getString(EXTRA_SINCE_ID)
-            val maxSortId = args.getLong(EXTRA_MAX_SORT_ID)
-            val sinceSortId = args.getLong(EXTRA_SINCE_SORT_ID)
             val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-            return ConversationLoader(activity, status, sinceSortId, maxSortId, adapter.getData(),
-                    true, loadingMore).apply {
+            return ConversationLoader(activity, status, adapter.getData(), true, loadingMore).apply {
                 pagination = args.toPagination()
                 // Setting comparator to null lets statuses sort ascending
                 comparator = null
@@ -173,7 +169,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val conversationLoader = loader as ConversationLoader
             var supportedPositions: Long = 0
             if (data != null && !data.isEmpty()) {
-                if (conversationLoader.sinceSortId < data[data.size - 1].sort_id) {
+                val sinceSortId = (conversationLoader.pagination as? SinceMaxPagination)?.sinceSortId ?: -1
+                if (sinceSortId < data[data.size - 1].sort_id) {
                     supportedPositions = supportedPositions or ILoadMoreSupportAdapter.END
                 }
                 if (data[0].in_reply_to_status_id != null) {
@@ -2183,5 +2180,18 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private val STATE_LOADED = 1
         private val STATE_LOADING = 2
         private val STATE_ERROR = 3
+
+        fun Bundle.toPagination(): Pagination {
+            val maxId = getString(EXTRA_MAX_ID)
+            val sinceId = getString(EXTRA_SINCE_ID)
+            val maxSortId = getLong(EXTRA_MAX_SORT_ID)
+            val sinceSortId = getLong(EXTRA_SINCE_SORT_ID)
+            return SinceMaxPagination().apply {
+                this.maxId = maxId
+                this.sinceId = sinceId
+                this.maxSortId = maxSortId
+                this.sinceSortId = sinceSortId
+            }
+        }
     }
 }

@@ -48,9 +48,10 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.ParameterizedExpression
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
+import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.*
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
@@ -181,44 +182,38 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
         if (ILoadMoreSupportAdapter.START in position) return
         super.onLoadMoreContents(position)
         if (position == 0L) return
-        getStatuses(object : SimpleRefreshTaskParam() {
-            override val accountKeys: Array<UserKey> by lazy {
+        getStatuses(object : RefreshTaskParam {
+            override val accountKeys by lazy {
                 this@CursorStatusesFragment.accountKeys
             }
 
-            override val maxIds: Array<String?>?
-                get() = getOldestStatusIds(accountKeys)
-
-            override val maxSortIds: LongArray?
-                get() {
-                    val context = context ?: return null
-                    return DataStoreUtils.getOldestStatusSortIds(context, contentUri,
-                            accountKeys.toNulls())
+            override val pagination by lazy {
+                val keys = accountKeys.toNulls()
+                val maxIds = DataStoreUtils.getOldestStatusIds(context, contentUri, keys)
+                val maxSortIds = DataStoreUtils.getOldestStatusSortIds(context, contentUri, keys)
+                return@lazy Array(keys.size) { idx ->
+                    SinceMaxPagination.maxId(maxIds[idx], maxSortIds[idx])
                 }
+            }
 
-            override val hasMaxIds: Boolean
-                get() = true
-
-            override val shouldAbort: Boolean
-                get() = context == null
         })
     }
 
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
-        getStatuses(object : SimpleRefreshTaskParam() {
+        getStatuses(object : RefreshTaskParam {
             override val accountKeys: Array<UserKey> by lazy {
                 this@CursorStatusesFragment.accountKeys
             }
 
-            override val hasMaxIds: Boolean
-                get() = false
-
-            override val sinceIds: Array<String?>?
-                get() = getNewestStatusIds(accountKeys)
-
-            override val sinceSortIds: LongArray?
-                get() = DataStoreUtils.getNewestStatusSortIds(context, contentUri, accountKeys.toNulls())
+            override val pagination by lazy {
+                val keys = accountKeys.toNulls()
+                val sinceIds = DataStoreUtils.getNewestStatusIds(context, contentUri, keys)
+                val sinceSortIds = DataStoreUtils.getNewestStatusSortIds(context, contentUri, keys)
+                return@lazy Array(keys.size) { idx ->
+                    SinceMaxPagination.sinceId(sinceIds[idx], sinceSortIds[idx])
+                }
+            }
 
             override val shouldAbort: Boolean
                 get() = context == null
@@ -231,11 +226,6 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
         return buildStatusFilterWhereClause(preferences, table, null)
     }
 
-    protected fun getNewestStatusIds(accountKeys: Array<UserKey>): Array<String?>? {
-        val context = context ?: return null
-        return DataStoreUtils.getNewestStatusIds(context, contentUri, accountKeys.toNulls())
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         val context = context
@@ -244,12 +234,6 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
                 twitterWrapper.clearNotificationAsync(notificationType, accountKey)
             }
         }
-    }
-
-
-    protected fun getOldestStatusIds(accountKeys: Array<UserKey>): Array<String?>? {
-        val context = context ?: return null
-        return DataStoreUtils.getOldestStatusIds(context, contentUri, accountKeys.toNulls())
     }
 
     protected open fun processWhere(where: Expression, whereArgs: Array<String>): ParameterizedExpression {

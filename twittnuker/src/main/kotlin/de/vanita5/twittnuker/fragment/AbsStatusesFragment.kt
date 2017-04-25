@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.timeline.TimelineFilter
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
@@ -351,10 +352,8 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         DebugLog.v(msg = "Load activity gap $status")
         adapter.addGapLoadingId(ObjectId(status.account_key, status.id))
         val accountKeys = arrayOf(status.account_key)
-        val maxIds = arrayOf<String?>(status.id)
-        val maxSortIds = longArrayOf(status.sort_id)
-        getStatuses(BaseRefreshTaskParam(accountKeys = accountKeys, maxIds = maxIds, sinceIds = null,
-                maxSortIds = maxSortIds, sinceSortIds = null))
+        val pagination = arrayOf(SinceMaxPagination.maxId(status.id, status.sort_id))
+        getStatuses(BaseRefreshTaskParam(accountKeys, pagination))
     }
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia,

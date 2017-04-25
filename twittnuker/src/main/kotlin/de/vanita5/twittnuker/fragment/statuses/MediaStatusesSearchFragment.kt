@@ -27,7 +27,6 @@ import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.fragment.AbsMediaStatusesFragment
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment.Companion.toPagination
 import de.vanita5.twittnuker.loader.statuses.MediaStatusesSearchLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Utils
@@ -43,9 +42,7 @@ class MediaStatusesSearchFragment : AbsMediaStatusesFragment() {
         val makeGap = args.getBoolean(EXTRA_MAKE_GAP, true)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
         return MediaStatusesSearchLoader(activity, accountKey, query, adapter.getData(), null, tabPosition,
-                fromUser, makeGap, loadingMore).apply {
-            pagination = args.toPagination()
-        }
+                fromUser, makeGap, loadingMore)
     }
 
     override fun getStatuses(maxId: String?, sinceId: String?): Int {

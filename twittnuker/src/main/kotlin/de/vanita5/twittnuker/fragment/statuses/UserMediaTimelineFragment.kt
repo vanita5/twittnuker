@@ -27,7 +27,6 @@ import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.AbsMediaStatusesFragment
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment.Companion.toPagination
 import de.vanita5.twittnuker.loader.statuses.MediaTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -41,10 +40,8 @@ class UserMediaTimelineFragment : AbsMediaStatusesFragment() {
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return MediaTimelineLoader(context, accountKey, userKey, screenName, adapter.getData(), null,
-                tabPosition, fromUser, loadingMore).apply {
-            pagination = args.toPagination()
-        }
+        return MediaTimelineLoader(context, accountKey, userKey, screenName, adapter.getData(),
+                null, tabPosition, fromUser, loadingMore)
     }
 
 

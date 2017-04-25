@@ -20,19 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model
+package de.vanita5.twittnuker.extension.model
 
-import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.RefreshTaskParam
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 
-interface RefreshTaskParam {
-    val accountKeys: Array<UserKey>
+val RefreshTaskParam.hasMaxIds: Boolean
+    get() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
-    val pagination: Array<out Pagination?>? get() = null
+fun RefreshTaskParam.getMaxId(index: Int): String? {
+    return (pagination?.get(index) as? SinceMaxPagination)?.maxId
+}
 
-    val extraId: Long get() = -1
+fun RefreshTaskParam.getSinceId(index: Int): String? {
+    return (pagination?.get(index) as? SinceMaxPagination)?.sinceId
+}
 
-    val isLoadingMore: Boolean get() = false
+fun RefreshTaskParam.getMaxSortId(index: Int): Long {
+    return (pagination?.get(index) as? SinceMaxPagination)?.maxSortId ?: -1
+}
 
-    val shouldAbort: Boolean get() = false
-
+fun RefreshTaskParam.getSinceSortId(index: Int): Long {
+    return (pagination?.get(index) as? SinceMaxPagination)?.sinceSortId ?: -1
 }

@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
@@ -308,10 +309,9 @@ abstract class AbsActivitiesFragment protected constructor() :
             }
         }
         val accountKeys = arrayOf(activity.account_key)
-        val maxIds = arrayOf(activity.min_position)
-        val maxSortIds = longArrayOf(activity.min_sort_position)
-        getActivities(BaseRefreshTaskParam(accountKeys = accountKeys, maxIds = maxIds,
-                sinceIds = null, maxSortIds = maxSortIds, sinceSortIds = null).also {
+        val pagination = arrayOf(SinceMaxPagination.maxId(activity.min_position,
+                activity.min_sort_position))
+        getActivities(BaseRefreshTaskParam(accountKeys, pagination).also {
             it.extraId = activity._id
         })
     }

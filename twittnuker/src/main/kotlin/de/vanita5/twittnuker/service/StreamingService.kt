@@ -39,6 +39,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.toLongOr
+import org.mariotaku.ktextension.toNulls
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUserStream
@@ -55,6 +56,7 @@ import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
@@ -443,18 +445,19 @@ class StreamingService : BaseService() {
             @UiThread
             private fun getInteractions() {
                 val task = GetActivitiesAboutMeTask(context)
-                task.params = object : SimpleRefreshTaskParam() {
+                task.params = object : RefreshTaskParam {
                     override val accountKeys: Array<UserKey> = arrayOf(account.key)
 
-                    override val sinceIds: Array<String?>?
-                        get() = DataStoreUtils.getNewestActivityMaxPositions(context,
-                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key), null, null)
-
-                    override val sinceSortIds: LongArray?
-                        get() = DataStoreUtils.getNewestActivityMaxSortPositions(context,
-                                Activities.AboutMe.CONTENT_URI, arrayOf(account.key), null, null)
-
-                    override val hasSinceIds: Boolean = true
+                    override val pagination by lazy {
+                        val keys = accountKeys.toNulls()
+                        val sinceIds = DataStoreUtils.getRefreshNewestActivityMaxPositions(context,
+                                Activities.AboutMe.CONTENT_URI, keys)
+                        val sinceSortIds = DataStoreUtils.getRefreshNewestActivityMaxSortPositions(context,
+                                Activities.AboutMe.CONTENT_URI, keys)
+                        return@lazy Array(keys.size) { idx ->
+                            SinceMaxPagination.sinceId(sinceIds[idx], sinceSortIds[idx])
+                        }
+                    }
 
                 }
                 TaskStarter.execute(task)
@@ -465,8 +468,6 @@ class StreamingService : BaseService() {
                 val task = GetMessagesTask(context)
                 task.params = object : GetMessagesTask.RefreshMessagesTaskParam(context) {
                     override val accountKeys: Array<UserKey> = arrayOf(account.key)
-
-                    override val hasSinceIds: Boolean = true
                 }
                 TaskStarter.execute(task)
             }

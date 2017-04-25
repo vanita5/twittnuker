@@ -39,9 +39,13 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.extension.model.getMaxId
+import de.vanita5.twittnuker.extension.model.getMaxSortId
+import de.vanita5.twittnuker.extension.model.getSinceId
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.RefreshTaskParam
+import de.vanita5.twittnuker.model.TwitterListResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetActivitiesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -49,7 +53,6 @@ import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.model.TwitterListResponse
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import java.util.*
 
@@ -66,9 +69,6 @@ abstract class GetActivitiesTask(
     override fun doLongOperation(param: RefreshTaskParam): List<TwitterListResponse<Activity>> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys
-        val maxIds = param.maxIds
-        val maxSortIds = param.maxSortIds
-        val sinceIds = param.sinceIds
         val cr = context.contentResolver
         val result = ArrayList<TwitterListResponse<Activity>>()
         val loadItemLimit = preferences[loadItemLimitKey]
@@ -80,26 +80,17 @@ abstract class GetActivitiesTask(
             val microBlog = credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             val paging = Paging()
             paging.count(loadItemLimit)
-            var maxId: String? = null
-            var maxSortId: Long = -1
-            if (maxIds != null) {
-                maxId = maxIds[i]
-                if (maxSortIds != null) {
-                    maxSortId = maxSortIds[i]
-                }
-                if (maxId != null) {
-                    paging.maxId(maxId)
-                }
+            val maxId = param.getMaxId(i)
+            val maxSortId = param.getMaxSortId(i)
+            if (maxId != null) {
+                paging.maxId(maxId)
             }
-            var sinceId: String? = null
-            if (sinceIds != null) {
-                sinceId = sinceIds[i]
-                if (sinceId != null) {
-                    paging.sinceId(sinceId)
-                    if (maxIds == null || maxId == null) {
-                        paging.setLatestResults(true)
-                        saveReadPosition[i] = true
-                    }
+            val sinceId = param.getSinceId(i)
+            if (sinceId != null) {
+                paging.sinceId(sinceId)
+                if (maxId == null) {
+                    paging.setLatestResults(true)
+                    saveReadPosition[i] = true
                 }
             }
             // We should delete old activities has intersection with new items
