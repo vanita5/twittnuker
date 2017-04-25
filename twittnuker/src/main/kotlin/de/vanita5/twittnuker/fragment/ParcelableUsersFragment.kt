@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
+import de.vanita5.twittnuker.model.ListResponse
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
@@ -143,7 +144,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
         if (loader is IExtendedLoader) {
             loader.fromUser = false
         }
-        if (loader is IPaginationLoader) {
+        if (loader is IPaginationLoader && data?.loadSuccess() ?: false) {
             nextPagination = loader.nextPagination
             prevPagination = loader.prevPagination
         }
@@ -268,6 +269,10 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     private fun findPosition(accountKey: UserKey, userKey: UserKey): Int {
         return adapter.findPosition(accountKey, userKey)
+    }
+
+    private fun List<ParcelableUser>.loadSuccess(): Boolean {
+        return this !is ListResponse<*> || !this.hasException()
     }
 
     protected inner class UsersBusCallback {
