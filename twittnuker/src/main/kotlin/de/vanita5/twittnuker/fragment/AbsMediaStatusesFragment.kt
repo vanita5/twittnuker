@@ -34,9 +34,10 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.extension.reachingEnd
 import de.vanita5.twittnuker.extension.reachingStart
-import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
+import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
@@ -137,8 +138,9 @@ abstract class AbsMediaStatusesFragment : AbsContentRecyclerViewFragment<Stagger
     protected open fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
             data: List<ParcelableStatus>?, changed: Boolean): Boolean {
         if (loader !is AbsRequestStatusesLoader) return false
-        val maxId = loader.maxId?.takeIf(String::isNotEmpty)
-        val sinceId = loader.sinceId?.takeIf(String::isNotEmpty)
+        val pagination = loader.pagination as? SinceMaxPagination
+        val maxId = pagination?.maxId?.takeIf(String::isNotEmpty)
+        val sinceId = pagination?.sinceId?.takeIf(String::isNotEmpty)
         if (sinceId == null && maxId != null) {
             if (data != null && !data.isEmpty()) {
                 return changed

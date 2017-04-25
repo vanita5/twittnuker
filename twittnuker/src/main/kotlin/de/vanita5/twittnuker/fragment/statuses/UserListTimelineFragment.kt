@@ -20,13 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
 import de.vanita5.twittnuker.loader.statuses.UserListTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -94,14 +95,13 @@ class UserListTimelineFragment : ParcelableStatusesFragment() {
         val listId = args.getString(EXTRA_LIST_ID)
         val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
         val listName = args.getString(EXTRA_LIST_NAME)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
         return UserListTimelineLoader(activity, accountKey, listId, userKey, screenName,
-                listName, sinceId, maxId, adapterData, savedStatusesFileArgs, tabPosition,
-                fromUser, loadingMore)
+                listName, adapterData, savedStatusesFileArgs, tabPosition, fromUser, loadingMore).apply {
+            pagination = args.toPagination()
+        }
     }
 
 }

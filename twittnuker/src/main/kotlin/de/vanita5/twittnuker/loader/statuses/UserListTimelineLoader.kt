@@ -32,10 +32,10 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
 class UserListTimelineLoader(
@@ -45,19 +45,16 @@ class UserListTimelineLoader(
         private val userKey: UserKey?,
         private val screenName: String?,
         private val listName: String?,
-        sinceId: String?,
-        maxId: String?,
         adapterData: List<ParcelableStatus>?,
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, -1, adapterData, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, accountKey, adapterData, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
-        return getMicroBlogStatuses(account, paging).map {
+    override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
+        return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
             it.toParcelable(account.key, account.type, profileImageSize)
         }
     }

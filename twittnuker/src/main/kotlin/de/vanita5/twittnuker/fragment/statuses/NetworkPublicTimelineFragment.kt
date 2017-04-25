@@ -20,31 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.loader.statuses.PublicTimelineLoader
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
+import de.vanita5.twittnuker.loader.statuses.NetworkPublicTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Utils
 import java.util.*
 
-class PublicTimelineFragment : ParcelableStatusesFragment() {
-
-    override fun onCreateStatusesLoader(context: Context, args: Bundle,
-                                        fromUser: Boolean): Loader<List<ParcelableStatus>?> {
-        refreshing = true
-        val data = adapterData
-        val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return PublicTimelineLoader(context, accountKey, sinceId, maxId, data,
-                savedStatusesFileArgs, tabPosition, fromUser, loadingMore)
-    }
+class NetworkPublicTimelineFragment : ParcelableStatusesFragment() {
 
     override val savedStatusesFileArgs: Array<String>?
         get() {
@@ -55,14 +43,23 @@ class PublicTimelineFragment : ParcelableStatusesFragment() {
             return result.toTypedArray()
         }
 
-    fun onLoadMoreContents(position: Int) {
-        // Ignore for now cause Fanfou doesn't support load more for public timeline.
-    }
-
     override val readPositionTagWithArguments: String?
         get() {
             val tabPosition = arguments.getInt(EXTRA_TAB_POSITION, -1)
             if (tabPosition < 0) return null
-            return "public_timeline"
+            return "networkpublic_timeline"
         }
+
+    override fun onCreateStatusesLoader(context: Context, args: Bundle,
+                                        fromUser: Boolean): Loader<List<ParcelableStatus>?> {
+        refreshing = true
+        val data = adapterData
+        val accountKey = Utils.getAccountKey(context, args)
+        val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+        val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
+        return NetworkPublicTimelineLoader(context, accountKey, data, savedStatusesFileArgs,
+                tabPosition, fromUser, loadingMore).apply {
+            pagination = args.toPagination()
+        }
+    }
 }

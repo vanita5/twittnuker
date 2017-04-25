@@ -30,9 +30,9 @@ import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
@@ -43,6 +43,8 @@ import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusDestroyedEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.event.StatusRetweetedEvent
+import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.util.Utils
 import java.util.*
 
@@ -59,6 +61,10 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
 
     protected open val savedStatusesFileArgs: Array<String>?
         get() = null
+
+
+    override val accountKeys: Array<UserKey>
+        get() = Utils.getAccountKeys(context, arguments) ?: emptyArray()
 
     private var lastId: String? = null
     private var page = 1
@@ -113,11 +119,8 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
         if (data == null || data.isEmpty()) return false
         val tmpLastId = lastId
         lastId = data[data.size - 1].id
-        return !TextUtils.equals(lastId, tmpLastId)
+        return lastId != tmpLastId
     }
-
-    override val accountKeys: Array<UserKey>
-        get() = Utils.getAccountKeys(context, arguments) ?: emptyArray()
 
     override fun createMessageBusCallback(): Any {
         return ParcelableStatusesBusCallback()
@@ -285,4 +288,14 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
             var page: Int = -1
     ) : BaseRefreshTaskParam(accountKeys, maxIds, sinceIds)
 
+    companion object {
+        fun Bundle.toPagination(): Pagination {
+            val maxId = getString(EXTRA_MAX_ID)
+            val sinceId = getString(EXTRA_SINCE_ID)
+            return SinceMaxPagination().apply {
+                this.maxId = maxId
+                this.sinceId = sinceId
+            }
+        }
+    }
 }

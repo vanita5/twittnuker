@@ -38,27 +38,26 @@ import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.PaginatedList
+import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
 open class TweetSearchLoader(
         context: Context,
         accountKey: UserKey?,
         private val query: String?,
-        sinceId: String?,
-        maxId: String?,
-        page: Int,
         adapterData: List<ParcelableStatus>?,
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
         fromUser: Boolean,
         override val isGapEnabled: Boolean,
         loadingMore: Boolean
-) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, page, adapterData, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, accountKey, adapterData, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
-        return getMicroBlogStatuses(account, paging).map {
+    override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
+        return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
             it.toParcelable(account.key, account.type, profileImageSize)
         }
     }
@@ -71,22 +70,20 @@ open class TweetSearchLoader(
     protected open fun processQuery(details: AccountDetails, query: String): String {
         if (details.type == AccountType.TWITTER) {
             if (details.extras?.official ?: false) {
-                return smQuery(query)
+                return smQuery(query, pagination)
             }
             return "$query exclude:retweets"
         }
         return query
     }
 
-    protected fun smQuery(query: String): String {
-        var universalQueryText = query
-        if (maxId != null) {
-            universalQueryText += " max_id:$maxId"
+    override fun processPaging(paging: Paging, details: AccountDetails, loadItemLimit: Int) {
+        if (details.type == AccountType.STATUSNET) {
+            paging.rpp(loadItemLimit)
+            pagination?.applyTo(paging)
+        } else {
+            super.processPaging(paging, details, loadItemLimit)
         }
-        if (sinceId != null) {
-            universalQueryText += " since_id:$sinceId"
-        }
-        return universalQueryText
     }
 
     private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): List<Status> {
@@ -118,15 +115,20 @@ open class TweetSearchLoader(
         throw MicroBlogException("Not implemented")
     }
 
-    override fun processPaging(details: AccountDetails, loadItemLimit: Int, paging: Paging) {
-        if (details.type == AccountType.STATUSNET) {
-            paging.rpp(loadItemLimit)
-            val page = page
-            if (page > 0) {
-                paging.page(page)
+    companion object {
+
+        fun smQuery(query: String, pagination: Pagination?): String {
+            var universalQueryText = "$query filter:media"
+
+            if (pagination !is SinceMaxPagination) return universalQueryText
+            pagination.maxId?.let { maxId ->
+                universalQueryText += " max_id:$maxId"
             }
-        } else {
-            super.processPaging(details, loadItemLimit, paging)
+            pagination.sinceId?.let { sinceId ->
+                universalQueryText += " since_id:$sinceId"
+            }
+
+            return universalQueryText
         }
     }
 

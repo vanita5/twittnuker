@@ -32,12 +32,14 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
 class UserFavoritesLoader(
@@ -45,25 +47,21 @@ class UserFavoritesLoader(
         accountKey: UserKey?,
         private val userKey: UserKey?,
         private val screenName: String?,
-        sinceId: String?,
-        maxId: String?,
-        page: Int,
         data: List<ParcelableStatus>?,
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, page, data, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, accountKey, data, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+    override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
         when (account.type) {
             AccountType.MASTODON -> {
                 return getMastodonStatuses(account, paging)
             }
         }
-        return getMicroBlogStatuses(account, paging).map {
+        return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
             it.toParcelable(account.key, account.type, profileImageSize)
         }
     }
@@ -71,20 +69,6 @@ class UserFavoritesLoader(
     @WorkerThread
     override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
         return InternalTwitterContentUtils.isFiltered(database, status, false)
-    }
-
-    override fun processPaging(details: AccountDetails, loadItemLimit: Int, paging: Paging) {
-        when (details.type) {
-            AccountType.FANFOU -> {
-                paging.setCount(loadItemLimit)
-                if (page > 0) {
-                    paging.page(page)
-                }
-            }
-            else -> {
-                super.processPaging(details, loadItemLimit, paging)
-            }
-        }
     }
 
     private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): ResponseList<Status> {
@@ -97,7 +81,7 @@ class UserFavoritesLoader(
         throw MicroBlogException("Null user")
     }
 
-    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
         if (userKey != null && userKey != account.key) {
             throw MicroBlogException("Only current account favorites is supported")
         }
@@ -105,6 +89,6 @@ class UserFavoritesLoader(
             throw MicroBlogException("Only current account favorites is supported")
         }
         val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
-        return mastodon.getFavourites(paging).map { it.toParcelable(account.key) }
+        return mastodon.getFavourites(paging).mapToPaginated { it.toParcelable(account.key) }
     }
 }

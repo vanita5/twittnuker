@@ -28,7 +28,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.TabAccountFlags
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
-import de.vanita5.twittnuker.fragment.UserFavoritesFragment
+import de.vanita5.twittnuker.fragment.statuses.UserFavoritesFragment
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.StringHolder

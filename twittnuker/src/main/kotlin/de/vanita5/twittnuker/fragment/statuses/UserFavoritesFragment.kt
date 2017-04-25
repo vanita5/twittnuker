@@ -20,12 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
 import de.vanita5.twittnuker.loader.statuses.UserFavoritesLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -75,16 +76,14 @@ class UserFavoritesFragment : ParcelableStatusesFragment() {
             Loader<List<ParcelableStatus>?> {
         refreshing = true
         val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val page = args.getInt(EXTRA_PAGE, -1)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return UserFavoritesLoader(context, accountKey, userKey, screenName, sinceId, maxId,
-                page, adapterData, savedStatusesFileArgs, tabPosition, fromUser,
-                loadingMore)
+        return UserFavoritesLoader(context, accountKey, userKey, screenName, adapterData, savedStatusesFileArgs,
+                tabPosition, fromUser, loadingMore).apply {
+            pagination = args.toPagination()
+        }
     }
 
     override fun notifyFavoriteTask(event: FavoriteTaskEvent) {

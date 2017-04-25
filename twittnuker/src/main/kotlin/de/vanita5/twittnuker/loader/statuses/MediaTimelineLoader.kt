@@ -30,34 +30,32 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.twittnuker.alias.MastodonTimelineOption
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.api.tryShowUser
+import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.loader.statuses.UserTimelineLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.library.mastodon.model.TimelineOption as MastodonTimelineOption
 
 class MediaTimelineLoader(
         context: Context,
         accountKey: UserKey?,
         private val userKey: UserKey?,
         private val screenName: String?,
-        sinceId: String?,
-        maxId: String?,
         data: List<ParcelableStatus>?,
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
         fromUser: Boolean,
         loadingMore: Boolean
-) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, -1, data, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, accountKey, data, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
 
     private var user: User? = null
 
@@ -73,10 +71,10 @@ class MediaTimelineLoader(
         }
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+    override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
         when (account.type) {
             AccountType.MASTODON -> return getMastodonStatuses(account, paging)
-            else -> return getMicroBlogStatuses(account, paging).map {
+            else -> return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
                 it.toParcelable(account.key, account.type, profileImageSize)
             }
         }
@@ -136,11 +134,11 @@ class MediaTimelineLoader(
         throw MicroBlogException("Not implemented")
     }
 
-    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
+    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
         val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
-        val option = de.vanita5.twittnuker.library.mastodon.model.TimelineOption()
+        val option = MastodonTimelineOption()
         option.onlyMedia(true)
         return UserTimelineLoader.getMastodonStatuses(mastodon, userKey, screenName, paging,
-                option).map { it.toParcelable(account.key) }
+                option).mapToPaginated { it.toParcelable(account.key) }
     }
 }

@@ -47,6 +47,8 @@ import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
+import de.vanita5.twittnuker.fragment.statuses.MediaStatusesSearchFragment
+import de.vanita5.twittnuker.fragment.statuses.StatusesSearchFragment
 import de.vanita5.twittnuker.fragment.users.SearchUsersFragment
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.Search

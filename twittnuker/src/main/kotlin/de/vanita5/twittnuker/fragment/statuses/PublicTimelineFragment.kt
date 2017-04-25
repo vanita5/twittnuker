@@ -20,42 +20,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.loader.statuses.MediaStatusesSearchLoader
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
+import de.vanita5.twittnuker.loader.statuses.PublicTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Utils
+import java.util.*
 
-class MediaStatusesSearchFragment : AbsMediaStatusesFragment() {
+class PublicTimelineFragment : ParcelableStatusesFragment() {
 
-    override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
-            Loader<List<ParcelableStatus>?> {
+    override val savedStatusesFileArgs: Array<String>?
+        get() {
+            val accountKey = Utils.getAccountKey(context, arguments)
+            val result = ArrayList<String>()
+            result.add(AUTHORITY_PUBLIC_TIMELINE)
+            result.add("account=$accountKey")
+            return result.toTypedArray()
+        }
+
+    override val readPositionTagWithArguments: String?
+        get() {
+            val tabPosition = arguments.getInt(EXTRA_TAB_POSITION, -1)
+            if (tabPosition < 0) return null
+            return "public_timeline"
+        }
+
+    override fun onCreateStatusesLoader(context: Context, args: Bundle,
+                                        fromUser: Boolean): Loader<List<ParcelableStatus>?> {
         refreshing = true
+        val data = adapterData
         val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val page = args.getInt(EXTRA_PAGE, -1)
-        val query = args.getString(EXTRA_QUERY)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
-        val makeGap = args.getBoolean(EXTRA_MAKE_GAP, true)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return MediaStatusesSearchLoader(activity, accountKey, query, sinceId, maxId, page,
-                adapter.getData(), null, tabPosition, fromUser, makeGap, loadingMore)
+        return PublicTimelineLoader(context, accountKey, data, savedStatusesFileArgs, tabPosition,
+                fromUser, loadingMore).apply {
+            pagination = args.toPagination()
+        }
     }
-
-    override fun getStatuses(maxId: String?, sinceId: String?): Int {
-        if (context == null) return -1
-        val args = Bundle(arguments)
-        args.putBoolean(EXTRA_MAKE_GAP, false)
-        args.putString(EXTRA_MAX_ID, maxId)
-        args.putString(EXTRA_SINCE_ID, sinceId)
-        args.putBoolean(EXTRA_FROM_USER, true)
-        loaderManager.restartLoader(loaderId, args, this)
-        return 0
-    }
-
 }

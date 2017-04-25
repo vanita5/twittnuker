@@ -34,6 +34,7 @@ import org.attoparser.simple.SimpleMarkupParser
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.library.twitter.model.TimelineOption
@@ -41,11 +42,13 @@ import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.http.Endpoint
 import org.mariotaku.restfu.http.HttpRequest
 import org.mariotaku.restfu.http.mime.SimpleBody
+import de.vanita5.twittnuker.alias.MastodonStatus
+import de.vanita5.twittnuker.alias.MastodonTimelineOption
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -55,8 +58,6 @@ import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
-import de.vanita5.twittnuker.library.mastodon.model.Status as MastodonStatus
-import de.vanita5.twittnuker.library.mastodon.model.TimelineOption as MastodonTimelineOption
 
 class UserTimelineLoader(
         context: Context,
@@ -64,8 +65,6 @@ class UserTimelineLoader(
         private val userKey: UserKey?,
         private val screenName: String?,
         private val profileUrl: String?,
-        sinceId: String?,
-        maxId: String?,
         data: List<ParcelableStatus>?,
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
@@ -73,8 +72,7 @@ class UserTimelineLoader(
         loadingMore: Boolean,
         val pinnedStatusIds: Array<String>?,
         val timelineFilter: UserTimelineFilter? = null
-) : AbsRequestStatusesLoader(context, accountKey, sinceId, maxId, -1, data, savedStatusesArgs,
-        tabPosition, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, accountKey, data, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
 
     private val pinnedStatusesRef = AtomicReference<List<ParcelableStatus>>()
 
@@ -86,12 +84,11 @@ class UserTimelineLoader(
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging) = when (account.type) {
-        AccountType.MASTODON -> getMastodonStatuses(account, paging).map {
+        AccountType.MASTODON -> getMastodonStatuses(account, paging).mapToPaginated {
             it.toParcelable(account.key)
         }
-        else -> getMicroBlogStatuses(account, paging).map {
-            it.toParcelable(account.key,
-                    account.type, profileImageSize = profileImageSize)
+        else -> getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
+            it.toParcelable(account.key, account.type, profileImageSize = profileImageSize)
         }
     }
 
@@ -105,10 +102,10 @@ class UserTimelineLoader(
                 status.quoted_source, null, status.quoted_user_key)
     }
 
-    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): List<de.vanita5.twittnuker.library.mastodon.model.Status> {
+    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): LinkHeaderList<MastodonStatus> {
         val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
         val id = userKey?.id ?: throw MicroBlogException("Only ID are supported at this moment")
-        val option = de.vanita5.twittnuker.library.mastodon.model.TimelineOption()
+        val option = MastodonTimelineOption()
         if (timelineFilter != null) {
             option.excludeReplies(!timelineFilter.isIncludeReplies)
         }
@@ -198,7 +195,7 @@ class UserTimelineLoader(
 
     companion object {
         fun getMastodonStatuses(mastodon: Mastodon, userKey: UserKey?, screenName: String?, paging: Paging,
-                                option: de.vanita5.twittnuker.library.mastodon.model.TimelineOption?): List<de.vanita5.twittnuker.library.mastodon.model.Status> {
+                option: MastodonTimelineOption?): LinkHeaderList<MastodonStatus> {
             val id = userKey?.id ?: throw MicroBlogException("Only ID are supported at this moment")
             return mastodon.getStatuses(id, paging, option)
         }

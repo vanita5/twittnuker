@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
@@ -50,14 +50,13 @@ class UserMentionsFragment : StatusesSearchFragment() {
                                         fromUser: Boolean): Loader<List<ParcelableStatus>?> {
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val page = args.getInt(EXTRA_PAGE, -1)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val makeGap = args.getBoolean(EXTRA_MAKE_GAP, true)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return UserMentionsLoader(activity, accountKey, screenName, maxId, sinceId, page,
-                adapterData, savedStatusesFileArgs, tabPosition, fromUser, makeGap, loadingMore)
+        return UserMentionsLoader(activity, accountKey, screenName, adapterData, savedStatusesFileArgs,
+                tabPosition, fromUser, makeGap, loadingMore).apply {
+            pagination = args.toPagination()
+        }
     }
 
 }

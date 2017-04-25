@@ -20,31 +20,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.Loader
-import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.statuses.MediaTimelineLoader
+import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.fragment.AbsMediaStatusesFragment
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment.Companion.toPagination
+import de.vanita5.twittnuker.loader.statuses.MediaStatusesSearchLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.util.Utils
 
-class UserMediaTimelineFragment : AbsMediaStatusesFragment() {
+class MediaStatusesSearchFragment : AbsMediaStatusesFragment() {
 
     override fun onCreateStatusesLoader(context: Context, args: Bundle, fromUser: Boolean):
             Loader<List<ParcelableStatus>?> {
-        val accountKey = args.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
-        val userKey = args.getParcelable<UserKey?>(EXTRA_USER_KEY)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
-        val screenName = args.getString(EXTRA_SCREEN_NAME)
+        refreshing = true
+        val accountKey = Utils.getAccountKey(context, args)
+        val query = args.getString(EXTRA_QUERY)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
+        val makeGap = args.getBoolean(EXTRA_MAKE_GAP, true)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-        return MediaTimelineLoader(context, accountKey, userKey, screenName, sinceId, maxId,
-                adapter.getData(), null, tabPosition, fromUser, loadingMore)
+        return MediaStatusesSearchLoader(activity, accountKey, query, adapter.getData(), null, tabPosition,
+                fromUser, makeGap, loadingMore).apply {
+            pagination = args.toPagination()
+        }
     }
-
 
     override fun getStatuses(maxId: String?, sinceId: String?): Int {
         if (context == null) return -1

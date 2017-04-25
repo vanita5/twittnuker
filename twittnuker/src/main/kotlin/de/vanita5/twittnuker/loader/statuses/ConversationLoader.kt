@@ -35,9 +35,10 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.pagination.PaginatedList
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import java.util.*
@@ -45,15 +46,12 @@ import java.util.*
 class ConversationLoader(
         context: Context,
         status: ParcelableStatus,
-        sinceId: String?,
-        maxId: String?,
         val sinceSortId: Long,
         val maxSortId: Long,
         adapterData: List<ParcelableStatus>?,
         fromUser: Boolean,
         loadingMore: Boolean
-) : AbsRequestStatusesLoader(context, status.account_key, sinceId, maxId, -1, adapterData, null,
-        -1, fromUser, loadingMore) {
+) : AbsRequestStatusesLoader(context, status.account_key, adapterData, null, -1, fromUser, loadingMore) {
 
     private val status = ParcelUtils.clone(status)
     private var canLoadAllReplies: Boolean = false
@@ -63,8 +61,8 @@ class ConversationLoader(
     }
 
     @Throws(MicroBlogException::class)
-    override fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus> {
-        return getMicroBlogStatuses(account, paging).map {
+    override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
+        return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
             it.toParcelable(account.key, account.type, profileImageSize)
         }
     }
@@ -102,6 +100,9 @@ class ConversationLoader(
     private fun showConversationCompat(twitter: MicroBlog, details: AccountDetails,
                                        status: ParcelableStatus, loadReplies: Boolean): List<Status> {
         val statuses = ArrayList<Status>()
+        val pagination = this.pagination as? SinceMaxPagination
+        val maxId = pagination?.maxId
+        val sinceId = pagination?.sinceId
         val noSinceMaxId = maxId == null && sinceId == null
         // Load conversations
         if (maxId != null && maxSortId < status.sort_id || noSinceMaxId) {

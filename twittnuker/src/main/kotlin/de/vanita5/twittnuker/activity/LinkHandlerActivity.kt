@@ -65,7 +65,8 @@ import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
 import de.vanita5.twittnuker.fragment.message.MessageNewConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
-import de.vanita5.twittnuker.fragment.status.StatusFavoritersListFragment
+import de.vanita5.twittnuker.fragment.status.*
+import de.vanita5.twittnuker.fragment.statuses.*
 import de.vanita5.twittnuker.fragment.users.*
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.UserKey

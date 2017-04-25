@@ -58,6 +58,7 @@ import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.alias.MastodonStatusUpdate
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
@@ -84,7 +85,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
-import de.vanita5.twittnuker.library.mastodon.model.StatusUpdate as MastodonStatusUpdate
 
 /**
  * Update status

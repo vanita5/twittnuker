@@ -95,11 +95,11 @@ import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
-import de.vanita5.twittnuker.loader.statuses.ConversationLoader
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment.Companion.toPagination
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
+import de.vanita5.twittnuker.loader.statuses.ConversationLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
@@ -159,11 +159,12 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val maxSortId = args.getLong(EXTRA_MAX_SORT_ID)
             val sinceSortId = args.getLong(EXTRA_SINCE_SORT_ID)
             val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
-            val loader = ConversationLoader(activity, status, sinceId, maxId, sinceSortId, maxSortId,
-                    adapter.getData(), true, loadingMore)
-            // Setting comparator to null lets statuses sort ascending
-            loader.comparator = null
-            return loader
+            return ConversationLoader(activity, status, sinceSortId, maxSortId, adapter.getData(),
+                    true, loadingMore).apply {
+                pagination = args.toPagination()
+                // Setting comparator to null lets statuses sort ascending
+                comparator = null
+            }
         }
 
         override fun onLoadFinished(loader: Loader<List<ParcelableStatus>>, data: List<ParcelableStatus>?) {

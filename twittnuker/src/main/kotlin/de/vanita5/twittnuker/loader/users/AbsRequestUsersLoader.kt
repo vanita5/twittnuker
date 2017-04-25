@@ -29,8 +29,8 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.extension.model.api.applyLoadLimit
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ListResponse
@@ -99,15 +99,8 @@ abstract class AbsRequestUsersLoader(
         Collections.sort(data)
     }
 
-    protected open fun Paging.applyItemLimit(details: AccountDetails, limit: Int) {
-        when (details.type) {
-            AccountType.MASTODON -> {
-                limit(limit)
-            }
-            else -> {
-                count(limit)
-            }
-        }
+    protected open fun processPaging(paging: Paging, details: AccountDetails, loadItemLimit: Int) {
+        paging.applyLoadLimit(details, loadItemLimit)
     }
 
     @Throws(MicroBlogException::class)
@@ -117,7 +110,7 @@ abstract class AbsRequestUsersLoader(
     @Throws(MicroBlogException::class)
     private fun getUsersInternal(details: AccountDetails): List<ParcelableUser> {
         val paging = Paging()
-        paging.applyItemLimit(details, loadItemLimit)
+        processPaging(paging, details, loadItemLimit)
         pagination?.applyTo(paging)
         val users = getUsers(details, paging)
         prevPagination = users.previousPage

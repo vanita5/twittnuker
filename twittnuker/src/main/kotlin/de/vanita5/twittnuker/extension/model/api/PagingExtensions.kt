@@ -20,30 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab.impl
+package de.vanita5.twittnuker.extension.model.api
 
-import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.TabAccountFlags
-import de.vanita5.twittnuker.fragment.statuses.PublicTimelineFragment
 import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.tab.DrawableHolder
-import de.vanita5.twittnuker.model.tab.StringHolder
-import de.vanita5.twittnuker.model.tab.TabConfiguration
 
 
-class PublicTimelineTabConfiguration : TabConfiguration() {
-
-    override val name = StringHolder.resource(R.string.title_public_timeline)
-
-    override val icon = DrawableHolder.Builtin.QUOTE
-
-    override val accountFlags = TabAccountFlags.FLAG_HAS_ACCOUNT or
-            TabAccountFlags.FLAG_ACCOUNT_REQUIRED or TabAccountFlags.FLAG_ACCOUNT_MUTABLE
-
-    override val fragmentClass = PublicTimelineFragment::class.java
-
-    override fun checkAccountAvailability(details: AccountDetails): Boolean {
-        return AccountType.FANFOU == details.type || AccountType.STATUSNET == details.type
+fun Paging.applyLoadLimit(account: AccountDetails, limit: Int) {
+    when (account.type) {
+        AccountType.MASTODON -> {
+            limit(limit)
+        }
+        else -> {
+            count(limit)
+        }
     }
 }

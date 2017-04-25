@@ -26,7 +26,7 @@ import android.content.Context
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.TabAccountFlags
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
-import de.vanita5.twittnuker.fragment.UserTimelineFragment
+import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.StringHolder

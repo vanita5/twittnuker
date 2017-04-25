@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 
 class PermissionRequestDialog : BaseDialogFragment() {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
         val permissions = arguments.getStringArray(EXTRA_PERMISSIONS)
@@ -61,7 +62,8 @@ class PermissionRequestDialog : BaseDialogFragment() {
 
     companion object {
 
-        fun show(fragmentManager: FragmentManager, message: String, permissions: Array<String>, requestCode: Int): PermissionRequestDialog {
+        fun show(fragmentManager: FragmentManager, message: String, permissions: Array<String>,
+                requestCode: Int): PermissionRequestDialog {
             val df = PermissionRequestDialog()
             df.arguments = Bundle {
                 this[EXTRA_MESSAGE] = message

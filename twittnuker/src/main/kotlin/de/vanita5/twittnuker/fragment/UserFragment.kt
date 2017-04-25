@@ -117,11 +117,14 @@ import de.vanita5.twittnuker.extension.model.getBestProfileBanner
 import de.vanita5.twittnuker.extension.model.originalProfileImage
 import de.vanita5.twittnuker.extension.model.urlPreferred
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
-import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
+import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
+import de.vanita5.twittnuker.fragment.statuses.UserFavoritesFragment
+import de.vanita5.twittnuker.fragment.statuses.UserMediaTimelineFragment
+import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
@@ -859,7 +862,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 }
             }
             R.id.report_spam -> {
-                ReportSpamDialogFragment.show(fragmentManager, user)
+                ReportUserSpamDialogFragment.show(fragmentManager, user)
             }
             R.id.add_to_filter -> {
                 if (userRelationship == null) return true

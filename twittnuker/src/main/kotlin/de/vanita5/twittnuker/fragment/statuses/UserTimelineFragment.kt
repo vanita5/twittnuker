@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.statuses
 
 import android.app.Dialog
 import android.content.Context
@@ -33,6 +33,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.userTimelineFilterKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
+import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
 import de.vanita5.twittnuker.loader.statuses.UserTimelineLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -104,17 +106,17 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
         refreshing = true
         val data = adapterData
         val accountKey = Utils.getAccountKey(context, args)
-        val maxId = args.getString(EXTRA_MAX_ID)
-        val sinceId = args.getString(EXTRA_SINCE_ID)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
         val profileUrl = args.getString(EXTRA_PROFILE_URL)
         val tabPosition = args.getInt(EXTRA_TAB_POSITION, -1)
         val loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false)
         val pinnedIds = if (adapter.hasPinnedStatuses) null else pinnedStatusIds
-        return UserTimelineLoader(context, accountKey, userKey, screenName, profileUrl, sinceId,
-                maxId, data, savedStatusesFileArgs, tabPosition, fromUser, loadingMore, pinnedIds,
-                timelineFilter as? UserTimelineFilter)
+        return UserTimelineLoader(context, accountKey, userKey, screenName, profileUrl, data,
+                savedStatusesFileArgs, tabPosition, fromUser, loadingMore, pinnedIds,
+                timelineFilter as? UserTimelineFilter).apply {
+            pagination = args.toPagination()
+        }
     }
 
     override fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?) {
