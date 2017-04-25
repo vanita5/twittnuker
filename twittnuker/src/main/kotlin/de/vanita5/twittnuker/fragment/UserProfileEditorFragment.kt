@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -378,7 +379,7 @@ class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWat
             profileUpdate.backgroundColor(backgroundColor)
             val user = microBlog.updateProfile(profileUpdate)
             val profileImageSize = context.getString(R.string.profile_image_size)
-            return Pair(user.toParcelable(account.key, account.type, profileImageSize = profileImageSize), account)
+            return Pair(user.toParcelable(account, profileImageSize = profileImageSize), account)
 
         }
 

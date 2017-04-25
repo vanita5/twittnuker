@@ -119,6 +119,7 @@
     <string name="action_send">Senden</string>
     <string name="action_sending_direct_message">Sende Direktnachricht</string>
     <string name="action_set_color">Farbe</string>
+    <string name="action_set_status_visibility">Sichtbarkeit</string>
     <string name="action_set_nickname">Spitznamen eingeben</string>
     <string name="action_share">Teilen</string>
     <string name="action_sign_in">Login</string>
@@ -437,6 +438,7 @@
     <string name="label_content_rating_pg13">PG-13</string>
     <!-- Restricted. Under 17 requires accompanying parent or adult guardian. http://www.mpaa.org/film-ratings/ -->
     <string name="label_content_rating_r">R</string>
+    <string name="label_content_warning">Inhaltswarnung</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_follow_request_sent">Folgeanfrage gesendet</string>
@@ -467,6 +469,15 @@
     <string name="label_status_not_available">Tweet existiert nicht</string>
     <string name="label_status_show_more">Alles zeigen</string>
     <string name="label_status_type_reply">Antwort</string>
+    <!-- Mastodon feature, post to mentioned users only -->
+    <string name="label_status_visibility_direct">Direkt</string>
+    <!-- Mastodon feature, post to followers only -->
+    <string name="label_status_visibility_private">Privat</string>
+    <!-- Mastodon feature, post to public timelines -->
+    <string name="label_status_visibility_public">Öffentlich</string>
+    <!-- Mastodon feature, do not show in public timelines -->
+    <string name="label_status_visibility_unlisted">Nicht gelistet</string>
+
     <string name="label_statuses">Tweets</string>
     <string name="label_statuses_replies">Tweets und Antworten</string>
     <string name="label_statuses_retweets">Tweets und Retweets</string>
@@ -504,7 +515,6 @@
     <string name="login_verification_push_hint">Warte auf die Verifizierungsanfrage von der Twitter App und bestätige sie, um dich einzuloggen.</string>
     <string name="long_click_to_open_menu">Halten, um das Menü zu öffnen</string>
     <string name="mark_as_sensitive">#NSFW</string>
-    <string name="massage_toast_profile_image_updated">Profilbild aktualisiert.</string>
     <string name="media">Medien</string>
     <string name="label_sensitive">Sensitive</string>
     <string name="media_preload">Medien im Voraus laden</string>
@@ -587,6 +597,7 @@
     <string name="message_toast_press_again_to_close">Nochmal tippen zum schliessen</string>
     <string name="message_toast_profile_background_image_updated">Hintergrundbild aktualisiert</string>
     <string name="message_toast_profile_banner_image_updated">Profilbanner aktualisiert.</string>
+    <string name="message_toast_profile_image_updated">Profilbild aktualisiert</string>
     <string name="message_toast_qr_scan_link_not_supported">Falscher Link</string>
     <string name="message_toast_qr_scanner_not_supported">QR Scanner nicht gefunden</string>
     <string name="message_toast_save_media_no_storage_permission">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
@@ -986,6 +997,7 @@
     <string name="title_media_timeline">Medien Timeline</string>
     <string name="title_mentions">Erwähnungen</string>
     <string name="title_message_conversation_info">Gruppeninfo</string>
+    <string name="title_network_public_timeline">Öffentliche Timeline des Netzwerks</string>
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
     <string name="title_public_timeline">Öffentliche Timeline</string>
@@ -1069,7 +1081,6 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="label_content_warning">Inhaltswarnung</string>
 
 
     <!-- Twittnuker -->

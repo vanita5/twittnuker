@@ -43,7 +43,8 @@ class PublicTimelineTabConfiguration : TabConfiguration() {
 
     override val fragmentClass = PublicTimelineFragment::class.java
 
-    override fun checkAccountAvailability(details: AccountDetails): Boolean {
-        return AccountType.FANFOU == details.type || AccountType.STATUSNET == details.type
+    override fun checkAccountAvailability(details: AccountDetails) = when (details.type) {
+        AccountType.MASTODON, AccountType.FANFOU, AccountType.STATUSNET -> true
+        else -> false
     }
 }

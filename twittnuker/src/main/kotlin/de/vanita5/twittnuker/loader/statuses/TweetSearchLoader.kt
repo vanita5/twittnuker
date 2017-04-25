@@ -58,7 +58,7 @@ open class TweetSearchLoader(
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
         return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
-            it.toParcelable(account.key, account.type, profileImageSize)
+            it.toParcelable(account, profileImageSize)
         }
     }
 

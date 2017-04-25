@@ -26,6 +26,7 @@ import android.text.TextUtils
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
@@ -42,6 +43,12 @@ fun User.getProfileImageOfSize(size: String): String {
     return Utils.getTwitterProfileImageOfSize(profileImage, size) ?: profileImage
 }
 
+
+fun User.toParcelable(details: AccountDetails, position: Long = 0, profileImageSize: String = "normal"): ParcelableUser {
+    return this.toParcelableInternal(details.key, details.type, position, profileImageSize).apply {
+        account_color = details.color
+    }
+}
 
 fun User.toParcelable(accountKey: UserKey, accountType: String, position: Long = 0, profileImageSize: String = "normal"): ParcelableUser {
     return this.toParcelableInternal(accountKey, accountType, position, profileImageSize)

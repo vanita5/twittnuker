@@ -62,6 +62,9 @@ public class UpdateStatusActionExtras implements ActionExtras {
     @JsonField(name = "summary_text")
     @ParcelableThisPlease
     String summaryText;
+    @JsonField(name = "visibility")
+    @ParcelableThisPlease
+    String visibility;
 
     public ParcelableStatus getInReplyToStatus() {
         return inReplyToStatus;
@@ -133,6 +136,14 @@ public class UpdateStatusActionExtras implements ActionExtras {
 
     public void setSummaryText(String summaryText) {
         this.summaryText = summaryText;
+    }
+
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
     }
 
     @Override

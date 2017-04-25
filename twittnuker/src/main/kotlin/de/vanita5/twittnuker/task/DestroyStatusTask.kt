@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.StatusDestroyedEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.deleteActivityStatus
@@ -49,9 +48,7 @@ class DestroyStatusTask(
 
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableStatus {
         val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-        val status = microBlog.destroyStatus(statusId).toParcelable(account.key, account.type)
-        ParcelableStatusUtils.updateExtraInformation(status, account)
-        return status
+        return microBlog.destroyStatus(statusId).toParcelable(account)
     }
 
     override fun onCleanup(account: AccountDetails, params: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {

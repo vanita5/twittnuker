@@ -49,7 +49,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
 import de.vanita5.twittnuker.model.task.GetTimelineResult
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.BaseAbstractTask
@@ -162,7 +161,6 @@ abstract class GetStatusesTask(
 
             val creator = ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
             statuses.forEachIndexed { i, status ->
-                ParcelableStatusUtils.updateExtraInformation(status, account)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
                 status.inserted_date = System.currentTimeMillis()

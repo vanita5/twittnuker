@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -68,11 +67,11 @@ open class UpdateProfileImageTask<ResultHandler>(
             DebugLog.w(TwittnukerConstants.LOGTAG, tr = e)
         }
         val user = microBlog.verifyCredentials()
-        return user.toParcelable(account.key, account.type, profileImageSize = profileImageSize)
+        return user.toParcelable(account, profileImageSize = profileImageSize)
     }
 
     override fun onSucceed(callback: ResultHandler?, result: ParcelableUser) {
-        Toast.makeText(context, R.string.massage_toast_profile_image_updated, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, R.string.message_toast_profile_image_updated, Toast.LENGTH_SHORT).show()
         bus.post(ProfileUpdatedEvent(result))
     }
 

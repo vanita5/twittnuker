@@ -22,21 +22,24 @@
 
 package de.vanita5.twittnuker.extension.model
 
+import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.ktextension.toLongOr
 import de.vanita5.twittnuker.library.twitter.model.CardEntity
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils
 import java.text.ParseException
 import java.util.*
 
-
 fun CardEntity.toParcelable(accountKey: UserKey, accountType: String): ParcelableCardEntity? {
     val obj = ParcelableCardEntity()
     obj.name = name
     obj.url = url
-    obj.users = users?.toParcelables(accountKey, accountType)
+    obj.users = users?.mapToArray {
+        it.toParcelable(accountKey, accountType)
+    }
     obj.account_key = accountKey
     obj.values = bindingValues?.mapValues { entry ->
         ParcelableCardEntity.ParcelableBindingValue(entry.value)

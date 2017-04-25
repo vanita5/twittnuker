@@ -29,7 +29,6 @@ import de.vanita5.twittnuker.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches
@@ -87,8 +86,6 @@ object ContentValuesCreator {
         activity.account_color = details.color
 
         if (status != null) {
-            ParcelableStatusUtils.updateExtraInformation(status, details)
-
             activity.status_id = status.id
             activity.status_retweet_id = status.retweet_id
             activity.status_my_retweet_id = status.my_retweet_id

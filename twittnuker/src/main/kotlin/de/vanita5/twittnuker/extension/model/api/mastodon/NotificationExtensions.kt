@@ -25,10 +25,13 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.mastodon.model.Notification
 import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
+
+fun Notification.toParcelable(details: AccountDetails): ParcelableActivity {
+    return toParcelable(details.key).apply {
+        account_color = details.color
+    }
+}
 
 fun Notification.toParcelable(accountKey: UserKey): ParcelableActivity {
     val result = ParcelableActivity()

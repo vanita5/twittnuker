@@ -23,11 +23,14 @@
 package de.vanita5.twittnuker.model.tab.impl
 
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.TabAccountFlags
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.StringHolder
 import de.vanita5.twittnuker.model.tab.TabConfiguration
+
 
 class MessagesTabConfiguration : TabConfiguration() {
     override val name = StringHolder.resource(R.string.title_direct_messages)
@@ -38,4 +41,9 @@ class MessagesTabConfiguration : TabConfiguration() {
             TabAccountFlags.FLAG_ACCOUNT_MULTIPLE or TabAccountFlags.FLAG_ACCOUNT_MUTABLE
 
     override val fragmentClass = MessagesEntriesFragment::class.java
+
+    override fun checkAccountAvailability(details: AccountDetails) = when (details.type) {
+        AccountType.TWITTER, AccountType.FANFOU, AccountType.STATUSNET -> true
+        else -> false
+    }
 }

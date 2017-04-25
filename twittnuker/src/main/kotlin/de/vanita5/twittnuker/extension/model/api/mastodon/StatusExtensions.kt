@@ -25,13 +25,15 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.mastodon.model.Status
 import de.vanita5.twittnuker.extension.model.api.spanItems
-import de.vanita5.twittnuker.model.ParcelableMedia
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.SpanItem
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 
+fun Status.toParcelable(details: AccountDetails): ParcelableStatus {
+    return toParcelable(details.key).apply {
+        account_color = details.color
+    }
+}
 
 fun Status.toParcelable(accountKey: UserKey): ParcelableStatus {
     val result = ParcelableStatus()
@@ -42,6 +44,7 @@ fun Status.toParcelable(accountKey: UserKey): ParcelableStatus {
     result.timestamp = createdAt?.time ?: 0
 
     extras.summary_text = spoilerText
+    extras.visibility = visibility
     extras.external_url = url
 
     val retweetedStatus = reblog

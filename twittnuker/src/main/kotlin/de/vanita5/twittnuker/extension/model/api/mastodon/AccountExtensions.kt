@@ -26,11 +26,18 @@ import de.vanita5.twittnuker.library.mastodon.model.Account
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.api.isHtml
 import de.vanita5.twittnuker.extension.model.api.spanItems
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 
+
+fun Account.toParcelable(details: AccountDetails, position: Long = 0): ParcelableUser {
+    return toParcelable(details.key, position).apply {
+        account_color = details.color
+    }
+}
 
 fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUser {
     val obj = ParcelableUser()

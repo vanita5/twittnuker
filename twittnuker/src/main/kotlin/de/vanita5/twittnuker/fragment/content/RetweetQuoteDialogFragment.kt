@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment.content
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -40,25 +39,19 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.twitter.Validator
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.task
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.content.RetweetQuoteDialogActivity
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.quickSendKey
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
@@ -374,25 +367,6 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
             }
             f.show(fm, FRAGMENT_TAG)
             return f
-        }
-
-        fun showStatus(context: Context, details: AccountDetails, statusId: String,
-                status: ParcelableStatus?): Promise<ParcelableStatus, Exception> {
-            if (status != null) {
-                status.apply {
-                    if (account_key != details.key) {
-                        my_retweet_id = null
-                    }
-                    account_key = details.key
-                    account_color = details.color
-                }
-                return Promise.ofSuccess(status)
-            }
-            val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
-            val profileImageSize = context.getString(R.string.profile_image_size)
-            return task {
-                microBlog.showStatus(statusId).toParcelable(details.key, details.type, profileImageSize)
-            }
         }
 
     }

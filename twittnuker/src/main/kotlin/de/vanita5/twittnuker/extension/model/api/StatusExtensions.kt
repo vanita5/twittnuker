@@ -27,10 +27,7 @@ import android.text.style.URLSpan
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.toParcelable
-import de.vanita5.twittnuker.model.ParcelableLocation
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.SpanItem
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
@@ -39,7 +36,11 @@ import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
-
+fun Status.toParcelable(details: AccountDetails, profileImageSize: String = "normal"): ParcelableStatus {
+    return toParcelable(details.key, details.type, profileImageSize).apply {
+        account_color = details.color
+    }
+}
 
 fun Status.toParcelable(accountKey: UserKey, accountType: String, profileImageSize: String = "normal"): ParcelableStatus {
     val result = ParcelableStatus()

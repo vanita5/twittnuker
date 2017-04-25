@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -69,7 +68,7 @@ open class UpdateProfileBackgroundImageTask<ResultHandler>(
             DebugLog.w(LOGTAG, tr = e)
         }
         val user = microBlog.verifyCredentials()
-        return user.toParcelable(account.key, account.type, profileImageSize = profileImageSize)
+        return user.toParcelable(account, profileImageSize = profileImageSize)
     }
 
     override fun onSucceed(callback: ResultHandler?, result: ParcelableUser) {

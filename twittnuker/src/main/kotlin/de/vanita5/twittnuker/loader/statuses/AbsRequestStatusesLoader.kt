@@ -46,7 +46,6 @@ import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.UserColorNameManager
@@ -170,7 +169,6 @@ abstract class AbsRequestStatusesLoader(
                 status.is_gap = insertGap && isGapEnabled && minIdx == i
                 status.position_key = GetStatusesTask.getPositionKey(status.timestamp, status.sort_id,
                         lastSortId, sortDiff, i, statuses.size)
-                ParcelableStatusUtils.updateExtraInformation(status, details)
             }
             data.addAll(statuses)
         }

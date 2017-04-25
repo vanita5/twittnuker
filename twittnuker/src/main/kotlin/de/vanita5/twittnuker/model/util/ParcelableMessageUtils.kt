@@ -29,7 +29,6 @@ import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message.Data
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
@@ -146,9 +145,8 @@ object ParcelableMessageUtils {
         this.extras = ConversationInfoUpdatedExtras().apply {
             this.name = message.conversationName
             this.avatar = message.conversationAvatarImageHttps
-            this.user = users[message.byUserId]?.let {
-                it.toParcelable(accountKey, accountType, profileImageSize = profileImageSize)
-            }
+            this.user = users[message.byUserId]?.toParcelable(accountKey, accountType,
+                    profileImageSize = profileImageSize)
         }
         this.is_outgoing = false
     }
