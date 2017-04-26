@@ -94,6 +94,7 @@ import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
@@ -125,7 +126,6 @@ import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment
 import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
-import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
@@ -792,20 +792,29 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         menu.setItemAvailability(R.id.blocked_users, isMyself)
         menu.setItemAvailability(R.id.block, !isMyself)
 
-
-        val isTwitter: Boolean
-
-        if (account != null) {
-            isTwitter = AccountType.TWITTER == account.type
-        } else {
-            isTwitter = false
+        var canAddToList = false
+        var canMute = false
+        var canReportSpam = false
+        var canEnableRetweet = false
+        var canEnableNotifications = false
+        when (account?.type) {
+            AccountType.TWITTER -> {
+                canAddToList = true
+                canMute = true
+                canReportSpam = true
+                canEnableRetweet = true
+                canEnableNotifications = true
+            }
+            AccountType.MASTODON -> {
+                canMute = true
+            }
         }
 
-        menu.setItemAvailability(R.id.add_to_list, isTwitter)
-        menu.setItemAvailability(R.id.mute_user, !isMyself && isTwitter)
-        menu.setItemAvailability(R.id.muted_users, isMyself && isTwitter)
-        menu.setItemAvailability(R.id.report_spam, !isMyself && isTwitter)
-        menu.setItemAvailability(R.id.enable_retweets, !isMyself && isTwitter)
+        menu.setItemAvailability(R.id.add_to_list, canAddToList)
+        menu.setItemAvailability(R.id.mute_user, !isMyself && canMute)
+        menu.setItemAvailability(R.id.muted_users, isMyself && canMute)
+        menu.setItemAvailability(R.id.report_spam, !isMyself && canReportSpam)
+        menu.setItemAvailability(R.id.enable_retweets, !isMyself && canEnableRetweet)
 
         if (relationship != null) {
             menu.findItem(R.id.add_to_filter)?.apply {
@@ -818,7 +827,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             } else {
                 menu.setItemAvailability(R.id.send_direct_message, relationship.can_dm)
                 menu.setItemAvailability(R.id.block, true)
-                menu.setItemAvailability(R.id.enable_notifications, isTwitter && relationship.following)
+                menu.setItemAvailability(R.id.enable_notifications, canEnableNotifications &&
+                        relationship.following)
 
                 menu.findItem(R.id.block)?.apply {
                     ActionIconDrawable.setMenuHighlight(this, TwidereMenuInfo(relationship.blocking))
@@ -931,7 +941,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     if (userRelationship.following) {
                         DestroyFriendshipDialogFragment.show(fragmentManager, user)
                     } else {
-                        twitter.createFriendshipAsync(user.account_key, user.key)
+                        twitter.createFriendshipAsync(user.account_key, user.key, user.screen_name)
                     }
                 }
                 return true
@@ -1157,7 +1167,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     } else if (userRelationship.following) {
                         DestroyFriendshipDialogFragment.show(fragmentManager, user)
                     } else {
-                        twitter.createFriendshipAsync(user.account_key, user.key)
+                        twitter.createFriendshipAsync(user.account_key, user.key, user.screen_name)
                     }
                 }
             }
