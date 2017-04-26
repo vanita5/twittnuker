@@ -27,6 +27,8 @@ import android.net.Uri
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.twitter.model.InternalActivityCreator
+import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
@@ -35,8 +37,6 @@ import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment
-import de.vanita5.twittnuker.library.twitter.model.InternalActivityCreator
-import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.UserKey
@@ -64,13 +64,20 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                     it.toParcelable(account)
                 }
             }
-            AccountType.FANFOU -> {
+            AccountType.TWITTER -> {
                 val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
                 if (account.isOfficial(context)) {
                     return microBlog.getActivitiesAboutMe(paging).map {
                         it.toParcelable(account, profileImageSize = profileImageSize)
                     }
                 }
+                return microBlog.getMentionsTimeline(paging).map {
+                    InternalActivityCreator.status(it, account.key.id).toParcelable(account,
+                            profileImageSize = profileImageSize)
+                }
+            }
+            AccountType.FANFOU -> {
+                val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
                 return microBlog.getMentions(paging).map {
                     InternalActivityCreator.status(it, account.key.id).toParcelable(account,
                             profileImageSize = profileImageSize)
@@ -78,7 +85,7 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
             }
             else -> {
                 val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
-                return microBlog.getHomeTimeline(paging).map {
+                return microBlog.getMentionsTimeline(paging).map {
                     InternalActivityCreator.status(it, account.key.id).toParcelable(account,
                             profileImageSize = profileImageSize)
                 }
