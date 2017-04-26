@@ -1395,7 +1395,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (isFinishing || editText == null) return
 
         val update = try {
-            getStatusUpdate()
+            getStatusUpdate(true)
         } catch(e: NoAccountException) {
             editText.error = getString(R.string.message_toast_no_account_selected)
             return
@@ -1443,7 +1443,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         task { media.forEach { media -> Utils.deleteMedia(context, Uri.parse(media.uri)) } }
     }
 
-    private fun getStatusUpdate(): ParcelableStatusUpdate {
+    private fun getStatusUpdate(checkLength: Boolean): ParcelableStatusUpdate {
         val accountKeys = accountsAdapter.selectedAccountKeys
         if (accountKeys.isEmpty()) throw NoAccountException()
         val update = ParcelableStatusUpdate()
@@ -1466,7 +1466,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     replyTextAndMentions
             if (replyText.isEmpty() && media.isEmpty()) throw NoContentException()
             val totalLength = summaryLength + validator.getTweetLength(replyText)
-            if (!statusShortenerUsed && maxLength > 0 && totalLength > maxLength) {
+            if (checkLength && !statusShortenerUsed && maxLength > 0 && totalLength > maxLength) {
                 throw StatusTooLongException(replyStartIndex +
                         replyText.offsetByCodePoints(0, maxLength - summaryLength))
             }
@@ -1481,7 +1481,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         } else {
             if (text.isEmpty() && media.isEmpty()) throw NoContentException()
             val totalLength = summaryLength + validator.getTweetLength(text)
-            if (!statusShortenerUsed && maxLength > 0 && totalLength > maxLength) {
+            if (checkLength && !statusShortenerUsed && maxLength > 0 && totalLength > maxLength) {
                 throw StatusTooLongException(text.offsetByCodePoints(0, maxLength - summaryLength))
             }
             update.text = text
@@ -1591,7 +1591,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun saveToDrafts(): Uri? {
         val statusUpdate = try {
-            getStatusUpdate()
+            getStatusUpdate(false)
         } catch(e: ComposeException) {
             return null
         }
