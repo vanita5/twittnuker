@@ -435,7 +435,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                 Analyzer.log(StatusView(details?.type, status.media_type).apply {
                     this.type = StatusView.getStatusType(status)
-                    this.source = HtmlEscapeHelper.toPlainText(status.source)
+                    this.source = status.source?.let(HtmlEscapeHelper::toPlainText)
                 })
             } else if (readPosition != null) {
                 restoreReadPosition(readPosition)
@@ -778,7 +778,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
             if (status.retweet_id != null) {
                 val retweetedBy = colorNameManager.getDisplayName(status.retweeted_by_user_key!!,
-                        status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst)
+                        status.retweeted_by_user_name!!, status.retweeted_by_user_acct!!, nameFirst)
                 retweetedByView.text = context.getString(R.string.name_retweeted, retweetedBy)
                 retweetedByView.visibility = View.VISIBLE
             } else {
@@ -803,7 +803,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
                     itemView.quotedName.name =
                             status.quoted_user_name
-                    itemView.quotedName.screenName = "@${status.quoted_user_screen_name}"
+                    itemView.quotedName.screenName = "@${status.quoted_user_acct}"
                     itemView.quotedName.updateText(formatter)
 
 
@@ -878,7 +878,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             }
 
             nameView.name = status.user_name
-            nameView.screenName = String.format("@%s", status.user_screen_name)
+            nameView.screenName = "@${status.user_acct}"
             nameView.updateText(formatter)
 
             adapter.requestManager.loadProfileImage(context, status, adapter.profileImageStyle,
@@ -899,13 +899,16 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 profileTypeView.visibility = View.GONE
             }
 
-            val timeString = Utils.formatToLongTimeString(context, timestamp)
-            if (!TextUtils.isEmpty(timeString) && !TextUtils.isEmpty(status.source)) {
-                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(context.getString(R.string.status_format_time_source, timeString, status.source))
-            } else if (TextUtils.isEmpty(timeString) && !TextUtils.isEmpty(status.source)) {
-                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(status.source)
-            } else if (!TextUtils.isEmpty(timeString) && TextUtils.isEmpty(status.source)) {
-                itemView.timeSource.text = timeString
+            val timeString = Utils.formatToLongTimeString(context, timestamp)?.takeIf(String::isNotEmpty)
+            val source = status.source?.takeIf(String::isNotEmpty)
+            itemView.timeSource.text = when {
+                timeString != null && source != null -> {
+                    HtmlSpanBuilder.fromHtml(context.getString(R.string.status_format_time_source,
+                            timeString, source))
+                }
+                source != null -> HtmlSpanBuilder.fromHtml(source)
+                timeString != null -> timeString
+                else -> null
             }
             itemView.timeSource.movementMethod = LinkMovementMethod.getInstance()
 
