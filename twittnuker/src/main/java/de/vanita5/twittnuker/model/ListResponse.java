@@ -37,6 +37,14 @@ public class ListResponse<Data> extends AbstractList<Data> implements Response<L
     private final Exception exception;
     private final Bundle extras;
 
+    public ListResponse(final Exception exception) {
+        this(null, exception, new Bundle());
+    }
+
+    public ListResponse(final List<Data> list) {
+        this(list, null, new Bundle());
+    }
+
     public ListResponse(final List<Data> list, final Exception exception) {
         this(list, exception, new Bundle());
     }

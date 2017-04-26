@@ -65,7 +65,8 @@ import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
 import de.vanita5.twittnuker.fragment.message.MessageNewConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
-import de.vanita5.twittnuker.fragment.status.StatusFavoritersListFragment
+import de.vanita5.twittnuker.fragment.search.MastodonSearchFragment
+import de.vanita5.twittnuker.fragment.search.SearchFragment
 import de.vanita5.twittnuker.fragment.statuses.*
 import de.vanita5.twittnuker.fragment.users.*
 import de.vanita5.twittnuker.graphic.EmptyDrawable
@@ -428,7 +429,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 }
             }
             LINK_ID_SEARCH -> {
-                setTitle(android.R.string.search_go)
+                setTitle(R.string.title_search)
+                setSubtitle(uri.getQueryParameter(QUERY_PARAM_QUERY))
+            }
+            LINK_ID_MASTODON_SEARCH -> {
+                setTitle(R.string.title_search)
                 setSubtitle(uri.getQueryParameter(QUERY_PARAM_QUERY))
             }
             LINK_ID_ACCOUNTS -> {
@@ -841,6 +846,16 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                     return null
                 }
                 fragment = SearchFragment()
+            }
+            LINK_ID_MASTODON_SEARCH -> {
+                val paramQuery = uri.getQueryParameter(QUERY_PARAM_QUERY)
+                if (!args.containsKey(EXTRA_QUERY) && !TextUtils.isEmpty(paramQuery)) {
+                    args.putString(EXTRA_QUERY, paramQuery)
+                }
+                if (!args.containsKey(EXTRA_QUERY)) {
+                    return null
+                }
+                fragment = MastodonSearchFragment()
             }
             LINK_ID_FILTERS_IMPORT_BLOCKS -> {
                 fragment = FiltersImportBlocksFragment()

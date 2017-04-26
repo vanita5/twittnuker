@@ -20,25 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package de.vanita5.twittnuker.extension.model
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
+import de.vanita5.twittnuker.model.ParcelableHashtag
 
-public class TwoLineWithIconViewHolder extends RecyclerView.ViewHolder {
-
-    public final ImageView icon;
-    public final TextView text1, text2;
-    public final CheckBox checkbox;
-
-    public TwoLineWithIconViewHolder(final View itemView) {
-        super(itemView);
-        icon = (ImageView) itemView.findViewById(android.R.id.icon);
-        text1 = (TextView) itemView.findViewById(android.R.id.text1);
-        text2 = (TextView) itemView.findViewById(android.R.id.text2);
-        checkbox = (CheckBox) itemView.findViewById(android.R.id.checkbox);
-    }
-}
+inline val ParcelableHashtag.prefixedHashtag: String
+    get() = if (hashtag.startsWith("#")) hashtag else "#${hashtag}"

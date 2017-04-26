@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.view.holder.TimelineFilterHeaderViewHolder
 
 interface IStatusViewHolder : CardMediaContainer.OnMediaClickListener {
 
-    fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean = true,
+    fun display(status: ParcelableStatus, displayInReplyTo: Boolean = true,
             displayPinned: Boolean = false)
 
     val profileImageView: ImageView?

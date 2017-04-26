@@ -997,7 +997,7 @@
     <string name="title_media_timeline">Medien Timeline</string>
     <string name="title_mentions">Erwähnungen</string>
     <string name="title_message_conversation_info">Gruppeninfo</string>
-    <string name="title_network_public_timeline">Öffentliche Timeline des Netzwerks</string>
+    <string name="title_network_public_timeline">Föderierte Timeline</string>
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
     <string name="title_public_timeline">Öffentliche Timeline</string>

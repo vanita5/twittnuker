@@ -28,9 +28,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.graphics.PorterDuff
-import android.os.Parcelable
 import android.support.annotation.UiThread
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -71,7 +68,6 @@ import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
-import java.io.IOException
 
 object MenuUtils {
 

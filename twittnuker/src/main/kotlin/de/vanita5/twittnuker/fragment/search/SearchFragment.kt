@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.search
 
 import android.accounts.AccountManager
 import android.content.ContentValues
@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffset
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.getAccountType
+import de.vanita5.twittnuker.fragment.AbsToolbarTabPagesFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -59,9 +60,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.ThemeUtils
 
-class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, SupportFragmentCallback,
-        SystemWindowsInsetsCallback, ControlBarOffsetListener, OnPageChangeListener,
-        LinkHandlerActivity.HideUiOnScroll {
+class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface,
+        SupportFragmentCallback, SystemWindowsInsetsCallback, ControlBarOffsetListener,
+        OnPageChangeListener, LinkHandlerActivity.HideUiOnScroll {
 
     val accountKey: UserKey
         get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)

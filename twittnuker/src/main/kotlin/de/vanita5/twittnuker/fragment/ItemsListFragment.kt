@@ -41,11 +41,15 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ITEMS
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.extension.model.prefixedHashtag
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
+import de.vanita5.twittnuker.model.ParcelableHashtag
 import de.vanita5.twittnuker.model.ParcelableMedia
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.MenuUtils
 import de.vanita5.twittnuker.util.Utils
@@ -54,13 +58,27 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
-class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter>(), LoaderCallbacks<List<*>> {
+open class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter>(),
+        LoaderCallbacks<List<Any>?> {
+
+    protected val accountKey: UserKey?
+        get() = arguments.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY)
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         registerForContextMenu(recyclerView)
         loaderManager.initLoader(0, null, this)
         refreshEnabled = false
-        showContent()
+        showProgress()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT,
+            AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                AbsStatusesFragment.handleActionActivityResult(this, requestCode, resultCode, data)
+            }
+        }
     }
 
     override fun onCreateAdapter(context: Context): VariousItemsAdapter {
@@ -111,31 +129,27 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
         dummyItemAdapter.userClickListener = object : IUsersAdapter.SimpleUserClickListener() {
             override fun onUserClick(holder: UserViewHolder, position: Int) {
                 val user = dummyItemAdapter.getUser(position) ?: return
-                IntentUtils.openUserProfile(getContext(), user, preferences[newDocumentApiKey],
+                IntentUtils.openUserProfile(context, user, preferences[newDocumentApiKey],
                         Referral.TIMELINE_STATUS, null)
             }
+        }
+        adapter.hashtagClickListener = { position ->
+            val hashtag = adapter.getItem(position) as ParcelableHashtag
+            IntentUtils.openTweetSearch(context, accountKey, hashtag.prefixedHashtag)
         }
         return adapter
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT,
-            AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
-                AbsStatusesFragment.handleActionActivityResult(this, requestCode, resultCode, data)
-            }
-        }
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<*>?> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<Any>?> {
         return ItemsLoader(context, arguments)
     }
 
-    override fun onLoadFinished(loader: Loader<List<*>?>, data: List<*>?) {
+    override final fun onLoadFinished(loader: Loader<List<Any>?>, data: List<Any>?) {
         adapter.setData(data)
+        showContent()
     }
 
-    override fun onLoaderReset(loader: Loader<List<*>?>) {
+    override fun onLoaderReset(loader: Loader<List<Any>?>) {
         adapter.setData(null)
     }
 
@@ -181,9 +195,9 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
         return false
     }
 
-    class ItemsLoader(context: Context, private val arguments: Bundle) : FixedAsyncTaskLoader<List<*>>(context) {
+    class ItemsLoader(context: Context, private val arguments: Bundle) : FixedAsyncTaskLoader<List<Any>>(context) {
 
-        override fun loadInBackground(): List<*> {
+        override fun loadInBackground(): List<Any> {
             return arguments.getParcelableArrayList<Parcelable>(EXTRA_ITEMS)
         }
 
