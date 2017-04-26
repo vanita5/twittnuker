@@ -26,7 +26,7 @@ import android.content.Context
 import android.widget.Toast
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable

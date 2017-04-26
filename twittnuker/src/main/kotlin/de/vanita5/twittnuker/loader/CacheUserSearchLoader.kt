@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.annotation.SuppressLint
 import android.content.Context
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.loader.users.UserSearchLoader
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression

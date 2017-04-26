@@ -42,7 +42,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter

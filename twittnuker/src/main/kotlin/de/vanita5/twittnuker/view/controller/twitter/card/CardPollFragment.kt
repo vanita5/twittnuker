@@ -38,9 +38,9 @@ import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.ktextension.toLongOr
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterCaps
-import de.vanita5.twittnuker.library.twitter.model.CardDataMap
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterCaps
+import de.vanita5.microblog.library.twitter.model.CardDataMap
 import de.vanita5.twittnuker.Constants.LOGTAG
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.*

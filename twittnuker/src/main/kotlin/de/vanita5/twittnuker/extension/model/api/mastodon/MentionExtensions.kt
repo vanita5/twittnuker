@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
-import de.vanita5.twittnuker.library.mastodon.model.Mention
+import de.vanita5.microblog.library.mastodon.model.Mention
 import de.vanita5.twittnuker.model.ParcelableUserMention
 import de.vanita5.twittnuker.model.UserKey
 

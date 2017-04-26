@@ -30,8 +30,8 @@ import android.os.Bundle
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.statusnet.model.Group
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.statusnet.model.Group
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter

@@ -26,8 +26,8 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.SparseIntArray
 
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.util.ErrorInfoStore.DisplayErrorInfo
 

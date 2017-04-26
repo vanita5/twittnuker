@@ -26,8 +26,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.getErrorMessage

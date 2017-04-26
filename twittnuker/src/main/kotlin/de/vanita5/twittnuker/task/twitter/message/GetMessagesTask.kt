@@ -31,11 +31,11 @@ import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.DMResponse
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.DMResponse
+import de.vanita5.microblog.library.twitter.model.DirectMessage
+import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION

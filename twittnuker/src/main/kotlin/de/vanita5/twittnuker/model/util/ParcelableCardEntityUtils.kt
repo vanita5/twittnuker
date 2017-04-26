@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.model.util
 
 
-import de.vanita5.twittnuker.library.twitter.util.ThreadLocalSimpleDateFormat
+import de.vanita5.microblog.library.twitter.util.ThreadLocalSimpleDateFormat
 import java.text.DateFormat
 import java.util.*
 

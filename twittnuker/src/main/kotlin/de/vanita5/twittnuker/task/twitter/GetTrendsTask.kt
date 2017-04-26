@@ -29,9 +29,9 @@ import android.content.Context
 import android.net.Uri
 import android.support.v4.util.ArraySet
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Trends
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.Trends
 import org.mariotaku.sqliteqb.library.Expression.and
 import org.mariotaku.sqliteqb.library.Expression.equalsArgs
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG

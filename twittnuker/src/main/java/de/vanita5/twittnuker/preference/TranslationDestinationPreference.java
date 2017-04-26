@@ -40,10 +40,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.Language;
-import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.microblog.library.MicroBlog;
+import de.vanita5.microblog.library.MicroBlogException;
+import de.vanita5.microblog.library.twitter.model.Language;
+import de.vanita5.microblog.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;

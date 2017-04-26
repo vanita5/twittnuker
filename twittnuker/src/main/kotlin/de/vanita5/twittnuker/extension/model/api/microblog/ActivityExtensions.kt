@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.extension.model.api.microblog
 
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableActivity

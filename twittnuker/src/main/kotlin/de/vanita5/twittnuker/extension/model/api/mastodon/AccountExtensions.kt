@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
-import de.vanita5.twittnuker.library.mastodon.model.Account
+import de.vanita5.microblog.library.mastodon.model.Account
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.api.isHtml
 import de.vanita5.twittnuker.extension.model.api.spanItems

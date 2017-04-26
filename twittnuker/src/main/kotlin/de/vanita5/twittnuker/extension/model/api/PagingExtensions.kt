@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.extension.model.api
 
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 

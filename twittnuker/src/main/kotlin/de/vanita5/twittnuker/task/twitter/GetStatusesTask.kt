@@ -29,8 +29,8 @@ import android.net.Uri
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R

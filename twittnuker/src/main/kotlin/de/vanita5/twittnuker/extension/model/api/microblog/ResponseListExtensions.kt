@@ -22,8 +22,8 @@
 
 package de.vanita5.twittnuker.extension.model.api.microblog
 
-import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
+import de.vanita5.microblog.library.twitter.model.PageableResponseList
+import de.vanita5.microblog.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.model.pagination.*
 
 

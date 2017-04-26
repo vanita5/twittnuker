@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.extension
 
 import android.content.Context
 import android.text.format.DateUtils
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils
 

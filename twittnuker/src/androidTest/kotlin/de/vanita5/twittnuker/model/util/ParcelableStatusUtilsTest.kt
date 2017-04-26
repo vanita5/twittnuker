@@ -27,7 +27,7 @@ import android.support.test.runner.AndroidJUnit4
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.UserKey

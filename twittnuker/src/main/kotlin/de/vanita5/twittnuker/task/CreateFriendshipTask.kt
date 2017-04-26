@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.widget.Toast
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType

@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.extension.model.api
 
 import android.text.TextUtils
 import org.mariotaku.ktextension.isNotNullOrEmpty
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser

@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.model.analyzer
 
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.draftActionTypeString
 import de.vanita5.twittnuker.extension.model.parcelableMediaTypeString

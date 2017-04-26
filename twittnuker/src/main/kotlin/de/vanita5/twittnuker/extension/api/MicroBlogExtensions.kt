@@ -22,11 +22,11 @@
 
 package de.vanita5.twittnuker.extension.api
 
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.IDs
-import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.IDs
+import de.vanita5.microblog.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.pagination.CursorPagination
 import de.vanita5.twittnuker.model.pagination.PaginatedArrayList

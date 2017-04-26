@@ -26,7 +26,7 @@ import android.text.TextUtils
 import org.mariotaku.ktextension.addAllTo
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.toIntOr
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.microblog.library.twitter.model.*
 import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus

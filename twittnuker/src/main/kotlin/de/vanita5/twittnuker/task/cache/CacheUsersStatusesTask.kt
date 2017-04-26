@@ -27,8 +27,8 @@ import android.content.Context
 import com.twitter.Extractor
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.ktextension.addTo
-import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags

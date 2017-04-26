@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.task.twitter.message
 import android.accounts.AccountManager
 import android.content.Context
 import org.mariotaku.ktextension.useCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.UserKey

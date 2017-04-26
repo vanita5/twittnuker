@@ -37,7 +37,7 @@ import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.promiseOnUi
 import nl.komponents.kovenant.ui.successUi
-import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*

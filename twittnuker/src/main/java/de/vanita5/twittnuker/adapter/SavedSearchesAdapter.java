@@ -29,8 +29,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.library.twitter.model.ResponseList;
-import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
+import de.vanita5.microblog.library.twitter.model.ResponseList;
+import de.vanita5.microblog.library.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class SavedSearchesAdapter extends BaseAdapter {

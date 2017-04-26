@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.model.pagination;
 
 import android.os.Parcelable;
 
-import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.microblog.library.twitter.model.Paging;
 
 
 public interface Pagination extends Parcelable {

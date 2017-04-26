@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.microblog.library.twitter.model.User;
 import de.vanita5.twittnuker.common.R;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 

@@ -23,8 +23,8 @@
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.mastodon.model.Notification
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.mastodon.model.Notification
+import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.model.*
 
 fun Notification.toParcelable(details: AccountDetails): ParcelableActivity {

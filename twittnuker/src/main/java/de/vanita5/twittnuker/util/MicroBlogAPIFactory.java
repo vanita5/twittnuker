@@ -34,7 +34,7 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
-import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.microblog.library.MicroBlog;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.SimpleValueMap;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;

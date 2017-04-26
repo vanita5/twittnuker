@@ -49,10 +49,10 @@ import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterUpload
-import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
-import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse.ProcessingInfo
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterUpload
+import de.vanita5.microblog.library.twitter.model.MediaUploadResponse
+import de.vanita5.microblog.library.twitter.model.MediaUploadResponse.ProcessingInfo
 import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.SimpleBody

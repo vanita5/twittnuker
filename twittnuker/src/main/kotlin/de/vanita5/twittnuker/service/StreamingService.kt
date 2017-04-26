@@ -41,10 +41,10 @@ import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.ktextension.toNulls
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterUserStream
-import de.vanita5.twittnuker.library.twitter.annotation.StreamWith
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterUserStream
+import de.vanita5.microblog.library.twitter.annotation.StreamWith
+import de.vanita5.microblog.library.twitter.model.*
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R

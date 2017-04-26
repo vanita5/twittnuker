@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.task.twitter
 
 import android.content.Context
 import org.mariotaku.abstask.library.AbstractTask
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.model.SingleResponse

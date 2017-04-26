@@ -23,8 +23,9 @@
 package de.vanita5.twittnuker.util.streaming
 
 import android.support.annotation.WorkerThread
-import de.vanita5.twittnuker.library.twitter.callback.SimpleUserStreamCallback
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.microblog.library.twitter.model.InternalActivityCreator
+import de.vanita5.microblog.library.twitter.callback.SimpleUserStreamCallback
+import de.vanita5.microblog.library.twitter.model.*
 import java.util.*
 
 @WorkerThread

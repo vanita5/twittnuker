@@ -22,11 +22,11 @@
 
 package de.vanita5.twittnuker.util.streaming
 
-import de.vanita5.twittnuker.library.fanfou.callback.SimpleFanfouUserStreamCallback
-import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.library.twitter.model.InternalActivityCreator
-import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.fanfou.callback.SimpleFanfouUserStreamCallback
+import de.vanita5.microblog.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.InternalActivityCreator
+import de.vanita5.microblog.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.User
 import java.util.*
 
 

@@ -34,7 +34,7 @@ import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter

@@ -33,7 +33,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
-import de.vanita5.twittnuker.library.annotation.NoObfuscate
+import de.vanita5.microblog.library.annotation.NoObfuscate
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.*
 

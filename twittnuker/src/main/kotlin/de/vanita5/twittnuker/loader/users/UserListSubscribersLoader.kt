@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.loader.users
 
 import android.content.Context
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
-import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.twitter.model.PageableResponseList
+import de.vanita5.microblog.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 

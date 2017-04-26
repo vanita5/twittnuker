@@ -47,8 +47,8 @@ import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.getTypedArray
 import org.mariotaku.ktextension.set
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Location
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.Location
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme

@@ -29,7 +29,7 @@ import android.support.v4.util.ArraySet
 import org.mariotaku.ktextension.map
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable

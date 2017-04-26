@@ -30,8 +30,8 @@ import org.attoparser.ParseException
 import org.attoparser.config.ParseConfiguration
 import org.attoparser.simple.AbstractSimpleMarkupHandler
 import org.attoparser.simple.SimpleMarkupParser
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterOAuth
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterOAuth
 import org.mariotaku.restfu.RestAPIFactory
 import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.annotation.method.POST

@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import android.net.Uri
-import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList
+import de.vanita5.microblog.library.mastodon.model.LinkHeaderList
 import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination

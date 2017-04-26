@@ -44,11 +44,11 @@ import nl.komponents.kovenant.ui.promiseOnUi
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.ktextension.dismissDialogFragment
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.mastodon.Mastodon
-import de.vanita5.twittnuker.library.mastodon.model.AccountUpdate
-import de.vanita5.twittnuker.library.twitter.model.ProfileUpdate
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
+import de.vanita5.microblog.library.mastodon.model.AccountUpdate
+import de.vanita5.microblog.library.twitter.model.ProfileUpdate
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity

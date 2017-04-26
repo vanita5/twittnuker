@@ -22,8 +22,8 @@
 
 package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.library.twitter.model.UserMentionEntity;
+import de.vanita5.microblog.library.twitter.model.User;
+import de.vanita5.microblog.library.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.UserKey;
 

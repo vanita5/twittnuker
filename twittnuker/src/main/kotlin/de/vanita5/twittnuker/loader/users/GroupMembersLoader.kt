@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.loader.users
 
 import android.content.Context
 
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.ResponseList
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.extension.model.api.microblog.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance

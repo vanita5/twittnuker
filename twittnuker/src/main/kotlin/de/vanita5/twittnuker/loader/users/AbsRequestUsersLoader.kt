@@ -26,8 +26,8 @@ import android.accounts.AccountManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.api.applyLoadLimit

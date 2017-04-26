@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
-import de.vanita5.twittnuker.library.mastodon.model.Application
+import de.vanita5.microblog.library.mastodon.model.Application
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 
 val Application.sourceHtml: String get() {

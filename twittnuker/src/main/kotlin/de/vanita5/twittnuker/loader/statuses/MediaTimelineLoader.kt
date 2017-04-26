@@ -26,10 +26,10 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.mariotaku.ktextension.isNullOrEmpty
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.mastodon.Mastodon
-import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
+import de.vanita5.microblog.library.twitter.model.*
 import de.vanita5.twittnuker.alias.MastodonTimelineOption
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.api.tryShowUser

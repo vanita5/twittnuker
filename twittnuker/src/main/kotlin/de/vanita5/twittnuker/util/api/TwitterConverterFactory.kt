@@ -27,11 +27,11 @@ import com.bluelinelabs.logansquare.JsonMapper
 import com.bluelinelabs.logansquare.ParameterizedType
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.mastodon.model.LinkHeaderList
-import de.vanita5.twittnuker.library.twitter.model.ResponseCode
-import de.vanita5.twittnuker.library.twitter.model.TwitterResponse
-import de.vanita5.twittnuker.library.twitter.util.OAuthTokenResponseConverter
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.model.LinkHeaderList
+import de.vanita5.microblog.library.twitter.model.ResponseCode
+import de.vanita5.microblog.library.twitter.model.TwitterResponse
+import de.vanita5.microblog.library.twitter.util.OAuthTokenResponseConverter
 import org.mariotaku.restfu.RestConverter
 import org.mariotaku.restfu.http.HttpResponse
 import org.mariotaku.restfu.http.mime.Body

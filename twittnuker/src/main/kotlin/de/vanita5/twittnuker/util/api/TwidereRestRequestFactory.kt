@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.util.api
 
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.restfu.RestConverter
 import org.mariotaku.restfu.RestMethod
 import org.mariotaku.restfu.RestRequest

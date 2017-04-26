@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.extension.model
 import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.ktextension.toLongOr
-import de.vanita5.twittnuker.library.twitter.model.CardEntity
+import de.vanita5.microblog.library.twitter.model.CardEntity
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.UserKey

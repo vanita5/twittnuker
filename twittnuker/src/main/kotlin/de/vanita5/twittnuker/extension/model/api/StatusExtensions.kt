@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.extension.model.api
 import android.text.Spanned
 import android.text.style.URLSpan
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils

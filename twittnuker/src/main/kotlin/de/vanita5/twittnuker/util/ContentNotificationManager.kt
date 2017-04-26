@@ -34,8 +34,8 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.forEachRow
 import org.mariotaku.ktextension.isEmpty
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Status
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import de.vanita5.twittnuker.BuildConfig

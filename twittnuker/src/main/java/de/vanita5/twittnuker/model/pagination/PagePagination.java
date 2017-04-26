@@ -28,7 +28,7 @@ import android.os.Parcelable;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import org.jetbrains.annotations.Nullable;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.microblog.library.twitter.model.Paging;
 
 @ParcelablePlease
 public class PagePagination implements Pagination, Parcelable {

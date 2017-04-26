@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.model;
 
-import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.microblog.library.twitter.model.User;
 
 /**
  * This represents a single (Push) Notification.

@@ -28,7 +28,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.Color
 import android.support.v4.util.ArrayMap
 import android.support.v4.util.LruCache
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.USER_COLOR_PREFERENCES_NAME
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser

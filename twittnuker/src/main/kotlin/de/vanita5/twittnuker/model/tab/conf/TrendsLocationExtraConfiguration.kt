@@ -29,7 +29,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import de.vanita5.twittnuker.library.twitter.model.Location
+import de.vanita5.microblog.library.twitter.model.Location
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.TrendsLocationSelectorActivity
 import de.vanita5.twittnuker.annotation.AccountType

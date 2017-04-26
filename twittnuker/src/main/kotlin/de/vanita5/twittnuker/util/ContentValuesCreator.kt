@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.util
 import android.content.ContentValues
 import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.SavedSearch
-import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.SavedSearch
+import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.getActivityStatus

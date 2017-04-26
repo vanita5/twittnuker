@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.widget.Toast
-import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance

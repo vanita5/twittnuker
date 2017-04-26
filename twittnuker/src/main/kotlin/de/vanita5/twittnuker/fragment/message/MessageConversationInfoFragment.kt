@@ -62,9 +62,9 @@ import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterUpload
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterUpload
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R

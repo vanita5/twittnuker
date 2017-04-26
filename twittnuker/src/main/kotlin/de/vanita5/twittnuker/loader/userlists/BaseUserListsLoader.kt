@@ -28,11 +28,11 @@ import android.content.SharedPreferences
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
-import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.PageableResponseList
+import de.vanita5.microblog.library.twitter.model.Paging
+import de.vanita5.microblog.library.twitter.model.UserList
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.constant.loadItemLimitKey

@@ -22,9 +22,9 @@
 
 package de.vanita5.twittnuker.alias
 
-import de.vanita5.twittnuker.library.mastodon.model.Status
-import de.vanita5.twittnuker.library.mastodon.model.StatusUpdate
-import de.vanita5.twittnuker.library.mastodon.model.TimelineOption
+import de.vanita5.microblog.library.mastodon.model.Status
+import de.vanita5.microblog.library.mastodon.model.StatusUpdate
+import de.vanita5.microblog.library.mastodon.model.TimelineOption
 
 
 typealias MastodonStatus = Status

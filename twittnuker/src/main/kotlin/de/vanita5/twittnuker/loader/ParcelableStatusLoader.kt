@@ -27,8 +27,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.FixedAsyncTaskLoader
 import org.mariotaku.ktextension.set
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.ErrorInfo
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT

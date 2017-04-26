@@ -28,7 +28,7 @@ import android.support.annotation.Nullable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.microblog.library.twitter.model.Paging;
 
 
 @ParcelablePlease

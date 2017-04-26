@@ -88,7 +88,7 @@ import de.vanita5.twittnuker.extension.text.twitter.extractReplyTextAndMentions
 import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
-import de.vanita5.twittnuker.library.mastodon.annotation.StatusVisibility
+import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras

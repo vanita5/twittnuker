@@ -31,8 +31,8 @@ import android.view.View
 import android.widget.AdapterView
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_listview.*
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.SavedSearch
+import de.vanita5.microblog.library.twitter.model.ResponseList
+import de.vanita5.microblog.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.adapter.SavedSearchesAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.loader.SavedSearchesLoader
@@ -117,6 +117,6 @@ class SavedSearchesListFragment : AbsContentListViewFragment<SavedSearchesAdapte
 
     companion object {
 
-        private val POSITION_COMPARATOR = Comparator<de.vanita5.twittnuker.library.twitter.model.SavedSearch> { object1, object2 -> object1.position - object2.position }
+        private val POSITION_COMPARATOR = Comparator<de.vanita5.microblog.library.twitter.model.SavedSearch> { object1, object2 -> object1.position - object2.position }
     }
 }

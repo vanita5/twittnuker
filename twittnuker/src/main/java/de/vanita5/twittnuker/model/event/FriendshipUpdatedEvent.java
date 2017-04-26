@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.model.event;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.library.twitter.model.Relationship;
+import de.vanita5.microblog.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class FriendshipUpdatedEvent {

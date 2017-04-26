@@ -22,6 +22,6 @@
 
 package de.vanita5.twittnuker.exception
 
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 
 class APINotSupportedException(platform: String = "this platform") : MicroBlogException("API not supported for $platform")

@@ -36,7 +36,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import de.vanita5.twittnuker.library.twitter.model.MediaEntity;
+import de.vanita5.microblog.library.twitter.model.MediaEntity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

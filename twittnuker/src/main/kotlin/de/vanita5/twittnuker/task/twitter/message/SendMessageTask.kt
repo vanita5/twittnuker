@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.task.twitter.message
 
 import android.content.Context
 import org.mariotaku.ktextension.isNotNullOrEmpty
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.TwitterUpload
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage
-import de.vanita5.twittnuker.library.twitter.model.NewDm
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.TwitterUpload
+import de.vanita5.microblog.library.twitter.model.DirectMessage
+import de.vanita5.microblog.library.twitter.model.NewDm
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType

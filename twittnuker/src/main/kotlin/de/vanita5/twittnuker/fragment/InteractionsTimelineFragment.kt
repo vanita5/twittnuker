@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import com.bumptech.glide.Glide
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_INTERACTIONS_TIMELINE
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter

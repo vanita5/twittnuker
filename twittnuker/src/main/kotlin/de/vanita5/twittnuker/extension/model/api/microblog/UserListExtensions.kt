@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.extension.model.api.microblog
 
-import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.microblog.library.twitter.model.UserList
 import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey

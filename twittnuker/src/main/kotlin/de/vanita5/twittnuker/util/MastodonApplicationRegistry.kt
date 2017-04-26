@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
-import de.vanita5.twittnuker.library.mastodon.model.RegisteredApplication
+import de.vanita5.microblog.library.mastodon.model.RegisteredApplication
 import de.vanita5.twittnuker.TwittnukerConstants.ETAG_MASTODON_APPS_PREFERENCES_NAME
 import java.io.IOException
 

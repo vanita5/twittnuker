@@ -30,7 +30,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import de.vanita5.twittnuker.library.twitter.model.Activity
+import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.text.style.NonBreakEllipseSpan

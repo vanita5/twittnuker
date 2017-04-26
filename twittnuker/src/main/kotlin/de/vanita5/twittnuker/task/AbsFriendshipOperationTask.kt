@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.task
 import android.accounts.AccountManager
 import android.content.Context
 import android.widget.Toast
-import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.getErrorMessage

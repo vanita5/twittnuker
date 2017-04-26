@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import org.mariotaku.ktextension.mapToArray
-import de.vanita5.twittnuker.library.mastodon.model.Status
+import de.vanita5.microblog.library.mastodon.model.Status
 import de.vanita5.twittnuker.extension.model.api.spanItems
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag

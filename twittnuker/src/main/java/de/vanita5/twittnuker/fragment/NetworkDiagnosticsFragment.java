@@ -46,9 +46,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.microblog.library.MicroBlog;
+import de.vanita5.microblog.library.MicroBlogException;
+import de.vanita5.microblog.library.twitter.model.Paging;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.annotation.method.GET;

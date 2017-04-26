@@ -48,9 +48,9 @@ import com.rengwuxian.materialedittext.MaterialEditText
 import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemAvailability
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.UserList
-import de.vanita5.twittnuker.library.twitter.model.UserListUpdate
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.UserList
+import de.vanita5.microblog.library.twitter.model.UserListUpdate
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity

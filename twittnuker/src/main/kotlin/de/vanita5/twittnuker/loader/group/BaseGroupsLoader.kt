@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.loader.group
 
 import android.content.Context
 import android.support.v4.content.FixedAsyncTaskLoader
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.statusnet.model.Group
-import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.statusnet.model.Group
+import de.vanita5.microblog.library.twitter.model.PageableResponseList
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.ParcelableGroup

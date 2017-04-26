@@ -25,9 +25,9 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.library.twitter.model.SavedSearch
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.twitter.model.ResponseList
+import de.vanita5.microblog.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.model.UserKey

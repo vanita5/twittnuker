@@ -31,10 +31,10 @@ import android.util.Log
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.ktextension.set
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.mastodon.Mastodon
-import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.microblog.library.MicroBlog
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
+import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R

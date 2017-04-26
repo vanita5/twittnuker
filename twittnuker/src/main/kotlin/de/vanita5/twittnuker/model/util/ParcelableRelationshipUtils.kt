@@ -25,8 +25,8 @@ package de.vanita5.twittnuker.model.util
 import android.content.ContentResolver
 import android.support.v4.util.ArraySet
 import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.twittnuker.library.twitter.model.Relationship
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.Relationship
+import de.vanita5.microblog.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser

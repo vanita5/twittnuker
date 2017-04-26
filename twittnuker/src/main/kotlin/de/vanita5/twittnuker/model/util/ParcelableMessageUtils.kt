@@ -23,11 +23,11 @@
 package de.vanita5.twittnuker.model.util
 
 import android.support.annotation.FloatRange
-import de.vanita5.twittnuker.library.twitter.model.DMResponse
-import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message
-import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message.Data
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.microblog.library.twitter.model.DMResponse
+import de.vanita5.microblog.library.twitter.model.DMResponse.Entry.Message
+import de.vanita5.microblog.library.twitter.model.DMResponse.Entry.Message.Data
+import de.vanita5.microblog.library.twitter.model.DirectMessage
+import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMessage
