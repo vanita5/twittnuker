@@ -27,11 +27,13 @@ import android.text.format.DateUtils
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils
+import java.security.cert.CertPathValidatorException
 
 
-fun Throwable.getErrorMessage(context: Context): CharSequence {
-    if (this is MicroBlogException) return getMicroBlogErrorMessage(context)
-    return message ?: toString()
+fun Throwable.getErrorMessage(context: Context): CharSequence = when (this) {
+    is MicroBlogException -> getMicroBlogErrorMessage(context)
+    is CertPathValidatorException -> context.getString(R.string.message_toast_ssl_tls_error)
+    else -> message ?: toString()
 }
 
 
