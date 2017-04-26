@@ -24,8 +24,10 @@ package de.vanita5.twittnuker.extension.model
 
 import org.mariotaku.restfu.oauth.OAuthAuthorization
 import org.mariotaku.restfu.oauth.OAuthToken
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.CustomAPIConfig
 
+inline val CustomAPIConfig.safeType: String get() = type ?: AccountType.TWITTER
 
 fun CustomAPIConfig.getOAuthAuthorization(accessToken: OAuthToken? = null): OAuthAuthorization? {
     val consumerKey = this.consumerKey ?: return null

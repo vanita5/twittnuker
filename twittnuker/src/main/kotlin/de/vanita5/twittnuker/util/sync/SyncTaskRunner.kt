@@ -90,6 +90,7 @@ abstract class SyncTaskRunner(val context: Context) {
         const val SYNC_TYPE_DRAFTS = "drafts"
         const val SYNC_TYPE_FILTERS = "filters"
         const val SYNC_TYPE_USER_COLORS = "user_colors"
+        const val SYNC_TYPE_TIMELINE_POSITIONS = "timeline_positions"
 
         @JvmStatic
         fun getSyncType(action: String): String? {

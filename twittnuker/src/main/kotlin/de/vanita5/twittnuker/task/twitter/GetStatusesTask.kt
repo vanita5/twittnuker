@@ -57,6 +57,8 @@ import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import de.vanita5.twittnuker.util.sync.SyncTaskRunner
+import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 
 abstract class GetStatusesTask(
         context: Context
@@ -117,8 +119,11 @@ abstract class GetStatusesTask(
                 return@mapIndexed GetTimelineResult(e)
             }
         }
-        if (param.isBackground) {
-            syncFetchReadPosition(accountKeys)
+        val manager = timelineSyncManagerFactory.get()
+        if (manager != null && syncPreferences.isSyncEnabled(SyncTaskRunner.SYNC_TYPE_TIMELINE_POSITIONS)) {
+            if (param.isBackground) {
+                syncFetchReadPosition(manager, accountKeys)
+            }
         }
         return result
     }
@@ -137,7 +142,7 @@ abstract class GetStatusesTask(
     @Throws(MicroBlogException::class)
     protected abstract fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus>
 
-    protected abstract fun syncFetchReadPosition(accountKeys: Array<UserKey>)
+    protected abstract fun syncFetchReadPosition(manager: TimelineSyncManager, accountKeys: Array<UserKey>)
 
     private fun storeStatus(account: AccountDetails, statuses: List<ParcelableStatus>,
             sinceId: String?, maxId: String?, sinceSortId: Long, maxSortId: Long,

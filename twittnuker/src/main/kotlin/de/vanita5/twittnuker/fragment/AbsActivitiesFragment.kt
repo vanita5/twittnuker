@@ -73,6 +73,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.glide.PauseRecyclerViewOnScrollListener
+import de.vanita5.twittnuker.util.sync.SyncTaskRunner
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder
 import de.vanita5.twittnuker.view.holder.GapViewHolder
@@ -248,7 +249,8 @@ abstract class AbsActivitiesFragment protected constructor() :
             val syncTag = this.timelineSyncTag
             val currentTag = this.currentReadPositionTag
 
-            if (syncManager != null && positionTag != null && syncTag != null) {
+            if (syncManager != null && positionTag != null && syncTag != null &&
+                    syncPreferences.isSyncEnabled(SyncTaskRunner.SYNC_TYPE_TIMELINE_POSITIONS)) {
                 lastReadId = syncManager.peekPosition(positionTag, syncTag)
             }
             if (lastReadId <= 0 && currentTag != null) {

@@ -24,13 +24,13 @@ package de.vanita5.twittnuker.util.sync
 
 import android.content.Context
 import android.net.Uri
-import android.support.annotation.UiThread
-import android.support.annotation.WorkerThread
 import android.support.v4.util.ArrayMap
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.then
 import okio.ByteString
 import de.vanita5.twittnuker.TwittnukerConstants.TIMELINE_SYNC_CACHE_PREFERENCES_NAME
 import de.vanita5.twittnuker.annotation.ReadPositionTag
-import java.io.IOException
+import de.vanita5.twittnuker.util.DebugLog
 import java.util.*
 
 
@@ -50,13 +50,15 @@ abstract class TimelineSyncManager(val context: Context) {
         }.toTypedArray()
         stagedCommits.clear()
         if (data.isEmpty()) return
-        performSync(data)
+        putAllPosition(data)
     }
 
-    fun blockingGetPosition(@ReadPositionTag positionTag: String, currentTag: String?): Long {
-        val position = fetchPosition(positionTag, currentTag)
+    fun fetchSingle(@ReadPositionTag positionTag: String, currentTag: String?) {
+        getSinglePosition(positionTag, currentTag).then { position ->
         cachedPositions.edit().putLong(cacheKey(positionTag, currentTag), position).apply()
-        return position
+        }.fail {
+            DebugLog.w(tr = it)
+        }
     }
 
     fun peekPosition(@ReadPositionTag positionTag: String, currentTag: String?): Long {
@@ -66,13 +68,10 @@ abstract class TimelineSyncManager(val context: Context) {
         return position
     }
 
+    protected abstract fun putAllPosition(data: Array<PositionData>): Promise<Unit, Exception>
 
-    @UiThread
-    protected abstract fun performSync(data: Array<PositionData>)
-
-    @WorkerThread
-    @Throws(IOException::class)
-    protected abstract fun fetchPosition(@ReadPositionTag positionTag: String, currentTag: String?): Long
+    protected abstract fun getSinglePosition(@ReadPositionTag positionTag: String, currentTag: String?):
+            Promise<Long, Exception>
 
     data class TimelineKey(val positionTag: String, val currentTag: String?)
     data class PositionData(val positionTag: String, val currentTag: String?, val positionKey: Long)

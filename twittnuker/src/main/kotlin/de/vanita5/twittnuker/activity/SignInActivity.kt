@@ -43,7 +43,6 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.InputType
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
 import android.view.View.OnClickListener
@@ -74,12 +73,11 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_TYPE
+import de.vanita5.twittnuker.constant.apiLastChangeKey
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getErrorMessage
-import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
@@ -105,6 +103,7 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.*
 import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
@@ -226,6 +225,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                     editUsername.text = null
                     editPassword.text = null
                 }
+                setDefaultAPI()
                 if (apiConfig.type == AccountType.MASTODON) {
                     performMastodonLogin()
                 } else when (apiConfig.credentialsType) {
@@ -523,33 +523,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
     }
 
     private fun setDefaultAPI() {
-        val apiLastChange = preferences.getLong(KEY_API_LAST_CHANGE, apiChangeTimestamp)
-        val defaultApiChanged = apiLastChange != apiChangeTimestamp
-        val apiUrlFormat = preferences.getNonEmptyString(KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
-        val authType = preferences.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH)
-        val sameOAuthSigningUrl = preferences.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false)
-        val noVersionSuffix = preferences.getBoolean(KEY_NO_VERSION_SUFFIX, false)
-        val consumerKey = preferences.getNonEmptyString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
-        val consumerSecret = preferences.getNonEmptyString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET)
-        if (TextUtils.isEmpty(apiConfig.apiUrlFormat) || defaultApiChanged) {
-            apiConfig.apiUrlFormat = apiUrlFormat
-        }
-        if (defaultApiChanged) {
-            apiConfig.credentialsType = authType
-        }
-        if (defaultApiChanged) {
-            apiConfig.isSameOAuthUrl = sameOAuthSigningUrl
-        }
-        if (defaultApiChanged) {
-            apiConfig.isNoVersionSuffix = noVersionSuffix
-        }
-        if (TextUtils.isEmpty(apiConfig.consumerKey) || defaultApiChanged) {
-            apiConfig.consumerKey = consumerKey
-        }
-        if (TextUtils.isEmpty(apiConfig.consumerSecret) || defaultApiChanged) {
-            apiConfig.consumerSecret = consumerSecret
-        }
-        if (defaultApiChanged) {
+        if (!apiConfig.isDefault) return
+        val apiLastChange = preferences[apiLastChangeKey]
+        if (apiLastChange != apiChangeTimestamp) {
+            apiConfig = preferences[defaultAPIConfigKey]
             apiChangeTimestamp = apiLastChange
         }
         updateSignInType()
@@ -668,14 +645,20 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         override fun onLoadFinished(loader: Loader<List<CustomAPIConfig>>, data: List<CustomAPIConfig>) {
             val dialog = dialog ?: return
             val listView = dialog.findViewById(R.id.expandableList) as ExpandableListView
-            val configGroup = data.groupBy { it.type ?: AccountType.TWITTER }
+            val defaultConfig = preferences[defaultAPIConfigKey]
+            val addDefault = !data.contains(defaultConfig)
+            val configGroup = data.groupBy { it.safeType }
             val supportedAccountTypes = arrayOf(AccountType.TWITTER, AccountType.FANFOU,
                     AccountType.MASTODON, AccountType.STATUSNET)
-            (listView.expandableListAdapter as LoginTypeAdapter).data = supportedAccountTypes.mapNotNull { type ->
-                if (type == AccountType.MASTODON) return@mapNotNull LoginType(type,
+            val result = supportedAccountTypes.mapNotNullTo(ArrayList()) { type ->
+                if (type == AccountType.MASTODON) return@mapNotNullTo LoginType(type,
                         listOf(CustomAPIConfig.mastodon(context)))
-                return@mapNotNull configGroup[type]?.let { list -> LoginType(type, list) }
+                return@mapNotNullTo configGroup[type]?.let { list -> LoginType(type, list) }
             }
+            if (addDefault) {
+                result.add(0, LoginType(defaultConfig.safeType, listOf(defaultConfig)))
+            }
+            (listView.expandableListAdapter as LoginTypeAdapter).data = result
         }
 
         override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<CustomAPIConfig>> {
@@ -718,7 +701,13 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                     parent: ViewGroup): View {
                 val view = convertView ?: inflater.inflate(android.R.layout.simple_expandable_list_item_1, parent, false)
                 val text1 = view.findViewById(android.R.id.text1) as TextView
-                text1.text = APIEditorDialogFragment.getTypeTitle(context, getGroup(groupPosition).type)
+                val group = getGroup(groupPosition)
+                val singleChild = group.configs.singleOrNull()
+                if (singleChild != null && singleChild.isDefault) {
+                    text1.setText(R.string.login_type_default)
+                } else {
+                    text1.text = APIEditorDialogFragment.getTypeTitle(context, group.type)
+                }
                 return view
             }
 
@@ -818,6 +807,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
                 val activity = activity as SignInActivity
                 val username = editUsername.text.toString()
                 val password = editPassword.text.toString()
+                activity.setDefaultAPI()
                 activity.performUserPassLogin(username, password)
             }
             builder.setNegativeButton(android.R.string.cancel, null)

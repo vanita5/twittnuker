@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.ErrorInfoStore
-import java.io.IOException
+import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 
 class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
 
@@ -93,14 +93,8 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
         }
     }
 
-
-    override fun syncFetchReadPosition(accountKeys: Array<UserKey>) {
-        val manager = timelineSyncManagerFactory.get() ?: return
+    override fun syncFetchReadPosition(manager: TimelineSyncManager, accountKeys: Array<UserKey>) {
         val tag = InteractionsTimelineFragment.getTimelineSyncTag(accountKeys)
-        try {
-            manager.blockingGetPosition(ReadPositionTag.ACTIVITIES_ABOUT_ME, tag)
-        } catch (e: IOException) {
-            return
-        }
+        manager.fetchSingle(ReadPositionTag.ACTIVITIES_ABOUT_ME, tag)
     }
 }

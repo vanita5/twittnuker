@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
+import de.vanita5.twittnuker.util.sync.SyncPreferences
 import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 import javax.inject.Inject
 
@@ -76,6 +77,8 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     lateinit var restHttpClient: RestHttpClient
     @Inject
     lateinit var dns: Dns
+    @Inject
+    lateinit var syncPreferences: SyncPreferences
 
     protected val statusScheduleProvider: StatusScheduleProvider?
         get() = statusScheduleProviderFactory.newInstance(context)

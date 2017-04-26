@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 import de.vanita5.twittnuker.util.sync.DataSyncProvider
 import java.util.*
 
-
 val textSizeKey = KIntKey(KEY_TEXT_SIZE, 15)
 val nameFirstKey = KBooleanKey(KEY_NAME_FIRST, true)
 val displayProfileImageKey = KBooleanKey(KEY_DISPLAY_PROFILE_IMAGE, true)
@@ -99,7 +98,6 @@ val homeRefreshMentionsKey = KBooleanKey(KEY_HOME_REFRESH_MENTIONS, true)
 val homeRefreshDirectMessagesKey = KBooleanKey(KEY_HOME_REFRESH_DIRECT_MESSAGES, true)
 val homeRefreshSavedSearchesKey = KBooleanKey(KEY_HOME_REFRESH_SAVED_SEARCHES, false)
 val shareFormatKey = KStringKey(KEY_SHARE_FORMAT, DEFAULT_SHARE_FORMAT, String::isNotEmpty)
-
 object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
     override fun read(preferences: SharedPreferences) = preferences.getInt(key, def).coerceIn(100,
             500)
@@ -219,7 +217,9 @@ object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {
         val consumerKey = preferences.getNonEmptyString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY).trim()
         val consumerSecret = preferences.getNonEmptyString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET).trim()
         return CustomAPIConfig("Default", customApiType, apiUrlFormat, authType, sameOAuthSigningUrl,
-                noVersionSuffix, consumerKey, consumerSecret)
+                noVersionSuffix, consumerKey, consumerSecret).apply {
+            isDefault = true
+        }
     }
 
     override fun write(editor: SharedPreferences.Editor, value: CustomAPIConfig): Boolean {
