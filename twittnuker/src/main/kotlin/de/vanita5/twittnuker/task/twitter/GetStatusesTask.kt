@@ -68,10 +68,9 @@ abstract class GetStatusesTask(
 
     override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
         if (param.shouldAbort) return emptyList()
-        val accountKeys = param.accountKeys
+        val accountKeys = param.accountKeys.takeIf { it.isNotEmpty() } ?: return emptyList()
         val loadItemLimit = preferences[loadItemLimitKey]
-        var saveReadPosition = false
-        return accountKeys.mapIndexed { i, accountKey ->
+        val result = accountKeys.mapIndexed { i, accountKey ->
             val account = AccountUtils.getAccountDetails(AccountManager.get(context),
                     accountKey, true) ?: return@mapIndexed null
             try {
@@ -96,14 +95,10 @@ abstract class GetStatusesTask(
                     if (maxId == null) {
                         paging.setLatestResults(true)
                     }
-                    saveReadPosition = true
                 }
                 val statuses = getStatuses(account, paging)
                 val storeResult = storeStatus(account, statuses, sinceId, maxId, sinceSortId,
                         maxSortId, loadItemLimit, false)
-                if (saveReadPosition) {
-                    setLocalReadPosition(accountKey, account)
-                }
                 // TODO cache related data and preload
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
                 if (storeResult != 0) {
@@ -122,6 +117,10 @@ abstract class GetStatusesTask(
                 return@mapIndexed GetTimelineResult(e)
             }
         }
+        if (param.isBackground) {
+            syncFetchReadPosition(accountKeys)
+        }
+        return result
     }
 
     override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetTimelineResult?>) {
@@ -138,7 +137,7 @@ abstract class GetStatusesTask(
     @Throws(MicroBlogException::class)
     protected abstract fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus>
 
-    protected abstract fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails)
+    protected abstract fun syncFetchReadPosition(accountKeys: Array<UserKey>)
 
     private fun storeStatus(account: AccountDetails, statuses: List<ParcelableStatus>,
             sinceId: String?, maxId: String?, sinceSortId: Long, maxSortId: Long,

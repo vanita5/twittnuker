@@ -35,4 +35,6 @@ interface RefreshTaskParam {
 
     val shouldAbort: Boolean get() = false
 
+    val isBackground: Boolean get() = false
+
 }

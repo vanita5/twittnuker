@@ -31,7 +31,6 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -61,9 +60,8 @@ abstract class GetActivitiesTask(
 
     override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
         if (param.shouldAbort) return emptyList()
-        val accountKeys = param.accountKeys
+        val accountKeys = param.accountKeys.takeIf { it.isNotEmpty() } ?: return emptyList()
         val loadItemLimit = preferences[loadItemLimitKey]
-        val saveReadPosition = BooleanArray(accountKeys.size)
         val result = accountKeys.mapIndexed { i, accountKey ->
             val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri, accountKey) <= 0
             val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey,
@@ -80,7 +78,6 @@ abstract class GetActivitiesTask(
                 paging.sinceId(sinceId)
                 if (maxId == null) {
                     paging.setLatestResults(true)
-                    saveReadPosition[i] = true
                 }
             }
             // We should delete old activities has intersection with new items
@@ -88,9 +85,6 @@ abstract class GetActivitiesTask(
                 val activities = getActivities(credentials, paging)
                 val storeResult = storeActivities(credentials, activities, sinceId, maxId,
                         loadItemLimit, noItemsBefore, false)
-                if (saveReadPosition[i]) {
-
-                }
                 errorInfoStore.remove(errorInfoKey, accountKey)
                 if (storeResult != 0) {
                     throw GetStatusesTask.GetTimelineException(storeResult)
@@ -108,7 +102,9 @@ abstract class GetActivitiesTask(
             }
             return@mapIndexed GetTimelineResult(null)
         }
-        setLocalReadPosition(accountKeys, saveReadPosition)
+        if (param.isBackground) {
+            syncFetchReadPosition(accountKeys)
+        }
         return result
     }
 
@@ -127,7 +123,7 @@ abstract class GetActivitiesTask(
     @Throws(MicroBlogException::class)
     protected abstract fun getActivities(account: AccountDetails, paging: Paging): List<ParcelableActivity>
 
-    protected abstract fun setLocalReadPosition(accountKeys: Array<UserKey>, saveReadPosition: BooleanArray)
+    protected abstract fun syncFetchReadPosition(accountKeys: Array<UserKey>)
 
     private fun storeActivities(details: AccountDetails, activities: List<ParcelableActivity>,
             sinceId: String?, maxId: String?, loadItemLimit: Int, noItemsBefore: Boolean,

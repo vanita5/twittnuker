@@ -62,6 +62,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
     String SYNC_PREFERENCES_NAME = "sync_preferences";
     String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
+    String TIMELINE_SYNC_CACHE_PREFERENCES_NAME = "timeline_sync_cache";
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
     String ETAG_CACHE_PREFERENCES_NAME = "etag_cache";
     String ETAG_MASTODON_APPS_PREFERENCES_NAME = "mastodon_apps";

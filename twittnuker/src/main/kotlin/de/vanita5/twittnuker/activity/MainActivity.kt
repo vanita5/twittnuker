@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.extension.model.hasInvalidAccount
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DeviceUtils
 import de.vanita5.twittnuker.util.StrictModeUtils
-import de.vanita5.twittnuker.util.Utils
 
 open class MainActivity : BaseActivity() {
 

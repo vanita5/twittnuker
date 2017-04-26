@@ -34,12 +34,12 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.fragment.HomeTimelineFragment
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.ErrorInfoStore
-import de.vanita5.twittnuker.util.Utils
 import java.io.IOException
 
 class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
@@ -70,13 +70,13 @@ class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
         }
     }
 
-    override fun setLocalReadPosition(accountKey: UserKey, details: AccountDetails) {
-        val syncManager = timelineSyncManagerFactory.get() ?: return
+    override fun syncFetchReadPosition(accountKeys: Array<UserKey>) {
+        val manager = timelineSyncManagerFactory.get() ?: return
+        val tag = HomeTimelineFragment.getTimelineSyncTag(accountKeys)
         try {
-            val tag = Utils.getReadPositionTagWithAccount(ReadPositionTag.HOME_TIMELINE, accountKey)
-            syncManager.blockingGetPosition(ReadPositionTag.HOME_TIMELINE, tag)
+            manager.blockingGetPosition(ReadPositionTag.ACTIVITIES_ABOUT_ME, tag)
         }catch (e: IOException) {
-
+            return
         }
     }
 }
