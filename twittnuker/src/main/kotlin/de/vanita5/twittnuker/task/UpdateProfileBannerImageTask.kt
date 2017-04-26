@@ -27,9 +27,11 @@ import android.net.Uri
 import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.mastodon.Mastodon
+import de.vanita5.twittnuker.library.mastodon.model.AccountUpdate
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -51,24 +53,32 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
     private val profileImageSize = context.getString(R.string.profile_image_size)
 
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableUser {
-        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
         try {
-            UpdateStatusTask.getBodyFromMedia(context, imageUri, ParcelableMedia.Type.IMAGE,
+            return UpdateStatusTask.getBodyFromMedia(context, imageUri, ParcelableMedia.Type.IMAGE,
                     deleteImage, false, null, false, null).use {
-                microBlog.updateProfileBannerImage(it.body)
+                when (account.type) {
+                    AccountType.MASTODON -> {
+                        val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
+                        return@use mastodon.updateCredentials(AccountUpdate().header(it.body))
+                                .toParcelable(account)
+                    }
+                    else -> {
+                        val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
+                        microBlog.updateProfileBannerImage(it.body)
+                        // Wait for 5 seconds, see
+                        // https://dev.twitter.com/docs/api/1.1/post/account/update_profile_image
+                        Thread.sleep(5000L)
+                        return@use microBlog.verifyCredentials().toParcelable(account,
+                                profileImageSize = profileImageSize)
+                    }
+                }
             }
         } catch (e: IOException) {
             throw MicroBlogException(e)
-        }
-        // Wait for 5 seconds, see
-        // https://dev.twitter.com/docs/api/1.1/post/account/update_profile_image
-        try {
-            Thread.sleep(5000L)
         } catch (e: InterruptedException) {
-            DebugLog.w(LOGTAG, tr = e)
+            DebugLog.w(tr = e)
+            throw MicroBlogException(e)
         }
-        val user = microBlog.verifyCredentials()
-        return user.toParcelable(account, profileImageSize = profileImageSize)
     }
 
     override fun onSucceed(callback: ResultHandler?, result: ParcelableUser) {

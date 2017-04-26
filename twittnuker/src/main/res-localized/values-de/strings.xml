@@ -260,7 +260,6 @@
     <string name="count_label_retweets">Retweets</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
     <string name="created_list">Liste \"<xliff:g id="list">%s</xliff:g>\" erstellt.</string>
-    <string name="crop_image">Bild zuschneiden</string>
     <string name="current_status">Aktueller Tweet</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
     <string name="custom_host_mapping_summary">Host-Mapping wie /etc/hosts, ohne zusätzlich erforderliche Rechte</string>
@@ -970,6 +969,7 @@
     <string name="title_buffer_settings">Buffer Einstellungen</string>
     <string name="title_compose">Neuer Tweet</string>
     <string name="title_conversation">Unterhaltung</string>
+    <string name="title_crop_image">Bild zuschneiden</string>
     <string name="title_dialog_sync_connect_to">Verbinden…</string>
     <string name="title_direct_messages">Nachrichten</string>
     <string name="title_direct_messages_conversation_info">Gruppeninfo</string>

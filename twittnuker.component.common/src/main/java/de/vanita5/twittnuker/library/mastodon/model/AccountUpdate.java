@@ -24,10 +24,43 @@
 package de.vanita5.twittnuker.library.mastodon.model;
 
 import org.mariotaku.restfu.http.SimpleValueMap;
-
-/**
- * Created by mariotaku on 2017/4/17.
- */
+import org.mariotaku.restfu.http.mime.Body;
 
 public class AccountUpdate extends SimpleValueMap {
+
+    public AccountUpdate displayName(String displayName) {
+        if (displayName != null) {
+            put("display_name", displayName);
+        } else {
+            put("display_name", null);
+        }
+        return this;
+    }
+
+    public AccountUpdate note(String note) {
+        if (note != null) {
+            put("note", note);
+        } else {
+            put("note", null);
+        }
+        return this;
+    }
+
+    public AccountUpdate avatar(Body avatar) {
+        if (avatar != null) {
+            put("avatar", avatar);
+        } else {
+            put("avatar", null);
+        }
+        return this;
+    }
+
+    public AccountUpdate header(Body header) {
+        if (header != null) {
+            put("header", header);
+        } else {
+            put("header", null);
+        }
+        return this;
+    }
 }
