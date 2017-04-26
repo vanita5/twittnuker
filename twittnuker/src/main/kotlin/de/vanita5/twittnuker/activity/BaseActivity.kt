@@ -34,6 +34,7 @@ import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.support.annotation.StyleRes
 import android.support.v4.graphics.ColorUtils
+import android.support.v7.app.TwilightManagerAccessor
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback
@@ -123,6 +124,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     protected val gifShareProvider: GifShareProvider?
         get() = gifShareProviderFactory.newInstance(this)
 
+    private var isNightBackup: Int = TwilightManagerAccessor.UNSPECIFIED
 
     private val actionHelper = IBaseActivity.ActionHelper(this)
     private val themePreferences by lazy {
@@ -213,7 +215,6 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         super.onResume()
         val adapter = NfcAdapter.getDefaultAdapter(this)
         if (adapter != null && adapter.isEnabled) {
-
             val handlerFilter = IntentUtils.getWebLinkIntentFilter(this)
             if (handlerFilter != null) {
                 val linkIntent = Intent(this, WebLinkHandlerActivity::class.java)
@@ -232,9 +233,15 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
                 } catch (e: Exception) {
                     // Ignore if blocked by modified roms
                 }
-
             }
         }
+
+        val nightState = TwilightManagerAccessor.getNightState(this)
+        if (isNightBackup != TwilightManagerAccessor.UNSPECIFIED && nightState != isNightBackup) {
+            recreate()
+            return
+        }
+        isNightBackup = nightState
     }
 
     override fun onPause() {
