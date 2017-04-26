@@ -29,6 +29,7 @@ import android.support.annotation.ColorInt
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.AppCompatImageButton
 import android.util.AttributeSet
+import android.widget.ImageView
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonView
 import de.vanita5.twittnuker.R
@@ -60,7 +61,7 @@ class IconActionButton(
         @ColorInt
         get() {
             if (field != 0) return field
-            return defaultColor
+            return defaultColorStateList?.getColorForState(activatedState, defaultColor) ?: defaultColor
         }
         set(@ColorInt activatedColor) {
             field = activatedColor
@@ -71,17 +72,20 @@ class IconActionButton(
         @ColorInt
         get() {
             if (field != 0) return field
-            return defaultColor
+            return defaultColorStateList?.getColorForState(disabledState, defaultColor) ?: defaultColor
         }
         set(@ColorInt disabledColor) {
             field = disabledColor
             updateColorFilter()
         }
 
+    private val defaultColorStateList: ColorStateList?
+
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.IconActionButton,
                 R.attr.cardActionButtonStyle, R.style.Widget_CardActionButton)
-        defaultColor = a.getColor(R.styleable.IconActionButton_iabColor, 0)
+        defaultColorStateList = a.getColorStateList(R.styleable.IconActionButton_iabColor)
+        defaultColor = defaultColorStateList?.defaultColor ?: 0
         activatedColor = a.getColor(R.styleable.IconActionButton_iabActivatedColor, 0)
         disabledColor = a.getColor(R.styleable.IconActionButton_iabDisabledColor, 0)
         a.recycle()
@@ -96,16 +100,6 @@ class IconActionButton(
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         updateColorFilter()
-    }
-
-    private fun updateColorFilter() {
-        if (isActivated) {
-            setColorFilter(activatedColor)
-        } else if (isEnabled) {
-            setColorFilter(defaultColor)
-        } else {
-            setColorFilter(disabledColor)
-        }
     }
 
     override fun setBackgroundTintList(tint: ColorStateList?) {
@@ -128,5 +122,21 @@ class IconActionButton(
 
     override fun applyAppearance(appearance: ChameleonView.Appearance) {
         IIconActionButton.Appearance.apply(this, appearance as IIconActionButton.Appearance)
+    }
+
+    internal companion object {
+        val activatedState = intArrayOf(android.R.attr.state_activated)
+        val disabledState = intArrayOf(-android.R.attr.state_enabled)
+
+        fun IIconActionButton.updateColorFilter() {
+            this as ImageView
+            if (isActivated) {
+                setColorFilter(activatedColor)
+            } else if (isEnabled) {
+                setColorFilter(defaultColor)
+            } else {
+                setColorFilter(disabledColor)
+            }
+        }
     }
 }

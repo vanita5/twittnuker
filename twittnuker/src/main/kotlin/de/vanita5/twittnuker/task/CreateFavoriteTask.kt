@@ -28,9 +28,11 @@ import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.getErrorMessage
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -40,8 +42,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.Companion.calculateHashCode
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -67,6 +68,10 @@ class CreateFavoriteTask(context: Context, accountKey: UserKey, private val stat
                     val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
                     microBlog.createFanfouFavorite(statusId).toParcelable(account)
                 }
+                AccountType.MASTODON -> {
+                    val mastodon = account.newMicroBlogInstance(context, cls = Mastodon::class.java)
+                    mastodon.favouriteStatus(statusId).toParcelable(account)
+                }
                 else -> {
                     val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
                     microBlog.createFavorite(statusId).toParcelable(account)
@@ -74,15 +79,15 @@ class CreateFavoriteTask(context: Context, accountKey: UserKey, private val stat
             }
             Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
             val values = ContentValues()
-            values.put(TwidereDataStore.Statuses.IS_FAVORITE, true)
-            values.put(TwidereDataStore.Statuses.REPLY_COUNT, result.reply_count)
-            values.put(TwidereDataStore.Statuses.RETWEET_COUNT, result.retweet_count)
-            values.put(TwidereDataStore.Statuses.FAVORITE_COUNT, result.favorite_count)
+            values.put(Statuses.IS_FAVORITE, true)
+            values.put(Statuses.REPLY_COUNT, result.reply_count)
+            values.put(Statuses.RETWEET_COUNT, result.retweet_count)
+            values.put(Statuses.FAVORITE_COUNT, result.favorite_count)
             val statusWhere = Expression.and(
-                    Expression.equalsArgs(TwidereDataStore.Statuses.ACCOUNT_KEY),
+                    Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                     Expression.or(
-                            Expression.equalsArgs(TwidereDataStore.Statuses.STATUS_ID),
-                            Expression.equalsArgs(TwidereDataStore.Statuses.RETWEET_ID)
+                            Expression.equalsArgs(Statuses.STATUS_ID),
+                            Expression.equalsArgs(Statuses.RETWEET_ID)
                     )
             ).sql
             val statusWhereArgs = arrayOf(account.key.toString(), statusId, statusId)

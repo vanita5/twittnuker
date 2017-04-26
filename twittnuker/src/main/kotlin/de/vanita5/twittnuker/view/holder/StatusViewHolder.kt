@@ -38,6 +38,7 @@ import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
+import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import kotlinx.android.synthetic.main.list_item_status.view.*
 import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.empty
@@ -371,7 +372,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             mediaPreview.visibility = View.GONE
         }
 
-
         summaryView.text = status.extras?.summary_text
         summaryView.hideIfEmpty()
 
@@ -410,6 +410,24 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         } else {
             replyCountView.text = null
             replyCountView.visibility = View.GONE
+        }
+
+        when (status.extras?.visibility) {
+            StatusVisibility.PRIVATE -> {
+                retweetButton.isEnabled = false
+                retweetIcon.setImageResource(R.drawable.ic_action_lock)
+                retweetIcon.isEnabled = false
+            }
+            StatusVisibility.DIRECT -> {
+                retweetButton.isEnabled = false
+                retweetIcon.setImageResource(R.drawable.ic_action_message)
+                retweetIcon.isEnabled = false
+            }
+            else -> {
+                retweetButton.isEnabled = true
+                retweetIcon.setImageResource(R.drawable.ic_action_retweet)
+                retweetIcon.isEnabled = true
+            }
         }
 
         if (twitter.isDestroyingStatus(status.account_key, status.my_retweet_id)) {

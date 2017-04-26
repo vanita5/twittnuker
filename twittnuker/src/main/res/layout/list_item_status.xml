@@ -352,7 +352,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_reply"
                 app:iabActivatedColor="@color/highlight_reply"
-                app:iabColor="?android:textColorTertiary"
+                app:iabColor="?android:textColorSecondary"
                 tools:tint="?android:textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView
@@ -391,7 +391,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_retweet"
                 app:iabActivatedColor="@color/highlight_retweet"
-                app:iabColor="?android:textColorTertiary"
+                app:iabColor="?android:textColorSecondary"
                 tools:tint="?android:textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView
@@ -431,7 +431,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_heart"
                 app:iabActivatedColor="@color/highlight_like"
-                app:iabColor="?android:textColorTertiary"
+                app:iabColor="?android:textColorSecondary"
                 tools:tint="?android:textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView

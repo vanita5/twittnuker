@@ -69,6 +69,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -88,7 +89,6 @@ import de.vanita5.twittnuker.extension.text.twitter.extractReplyTextAndMentions
 import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
-import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
@@ -851,9 +851,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun resetButtonsStates() {
+        // Should be called first
+        updateAccountSelectionState()
         updateLocationState()
         updateVisibilityState()
-        updateAccountSelectionState()
         updateUpdateStatusIcon()
         updateMediaState()
         setMenu()
@@ -972,6 +973,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val selectionEnd = editText.length()
             editText.setSelection(selectionStart, selectionEnd)
         }
+        statusVisibility = intent.getStringExtra(EXTRA_VISIBILITY) ?: status.extras?.visibility
         accountsAdapter.selectedAccountKeys = arrayOf(status.account_key)
         showReplyLabelAndHint(status)
         return true
@@ -1554,6 +1556,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun updateVisibilityState() {
+        visibilityLabel.visibility = if (hasStatusVisibility) View.VISIBLE else View.GONE
         when (statusVisibility) {
             StatusVisibility.UNLISTED -> {
                 visibilityLabel.setText(R.string.label_status_visibility_unlisted)
@@ -1576,6 +1579,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                         R.drawable.ic_action_web, 0, 0, 0)
             }
         }
+        visibilityLabel.refreshDrawableState()
     }
 
     private fun getTwitterReplyTextAndMentions(text: String = editText.text?.toString().orEmpty(),
@@ -1928,6 +1932,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val account = accounts!![position]
             selection.put(account.key, true != selection[account.key])
             activity.updateAccountSelectionState()
+            activity.updateVisibilityState()
             activity.setMenu()
             notifyDataSetChanged()
         }
@@ -1938,6 +1943,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             selection.clear()
             selection.put(account.key, true != selection[account.key])
             activity.updateAccountSelectionState()
+            activity.updateVisibilityState()
             activity.setMenu()
             notifyDataSetChanged()
         }

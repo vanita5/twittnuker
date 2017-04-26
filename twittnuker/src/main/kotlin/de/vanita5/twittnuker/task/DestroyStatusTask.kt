@@ -26,9 +26,12 @@ import android.content.Context
 import android.widget.Toast
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.getErrorMessage
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -47,8 +50,18 @@ class DestroyStatusTask(
 ) : AbsAccountRequestTask<Any?, ParcelableStatus, Any?>(context, accountKey) {
 
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableStatus {
-        val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-        return microBlog.destroyStatus(statusId).toParcelable(account)
+        when (account.type) {
+            AccountType.MASTODON -> {
+                val mastodon = account.newMicroBlogInstance(context, cls = Mastodon::class.java)
+                val result = mastodon.favouriteStatus(statusId)
+                mastodon.deleteStatus(statusId)
+                return result.toParcelable(account)
+            }
+            else -> {
+                val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
+                return microBlog.destroyStatus(statusId).toParcelable(account)
+            }
+        }
     }
 
     override fun onCleanup(account: AccountDetails, params: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {

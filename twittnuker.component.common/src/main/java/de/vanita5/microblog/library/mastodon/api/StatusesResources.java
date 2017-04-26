@@ -30,6 +30,9 @@ import de.vanita5.microblog.library.mastodon.model.Context;
 import de.vanita5.microblog.library.mastodon.model.LinkHeaderList;
 import de.vanita5.microblog.library.mastodon.model.Status;
 import de.vanita5.microblog.library.mastodon.model.StatusUpdate;
+import de.vanita5.microblog.library.twitter.model.ResponseCode;
+
+import org.mariotaku.restfu.annotation.method.DELETE;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
@@ -54,4 +57,19 @@ public interface StatusesResources {
 
     @POST("/v1/statuses")
     Status postStatus(@Param StatusUpdate update) throws MicroBlogException;
+
+    @DELETE("/v1/statuses/{id}")
+    ResponseCode deleteStatus(@Path("id") String id) throws MicroBlogException;
+
+    @POST("/v1/statuses/{id}/reblog")
+    Status reblogStatus(@Path("id") String id) throws MicroBlogException;
+
+    @POST("/v1/statuses/{id}/unreblog")
+    Status unreblogStatus(@Path("id") String id) throws MicroBlogException;
+
+    @POST("/v1/statuses/{id}/favourite")
+    Status favouriteStatus(@Path("id") String id) throws MicroBlogException;
+
+    @POST("/v1/statuses/{id}/unfavourite")
+    Status unfavouriteStatus(@Path("id") String id) throws MicroBlogException;
 }
