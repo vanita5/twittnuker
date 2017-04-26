@@ -24,9 +24,11 @@ package de.vanita5.twittnuker.model.tab.impl
 
 import android.content.Context
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.TabAccountFlags
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_PLACE
 import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.StringHolder
@@ -83,4 +85,10 @@ class TrendsTabConfiguration : TabConfiguration() {
         }
         return true
     }
+
+    override fun checkAccountAvailability(details: AccountDetails) = when (details.type) {
+        AccountType.FANFOU, AccountType.TWITTER -> true
+        else -> false
+    }
+
 }
