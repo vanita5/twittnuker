@@ -23,17 +23,28 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.exception.APINotSupportedException
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableUser
 
 class ReportSpamAndBlockTask(context: Context) : CreateUserBlockTask(context) {
 
     @Throws(MicroBlogException::class)
-    override fun perform(twitter: MicroBlog, details: AccountDetails,
-                         args: AbsFriendshipOperationTask.Arguments): User {
-        return twitter.reportSpam(args.userKey.id)
+    override fun perform(details: AccountDetails, args: Arguments): ParcelableUser {
+        when (details.type) {
+            AccountType.MASTODON -> {
+                throw APINotSupportedException(details.type)
+            }
+            else -> {
+                val twitter = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return twitter.reportSpam(args.accountKey.id).toParcelable(details,
+                        profileImageSize = profileImageSize)
+            }
+        }
     }
 }

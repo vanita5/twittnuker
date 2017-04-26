@@ -111,13 +111,10 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.*
+import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
-import de.vanita5.twittnuker.extension.model.applyTo
-import de.vanita5.twittnuker.extension.model.getBestProfileBanner
-import de.vanita5.twittnuker.extension.model.originalProfileImage
-import de.vanita5.twittnuker.extension.model.urlPreferred
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
-import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
@@ -125,15 +122,20 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.statuses.UserFavoritesFragment
 import de.vanita5.twittnuker.fragment.statuses.UserMediaTimelineFragment
 import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment
+import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.model.event.FriendshipUpdatedEvent
 import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
 import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
-import de.vanita5.twittnuker.model.util.*
+import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
+import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
+import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.text.TwidereURLSpan
@@ -1649,37 +1651,47 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
 
         override fun loadInBackground(): SingleResponse<ParcelableRelationship> {
             if (accountKey == null || user == null) {
-                return SingleResponse.Companion.getInstance<ParcelableRelationship>(MicroBlogException("Null parameters"))
+                return SingleResponse(MicroBlogException("Null parameters"))
             }
             val userKey = user.key
             val isFiltering = DataStoreUtils.isFilteringUser(context, userKey)
             if (accountKey == user.key) {
-                return SingleResponse.getInstance(ParcelableRelationshipUtils.create(accountKey, userKey,
+                return SingleResponse(ParcelableRelationshipUtils.create(accountKey, userKey,
                         null, isFiltering))
             }
             val details = AccountUtils.getAccountDetails(AccountManager.get(context),
-                    accountKey, true) ?: return SingleResponse.getInstance<ParcelableRelationship>(MicroBlogException("No Account"))
+                    accountKey, true) ?: return SingleResponse(MicroBlogException("No Account"))
             if (details.type == AccountType.TWITTER) {
                 if (!UserKeyUtils.isSameHost(accountKey, user.key)) {
                     return SingleResponse.getInstance(ParcelableRelationshipUtils.create(user, isFiltering))
                 }
             }
-            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey) ?: return SingleResponse.Companion.getInstance<ParcelableRelationship>(MicroBlogException("No Account"))
             try {
-                val relationship = twitter.showFriendship(user.key.id)
-                if (relationship.isSourceBlockingTarget || relationship.isSourceBlockedByTarget) {
+                val data = when (details.type) {
+                    AccountType.MASTODON -> {
+                        val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+                        mastodon.getRelationships(arrayOf(userKey.id))?.firstOrNull()
+                                ?.toParcelable(accountKey, userKey, isFiltering)
+                                ?: throw MicroBlogException("No relationship")
+                    }
+                    else -> {
+                        val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                        microBlog.showFriendship(user.key.id).toParcelable(accountKey, userKey,
+                                isFiltering)
+                    }
+                }
+
+                if (data.blocking || data.blocked_by) {
                     Utils.setLastSeen(context, userKey, -1)
                 } else {
                     Utils.setLastSeen(context, userKey, System.currentTimeMillis())
                 }
-                val data = ParcelableRelationshipUtils.create(accountKey, userKey, relationship,
-                        isFiltering)
                 val resolver = context.contentResolver
                 val values = ObjectCursor.valuesCreatorFrom(ParcelableRelationship::class.java).create(data)
                 resolver.insert(CachedRelationships.CONTENT_URI, values)
-                return SingleResponse.getInstance(data)
+                return SingleResponse(data)
             } catch (e: MicroBlogException) {
-                return SingleResponse.Companion.getInstance<ParcelableRelationship>(e)
+                return SingleResponse(e)
             }
 
         }

@@ -20,4 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.extension.model.api.mastodon
+
+import de.vanita5.twittnuker.library.mastodon.model.Relationship
+import de.vanita5.twittnuker.model.ParcelableRelationship
+import de.vanita5.twittnuker.model.UserKey
+
+
+fun Relationship.toParcelable(accountKey: UserKey, userKey: UserKey, filtering: Boolean = false):
+        ParcelableRelationship {
+    val obj = ParcelableRelationship()
+    obj.account_key = accountKey
+    obj.user_key = userKey
+    obj.following = isFollowing
+    obj.followed_by = isFollowedBy
+    obj.blocking = isBlocking
+    obj.muting = isMuting
+    obj.filtering = filtering
+    return obj
+}

@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.constant.homeRefreshDirectMessagesKey
 import de.vanita5.twittnuker.constant.homeRefreshMentionsKey
 import de.vanita5.twittnuker.constant.homeRefreshSavedSearchesKey
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*

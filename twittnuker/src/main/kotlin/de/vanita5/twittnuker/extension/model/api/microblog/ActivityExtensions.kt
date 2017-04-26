@@ -22,10 +22,9 @@
 
 package de.vanita5.twittnuker.extension.model.api.microblog
 
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.twittnuker.library.twitter.model.Activity
-import de.vanita5.twittnuker.extension.model.toParcelables
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.UserKey
@@ -54,16 +53,18 @@ fun Activity.toParcelable(accountKey: UserKey, accountType: String, isGap: Boole
     result.target_users = targetUsers?.mapToArray {
         it.toParcelable(accountKey, accountType, profileImageSize = profileImageSize)
     }
-    result.target_user_lists = targetUserLists?.toParcelables(accountKey,
-            profileImageSize)
+    result.target_user_lists = targetUserLists?.mapToArray {
+        it.toParcelable(accountKey, profileImageSize = profileImageSize)
+    }
     result.target_statuses = targetStatuses?.mapToArray {
         it.toParcelable(accountKey, accountType, profileImageSize)
     }
     result.target_object_statuses = targetObjectStatuses?.mapToArray {
         it.toParcelable(accountKey, accountType, profileImageSize)
     }
-    result.target_object_user_lists = targetObjectUserLists?.toParcelables(accountKey,
-            profileImageSize)
+    result.target_object_user_lists = targetObjectUserLists?.mapToArray {
+        it.toParcelable(accountKey, profileImageSize = profileImageSize)
+    }
     result.target_object_users = targetObjectUsers?.mapToArray {
         it.toParcelable(accountKey, accountType, profileImageSize = profileImageSize)
     }

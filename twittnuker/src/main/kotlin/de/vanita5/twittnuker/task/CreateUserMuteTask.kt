@@ -27,10 +27,15 @@ import android.content.Context
 import android.widget.Toast
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.library.mastodon.Mastodon
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.exception.APINotSupportedException
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
@@ -44,14 +49,26 @@ class CreateUserMuteTask(
 ) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.MUTE) {
 
     @Throws(MicroBlogException::class)
-    override fun perform(twitter: MicroBlog, details: AccountDetails,
-                         args: AbsFriendshipOperationTask.Arguments): User {
-        return twitter.createMute(args.userKey.id)
+    override fun perform(details: AccountDetails, args: Arguments): ParcelableUser {
+        when (details.type) {
+            AccountType.TWITTER -> {
+                val twitter = details.newMicroBlogInstance(context, MicroBlog::class.java)
+                return twitter.createMute(args.accountKey.id).toParcelable(details,
+                        profileImageSize = profileImageSize)
+            }
+            AccountType.MASTODON -> {
+                val mastodon = details.newMicroBlogInstance(context, Mastodon::class.java)
+                if (details.key.host != args.userKey.host) {
+                    throw MicroBlogException("Mute remote user is not supported yet")
+                }
+                mastodon.muteUser(args.userKey.id)
+                return mastodon.getAccount(args.userKey.id).toParcelable(details)
+            }
+            else -> throw APINotSupportedException(details.type)
+        }
     }
 
-    override fun succeededWorker(twitter: MicroBlog,
-                                 details: AccountDetails,
-                                 args: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
+    override fun succeededWorker(details: AccountDetails, args: Arguments, user: ParcelableUser) {
         val resolver = context.contentResolver
         Utils.setLastSeen(context, args.userKey, -1)
         for (uri in DataStoreUtils.STATUSES_URIS) {
