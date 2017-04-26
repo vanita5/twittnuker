@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.view.holder
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.CompoundButton
@@ -62,9 +63,10 @@ class AccountViewHolder(
         dragHandle.visibility = if (enabled) View.VISIBLE else View.GONE
     }
 
+    @SuppressLint("SetTextI18n")
     fun display(details: AccountDetails) {
         name.text = details.user.name
-        screenName.text = String.format("@%s", details.user.screen_name)
+        screenName.text = "@${details.user.screen_name}"
         setAccountColor(details.color)
         profileImage.visibility = View.VISIBLE
         adapter.requestManager.loadProfileImage(adapter.context, details, adapter.profileImageStyle,

@@ -38,12 +38,12 @@ import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
-import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import kotlinx.android.synthetic.main.list_item_status.view.*
 import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.hideIfEmpty
 import org.mariotaku.ktextension.isNotNullOrEmpty
+import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
@@ -51,6 +51,9 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.applyTo
+import de.vanita5.twittnuker.extension.model.quoted_user_acct
+import de.vanita5.twittnuker.extension.model.retweeted_by_user_acct
+import de.vanita5.twittnuker.extension.model.user_acct
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableLocation
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -189,7 +192,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             statusContentUpperSpace.visibility = View.GONE
         } else if (status.retweet_id != null) {
             val retweetedBy = colorNameManager.getDisplayName(status.retweeted_by_user_key!!,
-                    status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst)
+                    status.retweeted_by_user_name, status.retweeted_by_user_acct!!, nameFirst)
             statusInfoLabel.text = context.getString(R.string.name_retweeted, formatter.unicodeWrap(retweetedBy))
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_retweet)
             statusInfoLabel.visibility = View.VISIBLE
@@ -230,7 +233,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 val quoted_user_key = status.quoted_user_key!!
                 quotedNameView.name =
                         status.quoted_user_name
-                quotedNameView.screenName = "@${status.quoted_user_screen_name}"
+                quotedNameView.screenName = "@${status.quoted_user_acct}"
 
                 val quotedDisplayEnd = status.extras?.quoted_display_text_range?.getOrNull(1) ?: -1
                 val quotedText: CharSequence
@@ -319,7 +322,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         }
 
         nameView.name = status.user_name
-        nameView.screenName = "@${status.user_screen_name}"
+        nameView.screenName = "@${status.user_acct}"
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE

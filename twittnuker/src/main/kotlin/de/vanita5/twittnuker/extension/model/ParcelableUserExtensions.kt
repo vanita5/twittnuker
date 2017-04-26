@@ -22,13 +22,8 @@
 
 package de.vanita5.twittnuker.extension.model
 
-import org.mariotaku.ktextension.mapToArray
-import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
-import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.Utils
 
@@ -48,3 +43,10 @@ inline val ParcelableUser.originalProfileImage: String? get() {
 }
 
 inline val ParcelableUser.urlPreferred: String? get() = url_expanded?.takeIf(String::isNotEmpty) ?: url
+
+
+inline val ParcelableUser.acct: String get() = if (account_key.host == key.host) {
+    screen_name
+} else {
+    "$screen_name@${key.host}"
+}
