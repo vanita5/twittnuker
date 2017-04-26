@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.util;
 
 import android.app.Application;
+import android.os.Build;
+import android.webkit.WebView;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -43,6 +45,9 @@ public class DebugModeUtils {
 
     public static void initForApplication(final Application application) {
         initLeakCanary(application);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
     }
 
     static void initLeakCanary(Application application) {
