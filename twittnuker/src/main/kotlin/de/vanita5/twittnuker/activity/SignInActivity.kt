@@ -69,7 +69,6 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.restfu.http.Endpoint
 import org.mariotaku.restfu.oauth.OAuthToken
 import org.mariotaku.restfu.oauth2.OAuth2Authorization
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
@@ -81,9 +80,8 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.extension.model.*
-import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.fragment.APIEditorDialogFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
@@ -513,9 +511,10 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
     private fun handleBrowserLoginResult(intent: Intent?) {
         if (intent == null) return
-        val verifier = intent.getStringExtra(EXTRA_OAUTH_VERIFIER)
-        val requestToken = OAuthToken(intent.getStringExtra(EXTRA_REQUEST_TOKEN),
-                intent.getStringExtra(EXTRA_REQUEST_TOKEN_SECRET))
+        val extras = intent.getBundleExtra(EXTRA_EXTRAS) ?: return
+        val verifier = intent.getStringExtra(EXTRA_OAUTH_VERIFIER) ?: return
+        val requestToken = OAuthToken(extras.getString(EXTRA_REQUEST_TOKEN),
+                extras.getString(EXTRA_REQUEST_TOKEN_SECRET))
         signInTask = BrowserSignInTask(this, apiConfig, requestToken, verifier)
         AsyncTaskUtils.executeTask(signInTask)
     }
