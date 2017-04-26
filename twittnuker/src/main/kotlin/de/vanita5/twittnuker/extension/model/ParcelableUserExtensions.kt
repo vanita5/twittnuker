@@ -50,3 +50,5 @@ inline val ParcelableUser.acct: String get() = if (account_key.host == key.host)
 } else {
     "$screen_name@${key.host}"
 }
+
+inline val ParcelableUser.groups_count: Long get() = extras?.groups_count ?: -1
