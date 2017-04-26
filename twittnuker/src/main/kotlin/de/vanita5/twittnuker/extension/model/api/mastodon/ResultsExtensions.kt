@@ -21,17 +21,17 @@
  *  limitations under the License.
  */
 
-package de.vanita5.microblog.library.mastodon.api;
+package de.vanita5.twittnuker.extension.model.api.mastodon
 
-import de.vanita5.microblog.library.MicroBlogException;
-import de.vanita5.microblog.library.mastodon.model.Account;
-import de.vanita5.microblog.library.mastodon.model.LinkHeaderList;
-import de.vanita5.microblog.library.twitter.model.Paging;
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
+import de.vanita5.microblog.library.mastodon.model.Results
+import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
+import de.vanita5.twittnuker.model.pagination.PaginatedList
 
 
-public interface MutesResources {
-    @GET("/v1/mutes")
-    LinkHeaderList<Account> getMutes(@Query Paging paging) throws MicroBlogException;
+inline fun <T, R> Results.mapToPaginated(listSelector: (Results) -> List<T>?, transform: (T) -> R): PaginatedList<R> {
+    val list = listSelector(this) ?: return PaginatedArrayList()
+    val result = list.mapTo(PaginatedArrayList(list.size), transform)
+    result.previousPage = getLinkPagination("prev")
+    result.nextPage = getLinkPagination("next")
+    return result
 }

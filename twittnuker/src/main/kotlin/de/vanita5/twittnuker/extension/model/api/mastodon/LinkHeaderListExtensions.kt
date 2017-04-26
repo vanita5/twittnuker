@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import android.net.Uri
 import de.vanita5.microblog.library.mastodon.model.LinkHeaderList
+import de.vanita5.microblog.library.mastodon.model.LinkHeaderResponse
 import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination
@@ -37,7 +38,7 @@ inline fun <T, R> LinkHeaderList<T>.mapToPaginated(transform: (T) -> R): Paginat
     return result
 }
 
-fun LinkHeaderList<*>.getLinkPagination(key: String): Pagination? {
+fun LinkHeaderResponse.getLinkPagination(key: String): Pagination? {
     val uri = getLinkPart(key)?.let(Uri::parse) ?: return null
     val maxId = uri.getQueryParameter("max_id")
     val sinceId = uri.getQueryParameter("since_id")

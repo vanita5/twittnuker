@@ -23,5 +23,17 @@
 
 package de.vanita5.microblog.library.mastodon.api;
 
+import de.vanita5.microblog.library.MicroBlogException;
+import de.vanita5.microblog.library.mastodon.model.Results;
+import de.vanita5.microblog.library.twitter.model.Paging;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Query;
+
+
 public interface SearchResources {
+
+    @GET("/v1/search")
+    Results search(@Query("q") String query, @Query("resolve") boolean resolve,
+                   @Query Paging paging) throws MicroBlogException;
+
 }

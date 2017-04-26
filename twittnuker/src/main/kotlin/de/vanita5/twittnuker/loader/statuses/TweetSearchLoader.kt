@@ -27,11 +27,15 @@ import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
+import de.vanita5.microblog.library.mastodon.model.Results
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.microblog.library.twitter.model.SearchQuery
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.microblog.library.twitter.model.UniversalSearchQuery
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
+import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
@@ -57,8 +61,13 @@ open class TweetSearchLoader(
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
-        return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
-            it.toParcelable(account, profileImageSize)
+        when (account.type) {
+            AccountType.MASTODON -> return getMastodonStatuses(account, paging).mapToPaginated(Results::getStatuses) {
+                it.toParcelable(account)
+            }
+            else -> return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
+                it.toParcelable(account, profileImageSize)
+            }
         }
     }
 
@@ -84,6 +93,12 @@ open class TweetSearchLoader(
         } else {
             super.processPaging(paging, details, loadItemLimit)
         }
+    }
+
+    private fun getMastodonStatuses(account: AccountDetails, paging: Paging): Results {
+        val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
+        if (query == null) throw MicroBlogException("Empty query")
+        return mastodon.search(query, true, paging)
     }
 
     private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): List<Status> {

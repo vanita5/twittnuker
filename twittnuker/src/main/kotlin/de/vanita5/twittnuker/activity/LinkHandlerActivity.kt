@@ -65,7 +65,7 @@ import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
 import de.vanita5.twittnuker.fragment.message.MessageNewConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
-import de.vanita5.twittnuker.fragment.status.*
+import de.vanita5.twittnuker.fragment.status.StatusFavoritersListFragment
 import de.vanita5.twittnuker.fragment.statuses.*
 import de.vanita5.twittnuker.fragment.users.*
 import de.vanita5.twittnuker.graphic.EmptyDrawable
@@ -464,6 +464,9 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_PUBLIC_TIMELINE -> {
                 title = getString(R.string.title_public_timeline)
             }
+            LINK_ID_NETWORK_PUBLIC_TIMELINE -> {
+                title = getString(R.string.title_network_public_timeline)
+            }
             LINK_ID_FILTERS_IMPORT_BLOCKS -> {
                 title = getString(R.string.title_select_users)
             }
@@ -582,7 +585,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 fragment = UserFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
                 val paramProfileUrl = uri.getQueryParameter(QUERY_PARAM_PROFILE_URL)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -601,7 +604,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_LIST_MEMBERSHIPS -> {
                 fragment = UserListMembershipsFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -613,7 +616,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 fragment = UserTimelineFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
                 val paramProfileUrl = uri.getQueryParameter(QUERY_PARAM_PROFILE_URL)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -628,7 +631,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_MEDIA_TIMELINE -> {
                 fragment = UserMediaTimelineFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -640,7 +643,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_FAVORITES -> {
                 fragment = UserFavoritesFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -653,7 +656,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_FOLLOWERS -> {
                 fragment = UserFollowersFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -665,7 +668,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_FRIENDS -> {
                 fragment = UserFriendsFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -707,10 +710,13 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_PUBLIC_TIMELINE -> {
                 fragment = PublicTimelineFragment()
             }
+            LINK_ID_NETWORK_PUBLIC_TIMELINE -> {
+                fragment = NetworkPublicTimelineFragment()
+            }
             LINK_ID_USER_LIST -> {
                 fragment = UserListFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 val paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID)
                 val paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME)
                 if ((TextUtils.isEmpty(paramListName) || TextUtils.isEmpty(paramScreenName) && paramUserKey == null) && TextUtils.isEmpty(paramListId)) {
@@ -733,7 +739,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_LISTS -> {
                 fragment = ListsFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -745,7 +751,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_GROUPS -> {
                 fragment = UserGroupsFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
@@ -757,7 +763,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_LIST_TIMELINE -> {
                 fragment = UserListTimelineFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 val paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID)
                 val paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME)
                 if ((TextUtils.isEmpty(paramListName) || TextUtils.isEmpty(paramScreenName) && paramUserKey == null) && TextUtils.isEmpty(paramListId)) {
@@ -771,7 +777,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_LIST_MEMBERS -> {
                 fragment = UserListMembersFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 val paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID)
                 val paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME)
                 if ((TextUtils.isEmpty(paramListName) || TextUtils.isEmpty(paramScreenName) && paramUserKey == null) && TextUtils.isEmpty(paramListId))
@@ -784,7 +790,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_USER_LIST_SUBSCRIBERS -> {
                 fragment = UserListSubscribersFragment()
                 val paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME)
-                val paramUserKey = Utils.getUserKeyParam(uri)?.let(UserKey::valueOf)
+                val paramUserKey = uri.getUserKeyQueryParameter()
                 val paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID)
                 val paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME)
                 if (TextUtils.isEmpty(paramListId) && (TextUtils.isEmpty(paramListName) || TextUtils.isEmpty(paramScreenName) && paramUserKey == null))
@@ -886,4 +892,9 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
     }
 
     interface HideUiOnScroll
+
+    private fun Uri.getUserKeyQueryParameter() : UserKey? {
+        val value = getQueryParameter(QUERY_PARAM_USER_KEY) ?: getQueryParameter(QUERY_PARAM_USER_ID)
+        return value?.let(UserKey::valueOf)
+    }
 }

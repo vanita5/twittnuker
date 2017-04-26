@@ -23,6 +23,7 @@
 
 package de.vanita5.microblog.library.mastodon.api;
 
+import de.vanita5.microblog.library.MicroBlogException;
 import de.vanita5.microblog.library.mastodon.model.Account;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
@@ -37,5 +38,5 @@ public interface FollowsResources {
      * @return The local representation of the followed account, as an {@link Account}.
      */
     @POST("/v1/follows")
-    Account followRemoteUser(@Param("uri") String uri);
+    Account followRemoteUser(@Param("uri") String uri) throws MicroBlogException;
 }

@@ -23,6 +23,7 @@
 
 package de.vanita5.microblog.library.mastodon.api;
 
+import de.vanita5.microblog.library.MicroBlogException;
 import de.vanita5.microblog.library.mastodon.model.Account;
 import de.vanita5.microblog.library.mastodon.model.LinkHeaderList;
 import de.vanita5.microblog.library.twitter.model.Paging;
@@ -32,5 +33,5 @@ import org.mariotaku.restfu.annotation.param.Query;
 
 public interface BlocksResources {
     @GET("/v1/blocks")
-    LinkHeaderList<Account> getBlocks(@Query Paging paging);
+    LinkHeaderList<Account> getBlocks(@Query Paging paging) throws MicroBlogException;
 }

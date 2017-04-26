@@ -39,7 +39,6 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 import android.support.v4.net.ConnectivityManagerCompat
@@ -71,7 +70,6 @@ import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.Selectable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_USER_KEY
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_DIRECT_MESSAGES
 import de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_HOME_TIMELINE
@@ -79,7 +77,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.TAB_CODE_NOTIFICATIONS_TIMELINE
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.constant.CompatibilityConstants.EXTRA_ACCOUNT_ID
-import de.vanita5.twittnuker.constant.CompatibilityConstants.QUERY_PARAM_USER_ID
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEYS
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_PEBBLE_NOTIFICATION
@@ -161,11 +158,6 @@ object Utils {
             "image/jpg" -> return "image/jpeg"
         }
         return contentType
-    }
-
-    fun getUserKeyParam(uri: Uri): String {
-        val paramUserKey = uri.getQueryParameter(QUERY_PARAM_USER_KEY) ?: return uri.getQueryParameter(QUERY_PARAM_USER_ID)
-        return paramUserKey
     }
 
     fun createStatusShareIntent(context: Context, status: ParcelableStatus): Intent {
