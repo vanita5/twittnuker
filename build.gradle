@@ -67,6 +67,7 @@ subprojects {
                     GlideOkHttp3        : '1.4.0',
                     GlideTransformations: '2.0.1',
                     AndroidImageCropper : '2.4.0',
+                    ExportablePreferences: '0.9.6',
             ]
         }
 

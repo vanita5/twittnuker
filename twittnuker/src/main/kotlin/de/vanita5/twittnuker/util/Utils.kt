@@ -29,7 +29,6 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
@@ -81,6 +80,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEYS
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_PEBBLE_NOTIFICATION
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
+import de.vanita5.twittnuker.constant.bandwidthSavingModeKey
 import de.vanita5.twittnuker.constant.defaultAccountKey
 import de.vanita5.twittnuker.constant.mediaPreviewKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment
@@ -582,7 +582,7 @@ object Utils {
         if (!preferences[mediaPreviewKey])
             return false
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return !ConnectivityManagerCompat.isActiveNetworkMetered(cm) || !preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE, false)
+        return !ConnectivityManagerCompat.isActiveNetworkMetered(cm) || !preferences[bandwidthSavingModeKey]
     }
 
     /**
