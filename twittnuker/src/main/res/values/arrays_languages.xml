@@ -34,6 +34,7 @@
         <item>de</item>
         <item>el</item>
         <item>en_GB</item>
+        <item>en_US</item>
         <item>es</item>
         <item>fa</item>
         <item>fi</item>
@@ -80,7 +81,8 @@
         <item>Danish</item>
         <item>German</item>
         <item>Greek</item>
-        <item>English (UK)</item>
+        <item>English (GB)</item>
+        <item>English (United States)</item>
         <item>Spanish</item>
         <item>Persian</item>
         <item>Finnish</item>
