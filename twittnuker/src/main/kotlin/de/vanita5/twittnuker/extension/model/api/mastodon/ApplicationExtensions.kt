@@ -26,6 +26,7 @@ import de.vanita5.microblog.library.mastodon.model.Application
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 
 val Application.sourceHtml: String get() {
-    if (website == null) return HtmlEscapeHelper.escape(name)
+    val name = this.name ?: return ""
+    val website = this.website ?: return name.let(HtmlEscapeHelper::escape).orEmpty()
     return "<a href='${HtmlEscapeHelper.escape(website)}'>${HtmlEscapeHelper.escape(name)}</a>"
 }
