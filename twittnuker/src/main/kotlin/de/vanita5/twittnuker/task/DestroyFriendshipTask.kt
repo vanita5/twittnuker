@@ -57,7 +57,7 @@ class DestroyFriendshipTask(context: Context) : AbsFriendshipOperationTask(conte
             }
             else -> {
                 val twitter = details.newMicroBlogInstance(context, MicroBlog::class.java)
-                return twitter.destroyFriendship(args.accountKey.id).toParcelable(details,
+                return twitter.destroyFriendship(args.userKey.id).toParcelable(details,
                         profileImageSize = profileImageSize)
             }
         }

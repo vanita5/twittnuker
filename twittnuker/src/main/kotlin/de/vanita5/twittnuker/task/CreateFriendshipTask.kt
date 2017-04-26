@@ -62,7 +62,7 @@ class CreateFriendshipTask(context: Context) : AbsFriendshipOperationTask(contex
             }
             else -> {
                 val twitter = details.newMicroBlogInstance(context, MicroBlog::class.java)
-                return twitter.createFriendship(args.accountKey.id).toParcelable(details,
+                return twitter.createFriendship(args.userKey.id).toParcelable(details,
                         profileImageSize = profileImageSize)
             }
         }
