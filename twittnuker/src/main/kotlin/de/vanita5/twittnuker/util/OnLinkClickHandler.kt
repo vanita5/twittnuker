@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.extension.model.AcctPlaceholderUserKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
@@ -109,6 +110,12 @@ open class OnLinkClickHandler(
             TwidereLinkify.LINK_TYPE_USER_ID -> {
                 IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
                         preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                return true
+            }
+            TwidereLinkify.LINK_TYPE_USER_ACCT -> {
+                val acctKey = UserKey.valueOf(link)
+                IntentUtils.openUserProfile(context, accountKey, AcctPlaceholderUserKey(acctKey.host),
+                        acctKey.id, null, preferences[newDocumentApiKey], Referral.USER_MENTION, null)
                 return true
             }
         }

@@ -26,6 +26,7 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.style.URLSpan
 import de.vanita5.twittnuker.model.SpanItem
+import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.text.ZeroWidthSpan
 
 val SpanItem.length: Int get() = end - start
@@ -35,6 +36,10 @@ fun Array<SpanItem>.applyTo(spannable: Spannable) {
         when (span.type) {
             SpanItem.SpanType.HIDE -> {
                 spannable.setSpan(ZeroWidthSpan(), span.start, span.end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            SpanItem.SpanType.ACCT_MENTION -> {
+                spannable.setSpan(AcctMentionSpan(span.link), span.start, span.end,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             else -> {

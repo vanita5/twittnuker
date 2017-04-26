@@ -20,15 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.extension
 
-import de.vanita5.twittnuker.model.UserKey
+import android.text.Spanned
+import android.text.style.URLSpan
+import de.vanita5.twittnuker.model.SpanItem
 
 
-private const val acctPlaceholderId = "#acct*placeholder#"
-
-val UserKey.isAcctPlaceholder get() = acctPlaceholderId == id && host != null
-
-fun AcctPlaceholderUserKey(host: String?): UserKey {
-    return UserKey(acctPlaceholderId, host)
+fun URLSpan.toSpanItem(spanned: Spanned): SpanItem {
+    val spanItem = SpanItem()
+    spanItem.link = url
+    spanItem.type = SpanItem.SpanType.LINK
+    spanItem.start = spanned.getSpanStart(this)
+    spanItem.end = spanned.getSpanEnd(this)
+    return spanItem
 }

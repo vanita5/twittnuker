@@ -20,15 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.util.emoji
 
-import de.vanita5.twittnuker.model.UserKey
+import org.mariotaku.commons.emojione.ShortnameToUnicodeTranslator
 
-
-private const val acctPlaceholderId = "#acct*placeholder#"
-
-val UserKey.isAcctPlaceholder get() = acctPlaceholderId == id && host != null
-
-fun AcctPlaceholderUserKey(host: String?): UserKey {
-    return UserKey(acctPlaceholderId, host)
-}
+object EmojioneTranslator: ShortnameToUnicodeTranslator()

@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
+import de.vanita5.twittnuker.util.emoji.EmojioneTranslator
 
 
 fun Account.toParcelable(details: AccountDetails, position: Long = 0): ParcelableUser {
@@ -49,7 +50,7 @@ fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUse
     obj.name = name
     obj.screen_name = username
     if (note?.isHtml ?: false) {
-        val descriptionHtml = HtmlSpanBuilder.fromHtml(note, note)
+        val descriptionHtml = HtmlSpanBuilder.fromHtml(note, note, MastodonSpanProcessor)
         obj.description_unescaped = descriptionHtml?.toString()
         obj.description_plain = obj.description_unescaped
         obj.description_spans = descriptionHtml?.spanItems
@@ -72,6 +73,7 @@ fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUse
 
 inline val Account.host: String? get() = acct?.let(UserKey::valueOf)?.host
 
-inline val Account.name: String? get() = displayName?.takeIf(String::isNotEmpty) ?: username
+inline val Account.name: String? get() = displayName?.takeIf(String::isNotEmpty)
+        ?.let(EmojioneTranslator::translate) ?: username
 
 fun Account.getKey(host: String?) = UserKey(id, acct?.let(UserKey::valueOf)?.host ?: host)

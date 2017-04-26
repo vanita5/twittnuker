@@ -27,12 +27,14 @@ import android.text.style.URLSpan
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.extension.model.toParcelable
+import de.vanita5.twittnuker.extension.toSpanItem
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
 import de.vanita5.twittnuker.model.util.ParcelableUserMentionUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
+import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
@@ -186,7 +188,13 @@ fun Status.toParcelable(accountKey: UserKey, accountType: String, profileImageSi
 }
 
 internal inline val CharSequence.spanItems get() = (this as? Spanned)?.let { text ->
-    text.getSpans(0, length, URLSpan::class.java).mapToArray { SpanItem.from(text, it) }
+    text.getSpans(0, length, URLSpan::class.java).mapToArray {
+        val item = it.toSpanItem(text)
+        if (it is AcctMentionSpan) {
+            item.type = SpanItem.SpanType.ACCT_MENTION
+        }
+        return@mapToArray item
+    }
 }
 
 internal inline val String.isHtml get() = contains('<') && contains('>')
