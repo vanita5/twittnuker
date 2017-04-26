@@ -23,12 +23,18 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
+import de.vanita5.microblog.library.MicroBlogException
+import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.mastodon.model.RegisteredApplication
-import de.vanita5.twittnuker.TwittnukerConstants.ETAG_MASTODON_APPS_PREFERENCES_NAME
+import de.vanita5.microblog.library.twitter.auth.EmptyAuthorization
+import org.mariotaku.restfu.http.Endpoint
+import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import java.io.IOException
 
 
-class MastodonApplicationRegistry(context: Context) {
+class MastodonApplicationRegistry(private val context: Context) {
     private val preferences = context.getSharedPreferences(ETAG_MASTODON_APPS_PREFERENCES_NAME,
             Context.MODE_PRIVATE)
 
@@ -50,5 +56,16 @@ class MastodonApplicationRegistry(context: Context) {
         }
         editor.apply()
         return true
+    }
+
+    @Throws(MicroBlogException::class)
+    fun fetch(host: String, scopes: Array<String>): RegisteredApplication {
+        val endpoint = Endpoint("https://$host/api/")
+        val mastodon = newMicroBlogInstance(context, endpoint, EmptyAuthorization(),
+                AccountType.MASTODON, Mastodon::class.java)
+        val registered = mastodon.registerApplication("Twidere for Android", MASTODON_CALLBACK_URL,
+                scopes, TWITTNUKER_PROJECT_URL)
+        this[host] = registered
+        return registered
     }
 }

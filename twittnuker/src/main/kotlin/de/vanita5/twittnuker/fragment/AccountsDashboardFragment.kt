@@ -367,8 +367,6 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         }
         val menu = navigationView.menu
         menu.setItemAvailability(R.id.interactions, !hasInteractionsTab)
-        menu.setItemAvailability(R.id.messages, !hasDmTab)
-
         menu.setItemAvailability(R.id.favorites, useStarsForLikes)
         menu.setItemAvailability(R.id.likes, !useStarsForLikes)
         menu.setItemAvailability(R.id.premium_features, extraFeaturesService.isSupported())
@@ -384,16 +382,20 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         var hasGroups = false
         var hasPublicTimeline = false
         var hasNetworkPublicTimeline = false
+        var hasDirectMessages = false
         when (account.type) {
             AccountType.TWITTER -> {
+                hasDirectMessages = !hasDmTab
                 hasLists = true
             }
             AccountType.STATUSNET -> {
+                hasDirectMessages = !hasDmTab
                 hasGroups = true
                 hasPublicTimeline = !hasPublicTimelineTab
                 hasNetworkPublicTimeline = !hasNetworkPublicTimelineTab
             }
             AccountType.FANFOU -> {
+                hasDirectMessages = !hasDmTab
                 hasPublicTimeline = !hasPublicTimelineTab
             }
             AccountType.MASTODON -> {
@@ -401,6 +403,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 hasNetworkPublicTimeline = !hasNetworkPublicTimelineTab
             }
         }
+        menu.setItemAvailability(R.id.messages, hasDirectMessages)
         menu.setItemAvailability(R.id.groups, hasGroups)
         menu.setItemAvailability(R.id.lists, hasLists)
         menu.setItemAvailability(R.id.public_timeline, hasPublicTimeline)
