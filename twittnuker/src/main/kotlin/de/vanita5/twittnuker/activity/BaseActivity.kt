@@ -24,10 +24,7 @@ package de.vanita5.twittnuker.activity
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.Resources
 import android.graphics.Rect
 import android.nfc.NfcAdapter
@@ -124,9 +121,25 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     protected val gifShareProvider: GifShareProvider?
         get() = gifShareProviderFactory.newInstance(this)
 
+    override final val currentThemeBackgroundAlpha by lazy {
+        themeBackgroundAlpha
+    }
+
+    override final val currentThemeBackgroundOption by lazy {
+        themeBackgroundOption
+    }
+
+    override val themeBackgroundAlpha: Int
+        get() = themePreferences[themeBackgroundAlphaKey]
+
+
+    override val themeBackgroundOption: String
+        get() = themePreferences[themeBackgroundOptionKey]
+
     private var isNightBackup: Int = TwilightManagerAccessor.UNSPECIFIED
 
     private val actionHelper = IBaseActivity.ActionHelper(this)
+
     private val themePreferences by lazy {
         getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
     }
@@ -136,6 +149,19 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     private val userTheme: Chameleon.Theme by lazy {
         return@lazy ThemeUtils.getUserTheme(this, themePreferences)
+    }
+
+    private val nightTimeChangedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                Intent.ACTION_TIME_TICK, Intent.ACTION_TIME_CHANGED,
+                Intent.ACTION_TIMEZONE_CHANGED -> {
+                    if (!isFinishing) {
+                        updateNightMode()
+                    }
+                }
+            }
+        }
     }
 
     // Data fields
@@ -236,15 +262,19 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
             }
         }
 
-        val nightState = TwilightManagerAccessor.getNightState(this)
-        if (isNightBackup != TwilightManagerAccessor.UNSPECIFIED && nightState != isNightBackup) {
-            recreate()
-            return
-        }
-        isNightBackup = nightState
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_TIME_TICK)
+        filter.addAction(Intent.ACTION_TIME_CHANGED)
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED)
+        registerReceiver(nightTimeChangedReceiver, filter)
+
+        updateNightMode()
     }
 
     override fun onPause() {
+
+        unregisterReceiver(nightTimeChangedReceiver)
+
         val adapter = NfcAdapter.getDefaultAdapter(this)
         if (adapter != null && adapter.isEnabled) {
             try {
@@ -282,20 +312,6 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         return actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 
-    override final val currentThemeBackgroundAlpha by lazy {
-        themeBackgroundAlpha
-    }
-
-    override final val currentThemeBackgroundOption by lazy {
-        themeBackgroundOption
-    }
-
-    override val themeBackgroundAlpha: Int
-        get() = themePreferences[themeBackgroundAlphaKey]
-
-
-    override val themeBackgroundOption: String
-        get() = themePreferences[themeBackgroundOptionKey]
 
     protected open val shouldApplyWindowBackground: Boolean
         get() {
@@ -332,6 +348,27 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
             }
         }
         return super.onCreateView(parent, name, context, attrs)
+    }
+
+    override fun onPreferenceDisplayDialog(fragment: PreferenceFragmentCompat, preference: Preference): Boolean {
+        if (preference is IDialogPreference) {
+            preference.displayDialog(fragment)
+            return true
+        }
+        return false
+    }
+
+    override fun getOverrideTheme(): Chameleon.Theme {
+        return userTheme
+    }
+
+    override fun onCreateAppearanceCreator(): Chameleon.AppearanceCreator? {
+        return TwidereAppearanceCreator
+    }
+
+    @StyleRes
+    protected open fun getThemeResource(preferences: SharedPreferences, theme: String, themeColor: Int): Int {
+        return getCurrentThemeResource(this, theme)
     }
 
     private fun findClass(name: String): Class<*>? {
@@ -374,25 +411,13 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     }
 
-    override fun onPreferenceDisplayDialog(fragment: PreferenceFragmentCompat, preference: Preference): Boolean {
-        if (preference is IDialogPreference) {
-            preference.displayDialog(fragment)
-            return true
+    private fun updateNightMode() {
+        val nightState = TwilightManagerAccessor.getNightState(this)
+        if (isNightBackup != TwilightManagerAccessor.UNSPECIFIED && nightState != isNightBackup) {
+            recreate()
+            return
         }
-        return false
-    }
-
-    override fun getOverrideTheme(): Chameleon.Theme {
-        return userTheme
-    }
-
-    override fun onCreateAppearanceCreator(): Chameleon.AppearanceCreator? {
-        return TwidereAppearanceCreator
-    }
-
-    @StyleRes
-    protected open fun getThemeResource(preferences: SharedPreferences, theme: String, themeColor: Int): Int {
-        return getCurrentThemeResource(this, theme)
+        isNightBackup = nightState
     }
 
     companion object {
