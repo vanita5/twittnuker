@@ -47,6 +47,7 @@ import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonActivity
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.unregisterReceiverSafe
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
@@ -273,7 +274,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     override fun onPause() {
 
-        unregisterReceiver(nightTimeChangedReceiver)
+        unregisterReceiverSafe(nightTimeChangedReceiver)
 
         val adapter = NfcAdapter.getDefaultAdapter(this)
         if (adapter != null && adapter.isEnabled) {
