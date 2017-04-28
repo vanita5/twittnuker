@@ -98,6 +98,7 @@ val refreshAfterTweetKey = KBooleanKey(KEY_REFRESH_AFTER_TWEET, false)
 val homeRefreshMentionsKey = KBooleanKey(KEY_HOME_REFRESH_MENTIONS, true)
 val homeRefreshDirectMessagesKey = KBooleanKey(KEY_HOME_REFRESH_DIRECT_MESSAGES, true)
 val homeRefreshSavedSearchesKey = KBooleanKey(KEY_HOME_REFRESH_SAVED_SEARCHES, false)
+val composeStatusVisibilityKey = KNullableStringKey("compose_status_visibility", null)
 object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
     override fun read(preferences: SharedPreferences) = preferences.getInt(key, def).coerceIn(100,
             500)

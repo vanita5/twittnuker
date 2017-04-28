@@ -152,6 +152,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private var hasLocationOption: Boolean = false
     private var ignoreMentions: Boolean = false
     private var shouldSaveAccounts: Boolean = false
+    private var shouldSaveVisibility: Boolean = false
     private var statusShortenerUsed: Boolean = false
     private var navigateBackPressed: Boolean = false
     private var replyToSelf: Boolean = false
@@ -168,7 +169,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private var draft: Draft? = null
     private var nameFirst: Boolean = false
     private var draftUniqueId: String? = null
-    private var statusVisibility: String? = StatusVisibility.PUBLIC
+    private var statusVisibility: String? = null
     private var scheduleInfo: ScheduleInfo? = null
         set(value) {
             field = value
@@ -313,6 +314,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     accountsAdapter.selectedAccountKeys = intersection.toTypedArray()
                 }
             }
+            if (statusVisibility == null) {
+                statusVisibility = preferences[composeStatusVisibilityKey]
+            }
             originalText = ParseUtils.parseString(editText.text)
         }
 
@@ -366,6 +370,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     override fun onStop() {
         saveAccountSelection()
+        saveVisibility()
         try {
             if (locationListener != null) {
                 locationManager.removeUpdates(locationListener)
@@ -457,6 +462,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         mentionUser = savedInstanceState.getParcelable(EXTRA_USER)
         draft = savedInstanceState.getParcelable(EXTRA_DRAFT)
         shouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS)
+        shouldSaveVisibility = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_VISIBILITY)
         originalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT)
         draftUniqueId = savedInstanceState.getString(EXTRA_DRAFT_UNIQUE_ID)
         scheduleInfo = savedInstanceState.getParcelable(EXTRA_SCHEDULE_INFO)
@@ -870,6 +876,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun handleIntent(intent: Intent): Boolean {
         shouldSaveAccounts = false
+        shouldSaveVisibility = false
         mentionUser = intent.getParcelableExtra(EXTRA_USER)
         inReplyToStatus = intent.getParcelableExtra(EXTRA_STATUS)
         when (intent.action) {
@@ -1021,6 +1028,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun handleDefaultIntent(intent: Intent?): Boolean {
         if (intent == null) return false
         val action = intent.action
+        val hasVisibility = intent.hasExtra(EXTRA_VISIBILITY)
         val hasAccountKeys: Boolean
         if (intent.hasExtra(EXTRA_ACCOUNT_KEYS)) {
             val accountKeys = intent.getParcelableArrayExtra(EXTRA_ACCOUNT_KEYS).toTypedArray(UserKey.CREATOR)
@@ -1035,6 +1043,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
         if (Intent.ACTION_SEND == action) {
             shouldSaveAccounts = false
+            shouldSaveVisibility = false
             val stream = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             if (stream != null) {
                 val src = arrayOf(stream)
@@ -1042,6 +1051,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
         } else if (Intent.ACTION_SEND_MULTIPLE == action) {
             shouldSaveAccounts = false
+            shouldSaveVisibility = false
             val extraStream = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
             if (extraStream != null) {
                 val src = extraStream.toTypedArray()
@@ -1049,6 +1059,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
         } else {
             shouldSaveAccounts = !hasAccountKeys
+            shouldSaveVisibility = !hasVisibility
             val data = intent.data
             if (data != null) {
                 val src = arrayOf(data)
@@ -1246,6 +1257,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         preferences[composeAccountsKey] = accountsAdapter.selectedAccountKeys
     }
 
+    private fun saveVisibility() {
+        if (!shouldSaveVisibility) return
+        preferences[composeStatusVisibilityKey] = statusVisibility
+    }
+
     private fun setMenu() {
         if (menuBar == null) return
         val menu = menuBar.menu
@@ -1439,6 +1455,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (preferences[noCloseAfterTweetSentKey] && inReplyToStatus == null) {
             possiblySensitive = false
             shouldSaveAccounts = true
+            shouldSaveVisibility = true
             inReplyToStatus = null
             mentionUser = null
             draft = null
@@ -1522,7 +1539,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         update.media = media
         update.in_reply_to_status = inReplyTo
         update.is_possibly_sensitive = possiblySensitive
-        update.visibility = statusVisibility
+        update.visibility = statusVisibility ?: StatusVisibility.PUBLIC
         update.draft_extras = update.updateStatusActionExtras().also {
             it.editingText = text
         }
@@ -2147,6 +2164,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         // Constants
         private const val EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts"
+        private const val EXTRA_SHOULD_SAVE_VISIBILITY = "should_save_visibility"
         private const val EXTRA_ORIGINAL_TEXT = "original_text"
         private const val EXTRA_DRAFT_UNIQUE_ID = "draft_unique_id"
 
