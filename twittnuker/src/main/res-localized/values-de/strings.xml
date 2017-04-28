@@ -439,6 +439,8 @@
     <string name="label_content_rating_r">R</string>
     <string name="label_content_warning">Inhaltswarnung</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
+    <string name="label_feedback_content">Inhalt</string>
+    <string name="label_feedback_title">Titel</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="label_follow_request_sent">Folgeanfrage gesendet</string>
     <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
