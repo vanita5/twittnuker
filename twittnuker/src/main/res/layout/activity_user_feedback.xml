@@ -21,25 +21,15 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--suppress AndroidElementNotAllowed -->
-<PreferenceScreen
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <de.vanita5.twittnuker.preference.sync.SyncItemPreference
-        android:defaultValue="true"
-        android:title="@string/title_drafts"
-        app:syncType="drafts"/>
-    <de.vanita5.twittnuker.preference.sync.SyncItemPreference
-        android:defaultValue="true"
-        android:title="@string/title_filters"
-        app:syncType="filters"/>
-    <de.vanita5.twittnuker.preference.sync.SyncItemPreference
-        android:defaultValue="true"
-        android:title="@string/title_user_colors"
-        app:syncType="user_colors"/>
-    <de.vanita5.twittnuker.preference.sync.SyncItemPreference
-        android:defaultValue="true"
-        android:summary="@string/preference_summary_sync_timeline_positions"
-        android:title="@string/preference_title_timeline_positions"
-        app:syncType="timeline_positions"/>
-</PreferenceScreen>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+</ScrollView>

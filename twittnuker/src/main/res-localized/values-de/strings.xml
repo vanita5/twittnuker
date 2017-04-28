@@ -609,6 +609,7 @@
     <string name="message_toast_search_saved">Suche gespeichert.</string>
     <string name="message_toast_select_file_no_storage_permission">Speicherberechtigung notwendig um Dateien auszuwählen.</string>
     <string name="message_toast_share_media_no_storage_permission">Die Anwendung erfordert die Speicherberechtigung, um Medien zu teilen.</string>
+    <string name="message_toast_ssl_tls_error">TLS Error, bitte überprüfe deine Uhrzeit oder Proxy Einstellungen</string>
     <string name="message_toast_status_deleted">Tweet gelöscht.</string>
     <string name="message_toast_status_favorited">Tweet favorisiert.</string>
     <string name="message_toast_status_like_removed">Like entfernt.</string>
@@ -734,6 +735,7 @@
     <string name="preference_summary_media_preload_non_metered_network">Medien nur in nicht beschränkten Netzwerken wie WLAN vorladen.</string>
     <string name="preference_summary_streaming_non_metered_network">Nur mit WLAN streamen</string>
     <string name="preference_summary_streaming_power_saving">Nur streamen während der Akku geladen wird</string>
+    <string name="preference_summary_sync_timeline_positions">Wenn \"Position merken\" aktiviert ist</string>
     <string name="preference_summary_trends_location">Du kannst jetzt den Standort in den Tab-Einstellungen separat festlegen.</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
@@ -1024,6 +1026,7 @@
     <string name="title_sync_settings">Sync. Einstellungen</string>
     <string name="title_user">User</string>
     <string name="title_user_colors">Account-Farbschema</string>
+    <string name="title_user_feedback">Feedback</string>
     <string name="title_user_list">Liste</string>
     <string name="title_user_list_memberships">Mitglied von</string>
     <string name="title_user_list_ownerships">Erstellte</string>
@@ -1085,7 +1088,6 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="message_toast_ssl_tls_error">TLS Error, bitte überprüfe deine Uhrzeit oder Proxy Einstellungen</string>
 
 
     <!-- Twittnuker -->
