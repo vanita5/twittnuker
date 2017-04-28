@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.getMaxId
+import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -114,11 +115,13 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
         return true
     }
 
-    override fun hasMoreData(data: List<ParcelableStatus>?): Boolean {
+    override fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
+            data: List<ParcelableStatus>?): Boolean {
         if (data == null || data.isEmpty()) return false
-        val tmpLastId = lastId
-        lastId = data[data.size - 1].id
-        return lastId != tmpLastId
+        if (loader is IPaginationLoader) {
+            return loader.pagination != null
+        }
+        return true
     }
 
     override fun createMessageBusCallback(): Any {

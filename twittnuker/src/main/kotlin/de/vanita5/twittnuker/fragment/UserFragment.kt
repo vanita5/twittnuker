@@ -122,7 +122,6 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.statuses.UserFavoritesFragment
 import de.vanita5.twittnuker.fragment.statuses.UserMediaTimelineFragment
 import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment
-import de.vanita5.twittnuker.fragment.statuses.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
@@ -157,14 +156,11 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         OnSizeChangedListener, OnTouchListener, DrawerCallback, SupportFragmentCallback,
         SystemWindowsInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener,
         KeyboardShortcutCallback, UserColorChangedListener,
-        IToolBarSupportFragment, StatusesFragmentDelegate, UserTimelineFragmentDelegate,
+        IToolBarSupportFragment, StatusesFragmentDelegate,
         AbsContentRecyclerViewFragment.RefreshCompleteListener {
 
     override val toolbar: Toolbar
         get() = profileContentContainer.toolbar
-
-    override val pinnedStatusIds: Array<String>?
-        get() = user?.extras?.pinned_status_ids
 
     private lateinit var profileBirthdayBanner: View
     private lateinit var actionBarBackground: ActionBarDrawable
@@ -1406,6 +1402,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
         pagerAdapter.add(cls = UserTimelineFragment::class.java, args = Bundle(tabArgs).apply {
             this[UserTimelineFragment.EXTRA_ENABLE_TIMELINE_FILTER] = true
+            this[UserTimelineFragment.EXTRA_LOAD_PINNED_STATUS] = true
         }, name = getString(R.string.title_statuses), type = TAB_TYPE_STATUSES,
                 position = TAB_POSITION_STATUSES)
         pagerAdapter.add(cls = UserMediaTimelineFragment::class.java, args = tabArgs,

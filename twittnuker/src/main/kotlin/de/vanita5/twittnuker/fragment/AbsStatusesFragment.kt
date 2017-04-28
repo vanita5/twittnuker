@@ -54,8 +54,8 @@ import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.model.getAccountType
-import de.vanita5.twittnuker.fragment.content.FavoriteConfirmDialogFragment
-import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
+import de.vanita5.twittnuker.fragment.status.FavoriteConfirmDialogFragment
+import de.vanita5.twittnuker.fragment.status.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
@@ -319,7 +319,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         var restorePosition = -1
 
         if (loader !is IExtendedLoader || loader.fromUser) {
-            if (hasMoreData(data)) {
+            if (hasMoreData(loader, data)) {
                 adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.END
                 onHasMoreDataChanged(true)
             } else {
@@ -503,7 +503,8 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         }
     }
 
-    protected abstract fun hasMoreData(data: List<ParcelableStatus>?): Boolean
+    protected abstract fun hasMoreData(loader: Loader<List<ParcelableStatus>?>,
+            data: List<ParcelableStatus>?): Boolean
 
     protected abstract fun onCreateStatusesLoader(context: Context, args: Bundle,
                                                   fromUser: Boolean): Loader<List<ParcelableStatus>?>

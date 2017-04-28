@@ -130,7 +130,9 @@
     <string name="action_status_attachment">Tweet Anhang</string>
     <string name="action_status_block_users">Account blockieren…</string>
     <string name="action_status_mute_users">Account muten…</string>
+    <string name="action_status_pin">An Profil anheften</string>
     <string name="action_status_schedule">Zeitversetzt</string>
+    <string name="action_status_unpin">Aus Profil abheften</string>
     <string name="action_subscribe">Abonnieren</string>
     <string name="action_subscribing_to_list">Abonniere Liste</string>
     <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
@@ -559,6 +561,7 @@
     <string name="message_permission_request_compose_location">Twittnuker benötigt die Standortberechtigung um in Tweets den Standort hinzuzufügen.</string>
     <string name="message_permission_request_save_media">Twittnuker benötigt die Speicherberechtigung um Medien zu speichern.</string>
     <string name="message_permission_request_share_media">Twittnuker benötigt die Speicherberechtigung um Medien mit anderen Apps zu teilen.</string>
+    <string name="message_pin_status_confirm">Diesen Tweet anheften? Damit entfernst du den zuvor angehefteten Tweet.</string>
     <string name="message_please_wait">Bitte warten.</string>
     <string name="message_status_reply_to_user_removed_explanation">Twitter fügt den Autor eines Tweets in einer Antwort immer hinzu. Wenn der Autor entfernt wird, sendet Twittnuker diese Antwort als Zitat, damit der User nicht weiter erwähnt wird, aber der Kontext erhalten bleibt.</string>
     <string name="message_status_scheduling_connect_buffer_hint">Mit Buffer verbinden, um Tweets zeitversetzt zu versenden</string>
@@ -616,16 +619,19 @@
     <string name="message_toast_status_favorited">Tweet favorisiert.</string>
     <string name="message_toast_status_like_removed">Like entfernt.</string>
     <string name="message_toast_status_liked">Tweet geliked.</string>
+    <string name="message_toast_status_pinned">Tweet angeheftet</string>
     <string name="message_toast_status_retweeted">Retweeted.</string>
     <string name="message_toast_status_saved_to_draft">Tweet als Entwurf gespeichert.</string>
     <string name="message_toast_status_scheduled">Tweet geplant</string>
     <string name="message_toast_status_unfavorited">Favorit entfernt.</string>
+    <string name="message_toast_status_unpinned">Tweet abgeheftet</string>
     <string name="message_toast_status_updated">Tweet gesendet.</string>
     <string name="message_toast_unable_to_load_more_statuses">Kann älteren Tweets nicht laden</string>
     <string name="message_toast_user_filters_removed">Der Account wurde von der Filterliste entfernt.</string>
     <string name="message_toast_users_filters_added">Accounts zur Filterliste hinzugefügt. Tweets dieser Accounts erscheinen nicht in der Timeline oder bei Erwähnungen.</string>
     <string name="message_toast_wrong_api_key">Inkorrekte API URL oder Consumer Key/Secret. Bitte nochmals prüfen.</string>
     <string name="message_toast_wrong_username_password">Falscher Username/Passwort</string>
+    <string name="message_unpin_status_confirm">Tweet abheften?</string>
     <string name="message_user_muted">Account zur Filterliste hinzugefügt. Tweets dieses Account erscheinen nicht in der Timeline oder bei Erwähnungen.</string>
     <string name="message_video_too_long">Das Video ist zu lang</string>
     <string name="message_video_too_short">Das Video ist zu kurz</string>
@@ -1007,6 +1013,7 @@
     <string name="title_message_conversation_info">Gruppeninfo</string>
     <string name="title_network_public_timeline">Föderierte Timeline</string>
     <string name="title_open_source_license">Open-Source-Lizenz</string>
+    <string name="title_pin_status_confirm">Tweet anheften</string>
     <string name="title_premium_features_name">Twittnuker</string>
     <string name="title_public_timeline">Öffentliche Timeline</string>
     <string name="title_quick_action">Quick Action</string>
@@ -1026,6 +1033,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_sync">Synchronisieren</string>
     <string name="title_sync_settings">Sync. Einstellungen</string>
+    <string name="title_unpin_status_confirm">Tweet abheften</string>
     <string name="title_user">User</string>
     <string name="title_user_colors">Account-Farbschema</string>
     <string name="title_user_feedback">Feedback</string>

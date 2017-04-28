@@ -28,6 +28,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.PorterDuff
+import android.os.Parcelable
 import android.support.annotation.UiThread
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -52,11 +55,10 @@ import de.vanita5.twittnuker.constant.favoriteConfirmationKey
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.isOfficial
-import de.vanita5.twittnuker.fragment.*
-import de.vanita5.twittnuker.fragment.content.FavoriteConfirmDialogFragment
-import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
-import de.vanita5.twittnuker.fragment.status.BlockStatusUsersDialogFragment
-import de.vanita5.twittnuker.fragment.status.MuteStatusUsersDialogFragment
+import de.vanita5.twittnuker.fragment.AbsStatusesFragment
+import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment
+import de.vanita5.twittnuker.fragment.BaseFragment
+import de.vanita5.twittnuker.fragment.status.*
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.graphic.PaddingDrawable
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
@@ -68,6 +70,7 @@ import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
+import java.io.IOException
 
 object MenuUtils {
 
@@ -174,9 +177,15 @@ object MenuUtils {
         } else {
             isMyRetweet = status.retweeted || Utils.isMyRetweet(status)
         }
-        val delete = menu.findItem(R.id.delete)
-        if (delete != null) {
-            delete.isVisible = Utils.isMyStatus(status)
+        val isMyStatus = Utils.isMyStatus(status)
+        menu.setItemAvailability(R.id.delete, isMyStatus)
+        if (isMyStatus) {
+            val isPinned = status.is_pinned_status
+            menu.setItemAvailability(R.id.pin, !isPinned)
+            menu.setItemAvailability(R.id.unpin, isPinned)
+        } else {
+            menu.setItemAvailability(R.id.pin, false)
+            menu.setItemAvailability(R.id.unpin, false)
         }
         val retweet = menu.findItem(R.id.retweet)
         if (retweet != null) {
@@ -274,6 +283,12 @@ object MenuUtils {
             }
             R.id.delete -> {
                 DestroyStatusDialogFragment.show(fm, status)
+            }
+            R.id.pin -> {
+                PinStatusDialogFragment.show(fm, status)
+            }
+            R.id.unpin -> {
+                UnpinStatusDialogFragment.show(fm, status)
             }
             R.id.add_to_filter -> {
                 AddStatusFilterDialogFragment.show(fm, status)

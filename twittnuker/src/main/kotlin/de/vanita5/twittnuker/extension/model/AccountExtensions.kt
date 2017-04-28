@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.AccountExtras
-import de.vanita5.twittnuker.model.account.StatusNetAccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.*
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -137,7 +136,9 @@ fun Account.isOfficial(am: AccountManager, context: Context): Boolean {
 }
 
 fun AccountManager.hasInvalidAccount(): Boolean {
-    return AccountUtils.getAccounts(this).none { isAccountValid(it) }
+    val accounts = AccountUtils.getAccounts(this)
+    if (accounts.isEmpty()) return false
+    return accounts.none { isAccountValid(it) }
 }
 
 fun AccountManager.isAccountValid(account: Account): Boolean {

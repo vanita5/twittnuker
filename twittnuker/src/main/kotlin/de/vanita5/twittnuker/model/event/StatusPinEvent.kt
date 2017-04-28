@@ -20,21 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.content
+package de.vanita5.twittnuker.model.event
 
-import de.vanita5.twittnuker.fragment.status.FavoriteConfirmDialogFragment
-import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 
-/**
- * Opens [FavoriteConfirmDialogFragment] to favorite a status
- */
-class FavoriteConfirmDialogActivity : AbsStatusDialogActivity() {
 
-    override fun showDialogFragment(accountKey: UserKey, statusId: String, status: ParcelableStatus?) {
-        executeAfterFragmentResumed {
-            FavoriteConfirmDialogFragment.show(it.supportFragmentManager, accountKey, statusId, status)
-        }
-    }
-
-}
+data class StatusPinEvent(val userKey: UserKey, val pinned: Boolean)

@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.activity.content
 
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TEXT
-import de.vanita5.twittnuker.fragment.content.RetweetQuoteDialogFragment
+import de.vanita5.twittnuker.fragment.status.RetweetQuoteDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 

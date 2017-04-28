@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.content
+package de.vanita5.twittnuker.fragment.status
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -93,7 +93,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
     }
 
     override fun AlertDialog.onStatusLoaded(details: AccountDetails, status: ParcelableStatus,
-            savedInstanceState: Bundle?) {
+                                            savedInstanceState: Bundle?) {
         textCountView.maxLength = details.textLimit
 
         val useQuote = useQuote(!status.user_is_protected, details)
@@ -356,7 +356,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         private val SHOW_PROTECTED_CONFIRM = java.lang.Boolean.parseBoolean("false")
 
         fun show(fm: FragmentManager, accountKey: UserKey, statusId: String,
-                status: ParcelableStatus? = null, text: String? = null):
+                 status: ParcelableStatus? = null, text: String? = null):
                 RetweetQuoteDialogFragment {
             val f = RetweetQuoteDialogFragment()
             f.arguments = Bundle {
