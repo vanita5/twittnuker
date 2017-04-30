@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.support.v4.util.LongSparseArray
 import android.support.v4.widget.Space
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -32,7 +33,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.*
+import org.mariotaku.ktextension.contains
+import org.mariotaku.ktextension.rangeOfSize
+import org.mariotaku.ktextension.safeGetLong
+import org.mariotaku.ktextension.safeMoveToPosition
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.R
@@ -42,11 +46,9 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.newDocumentApiKey
-import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.model.util.getActivityStatus
+import de.vanita5.twittnuker.model.util.activityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.OnLinkClickHandler
@@ -65,26 +67,6 @@ class ParcelableActivitiesAdapter(
 
     override val itemCounts: ItemCounts = ItemCounts(2)
 
-    private val inflater = LayoutInflater.from(context)
-    private val twidereLinkify = TwidereLinkify(OnLinkClickHandler(context, null, preferences))
-    private val statusAdapterDelegate = DummyItemAdapter(context, twidereLinkify, this, requestManager)
-    private val eventListener: EventListener
-    private var data: List<ParcelableActivity>? = null
-    private var activityAdapterListener: ActivityAdapterListener? = null
-    private var filteredUserKeys: Array<UserKey>? = null
-    private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
-
-    var followingOnly: Boolean = false
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-    var mentionsOnly: Boolean = false
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
     override var loadMoreIndicatorPosition: Long
         get() = super.loadMoreIndicatorPosition
         set(value) {
@@ -98,6 +80,59 @@ class ParcelableActivitiesAdapter(
             super.loadMoreSupportedPosition = value
             updateItemCount()
         }
+
+    override val activityEventListener: IActivitiesAdapter.ActivityEventListener?
+        get() = eventListener
+
+    override val gapClickListener: IGapSupportedAdapter.GapClickListener?
+        get() = eventListener
+
+    override val mediaPreviewStyle: Int
+        get() = statusAdapterDelegate.mediaPreviewStyle
+
+    override val useStarsForLikes: Boolean
+        get() = statusAdapterDelegate.useStarsForLikes
+
+    override val mediaPreviewEnabled: Boolean
+        get() = statusAdapterDelegate.mediaPreviewEnabled
+
+    override val lightFont: Boolean
+        get() = statusAdapterDelegate.lightFont
+
+    override var showAccountsColor: Boolean
+        get() = statusAdapterDelegate.showAccountsColor
+        set(value) {
+            statusAdapterDelegate.showAccountsColor = value
+            notifyDataSetChanged()
+        }
+
+    val isNameFirst: Boolean
+        get() = statusAdapterDelegate.nameFirst
+
+    val activityStartIndex: Int
+        get() = getItemStartPosition(ITEM_INDEX_ACTIVITY)
+
+    var followingOnly: Boolean = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+    var mentionsOnly: Boolean = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    private val inflater = LayoutInflater.from(context)
+    private val twidereLinkify = TwidereLinkify(OnLinkClickHandler(context, null, preferences))
+    private val statusAdapterDelegate = DummyItemAdapter(context, twidereLinkify, this, requestManager)
+    private val eventListener: EventListener
+    private var data: List<ParcelableActivity>? = null
+    private var activityAdapterListener: ActivityAdapterListener? = null
+    private var filteredUserKeys: Array<UserKey>? = null
+    private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
+    private val reuseActivity = ParcelableActivity()
+    private val filterIdCache = LongSparseArray<Array<UserKey>?>()
 
     init {
         eventListener = EventListener(this)
@@ -158,23 +193,13 @@ class ParcelableActivitiesAdapter(
     }
 
     override fun getActivity(position: Int, raw: Boolean): ParcelableActivity {
-        val dataPosition = position - activityStartIndex
-        val activityCount = getActivityCount(raw)
-        if (dataPosition < 0 || dataPosition >= activityCount) {
-            val validRange = rangeOfSize(activityStartIndex, getActivityCount(raw))
-            throw IndexOutOfBoundsException("index: $position, valid range is $validRange")
-        }
-        return data!![dataPosition]
+        return getActivityInternal(position, raw, false)
     }
 
     override fun getActivityCount(raw: Boolean): Int {
             if (data == null) return 0
             return data!!.size
         }
-
-    private fun bindTitleSummaryViewHolder(holder: ActivityTitleSummaryViewHolder, position: Int) {
-        holder.displayActivity(getActivity(position))
-    }
 
     fun getData(): List<ParcelableActivity>? {
         return data
@@ -189,22 +214,6 @@ class ParcelableActivitiesAdapter(
         updateItemCount()
         notifyDataSetChanged()
     }
-
-    override val activityEventListener: IActivitiesAdapter.ActivityEventListener?
-        get() = eventListener
-
-    override val gapClickListener: IGapSupportedAdapter.GapClickListener?
-        get() = eventListener
-
-    override val mediaPreviewStyle: Int
-        get() = statusAdapterDelegate.mediaPreviewStyle
-
-    val isNameFirst: Boolean
-        get() = statusAdapterDelegate.nameFirst
-
-    override val useStarsForLikes: Boolean
-        get() = statusAdapterDelegate.useStarsForLikes
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
@@ -240,21 +249,23 @@ class ParcelableActivitiesAdapter(
         throw UnsupportedOperationException("Unsupported viewType " + viewType)
     }
 
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
             ITEM_VIEW_TYPE_STATUS -> {
-                val status = getActivity(position).getActivityStatus() ?: return
-                val statusViewHolder = holder as IStatusViewHolder
-                statusViewHolder.display(status = status, displayInReplyTo = true)
+                val activity = getActivityInternal(position, raw = false, reuse = true)
+                (holder as IStatusViewHolder).display(activity, displayInReplyTo = true)
             }
             ITEM_VIEW_TYPE_TITLE_SUMMARY -> {
-                bindTitleSummaryViewHolder(holder as ActivityTitleSummaryViewHolder, position)
+                val activity = getActivityInternal(position, raw = false, reuse = true)
+                (holder as ActivityTitleSummaryViewHolder).displayActivity(activity)
             }
             ITEM_VIEW_TYPE_STUB -> {
-                (holder as StubViewHolder).displayActivity(getActivity(position))
+                val activity = getActivityInternal(position, raw = false, reuse = true)
+                (holder as StubViewHolder).displayActivity(activity)
             }
             ITEM_VIEW_TYPE_GAP -> {
-                val activity = getActivity(position)
+                val activity = getActivityInternal(position, raw = false, reuse = true)
                 val loading = gapLoadingIds.any { it.accountKey == activity.account_key && it.id == activity.id }
                 (holder as GapViewHolder).display(loading)
             }
@@ -267,24 +278,9 @@ class ParcelableActivitiesAdapter(
                 if (isGapItem(position)) {
                     return ITEM_VIEW_TYPE_GAP
                 }
-                val activity = getActivity(position, false)
+                val activity = getActivityInternal(position, raw = false, reuse = true)
                 when (activity.action) {
-                    Activity.Action.MENTION -> {
-                        if (activity.target_object_statuses.isNullOrEmpty()) {
-                            return ITEM_VIEW_TYPE_STUB
-                        }
-                        return ITEM_VIEW_TYPE_STATUS
-                    }
-                    Activity.Action.REPLY -> {
-                        if (activity.target_statuses.isNullOrEmpty()) {
-                            return ITEM_VIEW_TYPE_STUB
-                        }
-                        return ITEM_VIEW_TYPE_STATUS
-                    }
-                    Activity.Action.QUOTE -> {
-                        if (activity.target_statuses.isNullOrEmpty()) {
-                            return ITEM_VIEW_TYPE_STUB
-                        }
+                    Activity.Action.MENTION, Activity.Action.QUOTE, Activity.Action.REPLY -> {
                         return ITEM_VIEW_TYPE_STATUS
                     }
                     Activity.Action.FOLLOW, Activity.Action.FAVORITE, Activity.Action.RETWEET,
@@ -295,8 +291,10 @@ class ParcelableActivitiesAdapter(
                     Activity.Action.FAVORITED_MEDIA_TAGGED, Activity.Action.JOINED_TWITTER -> {
                         if (mentionsOnly) return ITEM_VIEW_TYPE_EMPTY
                         filteredUserKeys?.let {
-                            ParcelableActivityUtils.initAfterFilteredSourceIds(activity, it, followingOnly)
-                            if (activity.after_filtered_source_ids.isNullOrEmpty()) {
+                            //                            ParcelableActivityUtils.initAfterFilteredSourceIds(activity, it, followingOnly)
+//                            filterIdCache[activity._id] = activity.after_filtered_source_ids
+                            val sourceIds = activity.after_filtered_source_keys
+                            if (sourceIds != null && sourceIds.isEmpty()) {
                                 return ITEM_VIEW_TYPE_EMPTY
                             }
                         }
@@ -328,26 +326,9 @@ class ParcelableActivitiesAdapter(
         activityAdapterListener = listener
     }
 
-    override val mediaPreviewEnabled: Boolean
-        get() = statusAdapterDelegate.mediaPreviewEnabled
-
-    override val lightFont: Boolean
-        get() = statusAdapterDelegate.lightFont
-
-    override var showAccountsColor: Boolean
-        get() = statusAdapterDelegate.showAccountsColor
-        set(value) {
-            statusAdapterDelegate.showAccountsColor = value
-            notifyDataSetChanged()
-        }
-
-
     fun isActivity(position: Int, raw: Boolean = false): Boolean {
         return position < getActivityCount(raw)
     }
-
-    val activityStartIndex: Int
-        get() = getItemStartPosition(ITEM_INDEX_ACTIVITY)
 
     fun findPositionBySortTimestamp(timestamp: Long, raw: Boolean = false): Int {
         if (timestamp <= 0) return RecyclerView.NO_POSITION
@@ -362,6 +343,25 @@ class ParcelableActivitiesAdapter(
     private fun updateItemCount() {
         itemCounts[0] = getActivityCount(false)
         itemCounts[1] = if (ILoadMoreSupportAdapter.END in loadMoreIndicatorPosition) 1 else 0
+    }
+
+
+    private fun getActivityInternal(position: Int, raw: Boolean, reuse: Boolean): ParcelableActivity {
+        val dataPosition = position - activityStartIndex
+        val activityCount = getActivityCount(raw)
+        if (dataPosition < 0 || dataPosition >= activityCount) {
+            val validRange = rangeOfSize(activityStartIndex, getActivityCount(raw))
+            throw IndexOutOfBoundsException("index: $position, valid range is $validRange")
+        }
+        val data = this.data!!
+        if (reuse && data is ObjectCursor) {
+            val activity = data.setInto(dataPosition, reuseActivity)
+//            activity.after_filtered_source_ids = filterIdCache[activity._id]
+//            activity.after_filtered_sources = null
+            return activity
+        } else {
+            return data[dataPosition]
+        }
     }
 
     interface ActivityAdapterListener {
@@ -397,12 +397,14 @@ class ParcelableActivitiesAdapter(
         fun displayActivity(activity: ParcelableActivity) {
             text1.text = text1.resources.getString(R.string.unsupported_activity_action_title,
                     activity.action)
-            text2.text = "host: ${activity.account_key.host}, id: ${activity.status_id}\n"
+            text2.text = "host: ${activity.account_key.host}, id: ${activity.id}\n"
             text2.append(itemView.context.getString(R.string.unsupported_activity_action_summary))
         }
     }
 
-    internal class EventListener(adapter: ParcelableActivitiesAdapter) : IStatusViewHolder.StatusClickListener, IGapSupportedAdapter.GapClickListener, IActivitiesAdapter.ActivityEventListener {
+    internal class EventListener(adapter: ParcelableActivitiesAdapter) :
+            IStatusViewHolder.StatusClickListener, IGapSupportedAdapter.GapClickListener,
+            IActivitiesAdapter.ActivityEventListener {
 
         val adapterRef = WeakReference(adapter)
 
@@ -429,7 +431,7 @@ class ParcelableActivitiesAdapter(
 
         override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
             val adapter = adapterRef.get() ?: return
-            val status = adapter.getActivity(position).getActivityStatus() ?: return
+            val status = adapter.getActivity(position).activityStatus ?: return
             IntentUtils.openUserProfile(adapter.context, status.account_key, status.user_key,
                     status.user_screen_name, status.extras?.user_statusnet_profile_url,
                     adapter.preferences[newDocumentApiKey], Referral.TIMELINE_STATUS, null)

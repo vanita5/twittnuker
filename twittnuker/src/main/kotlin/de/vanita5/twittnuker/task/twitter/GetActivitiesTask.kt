@@ -28,6 +28,7 @@ import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
 import org.mariotaku.kpreferences.get
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
@@ -46,7 +47,10 @@ import de.vanita5.twittnuker.model.task.GetTimelineResult
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.task.BaseAbstractTask
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.DebugLog
+import de.vanita5.twittnuker.util.ErrorInfoStore
+import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.sync.SyncTaskRunner
 import de.vanita5.twittnuker.util.sync.TimelineSyncManager
@@ -163,8 +167,8 @@ abstract class GetActivitiesTask(
                 }
 
                 activity.inserted_date = System.currentTimeMillis()
-                val values = ContentValuesCreator.createActivity(activity, details)
-                valuesList.add(values)
+                valuesList.add(ObjectCursor.valuesCreatorFrom(ParcelableActivity::class.java)
+                        .create(activity))
             }
         }
         var olderCount = -1

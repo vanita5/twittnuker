@@ -58,8 +58,7 @@ import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
-import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
+import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
@@ -419,7 +418,7 @@ class StreamingService : BaseService() {
 
             override fun onStatusDeleted(event: DeletionEvent): Boolean {
                 val deleteWhere = Expression.and(Expression.likeRaw(Columns.Column(Statuses.ACCOUNT_KEY), "'%@'||?"),
-                        Expression.equalsArgs(Columns.Column(Statuses.STATUS_ID))).sql
+                        Expression.equalsArgs(Columns.Column(Statuses.ID))).sql
                 val deleteWhereArgs = arrayOf(account.key.host, event.id)
                 context.contentResolver.delete(Statuses.CONTENT_URI, deleteWhere, deleteWhereArgs)
                 return true

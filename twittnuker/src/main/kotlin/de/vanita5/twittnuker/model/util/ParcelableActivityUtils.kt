@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.model.util
 
 import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.ParcelableLiteUser
 import de.vanita5.twittnuker.model.UserKey
 
 /**
@@ -43,7 +43,7 @@ object ParcelableActivityUtils {
     fun initAfterFilteredSourceIds(activity: ParcelableActivity, filteredUserKeys: Array<UserKey>,
                                    followingOnly: Boolean): Boolean {
         if (activity.sources == null) return false
-        if (activity.after_filtered_source_ids != null) return false
+        if (activity.after_filtered_source_keys != null) return false
         if (followingOnly || filteredUserKeys.isNotEmpty()) {
             val list = activity.sources.filter { user ->
                 if (followingOnly && !user.is_following) {
@@ -55,21 +55,21 @@ object ParcelableActivityUtils {
                 }
                 return@filter false
             }.map { it.key }
-            activity.after_filtered_source_ids = list.toTypedArray()
+            activity.after_filtered_source_keys = list.toTypedArray()
             return true
         } else {
-            activity.after_filtered_source_ids = activity.source_keys
+            activity.after_filtered_source_keys = activity.source_keys
             return false
         }
     }
 
-    fun getAfterFilteredSources(activity: ParcelableActivity): Array<ParcelableUser> {
+    fun getAfterFilteredSources(activity: ParcelableActivity): Array<ParcelableLiteUser> {
         if (activity.after_filtered_sources != null) return activity.after_filtered_sources
-        if (activity.after_filtered_source_ids == null || activity.sources.size == activity.after_filtered_source_ids.size) {
-            return activity.sources
+        if (activity.after_filtered_source_keys == null || activity.sources.size == activity.after_filtered_source_keys.size) {
+            return activity.sources_lite
         }
-        val result = Array(activity.after_filtered_source_ids.size) { idx ->
-            return@Array activity.sources.find { it.key == activity.after_filtered_source_ids[idx] }!!
+        val result = Array(activity.after_filtered_source_keys.size) { idx ->
+            return@Array activity.sources_lite.find { it.key == activity.after_filtered_source_keys[idx] }!!
         }
         activity.after_filtered_sources = result
         return result

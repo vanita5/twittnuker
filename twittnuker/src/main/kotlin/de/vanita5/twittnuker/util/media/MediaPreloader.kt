@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.util.getActivityStatus
+import de.vanita5.twittnuker.model.util.activityStatus
 
 class MediaPreloader(val context: Context) {
 
@@ -54,7 +54,7 @@ class MediaPreloader(val context: Context) {
 
     fun preloadActivity(activity: ParcelableActivity) {
         if (!shouldPreload) return
-        activity.getActivityStatus()?.let { preloadStatus(it) }
+        activity.activityStatus?.let { preloadStatus(it) }
     }
 
     fun reloadOptions(preferences: SharedPreferences) {

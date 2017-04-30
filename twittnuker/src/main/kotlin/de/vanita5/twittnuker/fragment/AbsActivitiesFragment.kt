@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.addAllTo
 import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
@@ -61,7 +62,6 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.readFromBottomKey
 import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
-import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
@@ -69,7 +69,7 @@ import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.model.util.getActivityStatus
+import de.vanita5.twittnuker.model.util.activityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -81,6 +81,7 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class AbsActivitiesFragment protected constructor() :
         AbsContentListRecyclerViewFragment<ParcelableActivitiesAdapter>(),
@@ -149,7 +150,7 @@ abstract class AbsActivitiesFragment protected constructor() :
                 openActivity(activity)
                 return true
             }
-            val status = activity.getActivityStatus() ?: return false
+            val status = activity.activityStatus ?: return false
             if (action == null) {
                 action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState)
             }
@@ -161,9 +162,9 @@ abstract class AbsActivitiesFragment protected constructor() :
     }
 
     private fun openActivity(activity: ParcelableActivity) {
-        val status = activity.getActivityStatus()
+        val status = activity.activityStatus
         if (status != null) {
-            IntentUtils.openStatus(context, status, null)
+            IntentUtils.openStatus(context, activity, null)
         }
     }
 
@@ -329,7 +330,7 @@ abstract class AbsActivitiesFragment protected constructor() :
     }
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, position: Int) {
-        val status = adapter.getActivity(position).getActivityStatus() ?: return
+        val status = adapter.getActivity(position).activityStatus ?: return
         IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey],
                 preferences[displaySensitiveContentsKey],
                 null)
@@ -347,13 +348,13 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun onActivityClick(holder: ActivityTitleSummaryViewHolder, position: Int) {
         val activity = adapter.getActivity(position)
-        val list = ArrayList<Parcelable>()
-        if (activity.target_object_statuses?.isNotEmpty() ?: false) {
-            list.addAll(activity.target_object_statuses)
-        } else if (activity.target_statuses?.isNotEmpty() ?: false) {
-            list.addAll(activity.target_statuses)
-        }
-        list.addAll(ParcelableActivityUtils.getAfterFilteredSources(activity))
+        val list: ArrayList<ParcelableStatus> = ArrayList()
+//        if (activity.target_objects?.statuses != null) {
+//            activity.target_objects?.statuses?.addAllTo(list)
+//        } else if (activity.targets?.statuses != null) {
+//            activity.targets?.statuses?.addAllTo(list)
+//        }
+//        list.addAll(ParcelableActivityUtils.getAfterFilteredSources(activity))
         IntentUtils.openItems(getActivity(), list)
     }
 
@@ -378,7 +379,7 @@ abstract class AbsActivitiesFragment protected constructor() :
     }
 
     private fun getActivityStatus(position: Int): ParcelableStatus? {
-        return adapter.getActivity(position).getActivityStatus()
+        return adapter.getActivity(position).activityStatus
     }
 
     override fun onStart() {

@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.util.database
 
 import android.content.ContentResolver
 import de.vanita5.twittnuker.extension.rawQuery
-import de.vanita5.twittnuker.model.ParcelableActivity
+import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SpanItem
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
@@ -33,11 +33,11 @@ import java.util.*
 
 object FilterQueryBuilder {
 
-    fun isFiltered(cr: ContentResolver, activity: ParcelableActivity): Boolean {
-        return isFiltered(cr, activity.status_user_key, activity.status_text_plain,
-                activity.status_quote_text_plain, activity.status_spans, activity.status_quote_spans,
-                activity.status_source, activity.status_quote_source, activity.status_retweeted_by_user_key,
-                activity.status_quoted_user_key)
+    fun isFiltered(cr: ContentResolver, activity: ParcelableStatus): Boolean {
+        return isFiltered(cr, activity.user_key, activity.text_plain,
+                activity.quoted_text_plain, activity.spans, activity.quoted_spans,
+                activity.source, activity.quoted_source, activity.retweeted_by_user_key,
+                activity.quoted_user_key)
     }
 
     fun isFiltered(cr: ContentResolver, userKey: UserKey?, textPlain: String?, quotedTextPlain: String?,

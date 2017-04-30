@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage
 import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.ParcelableLiteUser
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.view.BadgeView
 import de.vanita5.twittnuker.view.IconActionView
@@ -81,9 +81,9 @@ class ActivityTitleSummaryViewHolder(
     fun displayActivity(activity: ParcelableActivity) {
         val context = adapter.context
         val sources = ParcelableActivityUtils.getAfterFilteredSources(activity)
-        val message = ActivityTitleSummaryMessage.get(context,
-                adapter.userColorNameManager, activity, sources, activityTypeView.defaultColor,
-                adapter.useStarsForLikes, adapter.isNameFirst)
+        val message = ActivityTitleSummaryMessage.get(context, adapter.userColorNameManager,
+                activity, sources, activityTypeView.defaultColor, adapter.useStarsForLikes,
+                adapter.isNameFirst)
         if (message == null) {
             showNotSupported()
             return
@@ -117,7 +117,7 @@ class ActivityTitleSummaryViewHolder(
         }
     }
 
-    private fun displayUserProfileImages(users: Array<ParcelableUser>?) {
+    private fun displayUserProfileImages(users: Array<ParcelableLiteUser>?) {
         val shouldDisplayImages = adapter.profileImageEnabled
         profileImagesContainer.visibility = if (shouldDisplayImages) View.VISIBLE else View.GONE
         profileImageSpace.visibility = if (shouldDisplayImages) View.VISIBLE else View.GONE

@@ -40,9 +40,13 @@ fun Status.toParcelable(details: AccountDetails): ParcelableStatus {
         account_color = details.color
     }
 }
-
 fun Status.toParcelable(accountKey: UserKey): ParcelableStatus {
     val result = ParcelableStatus()
+    applyTo(accountKey, result)
+    return result
+}
+
+fun Status.applyTo(accountKey: UserKey, result: ParcelableStatus) {
     val extras = ParcelableStatus.Extras()
     result.account_key = accountKey
     result.id = id
@@ -115,7 +119,6 @@ fun Status.toParcelable(accountKey: UserKey): ParcelableStatus {
     }
 
     result.extras = extras
-    return result
 }
 
 private fun calculateDisplayTextRange(spans: Array<SpanItem>?, media: Array<ParcelableMedia>?): IntArray? {

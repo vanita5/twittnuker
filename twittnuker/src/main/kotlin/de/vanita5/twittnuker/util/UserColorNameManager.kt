@@ -30,10 +30,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v4.util.LruCache
 import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.USER_COLOR_PREFERENCES_NAME
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 
 class UserColorNameManager(context: Context) {
@@ -61,6 +58,10 @@ class UserColorNameManager(context: Context) {
     }
 
     fun getDisplayName(user: ParcelableUser, nameFirst: Boolean): String {
+        return getDisplayName(user.key, user.name, user.screen_name, nameFirst)
+    }
+
+    fun getDisplayName(user: ParcelableLiteUser, nameFirst: Boolean): String {
         return getDisplayName(user.key, user.name, user.screen_name, nameFirst)
     }
 
