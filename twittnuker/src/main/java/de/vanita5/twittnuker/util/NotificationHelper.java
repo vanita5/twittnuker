@@ -588,7 +588,7 @@ public class NotificationHelper implements Constants {
     private Spanned getInboxLineByType(final NotificationContent pendingNotification) {
         final String type = pendingNotification.getType();
         final String nameEscaped = HtmlEscapeHelper.INSTANCE.escape("@" + pendingNotification.getFromUser());
-        final String textEscaped = HtmlEscapeHelper.INSTANCE.escape(pendingNotification.getMessage());
+        final String textEscaped = HtmlEscapeHelper.INSTANCE.escape("" + pendingNotification.getMessage());
         if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
             return Html.fromHtml(String.format("<b>%s:</b> %s", nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
