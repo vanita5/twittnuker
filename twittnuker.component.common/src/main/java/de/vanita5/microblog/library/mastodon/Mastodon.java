@@ -36,12 +36,11 @@ import de.vanita5.microblog.library.mastodon.api.NotificationsResources;
 import de.vanita5.microblog.library.mastodon.api.ReportsResources;
 import de.vanita5.microblog.library.mastodon.api.SearchResources;
 import de.vanita5.microblog.library.mastodon.api.StatusesResources;
-import de.vanita5.microblog.library.mastodon.api.StreamingResources;
 import de.vanita5.microblog.library.mastodon.api.TimelinesResources;
 
 public interface Mastodon extends AccountsResources, AppsResources, BlocksResources,
         FavouritesResources, FollowRequestsResources, FollowsResources, InstancesResources,
         MediaResources, MutesResources, NotificationsResources, ReportsResources, SearchResources,
-        StatusesResources, TimelinesResources, StreamingResources {
+        StatusesResources, TimelinesResources {
 
 }

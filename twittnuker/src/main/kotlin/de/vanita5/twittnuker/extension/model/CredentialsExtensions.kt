@@ -30,6 +30,7 @@ import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.fanfou.FanfouStream
 import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.mastodon.MastodonOAuth2
+import de.vanita5.microblog.library.mastodon.MastodonStreaming
 import de.vanita5.microblog.library.twitter.*
 import de.vanita5.microblog.library.twitter.auth.BasicAuthorization
 import de.vanita5.microblog.library.twitter.auth.EmptyAuthorization
@@ -138,6 +139,10 @@ fun Credentials.getEndpoint(cls: Class<*>): Endpoint {
             domain = null
             versionSuffix = null
         }
+        MastodonStreaming::class.java.isAssignableFrom(cls) -> {
+            domain = null
+            versionSuffix = null
+        }
         else -> throw UnsupportedOperationException("Unsupported class $cls")
     }
     val endpointUrl = MicroBlogAPIFactory.getApiUrl(apiUrlFormat, domain, versionSuffix)
@@ -180,7 +185,7 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
                     holder.connectionPool, holder.cache)
             factory.setHttpClient(uploadHttpClient)
         }
-        TwitterUserStream::class.java, FanfouStream::class.java -> {
+        TwitterUserStream::class.java, FanfouStream::class.java, MastodonStreaming::class.java -> {
             val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
             // Use longer read timeout for streaming
             conf.readTimeoutSecs = 300

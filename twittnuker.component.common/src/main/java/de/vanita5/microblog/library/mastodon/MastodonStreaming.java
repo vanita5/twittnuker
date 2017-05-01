@@ -21,14 +21,14 @@
  *  limitations under the License.
  */
 
-package de.vanita5.microblog.library.mastodon.api;
+package de.vanita5.microblog.library.mastodon;
 
 import de.vanita5.microblog.library.MicroBlogException;
 import de.vanita5.microblog.library.mastodon.callback.MastodonUserStreamCallback;
 import org.mariotaku.restfu.annotation.method.GET;
 
 
-public interface StreamingResources {
-    @GET("/v1/streaming/user")
+public interface MastodonStreaming {
+    @GET("/v1/streaming/public")
     void getUserStream(MastodonUserStreamCallback callback) throws MicroBlogException;
 }
