@@ -20,16 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.api
+package de.vanita5.microblog.library.twitter.model;
 
-import org.mariotaku.restfu.http.MultiValueMap
-import de.vanita5.twittnuker.extension.restfu.contains
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-class UserAgentExtraHeaders(val userAgent: String?) : MicroBlogAPIFactory.ExtraHeaders {
+@JsonObject
+public class StatusPage {
+    @JsonField(name = "page")
+    String page;
 
-    override fun get(headers: MultiValueMap<String>): List<Pair<String, String>> {
-        if (userAgent == null || "User-Agent" in headers) return emptyList()
-        return listOf(Pair("User-Agent", userAgent))
+    public String getPage() {
+        return page;
     }
 }

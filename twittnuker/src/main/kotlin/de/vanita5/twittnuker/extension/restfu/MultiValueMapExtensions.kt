@@ -20,16 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.api
+package de.vanita5.twittnuker.extension.restfu
 
 import org.mariotaku.restfu.http.MultiValueMap
-import de.vanita5.twittnuker.extension.restfu.contains
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 
-class UserAgentExtraHeaders(val userAgent: String?) : MicroBlogAPIFactory.ExtraHeaders {
 
-    override fun get(headers: MultiValueMap<String>): List<Pair<String, String>> {
-        if (userAgent == null || "User-Agent" in headers) return emptyList()
-        return listOf(Pair("User-Agent", userAgent))
-    }
+operator fun <T> MultiValueMap<T>.contains(key: String): Boolean {
+    return getFirst(key) != null
 }

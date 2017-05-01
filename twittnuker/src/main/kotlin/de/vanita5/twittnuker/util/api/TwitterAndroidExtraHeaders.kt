@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.util.api
 
 import android.os.Build
 import org.mariotaku.ktextension.bcp47Tag
+import org.mariotaku.restfu.http.MultiValueMap
+import de.vanita5.twittnuker.extension.restfu.contains
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.ExtraHeaders
 import java.util.*
 
@@ -34,10 +36,12 @@ object TwitterAndroidExtraHeaders : ExtraHeaders {
     const val apiVersion = "5"
     const val internalVersionName = "7160062-r-930"
 
-    override fun get(): List<Pair<String, String>> {
+    override fun get(headers: MultiValueMap<String>): List<Pair<String, String>> {
         val result = ArrayList<Pair<String, String>>()
         val language = Locale.getDefault().bcp47Tag
-        result.add(Pair("User-Agent", userAgent))
+        if ("User-Agent" !in headers) {
+            result.add(Pair("User-Agent", userAgent))
+        }
         result.add(Pair("Accept-Language", language))
         result.add(Pair("X-Twitter-Client", clientName))
         result.add(Pair("X-Twitter-Client-Language", language))

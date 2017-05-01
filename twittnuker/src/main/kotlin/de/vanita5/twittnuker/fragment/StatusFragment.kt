@@ -87,6 +87,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
@@ -189,7 +190,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             }
             adapter.loadMoreSupportedPosition = supportedPositions
             setConversation(data)
-            val canLoadAllReplies = loader.canLoadAllReplies()
+            val canLoadAllReplies = loader.canLoadAllReplies
             if (canLoadAllReplies) {
                 adapter.setReplyError(null)
             } else {
@@ -886,8 +887,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             nameView.updateText(formatter)
 
             adapter.requestManager.loadProfileImage(context, status, adapter.profileImageStyle,
-                    itemView.profileImage.cornerRadius, itemView.profileImage.cornerRadiusRatio)
-                    .into(itemView.profileImage)
+                    itemView.profileImage.cornerRadius, itemView.profileImage.cornerRadiusRatio,
+                    size = ProfileImageSize.ORIGINAL).into(itemView.profileImage)
 
             val typeIconRes = Utils.getUserTypeIconRes(status.user_is_verified, status.user_is_protected)
             val typeDescriptionRes = Utils.getUserTypeDescriptionRes(status.user_is_verified, status.user_is_protected)

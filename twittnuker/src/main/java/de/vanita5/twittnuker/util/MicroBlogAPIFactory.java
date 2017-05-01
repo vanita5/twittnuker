@@ -36,6 +36,7 @@ import android.webkit.URLUtil;
 
 import de.vanita5.microblog.library.MicroBlog;
 import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.MultiValueMap;
 import org.mariotaku.restfu.http.SimpleValueMap;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import org.mariotaku.restfu.oauth.OAuthToken;
@@ -271,6 +272,6 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
 
     public interface ExtraHeaders {
         @NonNull
-        List<Pair<String, String>> get();
+        List<Pair<String, String>> get(MultiValueMap<String> headers);
     }
 }
