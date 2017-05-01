@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.microblog.library.mastodon.model.Notification
+import de.vanita5.microblog.library.mastodon.model.Relationship
 import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.extension.model.toLite
 import de.vanita5.twittnuker.extension.model.toSummaryLine
@@ -32,13 +33,15 @@ import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 
-fun Notification.toParcelable(details: AccountDetails): ParcelableActivity {
-    return toParcelable(details.key).apply {
+fun Notification.toParcelable(details: AccountDetails, relationships: Map<String, Relationship>?):
+        ParcelableActivity {
+    return toParcelable(details.key, relationships).apply {
         account_color = details.color
     }
 }
 
-fun Notification.toParcelable(accountKey: UserKey): ParcelableActivity {
+fun Notification.toParcelable(accountKey: UserKey, relationships: Map<String, Relationship>?):
+        ParcelableActivity {
     val result = ParcelableActivity()
     result.account_key = accountKey
     result.id = "$id-$id"
@@ -48,7 +51,7 @@ fun Notification.toParcelable(accountKey: UserKey): ParcelableActivity {
     result.min_sort_position = result.timestamp
     result.max_sort_position = result.timestamp
 
-    result.sources = toSources(accountKey)
+    result.sources = toSources(accountKey, relationships)
     result.user_key = result.sources?.firstOrNull()?.key ?: UserKey("multiple", null)
 
     when (type) {
@@ -82,7 +85,9 @@ fun Notification.toParcelable(accountKey: UserKey): ParcelableActivity {
     return result
 }
 
-private fun Notification.toSources(accountKey: UserKey): Array<ParcelableUser>? {
+private fun Notification.toSources(accountKey: UserKey, relationships: Map<String, Relationship>?):
+        Array<ParcelableUser>? {
     val account = this.account ?: return null
-    return arrayOf(account.toParcelable(accountKey))
+    val relationship = relationships?.get(account.id)
+    return arrayOf(account.toParcelable(accountKey, relationship = relationship))
 }

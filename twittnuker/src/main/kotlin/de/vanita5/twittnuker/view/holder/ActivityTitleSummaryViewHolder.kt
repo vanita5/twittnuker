@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableLiteUser
-import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.view.BadgeView
 import de.vanita5.twittnuker.view.IconActionView
 import de.vanita5.twittnuker.view.ProfileImageView
@@ -80,7 +79,12 @@ class ActivityTitleSummaryViewHolder(
 
     fun displayActivity(activity: ParcelableActivity) {
         val context = adapter.context
-        val sources = ParcelableActivityUtils.getAfterFilteredSources(activity)
+        val sources = (activity.after_filtered_sources ?: activity.sources_lite).takeIf {
+            it.isNotEmpty()
+        } ?: run {
+            showNotSupported()
+            return
+        }
         val message = ActivityTitleSummaryMessage.get(context, adapter.userColorNameManager,
                 activity, sources, activityTypeView.defaultColor, adapter.useStarsForLikes,
                 adapter.isNameFirst)

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model.api.mastodon
 
 import de.vanita5.microblog.library.mastodon.model.Account
+import de.vanita5.microblog.library.mastodon.model.Relationship
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.api.isHtml
 import de.vanita5.twittnuker.extension.model.api.spanItems
@@ -34,13 +35,15 @@ import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.emoji.EmojioneTranslator
 
 
-fun Account.toParcelable(details: AccountDetails, position: Long = 0): ParcelableUser {
-    return toParcelable(details.key, position).apply {
+fun Account.toParcelable(details: AccountDetails, position: Long = 0,
+        relationship: Relationship? = null): ParcelableUser {
+    return toParcelable(details.key, position, relationship).apply {
         account_color = details.color
     }
 }
 
-fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUser {
+fun Account.toParcelable(accountKey: UserKey, position: Long = 0,
+        relationship: Relationship? = null): ParcelableUser {
     val obj = ParcelableUser()
     obj.position = position
     obj.account_key = accountKey
@@ -68,6 +71,17 @@ fun Account.toParcelable(accountKey: UserKey, position: Long = 0): ParcelableUse
     obj.listed_count = -1
     obj.media_count = -1
     obj.user_type = AccountType.MASTODON
+
+    val extras = ParcelableUser.Extras()
+
+    if (relationship != null && relationship.id == id) {
+        obj.is_following = relationship.isFollowing
+        obj.is_follow_request_sent = relationship.isRequested
+        extras.followed_by = relationship.isFollowedBy
+        extras.muting = relationship.isMuting
+        extras.blocking = relationship.isBlocking
+    }
+
     return obj
 }
 
