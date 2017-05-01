@@ -22,44 +22,56 @@
 
 package de.vanita5.twittnuker.fragment.status
 
+import android.app.Dialog
+import android.content.DialogInterface
+import android.content.DialogInterface.BUTTON_POSITIVE
+import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.activity.content.FavoriteConfirmDialogActivity
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.model.UserKey
 
 /**
  * Asks user to favorite a status.
  */
 class FavoriteConfirmDialogFragment : AbsStatusDialogFragment() {
 
-    override val android.app.Dialog.loadProgress: android.view.View get() = findViewById(de.vanita5.twittnuker.R.id.loadProgress)
+    override val Dialog.loadProgress: android.view.View get() = findViewById(R.id.loadProgress)
 
-    override val android.app.Dialog.itemContent: android.view.View get() = findViewById(de.vanita5.twittnuker.R.id.itemContent)
+    override val Dialog.itemContent: android.view.View get() = findViewById(R.id.itemContent)
 
-    override fun android.support.v7.app.AlertDialog.Builder.setupAlertDialog() {
-        if (preferences[de.vanita5.twittnuker.constant.iWantMyStarsBackKey]) {
-            setTitle(de.vanita5.twittnuker.R.string.title_favorite_confirm)
+    override fun AlertDialog.Builder.setupAlertDialog() {
+        if (preferences[iWantMyStarsBackKey]) {
+            setTitle(R.string.title_favorite_confirm)
         } else {
-            setTitle(de.vanita5.twittnuker.R.string.title_like_confirm)
+            setTitle(R.string.title_like_confirm)
         }
-        setView(de.vanita5.twittnuker.R.layout.dialog_status_favorite_confirm)
-        setPositiveButton(de.vanita5.twittnuker.R.string.action_favorite, null)
+        setView(R.layout.dialog_status_favorite_confirm)
+        setPositiveButton(R.string.action_favorite, null)
         setNegativeButton(android.R.string.cancel, null)
     }
 
-    override fun android.support.v7.app.AlertDialog.onStatusLoaded(details: de.vanita5.twittnuker.model.AccountDetails, status: de.vanita5.twittnuker.model.ParcelableStatus,
-            savedInstanceState: android.os.Bundle?) {
-        val positiveButton = getButton(android.content.DialogInterface.BUTTON_POSITIVE)
-        if (preferences[de.vanita5.twittnuker.constant.iWantMyStarsBackKey]) {
+    override fun AlertDialog.onStatusLoaded(details: AccountDetails, status: ParcelableStatus,
+                                            savedInstanceState: Bundle?) {
+        val positiveButton = getButton(BUTTON_POSITIVE)
+        if (preferences[iWantMyStarsBackKey]) {
             if (status.is_favorite) {
-                positiveButton.setText(de.vanita5.twittnuker.R.string.action_unfavorite)
+                positiveButton.setText(R.string.action_unfavorite)
             } else {
-                positiveButton.setText(de.vanita5.twittnuker.R.string.action_favorite)
+                positiveButton.setText(R.string.action_favorite)
             }
         } else {
             if (status.is_favorite) {
-                positiveButton.setText(de.vanita5.twittnuker.R.string.action_undo_like)
+                positiveButton.setText(R.string.action_undo_like)
             } else {
-                positiveButton.setText(de.vanita5.twittnuker.R.string.action_like)
+                positiveButton.setText(R.string.action_like)
             }
         }
         positiveButton.setOnClickListener {
@@ -73,18 +85,18 @@ class FavoriteConfirmDialogFragment : AbsStatusDialogFragment() {
 
     }
 
-    override fun onCancel(dialog: android.content.DialogInterface) {
+    override fun onCancel(dialog: DialogInterface) {
         finishFavoriteConfirmActivity()
     }
 
-    override fun onDismiss(dialog: android.content.DialogInterface) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         finishFavoriteConfirmActivity()
     }
 
     private fun finishFavoriteConfirmActivity() {
         val activity = this.activity
-        if (activity is de.vanita5.twittnuker.activity.content.FavoriteConfirmDialogActivity && !activity.isFinishing) {
+        if (activity is FavoriteConfirmDialogActivity && !activity.isFinishing) {
             activity.finish()
         }
     }
@@ -93,15 +105,15 @@ class FavoriteConfirmDialogFragment : AbsStatusDialogFragment() {
 
         val FRAGMENT_TAG = "favorite_confirm"
 
-        fun show(fm: android.support.v4.app.FragmentManager, accountKey: de.vanita5.twittnuker.model.UserKey, statusId: String,
-                status: de.vanita5.twittnuker.model.ParcelableStatus? = null): de.vanita5.twittnuker.fragment.status.FavoriteConfirmDialogFragment {
-            val f = de.vanita5.twittnuker.fragment.status.FavoriteConfirmDialogFragment()
-            f.arguments = org.mariotaku.ktextension.Bundle {
+        fun show(fm: android.support.v4.app.FragmentManager, accountKey: UserKey, statusId: String,
+                 status: ParcelableStatus? = null): FavoriteConfirmDialogFragment {
+            val f = FavoriteConfirmDialogFragment()
+            f.arguments = Bundle {
                 this[EXTRA_ACCOUNT_KEY] = accountKey
                 this[EXTRA_STATUS_ID] = statusId
                 this[EXTRA_STATUS] = status
             }
-            f.show(fm, de.vanita5.twittnuker.fragment.status.FavoriteConfirmDialogFragment.Companion.FRAGMENT_TAG)
+            f.show(fm, FavoriteConfirmDialogFragment.FRAGMENT_TAG)
             return f
         }
     }

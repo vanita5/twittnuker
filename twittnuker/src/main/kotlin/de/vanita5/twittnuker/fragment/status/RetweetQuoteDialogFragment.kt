@@ -31,11 +31,8 @@ import android.provider.BaseColumns
 import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.PopupMenu
-import android.view.Gravity
 import android.view.View
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.twitter.Validator
@@ -71,15 +68,11 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
     override val Dialog.loadProgress: View get() = findViewById(R.id.loadProgress)
     override val Dialog.itemContent: View get() = findViewById(R.id.itemContent)
 
-    private lateinit var popupMenu: PopupMenu
-
     private val Dialog.textCountView get() = findViewById(R.id.commentTextCount) as StatusTextCountView
 
     private val Dialog.commentContainer get() = findViewById(R.id.commentContainer) as RelativeLayout
     private val Dialog.editComment get() = findViewById(R.id.editComment) as ComposeEditText
-    private val Dialog.commentMenu get() = findViewById(R.id.commentMenu) as ImageButton
-
-    private val PopupMenu.quoteOriginalStatus get() = menu.isItemChecked(R.id.quote_original_status)
+    private val Dialog.quoteOriginal get() = findViewById(R.id.quoteOriginal) as android.widget.CheckBox
 
     private val text: String?
         get() = arguments.getString(EXTRA_TEXT)
@@ -107,7 +100,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
             }
 
             override fun onHitEnter(): Boolean {
-                if (retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)) {
+                if (retweetOrQuote(details, status, showProtectedConfirm)) {
                     dismiss()
                     return true
                 }
@@ -117,35 +110,25 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         enterHandler.addTextChangedListener(object : SimpleTextWatcher {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateTextCount(getDialog(), s, status, details)
+                updateTextCount(dialog, s, status, details)
             }
         })
 
-        popupMenu = PopupMenu(context, commentMenu, Gravity.NO_GRAVITY,
-                R.attr.actionOverflowMenuStyle, 0).apply {
-            inflate(R.menu.menu_dialog_comment)
-            menu.setItemAvailability(R.id.quote_original_status, status.retweet_id != null || status.quoted_id != null)
-            setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
-                if (item.isCheckable) {
-                    item.isChecked = !item.isChecked
-                    return@OnMenuItemClickListener true
-                }
-                false
-            })
+        quoteOriginal.visibility = if (status.retweet_id != null || status.quoted_id != null) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
-        commentMenu.setOnClickListener { popupMenu.show() }
-        commentMenu.setOnTouchListener(popupMenu.dragToOpenListener)
-        commentMenu.visibility = if (popupMenu.menu.hasVisibleItems()) View.VISIBLE else View.GONE
 
         getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             var dismissDialog = false
             if (editComment.length() > 0) {
-                dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
+                dismissDialog = retweetOrQuote(details, status, showProtectedConfirm)
             } else if (isMyRetweet(status)) {
                 twitterWrapper.cancelRetweetAsync(details.key, status.id, status.my_retweet_id)
                 dismissDialog = true
             } else if (useQuote(!status.user_is_protected, details)) {
-                dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
+                dismissDialog = retweetOrQuote(details, status, showProtectedConfirm)
             } else {
                 Analyzer.logException(IllegalStateException(status.toString()))
             }
@@ -155,10 +138,8 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         }
         getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener {
             val intent = Intent(INTENT_ACTION_QUOTE)
-            val menu = popupMenu.menu
-            val quoteOriginalStatus = menu.findItem(R.id.quote_original_status)
             intent.putExtra(EXTRA_STATUS, status)
-            intent.putExtra(EXTRA_QUOTE_ORIGINAL_STATUS, quoteOriginalStatus.isChecked)
+            intent.putExtra(EXTRA_QUOTE_ORIGINAL_STATUS, quoteOriginal.isChecked)
             startActivity(intent)
             dismiss()
         }
@@ -219,7 +200,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         val dialog = dialog ?: return false
         val editComment = dialog.findViewById(R.id.editComment) as EditText
         if (useQuote(editComment.length() > 0, account)) {
-            val quoteOriginalStatus = popupMenu.quoteOriginalStatus
+            val quoteOriginalStatus = dialog.quoteOriginal.isChecked
 
             var commentText: String
             val update = ParcelableStatusUpdate()
@@ -286,7 +267,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         draft.timestamp = System.currentTimeMillis()
         draft.action_extras = QuoteStatusActionExtras().apply {
             this.status = this@RetweetQuoteDialogFragment.status
-            this.isQuoteOriginalStatus = popupMenu.quoteOriginalStatus
+            this.isQuoteOriginalStatus = quoteOriginal.isChecked
         }
         val values = ObjectCursor.valuesCreatorFrom(Draft::class.java).create(draft)
         val contentResolver = context.contentResolver
@@ -352,8 +333,8 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
 
     companion object {
 
-        val FRAGMENT_TAG = "retweet_quote"
-        private val SHOW_PROTECTED_CONFIRM = java.lang.Boolean.parseBoolean("false")
+        private const val FRAGMENT_TAG = "retweet_quote"
+        private val showProtectedConfirm = false
 
         fun show(fm: FragmentManager, accountKey: UserKey, statusId: String,
                  status: ParcelableStatus? = null, text: String? = null):

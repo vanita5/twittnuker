@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.extension.model.setColor
 import de.vanita5.twittnuker.extension.model.setPosition
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.AccountPreferences
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
@@ -241,6 +242,8 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
                 DialogInterface.BUTTON_POSITIVE -> {
                     val accountKey = account.getAccountKey(am)
                     resolver.deleteAccountData(accountKey)
+                    AccountPreferences.getSharedPreferencesForAccount(context, accountKey).edit()
+                            .clear().apply()
                     am.removeAccountSupport(account)
                 }
             }
