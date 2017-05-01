@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.*
@@ -203,6 +204,14 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
             clearNotifications()
         }
     }
+
+    override fun getFullActivity(position: Int): ParcelableActivity? {
+        val _id = adapter.getRowId(position)
+        val where = Expression.equals(Activities._ID, _id).sql
+        return context.contentResolver.queryOne(contentUri, Activities.COLUMNS, where, null, null,
+                ParcelableActivity::class.java)
+    }
+
     protected fun getFiltersWhere(table: String): Expression? {
         if (!isFilterEnabled) return null
         return DataStoreUtils.buildActivityFilterWhereClause(table, null)

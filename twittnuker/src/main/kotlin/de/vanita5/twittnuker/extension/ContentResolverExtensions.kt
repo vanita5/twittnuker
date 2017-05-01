@@ -26,10 +26,22 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
+import org.mariotaku.ktextension.useCursor
+import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.util.TwidereQueryBuilder
 
 @SuppressLint("Recycle")
 fun ContentResolver.rawQuery(sql: String, selectionArgs: Array<String>?, notifyUri: Uri? = null): Cursor? {
     val rawUri = TwidereQueryBuilder.rawQuery(sql, notifyUri)
     return query(rawUri, null, null, selectionArgs, null)
+}
+
+fun <T> ContentResolver.queryOne(uri: Uri, projection: Array<String>?, selection: String?,
+        selectionArgs: Array<String>?, sortOrder: String? = null, cls: Class<T>): T? {
+    val cursor = this.query(uri, projection, selection, selectionArgs, sortOrder)
+    if (!cursor.moveToFirst()) return null
+    return cursor.useCursor {
+        val indices = ObjectCursor.indicesFrom(cursor, cls)
+        return@useCursor indices.newObject(cursor)
+    }
 }
