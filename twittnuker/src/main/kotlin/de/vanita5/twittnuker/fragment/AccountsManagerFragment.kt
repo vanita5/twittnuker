@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.AccountPreferences
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
@@ -213,19 +212,11 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
         val statusValues = ContentValues().apply {
             put(Statuses.ACCOUNT_COLOR, details.color)
         }
-        val activityValues = ContentValues().apply {
-            put(Activities.ACCOUNT_COLOR, details.color)
-        }
         val statusesWhere = Expression.equalsArgs(Statuses.ACCOUNT_KEY)
         val statusesWhereArgs = arrayOf(details.key.toString())
-        val activitiesWhere = Expression.equalsArgs(Activities.ACCOUNT_KEY)
-        val activitiesWhereArgs = arrayOf(details.key.toString())
 
-        DataStoreUtils.STATUSES_URIS.forEach { uri ->
+        DataStoreUtils.STATUSES_ACTIVITIES_URIS.forEach { uri ->
             resolver.update(uri, statusValues, statusesWhere.sql, statusesWhereArgs)
-        }
-        DataStoreUtils.ACTIVITIES_URIS.forEach { uri ->
-            resolver.update(uri, activityValues, activitiesWhere.sql, activitiesWhereArgs)
         }
     }
 

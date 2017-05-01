@@ -40,10 +40,10 @@ import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.Activity
-import de.vanita5.twittnuker.R
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants
@@ -67,9 +67,12 @@ import java.util.*
 object DataStoreUtils {
 
     val STATUSES_URIS = arrayOf(Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI)
-    val CACHE_URIS = arrayOf(CachedUsers.CONTENT_URI, CachedStatuses.CONTENT_URI, CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI)
+    val CACHE_URIS = arrayOf(CachedUsers.CONTENT_URI, CachedStatuses.CONTENT_URI,
+            CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI)
     val MESSAGES_URIS = arrayOf(Messages.CONTENT_URI, Conversations.CONTENT_URI)
     val ACTIVITIES_URIS = arrayOf(Activities.AboutMe.CONTENT_URI)
+    val STATUSES_ACTIVITIES_URIS = arrayOf(Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI,
+            Activities.AboutMe.CONTENT_URI)
 
     private val CONTENT_PROVIDER_URI_MATCHER = UriMatcher(UriMatcher.NO_MATCH)
 
@@ -766,7 +769,7 @@ object DataStoreUtils {
             updateWhere = Expression.equalsArgs(Statuses.MY_RETWEET_ID).sql
             updateWhereArgs = arrayOf(statusId)
         }
-        for (uri in STATUSES_URIS) {
+        for (uri in STATUSES_ACTIVITIES_URIS) {
             cr.delete(uri, deleteWhere, deleteWhereArgs)
             if (status != null) {
                 val values = ContentValues()

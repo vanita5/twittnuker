@@ -22,15 +22,16 @@
 
 package de.vanita5.twittnuker.task
 
-import android.content.ContentValues
 import android.content.Context
 import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
-import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.TWITTER_ERROR_ALREADY_FAVORITED
+import de.vanita5.twittnuker.constant.TWITTER_ERROR_ALREADY_RETWEETED
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
@@ -48,7 +49,7 @@ import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.updateActivityStatus
+import de.vanita5.twittnuker.util.updateStatusInfo
 
 /**
  * Retweet status
@@ -62,56 +63,33 @@ class RetweetStatusTask(
     private val statusId = status.id
 
     override fun onExecute(account: AccountDetails, params: Any?): ParcelableStatus {
-        val draftId = UpdateStatusTask.saveDraft(context, Draft.Action.RETWEET) {
-            this@saveDraft.account_keys = arrayOf(accountKey)
-            this@saveDraft.action_extras = StatusObjectActionExtras().apply {
-                this@apply.status = this@RetweetStatusTask.status
-            }
-        }
-        microBlogWrapper.addSendingDraftId(draftId)
         val resolver = context.contentResolver
-        try {
-            val result = when (account.type) {
-                AccountType.MASTODON -> {
-                    val mastodon = account.newMicroBlogInstance(context, cls = Mastodon::class.java)
-                    mastodon.reblogStatus(statusId).toParcelable(account)
-                }
-                else -> {
-                    val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-                    microBlog.retweetStatus(statusId).toParcelable(account)
-                }
+        val result = when (account.type) {
+            AccountType.MASTODON -> {
+                val mastodon = account.newMicroBlogInstance(context, cls = Mastodon::class.java)
+                mastodon.reblogStatus(statusId).toParcelable(account)
             }
-            ParcelableStatusUtils.updateExtraInformation(result, account)
-            Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
-            val values = ContentValues()
-            values.put(Statuses.MY_RETWEET_ID, result.id)
-            values.put(Statuses.REPLY_COUNT, result.reply_count)
-            values.put(Statuses.RETWEET_COUNT, result.retweet_count)
-            values.put(Statuses.FAVORITE_COUNT, result.favorite_count)
-            val where = Expression.or(
-                    Expression.equalsArgs(Statuses.ID),
-                    Expression.equalsArgs(Statuses.RETWEET_ID)
-            )
-            val whereArgs = arrayOf(statusId, statusId)
-            for (uri in DataStoreUtils.STATUSES_URIS) {
-                resolver.update(uri, values, where.sql, whereArgs)
+            else -> {
+                val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
+                microBlog.retweetStatus(statusId).toParcelable(account)
             }
-            resolver.updateActivityStatus(account.key, statusId) { activity ->
-                if (statusId != activity.id && statusId != activity.retweet_id &&
-                        statusId != activity.my_retweet_id) {
-                    return@updateActivityStatus
-                }
-                activity.my_retweet_id = result.id
-                activity.reply_count = result.reply_count
-                activity.retweet_count = result.retweet_count
-                activity.favorite_count = result.favorite_count
-            }
-            UpdateStatusTask.deleteDraft(context, draftId)
-            return result
-        } finally {
-            microBlogWrapper.removeSendingDraftId(draftId)
         }
+        ParcelableStatusUtils.updateExtraInformation(result, account)
+        Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
 
+        resolver.updateStatusInfo(DataStoreUtils.STATUSES_ACTIVITIES_URIS, Statuses.COLUMNS,
+                account.key, statusId, ParcelableStatus::class.java) { status ->
+            if (statusId != status.id && statusId != status.retweet_id &&
+                    statusId != status.my_retweet_id) {
+                return@updateStatusInfo
+            }
+            status.my_retweet_id = result.id
+            status.retweeted = true
+            status.reply_count = result.reply_count
+            status.retweet_count = result.retweet_count
+            status.favorite_count = result.favorite_count
+        }
+        return result
     }
 
     override fun beforeExecute() {
@@ -126,13 +104,38 @@ class RetweetStatusTask(
         creatingRetweetIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         if (result != null) {
             bus.post(StatusRetweetedEvent(result))
+            Toast.makeText(context, R.string.message_toast_status_retweeted, Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, exception?.getErrorMessage(context), Toast.LENGTH_SHORT).show()
         }
     }
 
+    override fun onCleanup(account: AccountDetails, params: Any?, exception: MicroBlogException) {
+        if (exception.errorCode == TWITTER_ERROR_ALREADY_FAVORITED) {
+            val resolver = context.contentResolver
+
+            resolver.updateStatusInfo(DataStoreUtils.STATUSES_URIS, Statuses.COLUMNS, account.key,
+                    statusId, ParcelableStatus::class.java) { status ->
+                status.retweeted = true
+            }
+        }
+    }
+
+    override fun createDraft() = UpdateStatusTask.createDraft(Draft.Action.RETWEET) {
+        account_keys = arrayOf(accountKey)
+        action_extras = StatusObjectActionExtras().also { extras ->
+            extras.status = this@RetweetStatusTask.status
+        }
+    }
+
+    override fun deleteDraftOnException(account: AccountDetails, params: Any?, exception: MicroBlogException): Boolean {
+        return exception.errorCode == TWITTER_ERROR_ALREADY_RETWEETED
+    }
+
     companion object {
+
         private val creatingRetweetIds = ArrayIntList()
+
         fun isCreatingRetweet(accountKey: UserKey?, statusId: String?): Boolean {
             return creatingRetweetIds.contains(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         }

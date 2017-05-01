@@ -39,7 +39,8 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
 
@@ -72,18 +73,10 @@ open class CreateUserBlockTask(
     override fun succeededWorker(details: AccountDetails, args: Arguments, user: ParcelableUser) {
         val resolver = context.contentResolver
         Utils.setLastSeen(context, args.userKey, -1)
-        for (uri in DataStoreUtils.STATUSES_URIS) {
+        for (uri in DataStoreUtils.STATUSES_ACTIVITIES_URIS) {
             val where = Expression.and(
                     Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                     Expression.equalsArgs(Statuses.USER_KEY)
-            )
-            val whereArgs = arrayOf(args.accountKey.toString(), args.userKey.toString())
-            resolver.delete(uri, where.sql, whereArgs)
-        }
-        for (uri in DataStoreUtils.ACTIVITIES_URIS) {
-            val where = Expression.and(
-                    Expression.equalsArgs(Activities.ACCOUNT_KEY),
-                    Expression.equalsArgs(Activities.USER_KEY)
             )
             val whereArgs = arrayOf(args.accountKey.toString(), args.userKey.toString())
             resolver.delete(uri, where.sql, whereArgs)
