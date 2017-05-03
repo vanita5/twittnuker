@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.task
 import android.content.Context
 import android.widget.Toast
 import org.apache.commons.collections.primitives.ArrayIntList
-import de.vanita5.twittnuker.extension.get
+import org.mariotaku.kpreferences.get
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
