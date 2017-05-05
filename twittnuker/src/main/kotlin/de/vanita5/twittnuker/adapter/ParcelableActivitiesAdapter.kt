@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.model.util.activityStatus
+import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.JsonSerializer

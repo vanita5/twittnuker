@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
-import de.vanita5.twittnuker.model.util.toParcelable
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils

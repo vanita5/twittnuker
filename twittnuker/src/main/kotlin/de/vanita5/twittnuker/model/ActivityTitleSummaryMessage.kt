@@ -32,7 +32,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.model.util.activityStatus
+import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.text.style.NonBreakEllipseSpan
 import de.vanita5.twittnuker.util.UserColorNameManager
 import org.oshkimaadziig.george.androidutils.SpanFormatter

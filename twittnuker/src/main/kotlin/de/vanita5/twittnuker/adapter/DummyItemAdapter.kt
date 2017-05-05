@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.activityStatus
+import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.util.UserColorNameManager

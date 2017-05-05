@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.util.activityStatus
+import de.vanita5.twittnuker.extension.model.activityStatus
 
 class MediaPreloader(val context: Context) {
 
