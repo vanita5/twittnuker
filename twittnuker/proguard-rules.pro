@@ -130,9 +130,9 @@
 -keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
 
 # https://github.com/bluelinelabs/LoganSquare
--keep class com.bluelinelabs.logansquare.annotation.JsonObject
--keep class * extends com.bluelinelabs.logansquare.JsonMapper
+-keep class com.bluelinelabs.logansquare.** { *; }
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
+-keep class **$$JsonObjectMapper { *; }
 
 -keep class de.vanita5.microblog.library.annotation.NoObfuscate
 -keep @de.vanita5.microblog.library.annotation.NoObfuscate class *
