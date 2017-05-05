@@ -30,8 +30,8 @@ import android.support.v4.util.ArrayMap
 import android.support.v4.util.LruCache
 import de.vanita5.microblog.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.USER_COLOR_PREFERENCES_NAME
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 
 class UserColorNameManager(context: Context) {
 
@@ -66,7 +66,7 @@ class UserColorNameManager(context: Context) {
     }
 
     fun getDisplayName(user: User, nameFirst: Boolean): String {
-        return getDisplayName(UserKeyUtils.fromUser(user), user.name, user.screenName, nameFirst)
+        return getDisplayName(user.key, user.name, user.screenName, nameFirst)
     }
 
     fun getDisplayName(user: ParcelableUserList, nameFirst: Boolean): String {

@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.extension.model.api.microblog
 
 import de.vanita5.microblog.library.twitter.model.UserList
 import de.vanita5.twittnuker.extension.model.api.getProfileImageOfSize
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 
 fun UserList.toParcelable(accountKey: UserKey, position: Long = 0, isFollowing: Boolean = false,
                           profileImageSize: String = "normal"): ParcelableUserList {
@@ -39,7 +39,7 @@ fun UserList.toParcelable(accountKey: UserKey, position: Long = 0, isFollowing: 
     obj.is_following = isFollowing
     obj.name = name
     obj.description = description
-    obj.user_key = UserKeyUtils.fromUser(user)
+    obj.user_key = user.key
     obj.user_name = user.name
     obj.user_screen_name = user.screenName
     obj.user_profile_image_url = user.getProfileImageOfSize(profileImageSize)

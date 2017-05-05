@@ -25,13 +25,15 @@ package de.vanita5.twittnuker.extension.model.api
 import android.text.TextUtils
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.microblog.library.twitter.model.User
+import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
+import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_TWITTER_COM
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.Utils
 
 fun User.getProfileImageOfSize(size: String): String {
@@ -64,7 +66,7 @@ fun User.toParcelableInternal(accountKey: UserKey?, @AccountType accountType: St
     val obj = ParcelableUser()
     obj.position = position
     obj.account_key = accountKey
-    obj.key = UserKeyUtils.fromUser(this)
+    obj.key = key
     obj.created_at = createdAt?.time ?: -1
     obj.is_protected = isProtected
     obj.is_verified = isVerified
@@ -115,4 +117,24 @@ fun User.toParcelableInternal(accountKey: UserKey?, @AccountType accountType: St
     extras.unique_id = uniqueId
     obj.extras = extras
     return obj
+}
+
+
+val User.key: UserKey
+    get() = UserKey(id, this.host)
+
+val User.host: String
+    get() {
+        if (isFanfouUser) return USER_TYPE_FANFOU_COM
+        return getUserHost(statusnetProfileUrl, USER_TYPE_TWITTER_COM)
+    }
+
+val User.isFanfouUser: Boolean
+    get() = uniqueId != null && profileImageUrlLarge != null
+
+fun getUserHost(uri: String?, def: String?): String {
+    val nonNullDef = def ?: USER_TYPE_TWITTER_COM
+    if (uri == null) return nonNullDef
+    val authority = UriUtils.getAuthority(uri) ?: return nonNullDef
+    return authority.replace("[^\\w\\d.]".toRegex(), "-")
 }

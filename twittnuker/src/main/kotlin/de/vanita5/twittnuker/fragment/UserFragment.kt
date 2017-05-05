@@ -133,7 +133,6 @@ import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.text.TwidereURLSpan
@@ -1675,7 +1674,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             val details = AccountUtils.getAccountDetails(AccountManager.get(context),
                     accountKey, true) ?: return SingleResponse(MicroBlogException("No Account"))
             if (details.type == AccountType.TWITTER) {
-                if (!UserKeyUtils.isSameHost(accountKey, user.key)) {
+                if (!accountKey.hasSameHost(user.key)) {
                     return SingleResponse.getInstance(ParcelableRelationshipUtils.create(user, isFiltering))
                 }
             }

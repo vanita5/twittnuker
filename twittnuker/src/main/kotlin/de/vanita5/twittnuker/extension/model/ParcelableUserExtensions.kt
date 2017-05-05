@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.extension.model
 
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
+import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_TWITTER_COM
+import de.vanita5.twittnuker.extension.model.api.getUserHost
 import de.vanita5.twittnuker.model.ParcelableLiteUser
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
@@ -48,6 +50,17 @@ fun ParcelableUser.toLite(): ParcelableLiteUser {
     result.is_following = is_following
     return result
 }
+
+val ParcelableUser.host: String
+    get() {
+        if (this.isFanfouUser) return USER_TYPE_FANFOU_COM
+        if (extras == null) return USER_TYPE_TWITTER_COM
+
+        return getUserHost(extras?.statusnet_profile_url, USER_TYPE_TWITTER_COM)
+    }
+
+val ParcelableUser.isFanfouUser: Boolean
+    get() = USER_TYPE_FANFOU_COM == key.host
 
 inline val ParcelableUser.originalProfileImage: String? get() {
     return extras?.profile_image_url_original?.takeIf(String::isNotEmpty)

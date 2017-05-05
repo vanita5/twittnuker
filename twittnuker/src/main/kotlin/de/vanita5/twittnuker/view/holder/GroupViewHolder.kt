@@ -26,12 +26,12 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.TextUtils
 import android.view.View
 import kotlinx.android.synthetic.main.card_item_group_compact.view.*
+import org.mariotaku.ktextension.toLocalizedString
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGroupsAdapter
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.api.getUserHost
 import de.vanita5.twittnuker.model.ParcelableGroup
-import de.vanita5.twittnuker.model.util.UserKeyUtils
-import org.mariotaku.ktextension.toLocalizedString
 
 class GroupViewHolder(private val adapter: IGroupsAdapter<*>, itemView: View) : ViewHolder(itemView),
         View.OnClickListener, View.OnLongClickListener {
@@ -58,8 +58,8 @@ class GroupViewHolder(private val adapter: IGroupsAdapter<*>, itemView: View) : 
         nameView.screenName = "!${group.nickname}"
 
         nameView.updateText(formatter)
-        val groupHost = UserKeyUtils.getUserHost(group.url, group.account_key.host)
-        if (UserKeyUtils.isSameHost(group.account_key.host, groupHost)) {
+        val groupHost = getUserHost(group.url, group.account_key.host)
+        if (group.account_key.host == groupHost) {
             externalIndicator.visibility = View.GONE
         } else {
             externalIndicator.visibility = View.VISIBLE

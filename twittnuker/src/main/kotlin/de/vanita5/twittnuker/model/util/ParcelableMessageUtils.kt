@@ -28,6 +28,7 @@ import de.vanita5.microblog.library.twitter.model.DMResponse.Entry.Message
 import de.vanita5.microblog.library.twitter.model.DMResponse.Entry.Message.Data
 import de.vanita5.microblog.library.twitter.model.DirectMessage
 import de.vanita5.microblog.library.twitter.model.User
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMessage
@@ -178,8 +179,8 @@ object ParcelableMessageUtils {
     ) {
         this.account_key = accountKey
         this.id = message.id
-        this.sender_key = UserKeyUtils.fromUser(message.sender)
-        this.recipient_key = UserKeyUtils.fromUser(message.recipient)
+        this.sender_key = message.sender.key
+        this.recipient_key = message.recipient.key
         this.message_timestamp = message.createdAt.time
         this.local_timestamp = this.message_timestamp
         this.sort_id = this.message_timestamp + (499 * sortIdAdj).toLong()

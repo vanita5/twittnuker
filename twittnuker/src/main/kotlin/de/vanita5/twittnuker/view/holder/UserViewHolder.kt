@@ -33,8 +33,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.*
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.model.hasSameHost
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
 import java.util.*
@@ -129,7 +129,7 @@ class UserViewHolder(
             processingRequestProgress.visibility = View.GONE
             actionsContainer.visibility = View.VISIBLE
         }
-        if (UserKeyUtils.isSameHost(user.account_key, user.key)) {
+        if (user.account_key != null && user.key.hasSameHost(user.account_key)) {
             externalIndicator.visibility = View.GONE
         } else {
             externalIndicator.visibility = View.VISIBLE

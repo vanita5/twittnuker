@@ -20,19 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.model.util
 
+import de.vanita5.microblog.library.twitter.model.UserMentionEntity
+import de.vanita5.twittnuker.model.ParcelableUserMention
 import de.vanita5.twittnuker.model.UserKey
 
-
-private const val acctPlaceholderId = "#acct*placeholder#"
-
-val UserKey.isAcctPlaceholder get() = acctPlaceholderId == id && host != null
-
-fun AcctPlaceholderUserKey(host: String?): UserKey {
-    return UserKey(acctPlaceholderId, host)
-}
-
-fun UserKey.hasSameHost(other: UserKey): Boolean {
-    return host == other.host
+fun UserMentionEntity.toParcelable(host: String?): ParcelableUserMention {
+    val obj = ParcelableUserMention()
+    obj.key = UserKey(id, host)
+    obj.name = name
+    obj.screen_name = screenName
+    return obj
 }

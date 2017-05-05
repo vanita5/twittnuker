@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.host
 import de.vanita5.twittnuker.extension.model.isAcctPlaceholder
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -52,7 +53,6 @@ import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
 import de.vanita5.twittnuker.util.UserColorNameManager
@@ -129,7 +129,7 @@ class ParcelableUserLoader(
                     val indices = ObjectCursor.indicesFrom(cur, ParcelableUser::class.java)
                     while (!cur.isAfterLast) {
                         val user = indices.newObject(cur)
-                        if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.host)) {
+                        if (TextUtils.equals(user.host, user.key.host)) {
                             user.account_key = accountKey
                             user.account_color = details.color
                             return SingleResponse(user).apply {

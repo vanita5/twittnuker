@@ -93,6 +93,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
@@ -109,7 +110,6 @@ import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.AbsAccountRequestTask
@@ -2071,7 +2071,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val activitySummary = StatusActivity(statusId, emptyList())
             try {
                 activitySummary.retweeters = twitter.getRetweets(statusId, paging)
-                        .filterNot { DataStoreUtils.isFilteringUser(context, UserKeyUtils.fromUser(it.user)) }
+                        .filterNot { DataStoreUtils.isFilteringUser(context, it.user.key) }
                         .map { it.user.toParcelable(details) }
                 val countValues = ContentValues()
                 val status = twitter.showStatus(statusId)

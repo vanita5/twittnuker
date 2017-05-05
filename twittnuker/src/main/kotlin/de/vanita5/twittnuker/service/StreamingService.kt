@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
@@ -405,7 +406,7 @@ class StreamingService : BaseService() {
                     return
                 }
                 val user = status.user ?: return
-                val userKey = UserKeyUtils.fromUser(user)
+                val userKey = user.key
                 val where = Expression.and(Expression.equalsArgs(CachedRelationships.ACCOUNT_KEY),
                         Expression.equalsArgs(CachedRelationships.USER_KEY),
                         Expression.equals(CachedRelationships.NOTIFICATIONS_ENABLED, 1)).sql

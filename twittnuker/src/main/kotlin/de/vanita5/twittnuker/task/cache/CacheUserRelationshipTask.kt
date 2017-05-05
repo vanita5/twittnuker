@@ -31,14 +31,12 @@ import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableRelationshipUtils
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.BaseAbstractTask
@@ -75,7 +73,7 @@ class CacheUserRelationshipTask(
                 return@useCursor cur.map(ObjectCursor.indicesFrom(cur, ParcelableRelationship::class.java))
             }
             val relationships = users.mapTo(ArraySet<ParcelableRelationship>()) { user ->
-                val userKey = UserKeyUtils.fromUser(user)
+                val userKey = user.key
                 return@mapTo localRelationships.find {
                     it.user_key == userKey
                 }?.apply {

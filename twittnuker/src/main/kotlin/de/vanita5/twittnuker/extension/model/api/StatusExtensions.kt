@@ -32,8 +32,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
-import de.vanita5.twittnuker.model.util.ParcelableUserMentionUtils
-import de.vanita5.twittnuker.model.util.UserKeyUtils
+import de.vanita5.twittnuker.model.util.toParcelable
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
@@ -72,7 +71,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
         val retweetUser = user
         result.retweet_id = retweetedStatus.id
         result.retweet_timestamp = retweetedStatus.createdAt?.time ?: 0
-        result.retweeted_by_user_key = UserKeyUtils.fromUser(retweetUser)
+        result.retweeted_by_user_key = retweetUser.key
         result.retweeted_by_user_name = retweetUser.name
         result.retweeted_by_user_screen_name = retweetUser.screenName
         result.retweeted_by_user_profile_image = retweetUser.getProfileImageOfSize(profileImageSize)
@@ -86,12 +85,12 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
             result.addFilterFlag(ParcelableStatus.FilterFlags.BLOCKED_BY_USER)
         }
         if (retweetedStatus.isPossiblySensitive) {
-            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBILITY_SENSITIVE)
+            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBLY_SENSITIVE)
         }
     } else {
         status = this
         if (status.isPossiblySensitive) {
-            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBILITY_SENSITIVE)
+            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBLY_SENSITIVE)
         }
     }
 
@@ -123,7 +122,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
         result.quoted_source = quoted.source
         result.quoted_media = ParcelableMediaUtils.fromStatus(quoted, accountKey, accountType)
 
-        result.quoted_user_key = UserKeyUtils.fromUser(quotedUser)
+        result.quoted_user_key = quotedUser.key
         result.quoted_user_name = quotedUser.name
         result.quoted_user_screen_name = quotedUser.screenName
         result.quoted_user_profile_image = quotedUser.getProfileImageOfSize(profileImageSize)
@@ -131,7 +130,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
         result.quoted_user_is_verified = quotedUser.isVerified
 
         if (quoted.isPossiblySensitive) {
-            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBILITY_SENSITIVE)
+            result.addFilterFlag(ParcelableStatus.FilterFlags.POSSIBLY_SENSITIVE)
         }
     } else if (status.isQuoteStatus) {
         result.addFilterFlag(ParcelableStatus.FilterFlags.QUOTE_NOT_AVAILABLE)
@@ -147,7 +146,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
     result.in_reply_to_user_key = status.getInReplyToUserKey(accountKey)
 
     val user = status.user
-    result.user_key = UserKeyUtils.fromUser(user)
+    result.user_key = user.key
     result.user_name = user.name
     result.user_screen_name = user.screenName
     result.user_profile_image_url = user.getProfileImageOfSize(profileImageSize)
@@ -182,8 +181,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
         result.my_retweet_id = status.currentUserRetweet
     }
     result.is_possibly_sensitive = status.isPossiblySensitive
-    result.mentions = ParcelableUserMentionUtils.fromUserMentionEntities(user,
-            status.userMentionEntities)
+    result.mentions = status.userMentionEntities?.mapToArray { it.toParcelable(user.host) }
     result.card = status.card?.toParcelable(accountKey, accountType)
     result.card_name = result.card?.name
     result.place_full_name = status.placeFullName
@@ -245,8 +243,7 @@ private fun Status.getInReplyToUserKey(accountKey: UserKey): UserKey? {
     val attentions = attentions
     if (attentions != null) {
         attentions.firstOrNull { inReplyToUserId == it.id }?.let {
-            val host = UserKeyUtils.getUserHost(it.ostatusUri,
-                    accountKey.host)
+            val host = getUserHost(it.ostatusUri, accountKey.host)
             return UserKey(inReplyToUserId, host)
         }
     }
