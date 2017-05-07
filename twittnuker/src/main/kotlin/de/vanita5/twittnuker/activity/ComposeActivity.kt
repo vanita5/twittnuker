@@ -988,6 +988,8 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             editText.setSelection(selectionStart, selectionEnd)
         }
         statusVisibility = intent.getStringExtra(EXTRA_VISIBILITY) ?: status.extras?.visibility
+        possiblySensitive = intent.getBooleanExtra(EXTRA_IS_POSSIBLY_SENSITIVE,
+                details.type == AccountType.MASTODON && status.is_possibly_sensitive)
         accountsAdapter.selectedAccountKeys = arrayOf(status.account_key)
         showReplyLabelAndHint(status)
         return true
@@ -1266,13 +1268,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (menuBar == null) return
         val menu = menuBar.menu
         val hasMedia = this.hasMedia
-        menu.setItemAvailability(R.id.toggle_sensitive, hasMedia)
         menu.setItemAvailability(R.id.edit_summary, hasEditSummary)
         menu.setItemAvailability(R.id.schedule, extraFeaturesService.isSupported(
                 ExtraFeaturesService.FEATURE_SCHEDULE_STATUS))
         menu.setItemAvailability(R.id.add_gif, true) //Always show this for Twittnuker
 
-        menu.setItemChecked(R.id.toggle_sensitive, hasMedia && possiblySensitive)
+        menu.setItemChecked(R.id.toggle_sensitive, possiblySensitive)
 
         val attachLocation = kPreferences[attachLocationKey]
         val attachPreciseLocation = kPreferences[attachPreciseLocationKey]
