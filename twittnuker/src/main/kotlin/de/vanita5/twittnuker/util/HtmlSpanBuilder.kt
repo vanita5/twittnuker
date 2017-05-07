@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util
 
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
