@@ -15,3 +15,13 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontobfuscate
+
+-keep class de.vanita5.microblog.library.annotation.NoObfuscate
+-keep @de.vanita5.microblog.library.annotation.NoObfuscate class *
+
+# https://github.com/bluelinelabs/LoganSquare
+-keep class com.bluelinelabs.logansquare.** { *; }
+-keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
+-keep class **$$JsonObjectMapper { *; }

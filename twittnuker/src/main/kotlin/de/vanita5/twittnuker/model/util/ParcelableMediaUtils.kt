@@ -25,70 +25,22 @@ package de.vanita5.twittnuker.model.util
 import org.mariotaku.ktextension.addAllTo
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.toIntOr
-import de.vanita5.microblog.library.twitter.model.*
+import de.vanita5.microblog.library.twitter.model.CardEntity
+import de.vanita5.microblog.library.twitter.model.MediaEntity
+import de.vanita5.microblog.library.twitter.model.Status
+import de.vanita5.microblog.library.twitter.model.UrlEntity
+import de.vanita5.twittnuker.extension.model.api.getEntityMedia
 import de.vanita5.twittnuker.extension.model.api.gnusocial.toParcelable
 import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor
 
 object ParcelableMediaUtils {
 
-    fun fromEntities(entities: EntitySupport): Array<ParcelableMedia> {
-        val list = ArrayList<ParcelableMedia>()
-        val mediaEntities: Array<MediaEntity>?
-        if (entities is ExtendedEntitySupport) {
-            val extendedMediaEntities = entities.extendedMediaEntities
-            mediaEntities = extendedMediaEntities ?: entities.mediaEntities
-        } else {
-            mediaEntities = entities.mediaEntities
-        }
-        if (mediaEntities != null) {
-            for (media in mediaEntities) {
-                val mediaURL = InternalTwitterContentUtils.getMediaUrl(media)
-                if (mediaURL != null) {
-                    list.add(ParcelableMediaUtils.fromMediaEntity(media))
-                }
-            }
-        }
-        val urlEntities = entities.urlEntities
-        if (urlEntities != null) {
-            for (url in urlEntities) {
-                val expanded = url.expandedUrl
-                val media = PreviewMediaExtractor.fromLink(expanded)
-                if (media != null) {
-                    list.add(media)
-                }
-            }
-        }
-        return list.toTypedArray()
-    }
-
-    fun fromMediaEntity(entity: MediaEntity): ParcelableMedia {
-        val media = ParcelableMedia()
-        val mediaUrl = InternalTwitterContentUtils.getMediaUrl(entity)
-        media.url = mediaUrl
-        media.media_url = mediaUrl
-        media.preview_url = mediaUrl
-        media.page_url = entity.expandedUrl
-        media.type = ParcelableMediaUtils.getTypeInt(entity.type)
-        media.alt_text = entity.altText
-        val size = entity.sizes[MediaEntity.ScaleType.LARGE]
-        if (size != null) {
-            media.width = size.width
-            media.height = size.height
-        } else {
-            media.width = 0
-            media.height = 0
-        }
-        media.video_info = ParcelableMedia.VideoInfo.fromMediaEntityInfo(entity.videoInfo)
-        return media
-    }
 
     fun fromStatus(status: Status, accountKey: UserKey, accountType: String): Array<ParcelableMedia>? {
-        return fromEntities(status) + fromAttachments(status) + fromCard(status.card,
+        return status.getEntityMedia() + status.getAttachmentMedia() + fromCard(status.card,
                 status.urlEntities, status.mediaEntities, status.extendedMediaEntities, accountKey,
                 accountType) + fromPhoto(status)
     }
@@ -104,15 +56,15 @@ object ParcelableMediaUtils {
         return arrayOf(media)
     }
 
-    private fun fromAttachments(status: Status): Array<ParcelableMedia> {
-        val attachments = status.attachments ?: return emptyArray()
-        val externalUrl = status.externalUrl
-        return attachments.mapNotNull { it.toParcelable(externalUrl) }.toTypedArray()
+    private fun Status.getAttachmentMedia(): Array<ParcelableMedia> {
+        return attachments?.mapNotNull {
+            it.toParcelable(externalUrl)
+        }?.toTypedArray() ?: emptyArray()
     }
 
     private fun fromCard(card: CardEntity?, urlEntities: Array<UrlEntity>?,
-            mediaEntities: Array<MediaEntity>?, extendedMediaEntities: Array<MediaEntity>?,
-            accountKey: UserKey, accountType: String): Array<ParcelableMedia> {
+                         mediaEntities: Array<MediaEntity>?, extendedMediaEntities: Array<MediaEntity>?,
+                         accountKey: UserKey, accountType: String): Array<ParcelableMedia> {
         if (card == null) return emptyArray()
         when (card.name) {
             "animated_gif", "player" -> {

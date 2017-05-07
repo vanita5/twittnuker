@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.annotation.NotificationType
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.api.formattedTextWithIndices
 import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.getTitle
 import de.vanita5.twittnuker.extension.model.notificationDisabled
@@ -340,10 +341,10 @@ class ContentNotificationManager(
         builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
         if (status.isRetweetedByMe) {
             builder.setContentTitle(context.getString(R.string.notification_title_new_retweet_by_user, userDisplayName))
-            builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status.retweetedStatus).text)
+            builder.setContentText(status.retweetedStatus.formattedTextWithIndices().text)
         } else {
             builder.setContentTitle(context.getString(R.string.notification_title_new_status_by_user, userDisplayName))
-            builder.setContentText(InternalTwitterContentUtils.formatStatusTextWithIndices(status).text)
+            builder.setContentText(status.formattedTextWithIndices().text)
         }
         builder.setContentIntent(PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, statusUri).apply {
             setClass(context, LinkHandlerActivity::class.java)

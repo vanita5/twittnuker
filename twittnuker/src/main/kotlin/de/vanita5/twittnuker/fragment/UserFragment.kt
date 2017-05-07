@@ -97,7 +97,6 @@ import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.FriendshipUpdate
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.microblog.library.twitter.model.UserList
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -782,7 +781,6 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             mentionItem.title = getString(R.string.mention_user_name, displayName)
         }
         menu.setItemAvailability(R.id.mention, !isMyself)
-        menu.setItemAvailability(R.id.qr_code, isMyself || BuildConfig.DEBUG)
         menu.setItemAvailability(R.id.incoming_friendships, isMyself)
         menu.setItemAvailability(R.id.saved_searches, isMyself)
 

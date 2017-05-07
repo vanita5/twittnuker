@@ -1447,7 +1447,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             internal set
         var translationResult: TranslationResult? = null
             internal set(translation) {
-                if (status == null || translation == null || !TextUtils.equals(InternalTwitterContentUtils.getOriginalId(status!!), translation.id)) {
+                if (translation == null || status?.originalId != translation.id) {
                     field = null
                 } else {
                     field = translation
@@ -2072,6 +2072,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             try {
                 activitySummary.retweeters = twitter.getRetweets(statusId, paging)
                         .filterNot { DataStoreUtils.isFilteringUser(context, it.user.key) }
+                        .distinctBy { it.user.id }
                         .map { it.user.toParcelable(details) }
                 val countValues = ContentValues()
                 val status = twitter.showStatus(statusId)
@@ -2122,7 +2123,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
     ) {
 
         fun isStatus(status: ParcelableStatus): Boolean {
-            return TextUtils.equals(statusId, if (status.is_retweet) status.retweet_id else status.id)
+            return statusId == status.retweet_id ?: status.id
         }
     }
 

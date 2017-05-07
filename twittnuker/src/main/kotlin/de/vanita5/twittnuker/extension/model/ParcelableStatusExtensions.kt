@@ -25,6 +25,10 @@ package de.vanita5.twittnuker.extension.model
 import org.mariotaku.ktextension.addAllTo
 import de.vanita5.twittnuker.model.*
 
+
+val ParcelableStatus.originalId: String
+    get() = if (is_retweet) retweet_id else id
+
 val ParcelableStatus.media_type: Int
     get() = media?.firstOrNull()?.type ?: 0
 

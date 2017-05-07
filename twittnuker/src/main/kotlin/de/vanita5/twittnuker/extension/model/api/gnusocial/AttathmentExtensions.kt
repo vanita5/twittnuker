@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.extension.model.api.gnusocial
 import de.vanita5.microblog.library.gnusocial.model.Attachment
 import de.vanita5.twittnuker.model.ParcelableMedia
 
-fun Attachment.toParcelable(externalUrl: String) : ParcelableMedia? {
+fun Attachment.toParcelable(externalUrl: String?) : ParcelableMedia? {
     val mimeType = mimetype ?: return null
     val result = ParcelableMedia()
 
