@@ -9,7 +9,6 @@
     <string name="action_accept_friend_request">Akzeptieren</string>
     <!-- [verb] Accept a permission request like allow to use camera etc. -->
     <string name="action_accept_permission_request">Akzeptieren</string>
-    <string name="action_accepting_follow_request">Akzeptiere Follower-Anfrage</string>
     <!-- [verb] Add an item to a list/collection -->
     <string name="action_add">Hinzufügen</string>
     <string name="action_add_content_warning">Inhaltswarnung hinzufügen</string>
@@ -24,16 +23,13 @@
     <string name="action_add_tab">Tab hinzufügen</string>
     <string name="action_add_to_filter">Zum Filter hinzufügen</string>
     <string name="action_add_to_list">Zur Liste hinzufügen</string>
-    <string name="action_adding_member">Mitglied hinzufügen</string>
     <!-- [verb] Action for blocking user -->
     <string name="action_block">Blockieren</string>
-    <string name="action_blocking">blockieren</string>
     <string name="action_buffer_disconnect">Von Buffer abmelden</string>
     <string name="action_buffer_settings">Einstellungen</string>
     <string name="action_buffer_update_now">Jetzt veröffentlichen</string>
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">Retweet löschen</string>
-    <string name="action_cancelling_like">Like entfernen</string>
     <string name="action_center">Mitte</string>
     <string name="action_clear">Löschen</string>
     <string name="action_clear_messages">Nachrichten löschen</string>
@@ -42,13 +38,9 @@
     <string name="action_connect_to_buffer">Verbinden</string>
     <string name="action_conversation_info">Gesprächsinformationen</string>
     <string name="action_create_conversation">Gruppe erstellen</string>
-    <string name="action_creating_list">erstelle Liste</string>
     <!-- [verb] Action for deleting a file or a twitter object like tweet-->
     <string name="action_delete">Löschen</string>
     <string name="action_delete_messages">Nachrichten löschen</string>
-    <string name="action_deleting">löschen</string>
-    <string name="action_deleting_search">lösche Suche</string>
-    <string name="action_denying_follow_request">Lehne Follower-Anfrage ab</string>
     <string name="action_dont_restart">Nicht neustarten</string>
     <string name="action_dont_terminate">Nicht beenden</string>
     <!-- [verb] Edit image/settings etc. -->
@@ -57,16 +49,12 @@
     <string name="action_edit_conversation_name">Name bearbeiten</string>
     <string name="action_edit_filter_rule">Regel bearbeiten</string>
     <string name="action_favorite">Favorisieren</string>
-    <string name="action_favoriting">favorisieren</string>
     <string name="action_filter_import_from_blocked_users">Importiere blockierte Accounts</string>
     <string name="action_filter_import_from_muted_users">Importiere stummgeschaltete Accounts</string>
     <string name="action_filter_subscriptions_card_manage">Abonnements verwalten</string>
     <string name="action_finish">Fertig</string>
     <string name="action_follow">Folgen</string>
-    <string name="action_following">Folgen</string>
     <string name="action_format_search_update_status">Tweet <xliff:g id="text">%1$s</xliff:g></string>
-    <string name="action_getting_status">Lade Tweets</string>
-    <string name="action_getting_user_lists">Lade Listen</string>
     <!-- [verb] Perform import action -->
     <string name="action_import">Importieren</string>
     <string name="action_import_from">Importiere aus&#8230;</string>
@@ -76,14 +64,11 @@
     <string name="action_leave_conversation">Gespräch verlassen</string>
     <!-- [verb] e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">Like</string>
-    <string name="action_liking">Liken</string>
     <string name="action_location">Standort</string>
     <string name="action_manage_in_buffer">Mit Buffer verwalten</string>
     <string name="action_mark_as_read">Als gelesen markieren</string>
-    <string name="action_modifying_lists">Listen bearbeiten</string>
     <string name="action_mute">Stummschalten</string>
     <string name="action_mute_notifications">Benachrichtigungen stummschalten</string>
-    <string name="action_muting">Stummschalten</string>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="action_next_step">Weiter</string>
     <string name="action_open_in_browser">Im Browser öffnen</string>
@@ -94,37 +79,28 @@
     <string name="action_quote">Zitat</string>
     <string name="action_record_video">Video aufnehmen</string>
     <string name="action_refresh">Aktualisieren</string>
-    <string name="action_refreshing_direct_messages">Aktualisiere Direktnachrichten</string>
-    <string name="action_refreshing_home_timeline">Aktualisiere Timeline</string>
-    <string name="action_refreshing_mentions">Aktualisiere Erwähnungen</string>
     <string name="action_register">Registrieren</string>
     <string name="action_remove_conversation_avatar">Bild entfernen</string>
-    <string name="action_removing_profile_banner_image">lösche Profilheaderbild</string>
     <string name="action_reply">Antworten</string>
     <string name="action_report_spam">Spam melden</string>
-    <string name="action_reporting_for_spam">als Spam melden</string>
     <!-- [verb] Restore purchase -->
     <string name="action_restore_purchase">Wiederherstellen</string>
     <string name="action_retry">Wiederholen</string>
     <!-- [verb] Action for performing retweet -->
     <string name="action_retweet">Retweet</string>
-    <string name="action_retweeting">Retweeten</string>
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Speichern</string>
-    <string name="action_saving_search">Suche speichern</string>
     <string name="action_search">Suchen</string>
     <string name="action_select_all">Alle</string>
     <string name="action_select_none">Nichts</string>
     <string name="action_select_user">Account auswählen</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Senden</string>
-    <string name="action_sending_direct_message">Sende Direktnachricht</string>
     <string name="action_set_color">Farbe</string>
     <string name="action_set_status_visibility">Sichtbarkeit</string>
     <string name="action_set_nickname">Spitznamen eingeben</string>
     <string name="action_share">Teilen</string>
     <string name="action_sign_in">Login</string>
-    <string name="action_signing_in">Anmelden</string>
     <!-- [verb] Used for skip some settings -->
     <string name="action_skip">Überspringen</string>
     <string name="action_start">Start</string>
@@ -135,7 +111,6 @@
     <string name="action_status_schedule">Zeitversetzt</string>
     <string name="action_status_unpin">Aus Profil abheften</string>
     <string name="action_subscribe">Abonnieren</string>
-    <string name="action_subscribing_to_list">Abonniere Liste</string>
     <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
     <string name="action_sync_connect_to_storage">Verbinden</string>
     <!-- [verb] Disconnect from network storage -->
@@ -149,22 +124,11 @@
     <string name="action_twitter_muted_users">Stummgeschaltete Accounts</string>
     <!-- [verb] Action for unblocking user -->
     <string name="action_unblock">Entblocken</string>
-    <string name="action_unblocking">Entblocken</string>
     <string name="action_undo_like">Unlike</string>
     <string name="action_unfavorite">Favorit löschen</string>
-    <string name="action_unfavoriting">Favorit löschen</string>
     <string name="action_unfollow">Entfolgen</string>
-    <string name="action_unfollowing">Entfolgen</string>
     <string name="action_unmute">Stummschaltung aufheben</string>
-    <string name="action_unmuting">Stummschaltung aufheben</string>
     <string name="action_unsubscribe">Abbestellen</string>
-    <string name="action_unsubscribing_from_list">Kündige Listen-Abonnement</string>
-    <string name="action_updating_details">Aktualisiere Details</string>
-    <string name="action_updating_profile">Aktualisiere Profil</string>
-    <string name="action_updating_profile_background_image">aktualisiere Profilhintergrundbild</string>
-    <string name="action_updating_profile_banner_image">aktualisiere Profiltitelbild</string>
-    <string name="action_updating_profile_image">Aktualisiere Profilbild</string>
-    <string name="action_updating_status">Sende Tweet</string>
     <string name="action_view_map">Karte</string>
     <string name="activated_accounts">Account</string>
     <string name="activities_about_me">Meine Aktivitäten</string>
