@@ -31,7 +31,6 @@ import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Canvas
-import android.graphics.PorterDuff.Mode
 import android.graphics.Rect
 import android.location.*
 import android.net.Uri
@@ -616,12 +615,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     override fun getMenuInflater(): MenuInflater {
         return supportMenuInflater
-    }
-
-    override fun onActionModeStarted(mode: ActionMode) {
-        super.onActionModeStarted(mode)
-        ThemeUtils.applyColorFilterToMenuIcon(mode.menu, ThemeUtils.getColorForeground(this), 0, 0,
-                Mode.MULTIPLY)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
