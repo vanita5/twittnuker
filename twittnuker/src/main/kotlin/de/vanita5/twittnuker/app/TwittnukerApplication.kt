@@ -33,8 +33,6 @@ import android.os.AsyncTask
 import android.os.Looper
 import android.support.multidex.MultiDex
 import com.bumptech.glide.Glide
-import nl.komponents.kovenant.android.startKovenant
-import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.task
 import okhttp3.Dns
 import org.apache.commons.lang3.concurrent.ConcurrentUtils
@@ -58,6 +56,8 @@ import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import de.vanita5.twittnuker.util.kovenant.startKovenant
+import de.vanita5.twittnuker.util.kovenant.stopKovenant
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
