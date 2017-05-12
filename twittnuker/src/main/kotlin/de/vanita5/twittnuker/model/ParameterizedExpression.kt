@@ -20,27 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.model
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.mariotaku.sqliteqb.library.Expression
 
-import org.mariotaku.sqliteqb.library.Expression;
-
-public class ParameterizedExpression {
-    Expression expression;
-    String[] parameters;
-
-    public ParameterizedExpression(@NonNull Expression expression, @Nullable String[] parameters) {
-        this.expression = expression;
-        this.parameters = parameters;
-    }
-
-    public String[] getParameters() {
-        return parameters;
-    }
-
-    public String getSQL() {
-        return expression.getSQL();
-    }
+data class ParameterizedExpression(var expression: Expression, val parameters: Array<String>) {
+    val sql: String
+        get() = expression.sql
 }
