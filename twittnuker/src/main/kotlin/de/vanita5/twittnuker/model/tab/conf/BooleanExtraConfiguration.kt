@@ -75,7 +75,8 @@ open class BooleanExtraConfiguration(
 
         checkBox = view.findViewById(android.R.id.checkbox) as CheckBox
         checkBox.visibility = View.VISIBLE
-        checkBox.isChecked = defaultValue.createBoolean(context)
         view.setOnClickListener { checkBox.toggle() }
+
+        value = defaultValue.createBoolean(context)
     }
 }

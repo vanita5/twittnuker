@@ -906,7 +906,7 @@
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>
     <string name="subscribers">Follower</string>
     <string name="summary_interactions_account_not_supported">Für diesen Account nicht verfügbar</string>
-    <string name="summary_interactions_official_required">Nur mit offiziellen API Keys verfügbar</string>
+    <string name="summary_interactions_streaming_required">Komplette Interaktion nur verfügbar, wenn Streaming aktiviert ist</string>
     <string name="swipe_down_to_refresh">Ziehen zum Aktualisieren</string>
     <string name="sync_provider_name_dropbox">Dropbox</string>
     <string name="sync_provider_name_google_drive">Google Drive</string>
