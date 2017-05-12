@@ -836,6 +836,8 @@
   <string name="search_hint">Rechercher des tweets ou des utilisateurs</string>
   <string name="search_hint_users">Rechercher des utilisateurs</string>
   <string name="search_statuses">Rechercher des tweets</string>
+  <string name="search_type_federated">Fédéré</string>
+  <string name="search_type_local">Local</string>
   <string name="search_type_media">Médias</string>
   <string name="search_type_statuses">Tweets</string>
   <string name="search_type_users">Utilisateurs</string>
@@ -946,6 +948,7 @@
   <string name="title_blocked_users">Utilisateurs bloqués</string>
   <string name="title_browser_sign_in">Connexion via le navigateur</string>
   <string name="title_buffer_queue_manager">Mémoire tampon</string>
+  <string name="title_buffer_schedule">Planification de Buffer</string>
   <string name="title_buffer_set_schedule">Programmer avec Buffer</string>
   <string name="title_buffer_settings">Paramètres de Buffer</string>
   <string name="title_compose">Écrire</string>
@@ -981,6 +984,7 @@
   <string name="title_network_public_timeline">Fil d\'actualité fédéré</string>
   <string name="title_nicknames">Surnoms</string>
   <string name="title_open_source_license">Licence open source</string>
+  <string name="title_pin_status_confirm">Épingler le tweet</string>
   <string name="title_premium_features_name">Twittnuker ∞</string>
   <string name="title_public_timeline">Fil d\'actualités public</string>
   <string name="title_quick_action">Action rapide</string>
@@ -1001,8 +1005,10 @@
   <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g> : <xliff:g id="summary">%2$s</xliff:g></string>
   <string name="title_sync">Synchronisation des données</string>
   <string name="title_sync_settings">Paramètres de synchronisation</string>
+  <string name="title_unpin_status_confirm">Désépingler le tweet</string>
   <string name="title_user">Utilisateur</string>
   <string name="title_user_colors">Couleurs utilisateur</string>
+  <string name="title_user_feedback">Vos commentaires</string>
   <string name="title_user_list">Liste</string>
   <string name="title_user_list_memberships">Appartient à</string>
   <string name="title_user_list_ownerships">Créé</string>
