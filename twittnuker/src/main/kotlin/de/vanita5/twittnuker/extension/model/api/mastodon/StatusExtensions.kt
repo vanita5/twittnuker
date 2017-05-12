@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.extension.model.api.mastodon
 import android.net.Uri
 import android.text.Editable
 import android.text.Spanned
+import org.mariotaku.ktextension.isNotNullOrEmpty
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.microblog.library.mastodon.model.Status
 import de.vanita5.twittnuker.extension.model.api.spanItems
@@ -116,6 +117,9 @@ fun Status.applyTo(accountKey: UserKey, result: ParcelableStatus) {
     if (inReplyToMention != null) {
         result.in_reply_to_name = inReplyToMention.name
         result.in_reply_to_screen_name = inReplyToMention.screen_name
+    }
+    if (result.media.isNotNullOrEmpty()) {
+        result.addFilterFlag(ParcelableStatus.FilterFlags.HAS_MEDIA)
     }
 
     result.extras = extras
