@@ -23,6 +23,7 @@
 
 package de.vanita5.microblog.library.mastodon.model;
 
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
@@ -64,6 +65,7 @@ public class Notification {
      * The {@link Status} associated with the notification, if applicable
      */
     @JsonField(name = "status")
+    @Nullable
     Status status;
 
     public String getId() {
@@ -82,6 +84,7 @@ public class Notification {
         return account;
     }
 
+    @Nullable
     public Status getStatus() {
         return status;
     }

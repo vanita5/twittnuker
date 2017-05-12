@@ -28,6 +28,7 @@ import android.support.v4.util.ArraySet
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
+import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.microblog.library.twitter.model.InternalActivityCreator
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
@@ -75,8 +76,10 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                 }
                 val userIds = allUsers.mapTo(ArraySet<String>()) { it.id }
                 val relationships = mastodon.batchGetRelationships(userIds)
-                val activities = notifications.map {
-                    it.toParcelable(account, relationships)
+                val activities = notifications.mapNotNull {
+                    val activity = it.toParcelable(account, relationships)
+                    if (activity.action == Activity.Action.INVALID) return@mapNotNull null
+                    return@mapNotNull activity
                 }
                 return activities
             }
