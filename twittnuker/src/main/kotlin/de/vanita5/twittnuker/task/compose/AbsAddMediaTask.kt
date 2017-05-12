@@ -55,12 +55,7 @@ open class AbsAddMediaTask<Callback>(
             try {
                 val sourceMimeType = resolver.getType(source)
                 val mediaType = types?.get(index) ?: sourceMimeType?.let {
-                    return@let when {
-                        it == "image/gif" -> ParcelableMedia.Type.ANIMATED_GIF
-                        it.startsWith("video/") -> ParcelableMedia.Type.VIDEO
-                        it.startsWith("image/") -> ParcelableMedia.Type.IMAGE
-                        else -> ParcelableMedia.Type.IMAGE
-                    }
+                    return@let inferMediaType(it)
                 } ?: ParcelableMedia.Type.IMAGE
                 val extension = sourceMimeType?.let { mimeType ->
                     MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
@@ -94,4 +89,14 @@ open class AbsAddMediaTask<Callback>(
         return Uri.fromFile(file)
     }
 
+    companion object {
+        fun inferMediaType(mimeType: String, def: Int = ParcelableMedia.Type.IMAGE): Int {
+            return when {
+                mimeType == "image/gif" -> ParcelableMedia.Type.ANIMATED_GIF
+                mimeType.startsWith("video/") -> ParcelableMedia.Type.VIDEO
+                mimeType.startsWith("image/") -> ParcelableMedia.Type.IMAGE
+                else -> def
+            }
+        }
+    }
 }
