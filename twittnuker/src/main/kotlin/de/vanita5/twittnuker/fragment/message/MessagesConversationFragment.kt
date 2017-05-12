@@ -203,6 +203,13 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
             addMedia.visibility = View.GONE
         }
 
+        if (savedInstanceState != null) {
+            val list = savedInstanceState.getParcelableArrayList<ParcelableMediaUpdate>(EXTRA_MEDIA)
+            if (list != null) {
+                mediaPreviewAdapter.addAll(list)
+            }
+        }
+
         updateMediaPreview()
 
         loaderManager.initLoader(0, null, this)
@@ -217,6 +224,11 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     override fun onStop() {
         bus.unregister(this)
         super.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList(EXTRA_MEDIA, ArrayList(mediaPreviewAdapter.asList()))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
