@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model
 
 import de.vanita5.twittnuker.model.pagination.Pagination
+import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 
 interface RefreshTaskParam {
     val accountKeys: Array<UserKey>
@@ -37,4 +38,6 @@ interface RefreshTaskParam {
 
     val isBackground: Boolean get() = false
 
+    val hasMaxIds: Boolean
+        get() = pagination?.any { (it as? SinceMaxPagination)?.maxId != null } ?: false
 }

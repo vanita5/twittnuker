@@ -25,9 +25,6 @@ package de.vanita5.twittnuker.extension.model
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 
-val RefreshTaskParam.hasMaxIds: Boolean
-    get() = pagination?.any { (it as? SinceMaxPagination)?.maxId != null } ?: false
-
 fun RefreshTaskParam.getMaxId(index: Int): String? {
     return (pagination?.get(index) as? SinceMaxPagination)?.maxId
 }

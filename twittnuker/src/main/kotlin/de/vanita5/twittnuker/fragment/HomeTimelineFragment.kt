@@ -26,7 +26,6 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_HOME_TIMELINE
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
-import de.vanita5.twittnuker.extension.model.hasMaxIds
 import de.vanita5.twittnuker.model.ParameterizedExpression
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
