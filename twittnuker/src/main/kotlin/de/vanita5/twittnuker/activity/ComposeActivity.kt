@@ -393,7 +393,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             REQUEST_TAKE_PHOTO, REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val src = MediaPickerActivity.getMediaUris(data)
-                    TaskStarter.execute(AddMediaTask(this, src, false, false))
+                    TaskStarter.execute(AddMediaTask(this, src, null, false, false))
                     val extras = data.getBundleExtra(MediaPickerActivity.EXTRA_EXTRAS)
                     if (extras?.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE) ?: false) {
                         possiblySensitive = true
@@ -1050,7 +1050,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val stream = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             if (stream != null) {
                 val src = arrayOf(stream)
-                TaskStarter.execute(AddMediaTask(this, src, true, false))
+                TaskStarter.execute(AddMediaTask(this, src, null, true, false))
             }
         } else if (Intent.ACTION_SEND_MULTIPLE == action) {
             shouldSaveAccounts = false
@@ -1058,7 +1058,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val extraStream = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
             if (extraStream != null) {
                 val src = extraStream.toTypedArray()
-                TaskStarter.execute(AddMediaTask(this, src, true, false))
+                TaskStarter.execute(AddMediaTask(this, src, null, true, false))
             }
         } else {
             shouldSaveAccounts = !hasAccountKeys
@@ -1066,7 +1066,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val data = intent.data
             if (data != null) {
                 val src = arrayOf(data)
-                TaskStarter.execute(AddMediaTask(this, src, true, false))
+                TaskStarter.execute(AddMediaTask(this, src, null, true, false))
             }
         }
         val extraSubject = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT)
@@ -1752,7 +1752,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         })
         editText.customSelectionActionModeCallback = this
         editText.imageInputListener = { contentInfo ->
-            val task = AddMediaTask(this, arrayOf(contentInfo.contentUri), true, false)
+            val task = AddMediaTask(this, arrayOf(contentInfo.contentUri), null, true, false)
             TaskStarter.execute(task)
             task.callback = {
                 contentInfo.releasePermission()
@@ -1996,9 +1996,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
     }
 
-    private class AddMediaTask(activity: ComposeActivity, sources: Array<Uri>, copySrc: Boolean,
-            deleteSrc: Boolean) : AbsAddMediaTask<((List<ParcelableMediaUpdate>?) -> Unit)?>(
-            activity, sources, copySrc, deleteSrc) {
+    private class AddMediaTask(activity: ComposeActivity, sources: Array<Uri>, types: IntArray?,
+            copySrc: Boolean, deleteSrc: Boolean) : AbsAddMediaTask<((List<ParcelableMediaUpdate>?) -> Unit)?>(
+            activity, sources, types, copySrc, deleteSrc) {
 
         override fun afterExecute(callback: ((List<ParcelableMediaUpdate>?) -> Unit)?,
                 result: List<ParcelableMediaUpdate>?) {

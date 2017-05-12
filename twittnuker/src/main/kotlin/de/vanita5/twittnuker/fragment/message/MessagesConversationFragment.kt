@@ -53,10 +53,7 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.contains
-import org.mariotaku.ktextension.empty
-import org.mariotaku.ktextension.mapToArray
-import org.mariotaku.ktextension.set
+import org.mariotaku.ktextension.*
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
@@ -68,6 +65,7 @@ import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
@@ -197,7 +195,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         refreshEnabled = false
         adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
 
-        if (account.isOfficial(context)) {
+        if (account.type == AccountType.TWITTER) {
             addMedia.visibility = View.VISIBLE
         } else {
             addMedia.visibility = View.GONE
@@ -239,14 +237,31 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         }
         when (requestCode) {
             REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val mediaUris = MediaPickerActivity.getMediaUris(data)
-                    TaskStarter.execute(AddMediaTask(this, mediaUris))
+                when (resultCode) {
+                    Activity.RESULT_OK -> if (data != null) {
+                        val mediaUris = MediaPickerActivity.getMediaUris(data)
+                        val types = data.getBundleExtra(MediaPickerActivity.EXTRA_EXTRAS)?.getIntArray(EXTRA_TYPES)
+                        TaskStarter.execute(AddMediaTask(this, mediaUris, types))
+                    }
+                    RESULT_SEARCH_GIF -> {
+                        val provider = gifShareProvider ?: return
+                        startActivityForResult(provider.createGifSelectorIntent(), REQUEST_ADD_GIF)
+                    }
                 }
+
             }
             REQUEST_MANAGE_CONVERSATION_INFO -> {
                 if (resultCode == MessageConversationInfoFragment.RESULT_CLOSE) {
                     activity?.finish()
+                }
+            }
+            REQUEST_ADD_GIF -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val intent = ThemedMediaPickerActivity.withThemed(context)
+                            .getMedia(data.data)
+                            .extras(Bundle { this[EXTRA_TYPES] = intArrayOf(ParcelableMedia.Type.ANIMATED_GIF) })
+                            .build()
+                    startActivityForResult(intent, REQUEST_PICK_MEDIA)
                 }
             }
         }
@@ -423,7 +438,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
             editText.error = getString(R.string.hint_error_message_no_content)
             return
         }
-        if (conversationAccount.isOfficial(context)) {
+        if (conversationAccount.type == AccountType.TWITTER) {
             if (mediaPreviewAdapter.itemCount > defaultFeatures.twitterDirectMessageMediaLimit) {
                 editText.error = getString(R.string.error_message_media_message_too_many)
                 return
@@ -456,15 +471,15 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     }
 
     private fun openMediaPicker() {
-        val intent = ThemedMediaPickerActivity.withThemed(context)
-                .pickSources(arrayOf(MediaPickerActivity.SOURCE_CAMERA,
+        val builder = ThemedMediaPickerActivity.withThemed(context)
+        builder.pickSources(arrayOf(MediaPickerActivity.SOURCE_CAMERA,
                         MediaPickerActivity.SOURCE_CAMCORDER,
                         MediaPickerActivity.SOURCE_GALLERY,
                         MediaPickerActivity.SOURCE_CLIPBOARD))
-                .addEntry(getString(R.string.add_gif), INTENT_ACTION_PICK_GIF, Giphy.REQUEST_GIPHY)
-                .containsVideo(true)
-                .allowMultiple(false)
-                .build()
+        builder.addEntry(getString(R.string.add_gif), INTENT_ACTION_PICK_GIF, Giphy.REQUEST_GIPHY)
+        builder.containsVideo(true)
+        builder.allowMultiple(false)
+        val intent = builder.build()
         startActivityForResult(intent, REQUEST_PICK_MEDIA)
     }
 
@@ -533,8 +548,9 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
     internal class AddMediaTask(
             fragment: MessagesConversationFragment,
-            sources: Array<Uri>
-    ) : AbsAddMediaTask<MessagesConversationFragment>(fragment.context, sources) {
+            sources: Array<Uri>,
+            types: IntArray?
+    ) : AbsAddMediaTask<MessagesConversationFragment>(fragment.context, sources, types) {
 
         init {
             callback = fragment
@@ -606,6 +622,10 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
     companion object {
         private const val REQUEST_MANAGE_CONVERSATION_INFO = 101
+        private const val REQUEST_ADD_GIF = 102
+        private const val RESULT_SEARCH_GIF = 11
+
+        private const val EXTRA_TYPES = "types"
 
         private const val REQUEST_PICK_MEDIA_PERMISSION = 302
     }

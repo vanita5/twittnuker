@@ -23,6 +23,7 @@
 
 package de.vanita5.microblog.library.twitter;
 
+import de.vanita5.microblog.library.twitter.api.DirectMessagesEventResources;
 import de.vanita5.microblog.library.twitter.api.DirectMessagesResources;
 import de.vanita5.microblog.library.twitter.api.FavoritesResources;
 import de.vanita5.microblog.library.twitter.api.FriendsFollowersResources;
@@ -39,7 +40,8 @@ import de.vanita5.microblog.library.twitter.api.TweetResources;
 import de.vanita5.microblog.library.twitter.api.UsersResources;
 
 public interface Twitter extends SearchResources, TimelineResources, TweetResources, UsersResources,
-        ListResources, DirectMessagesResources, FriendsFollowersResources, FavoritesResources,
-        SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
+        ListResources, DirectMessagesResources, DirectMessagesEventResources,
+        FriendsFollowersResources, FavoritesResources, SpamReportingResources,
+        SavedSearchesResources, TrendsResources, PlacesGeoResources,
         HelpResources, MutesResources, TwitterPrivate {
 }

@@ -32,6 +32,9 @@ import de.vanita5.twittnuker.util.BitmapFactoryUtils
 fun ParcelableMediaUpdate.getMimeType(resolver: ContentResolver): String? {
     val uri = Uri.parse(this.uri)
     return resolver.getType(uri) ?: when (type) {
+        ParcelableMedia.Type.ANIMATED_GIF -> {
+            return "image/gif"
+        }
         ParcelableMedia.Type.IMAGE -> {
             val o = BitmapFactory.Options()
             o.inJustDecodeBounds = true

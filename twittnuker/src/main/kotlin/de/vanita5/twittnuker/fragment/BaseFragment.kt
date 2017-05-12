@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import de.vanita5.twittnuker.util.gifshare.GifShareProvider
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.schedule.StatusScheduleProvider
 import de.vanita5.twittnuker.util.sync.SyncPreferences
@@ -74,6 +75,8 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     @Inject
     lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
     @Inject
+    lateinit var gifShareProviderFactory: GifShareProvider.Factory
+    @Inject
     lateinit var restHttpClient: RestHttpClient
     @Inject
     lateinit var dns: Dns
@@ -85,6 +88,9 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
 
     protected val timelineSyncManager: TimelineSyncManager?
         get() = timelineSyncManagerFactory.get()
+
+    protected val gifShareProvider: GifShareProvider?
+        get() = gifShareProviderFactory.newInstance(context)
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 
