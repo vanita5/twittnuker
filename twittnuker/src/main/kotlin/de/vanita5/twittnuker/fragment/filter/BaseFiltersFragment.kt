@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.filter
 
+import android.accounts.AccountManager
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
@@ -60,12 +61,12 @@ import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.fragment.AbsContentListViewFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.FiltersData
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.Utils
 
 
 abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdapter>(),
@@ -304,7 +305,8 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
                         userAutoCompleteAdapter = SourceAutoCompleteAdapter(activity)
                     } else {
                         val adapter = ComposeAutoCompleteAdapter(activity, Glide.with(this))
-                        adapter.accountKey = Utils.getDefaultAccountKey(activity)
+                        val am = AccountManager.get(activity)
+                        adapter.account = AccountUtils.getDefaultAccountDetails(activity, am, false)
                         userAutoCompleteAdapter = adapter
                     }
                     editText.setAdapter(userAutoCompleteAdapter)

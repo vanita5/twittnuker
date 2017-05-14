@@ -22,4 +22,8 @@
 
 package de.vanita5.twittnuker.model.task
 
-data class GetTimelineResult(val exception: Exception?)
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableUser
+
+data class GetTimelineResult<out T>(val account: AccountDetails, val data: List<T>,
+                                    val users: Collection<ParcelableUser>)

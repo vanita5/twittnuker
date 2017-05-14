@@ -53,9 +53,9 @@ import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY
-import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_QUERY
+import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_QUERY
@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATIO
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.appendQueryParameterIgnoreNull
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SuggestionItem
@@ -235,11 +236,15 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor?> {
-        val accountKey = selectedAccountDetails?.key
+        val account = selectedAccountDetails
         val builder = Suggestions.Search.CONTENT_URI.buildUpon()
         builder.appendQueryParameter(QUERY_PARAM_QUERY, ParseUtils.parseString(searchQuery.text))
-        if (accountKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
+        if (account != null) {
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, account.key.toString())
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_TYPE, account.type)
+            if (account.type != AccountType.MASTODON) {
+                builder.appendQueryParameterIgnoreNull(QUERY_PARAM_ACCOUNT_HOST, account.key.host)
+            }
         }
         return CursorLoader(this, builder.build(), Suggestions.Search.COLUMNS, null, null, null)
     }

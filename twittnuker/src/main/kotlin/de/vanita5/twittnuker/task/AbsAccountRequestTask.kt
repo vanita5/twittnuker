@@ -29,7 +29,7 @@ import org.mariotaku.ktextension.toLongOr
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.getErrorMessage
-import de.vanita5.twittnuker.extension.insertOne
+import de.vanita5.twittnuker.extension.insert
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.UserKey
@@ -49,7 +49,7 @@ abstract class AbsAccountRequestTask<Params, Result, Callback>(context: Context,
         val draft = createDraft()
         var draftId = -1L
         if (draft != null) {
-            val uri = context.contentResolver.insertOne(Drafts.CONTENT_URI, draft)
+            val uri = context.contentResolver.insert(Drafts.CONTENT_URI, draft)
             draftId = uri?.lastPathSegment.toLongOr(-1)
         }
         if (draftId != -1L) {

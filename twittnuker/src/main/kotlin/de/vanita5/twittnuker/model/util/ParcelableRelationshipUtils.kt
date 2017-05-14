@@ -24,15 +24,15 @@ package de.vanita5.twittnuker.model.util
 
 import android.content.ContentResolver
 import android.support.v4.util.ArraySet
-import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.twitter.model.Relationship
 import de.vanita5.microblog.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.extension.bulkInsert
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
-import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import de.vanita5.twittnuker.util.updateItems
 
 object ParcelableRelationshipUtils {
 
@@ -92,17 +92,17 @@ object ParcelableRelationshipUtils {
      */
     fun insert(cr: ContentResolver, relationships: Collection<ParcelableRelationship>) {
         val insertItems = ArraySet<ParcelableRelationship>()
-        val valuesCreator = ObjectCursor.valuesCreatorFrom(ParcelableRelationship::class.java)
         relationships.forEach {
             if (it._id > 0) {
-                val values = valuesCreator.create(it)
                 val where = Expression.equals(CachedRelationships._ID, it._id).sql
-                cr.update(CachedRelationships.CONTENT_URI, values, where, null)
+                cr.updateItems(CachedRelationships.CONTENT_URI, CachedRelationships.COLUMNS, where, null,
+                        ParcelableRelationship::class.java) {
+                    return@updateItems it
+                }
             } else {
                 insertItems.add(it)
             }
         }
-        ContentResolverUtils.bulkInsert(cr, CachedRelationships.CONTENT_URI,
-                insertItems.map(valuesCreator::create))
+        cr.bulkInsert(CachedRelationships.CONTENT_URI, insertItems, ParcelableRelationship::class.java)
     }
 }

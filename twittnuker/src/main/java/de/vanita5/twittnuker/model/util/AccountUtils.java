@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.Arrays;
 
@@ -102,6 +103,15 @@ public class AccountUtils {
 
     @Nullable
     public static AccountDetails getAccountDetails(@NonNull AccountManager am, @NonNull UserKey accountKey, boolean getCredentials) {
+        final Account account = findByAccountKey(am, accountKey);
+        if (account == null) return null;
+        return getAccountDetails(am, account, getCredentials);
+    }
+
+    @Nullable
+    public static AccountDetails getDefaultAccountDetails(@NonNull Context context, @NonNull AccountManager am, boolean getCredentials) {
+        final UserKey accountKey = Utils.INSTANCE.getDefaultAccountKey(context);
+        if (accountKey == null) return null;
         final Account account = findByAccountKey(am, accountKey);
         if (account == null) return null;
         return getAccountDetails(am, account, getCredentials);

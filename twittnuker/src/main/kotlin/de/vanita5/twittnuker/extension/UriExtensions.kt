@@ -25,3 +25,8 @@ package de.vanita5.twittnuker.extension
 import android.net.Uri
 
 fun Uri.withAppendedPath(path: String) = Uri.withAppendedPath(this, path)
+
+fun Uri.Builder.appendQueryParameterIgnoreNull(key: String, value: String?) {
+    if (value == null) return
+    appendQueryParameter(key, value)
+}

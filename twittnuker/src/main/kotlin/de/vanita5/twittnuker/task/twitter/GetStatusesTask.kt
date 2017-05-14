@@ -26,6 +26,7 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toLongOr
 import org.mariotaku.library.objectcursor.ObjectCursor
@@ -36,12 +37,11 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.exception.AccountNotFoundException
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.applyLoadLimit
-import de.vanita5.twittnuker.extension.model.getMaxId
-import de.vanita5.twittnuker.extension.model.getMaxSortId
-import de.vanita5.twittnuker.extension.model.getSinceId
-import de.vanita5.twittnuker.extension.model.getSinceSortId
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.BaseAbstractTask
+import de.vanita5.twittnuker.task.cache.CacheUserRelationshipTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -62,20 +63,21 @@ import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 
 abstract class GetStatusesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<GetTimelineResult?>, (Boolean) -> Unit>(context) {
+) : BaseAbstractTask<RefreshTaskParam, List<Pair<GetTimelineResult<ParcelableStatus>?, Exception?>>,
+        (Boolean) -> Unit>(context) {
 
     protected abstract val contentUri: Uri
 
     protected abstract val errorInfoKey: String
 
-    override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
+    override fun doLongOperation(param: RefreshTaskParam): List<Pair<GetTimelineResult<ParcelableStatus>?, Exception?>> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys.takeIf { it.isNotEmpty() } ?: return emptyList()
         val loadItemLimit = preferences[loadItemLimitKey]
         val result = accountKeys.mapIndexed { i, accountKey ->
-            val account = AccountUtils.getAccountDetails(AccountManager.get(context),
-                    accountKey, true) ?: return@mapIndexed null
             try {
+                val account = AccountUtils.getAccountDetails(AccountManager.get(context),
+                        accountKey, true) ?: throw AccountNotFoundException()
                 val paging = Paging()
                 paging.applyLoadLimit(account, loadItemLimit)
                 val maxId = param.getMaxId(i)
@@ -98,15 +100,15 @@ abstract class GetStatusesTask(
                         paging.setLatestResults(true)
                     }
                 }
-                val statuses = getStatuses(account, paging)
-                val storeResult = storeStatus(account, statuses, sinceId, maxId, sinceSortId,
-                        maxSortId, loadItemLimit, false)
+                val timelineResult = getStatuses(account, paging)
+                val storeResult = storeStatus(account, timelineResult.data, sinceId, maxId,
+                        sinceSortId, maxSortId, loadItemLimit, false)
                 // TODO cache related data and preload
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
                 if (storeResult != 0) {
                     throw GetTimelineException(storeResult)
                 }
-                return@mapIndexed GetTimelineResult(null)
+                return@mapIndexed Pair(timelineResult, null)
             } catch (e: MicroBlogException) {
                 DebugLog.w(LOGTAG, tr = e)
                 if (e.isCausedByNetworkIssue) {
@@ -114,9 +116,9 @@ abstract class GetStatusesTask(
                 } else if (e.statusCode == 401) {
                     // Unauthorized
                 }
-                return@mapIndexed GetTimelineResult(e)
+                return@mapIndexed Pair(null, e)
             } catch (e: GetTimelineException) {
-                return@mapIndexed GetTimelineResult(e)
+                return@mapIndexed Pair(null, e)
             }
         }
         val manager = timelineSyncManagerFactory.get()
@@ -128,19 +130,21 @@ abstract class GetStatusesTask(
         return result
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetTimelineResult?>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, results: List<Pair<GetTimelineResult<ParcelableStatus>?, Exception?>>) {
         context.contentResolver.notifyChange(contentUri, null)
-        val exception = result.firstOrNull { it?.exception != null }?.exception
+        val exception = results.firstOrNull { it.second != null }?.second
         bus.post(GetStatusesTaskEvent(contentUri, false, exception))
+        cacheUserRelationship(context, results)
         handler?.invoke(true)
     }
+
 
     override fun beforeExecute() {
         bus.post(GetStatusesTaskEvent(contentUri, true, null))
     }
 
     @Throws(MicroBlogException::class)
-    protected abstract fun getStatuses(account: AccountDetails, paging: Paging): List<ParcelableStatus>
+    protected abstract fun getStatuses(account: AccountDetails, paging: Paging): GetTimelineResult<ParcelableStatus>
 
     protected abstract fun syncFetchReadPosition(manager: TimelineSyncManager, accountKeys: Array<UserKey>)
 
@@ -247,6 +251,16 @@ abstract class GetStatusesTask(
                 extraValue = position
             }
             return timestamp + (sortId - lastSortId) * (499 - count) / sortDiff + extraValue.toLong()
+        }
+
+        fun cacheUserRelationship(context: Context, results: List<Pair<GetTimelineResult<*>?, Exception?>>) {
+            results.forEach { (result, _) ->
+                if (result == null) return@forEach
+                val account = result.account
+                val task = CacheUserRelationshipTask(context, account.key, account.type, result.users,
+                        account.type == AccountType.STATUSNET || account.isOfficial(context))
+                TaskStarter.execute(task)
+            }
         }
     }
 

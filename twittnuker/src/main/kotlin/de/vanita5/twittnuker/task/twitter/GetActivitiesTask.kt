@@ -35,6 +35,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.model.getMaxId
 import de.vanita5.twittnuker.extension.model.getMaxSortId
 import de.vanita5.twittnuker.extension.model.getSinceId
@@ -58,20 +59,21 @@ import java.util.*
 
 abstract class GetActivitiesTask(
         context: Context
-) : BaseAbstractTask<RefreshTaskParam, List<GetTimelineResult?>, (Boolean) -> Unit>(context) {
+) : BaseAbstractTask<RefreshTaskParam, List<Pair<GetTimelineResult<ParcelableActivity>?, Exception?>>,
+        (Boolean) -> Unit>(context) {
 
     protected abstract val errorInfoKey: String
 
     protected abstract val contentUri: Uri
 
-    override fun doLongOperation(param: RefreshTaskParam): List<GetTimelineResult?> {
+    override fun doLongOperation(param: RefreshTaskParam): List<Pair<GetTimelineResult<ParcelableActivity>?, Exception?>> {
         if (param.shouldAbort) return emptyList()
         val accountKeys = param.accountKeys.takeIf { it.isNotEmpty() } ?: return emptyList()
         val loadItemLimit = preferences[loadItemLimitKey]
         val result = accountKeys.mapIndexed { i, accountKey ->
             val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri, accountKey) <= 0
             val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey,
-                    true) ?: return@mapIndexed null
+                    true) ?: throw AccountNotFoundException()
             val paging = Paging()
             paging.count(loadItemLimit)
             val maxId = param.getMaxId(i)
@@ -88,13 +90,14 @@ abstract class GetActivitiesTask(
             }
             // We should delete old activities has intersection with new items
             try {
-                val activities = getActivities(credentials, paging)
-                val storeResult = storeActivities(credentials, activities, sinceId, maxId,
+                val timelineResult = getActivities(credentials, paging)
+                val storeResult = storeActivities(credentials, timelineResult.data, sinceId, maxId,
                         loadItemLimit, noItemsBefore, false)
                 errorInfoStore.remove(errorInfoKey, accountKey)
                 if (storeResult != 0) {
                     throw GetStatusesTask.GetTimelineException(storeResult)
                 }
+                return@mapIndexed Pair(timelineResult, null)
             } catch (e: MicroBlogException) {
                 DebugLog.w(LOGTAG, tr = e)
                 if (e.errorCode == 220) {
@@ -102,11 +105,10 @@ abstract class GetActivitiesTask(
                 } else if (e.isCausedByNetworkIssue) {
                     errorInfoStore[errorInfoKey, accountKey] = ErrorInfoStore.CODE_NETWORK_ERROR
                 }
-                return@mapIndexed GetTimelineResult(e)
+                return@mapIndexed Pair(null, e)
             } catch (e: GetStatusesTask.GetTimelineException) {
-                return@mapIndexed GetTimelineResult(e)
+                return@mapIndexed Pair(null, e)
             }
-            return@mapIndexed GetTimelineResult(null)
         }
         val manager = timelineSyncManagerFactory.get()
         if (manager != null && syncPreferences.isSyncEnabled(SyncTaskRunner.SYNC_TYPE_TIMELINE_POSITIONS)) {
@@ -117,10 +119,11 @@ abstract class GetActivitiesTask(
         return result
     }
 
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<GetTimelineResult?>) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, results: List<Pair<GetTimelineResult<ParcelableActivity>?, Exception?>>) {
         context.contentResolver.notifyChange(contentUri, null)
-        val exception = result.firstOrNull { it?.exception != null }?.exception
+        val exception = results.firstOrNull { it.second != null }?.second
         bus.post(GetActivitiesTaskEvent(contentUri, false, exception))
+        GetStatusesTask.cacheUserRelationship(context, results)
         handler?.invoke(true)
     }
 
@@ -130,7 +133,7 @@ abstract class GetActivitiesTask(
     }
 
     @Throws(MicroBlogException::class)
-    protected abstract fun getActivities(account: AccountDetails, paging: Paging): List<ParcelableActivity>
+    protected abstract fun getActivities(account: AccountDetails, paging: Paging): GetTimelineResult<ParcelableActivity>
 
     protected abstract fun syncFetchReadPosition(manager: TimelineSyncManager, accountKeys: Array<UserKey>)
 

@@ -34,9 +34,12 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.appendQueryParameterIgnoreNull
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SuggestionItem
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions
@@ -54,11 +57,12 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
 
+    var account: AccountDetails? = null
+
     private val displayProfileImage: Boolean
     private val profileImageStyle: Int
 
     private var indices: SuggestionItem.Indices? = null
-    var accountKey: UserKey? = null
     private var token: Char = ' '
 
     init {
@@ -76,9 +80,11 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
         icon.style = profileImageStyle
 
         if (Suggestions.AutoComplete.TYPE_USERS == cursor.getString(indices.type)) {
+            val userKey = UserKey.valueOf(cursor.getString(indices.extra_id))
             text1.spannable =
                     cursor.getString(indices.title)
-            text2.spannable = String.format("@%s", cursor.getString(indices.summary))
+            val screenName = cursor.getString(indices.summary)
+            text2.spannable = "@${getScreenNameOrAcct(screenName, userKey)}"
             if (displayProfileImage) {
                 val profileImageUrl = cursor.getString(indices.icon)
                 requestManager.loadProfileImage(context, profileImageUrl, profileImageStyle).into(icon)
@@ -88,7 +94,7 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
 
             icon.clearColorFilter()
         } else {
-            text1.spannable = String.format("#%s", cursor.getString(indices.title))
+            text1.spannable = "#${cursor.getString(indices.title)}"
             text2.setText(R.string.hashtag)
 
             icon.setImageResource(R.drawable.ic_action_hashtag)
@@ -109,10 +115,12 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
         val indices = this.indices!!
         when (cursor.getString(indices.type)) {
             Suggestions.AutoComplete.TYPE_HASHTAGS -> {
-                return '#' + cursor.getString(indices.value)
+                return "#${cursor.getString(indices.value)}"
             }
             Suggestions.AutoComplete.TYPE_USERS -> {
-                return '@' + cursor.getString(indices.value)
+                val screenName = cursor.getString(indices.value)
+                val userKey = UserKey.valueOf(cursor.getString(indices.extra_id))
+                return "@${getScreenNameOrAcct(screenName, userKey)}"
             }
         }
         return cursor.getString(indices.value)
@@ -139,7 +147,14 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
                 return null
             }
         }
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
+        val account = this.account
+        if (account != null) {
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, account.key.toString())
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_TYPE, account.type)
+            if (account.type != AccountType.MASTODON) {
+                builder.appendQueryParameterIgnoreNull(QUERY_PARAM_ACCOUNT_HOST, account.key?.host)
+            }
+        }
         return mContext.contentResolver.query(builder.build(), Suggestions.AutoComplete.COLUMNS,
                 null, null, null)
     }
@@ -149,6 +164,11 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
             indices = SuggestionItem.Indices(cursor)
         }
         return super.swapCursor(cursor)
+    }
+
+    private fun getScreenNameOrAcct(screenName: String, userKey: UserKey): String {
+        if (account?.key?.host == userKey.host) return screenName
+        return "$screenName@${userKey.host}"
     }
 
     companion object {

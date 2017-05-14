@@ -40,7 +40,7 @@ import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
 import org.mariotaku.ktextension.contains
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.extension.setupEmojiFactory
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer
 
 class ComposeEditText(
@@ -50,10 +50,10 @@ class ComposeEditText(
 
     private var adapter: ComposeAutoCompleteAdapter? = null
     var imageInputListener: ((InputContentInfoCompat) -> Unit)? = null
-    var accountKey: UserKey? = null
+    var account: AccountDetails? = null
         set(value) {
             field = value
-            updateAccountKey()
+            updateAccount()
         }
 
     init {
@@ -76,7 +76,7 @@ class ComposeEditText(
             adapter = ComposeAutoCompleteAdapter(context, Glide.with(context))
         }
         setAdapter(adapter)
-        updateAccountKey()
+        updateAccount()
     }
 
     override fun onDetachedFromWindow() {
@@ -118,8 +118,8 @@ class ComposeEditText(
         return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
     }
 
-    private fun updateAccountKey() {
-        adapter?.accountKey = accountKey
+    private fun updateAccount() {
+        adapter?.account = account
     }
 
     private fun removeIMESuggestions() {
