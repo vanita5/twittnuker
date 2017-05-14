@@ -58,10 +58,7 @@ import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
-import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.setItemAvailability
-import org.mariotaku.ktextension.setMenuItemIcon
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.Constants.EXTRA_FEATURES_NOTICE_VERSION
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -549,8 +546,8 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
     private fun displayCurrentAccount(profileImageSnapshot: Drawable?) {
         if (context == null || isDetached || (activity?.isFinishing ?: true)) return
         val account = accountsAdapter.selectedAccount ?: return
-        accountProfileNameView.text = account.user.name
-        accountProfileScreenNameView.text = "@${account.user.screen_name}"
+        accountProfileNameView.spannable = account.user.name
+        accountProfileScreenNameView.spannable = "@${account.user.screen_name}"
         Glide.with(this).loadProfileImage(context, account, preferences[profileImageStyleKey],
                 accountProfileImageView.cornerRadius, accountProfileImageView.cornerRadiusRatio,
                 ProfileImageSize.REASONABLY_SMALL).placeholder(profileImageSnapshot).into(accountProfileImageView)

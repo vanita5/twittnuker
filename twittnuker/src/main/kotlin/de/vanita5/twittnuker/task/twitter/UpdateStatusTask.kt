@@ -73,7 +73,7 @@ import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
 import de.vanita5.twittnuker.model.schedule.ScheduleInfo
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
-import de.vanita5.twittnuker.preference.ServicePickerPreference
+import de.vanita5.twittnuker.preference.ComponentPickerPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
@@ -516,7 +516,7 @@ class UpdateStatusTask(
     @Throws(UploaderNotFoundException::class, UploadException::class, ShortenerNotFoundException::class, ShortenException::class)
     private fun getStatusShortener(app: TwittnukerApplication): StatusShortenerInterface? {
         val shortenerComponent = preferences.getString(KEY_STATUS_SHORTENER, null)
-        if (ServicePickerPreference.isNoneValue(shortenerComponent)) return null
+        if (ComponentPickerPreference.isNoneValue(shortenerComponent)) return null
 
         val shortener = StatusShortenerInterface.getInstance(app, shortenerComponent) ?: throw ShortenerNotFoundException()
         //Only for Twidere extensions
@@ -540,9 +540,10 @@ class UpdateStatusTask(
     @Throws(UploaderNotFoundException::class, UploadException::class)
     private fun getMediaUploader(app: TwittnukerApplication): MediaUploaderInterface? {
         val uploaderComponent = preferences.getString(KEY_MEDIA_UPLOADER, null)
-        if (ServicePickerPreference.isNoneValue(uploaderComponent)) return null
-        val uploader = MediaUploaderInterface.getInstance(app, uploaderComponent) ?: throw UploaderNotFoundException(context.getString(R.string.error_message_media_uploader_not_found))
-//Only for Twidere extensions
+        if (ComponentPickerPreference.isNoneValue(uploaderComponent)) return null
+        val uploader = MediaUploaderInterface.getInstance(app, uploaderComponent) ?:
+                throw UploaderNotFoundException(context.getString(R.string.error_message_media_uploader_not_found))
+        //Only for Twidere extensions
 //        try {
 //        uploader.checkService { metaData ->
 //            if (metaData == null) throw ExtensionVersionMismatchException()
@@ -1095,6 +1096,7 @@ class UpdateStatusTask(
             return (width <= this.maxWidth && height <= this.maxHeight) || (height <= this.maxWidth
                     && width <= this.maxHeight)
         }
+
     }
 
 }

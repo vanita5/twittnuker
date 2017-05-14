@@ -29,6 +29,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.list_item_user.view.*
+import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.*
@@ -169,11 +170,11 @@ class UserViewHolder(
 
         if (!simple) {
             descriptionView.visibility = if (TextUtils.isEmpty(user.description_unescaped)) View.GONE else View.VISIBLE
-            descriptionView.text = user.description_unescaped
+            descriptionView.spannable = user.description_unescaped
             locationView.visibility = if (TextUtils.isEmpty(user.location)) View.GONE else View.VISIBLE
-            locationView.text = user.location
+            locationView.spannable = user.location
             urlView.visibility = if (TextUtils.isEmpty(user.url_expanded)) View.GONE else View.VISIBLE
-            urlView.text = user.url_expanded
+            urlView.spannable = user.url_expanded
             val locale = Locale.getDefault()
             statusesCountView.text = Utils.getLocalizedNumber(locale, user.statuses_count)
             followersCountView.text = Utils.getLocalizedNumber(locale, user.followers_count)

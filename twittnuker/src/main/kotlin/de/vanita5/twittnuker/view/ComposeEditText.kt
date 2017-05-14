@@ -39,8 +39,8 @@ import com.bumptech.glide.Glide
 import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
 import org.mariotaku.ktextension.contains
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
+import de.vanita5.twittnuker.extension.setupEmojiFactory
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer
 
 class ComposeEditText(
@@ -57,7 +57,7 @@ class ComposeEditText(
         }
 
     init {
-        EmojiSupportUtils.initForTextView(this)
+        setupEmojiFactory()
         setTokenizer(StatusTextTokenizer())
         onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             removeIMESuggestions()

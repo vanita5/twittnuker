@@ -54,7 +54,7 @@
         tools:tint="?android:textColorSecondary"
         tools:visibility="visible"/>
 
-    <de.vanita5.twittnuker.view.ActionIconThemedTextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/statusInfoLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

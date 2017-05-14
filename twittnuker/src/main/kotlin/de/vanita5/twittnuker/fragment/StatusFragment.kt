@@ -65,10 +65,7 @@ import kotlinx.android.synthetic.main.header_status.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.applyFontFamily
-import org.mariotaku.ktextension.contains
-import org.mariotaku.ktextension.findPositionByItemId
-import org.mariotaku.ktextension.hideIfEmpty
+import org.mariotaku.ktextension.*
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
@@ -426,7 +423,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
             setState(STATE_ERROR)
             val errorInfo = StatusCodeMessageUtils.getErrorInfo(context, data.exception!!)
-            errorText.text = errorInfo.message
+            errorText.spannable = errorInfo.message
             errorIcon.setImageResource(errorInfo.icon)
         }
         activity.supportInvalidateOptionsMenu()
@@ -744,10 +741,10 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             if (status.retweet_id != null) {
                 val retweetedBy = colorNameManager.getDisplayName(status.retweeted_by_user_key!!,
                         status.retweeted_by_user_name!!, status.retweeted_by_user_acct!!, nameFirst)
-                retweetedByView.text = context.getString(R.string.name_retweeted, retweetedBy)
+                retweetedByView.spannable = context.getString(R.string.name_retweeted, retweetedBy)
                 retweetedByView.visibility = View.VISIBLE
             } else {
-                retweetedByView.text = null
+                retweetedByView.spannable = null
                 retweetedByView.visibility = View.GONE
             }
 
@@ -778,16 +775,11 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     linkify.applyAllLinks(quotedText, status.account_key, layoutPosition.toLong(),
                             status.is_possibly_sensitive, skipLinksInText)
                     if (quotedDisplayEnd != -1 && quotedDisplayEnd <= quotedText.length) {
-                        itemView.quotedText.text = quotedText.subSequence(0, quotedDisplayEnd)
+                        itemView.quotedText.spannable = quotedText.subSequence(0, quotedDisplayEnd)
                     } else {
-                        itemView.quotedText.text = quotedText
+                        itemView.quotedText.spannable = quotedText
                     }
-                    if (itemView.quotedText.length() == 0) {
-                        // No text
-                        itemView.quotedText.visibility = View.GONE
-                    } else {
-                        itemView.quotedText.visibility = View.VISIBLE
-                    }
+                    itemView.quotedText.hideIfEmpty()
 
                     val quotedUserColor = colorNameManager.getUserColor(status.quoted_user_key!!)
                     if (quotedUserColor != 0) {
@@ -823,7 +815,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     string.setSpan(ForegroundColorSpan(ThemeUtils.getColorFromAttribute(context,
                             android.R.attr.textColorTertiary, textView.currentTextColor)), 0,
                             string.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    itemView.quotedText.text = string
+                    itemView.quotedText.spannable = string
 
                     itemView.quotedView.drawStart(ThemeUtils.getColorFromAttribute(context,
                             R.attr.quoteIndicatorBackgroundColor))
@@ -866,7 +858,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
             val timeString = Utils.formatToLongTimeString(context, timestamp)?.takeIf(String::isNotEmpty)
             val source = status.source?.takeIf(String::isNotEmpty)
-            itemView.timeSource.text = when {
+            itemView.timeSource.spannable = when {
                 timeString != null && source != null -> {
                     HtmlSpanBuilder.fromHtml(context.getString(R.string.status_format_time_source,
                             timeString, source))
@@ -884,13 +876,13 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                         status.is_possibly_sensitive, skipLinksInText)
             }
 
-            summaryView.text = status.extras?.summary_text
+            summaryView.spannable = status.extras?.summary_text
             summaryView.hideIfEmpty()
 
             if (displayEnd != -1 && displayEnd <= text.length) {
-                textView.text = text.subSequence(0, displayEnd)
+                textView.spannable = text.subSequence(0, displayEnd)
             } else {
-                textView.text = text
+                textView.spannable = text
             }
             textView.hideIfEmpty()
 
@@ -899,7 +891,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
             if (!TextUtils.isEmpty(placeFullName)) {
                 locationView.visibility = View.VISIBLE
-                locationView.text = placeFullName
+                locationView.spannable = placeFullName
                 locationView.isClickable = ParcelableLocationUtils.isValidLocation(location)
             } else if (ParcelableLocationUtils.isValidLocation(location)) {
                 locationView.visibility = View.VISIBLE
@@ -907,7 +899,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 locationView.isClickable = true
             } else {
                 locationView.visibility = View.GONE
-                locationView.text = null
+                locationView.spannable = null
             }
 
             val interactUsersAdapter = itemView.countsUsers.adapter as CountsUsersAdapter

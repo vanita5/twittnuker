@@ -20,30 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.R
 
-public class EmojiSupportPreference extends ActivityPickerPreference {
-    public EmojiSupportPreference(Context context) {
-        super(context);
-    }
+import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_UPLOAD_MEDIA
 
-    public EmojiSupportPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+class MediaUploaderPreference(context: Context, attrs: AttributeSet? = null) :
+        ServicePickerPreference(context, attrs) {
 
-    @Override
-    protected String getIntentAction() {
-        return IntentConstants.INTENT_ACTION_EMOJI_SUPPORT_ABOUT;
-    }
+    override val intentAction: String
+        get() = INTENT_ACTION_EXTENSION_UPLOAD_MEDIA
 
-    @Override
-    protected String getNoneEntry() {
-        return getContext().getString(R.string.system_default);
-    }
+    override val noneEntry: String
+        get() = context.getString(R.string.media_uploader_default)
+
 }

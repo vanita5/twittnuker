@@ -72,6 +72,7 @@ import android.view.*
 import android.view.View.OnClickListener
 import android.view.View.OnTouchListener
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
@@ -431,7 +432,9 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         this.user = user
         profileImage.setBorderColor(if (user.color != 0) user.color else Color.WHITE)
         profileNameContainer.drawEnd(user.account_color)
-        profileNameContainer.name.text = bidiFormatter.unicodeWrap(user.name)
+        profileNameContainer.name.setText(bidiFormatter.unicodeWrap(
+                user.name
+        ), TextView.BufferType.SPANNABLE)
         val typeIconRes = Utils.getUserTypeIconRes(user.is_verified, user.is_protected)
         if (typeIconRes != 0) {
             profileType.setImageResource(typeIconRes)
@@ -441,7 +444,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             profileType.visibility = View.GONE
         }
         @SuppressLint("SetTextI18n")
-        profileNameContainer.screenName.text = "@${user.acct}"
+        profileNameContainer.screenName.spannable = "@${user.acct}"
         val linkHighlightOption = preferences[linkHighlightOptionKey]
         val linkify = TwidereLinkify(this, linkHighlightOption)
         if (user.description_unescaped != null) {
@@ -449,22 +452,22 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 user.description_spans?.applyTo(this)
                 linkify.applyAllLinks(this, user.account_key, false, false)
             }
-            descriptionContainer.description.text = text
+            descriptionContainer.description.spannable = text
         } else {
-            descriptionContainer.description.text = user.description_plain
+            descriptionContainer.description.spannable = user.description_plain
             Linkify.addLinks(descriptionContainer.description, Linkify.WEB_URLS)
         }
-        descriptionContainer.visibility = if (descriptionContainer.description.empty) View.GONE else View.VISIBLE
+        descriptionContainer.hideIfEmpty(descriptionContainer.description)
 
-        locationContainer.location.text = user.location
+        locationContainer.location.spannable = user.location
         locationContainer.visibility = if (locationContainer.location.empty) View.GONE else View.VISIBLE
-        urlContainer.url.text = user.urlPreferred?.let {
+        urlContainer.url.spannable = user.urlPreferred?.let {
             val ssb = SpannableStringBuilder(it)
             ssb.setSpan(TwidereURLSpan(it, highlightStyle = linkHighlightOption), 0, ssb.length,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             return@let ssb
         }
-        urlContainer.visibility = if (urlContainer.url.empty) View.GONE else View.VISIBLE
+        urlContainer.hideIfEmpty(urlContainer.url)
         if (user.created_at >= 0) {
             val createdAt = Utils.formatToLongTimeString(activity, user.created_at)
             val daysSinceCreation = (System.currentTimeMillis() - user.created_at) / 1000 / 60 / 60 / 24.toFloat()
@@ -507,8 +510,10 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         if (relationship == null) {
             getFriendship()
         }
-        activity.title = UserColorNameManager.decideDisplayName(user.name,
-                user.screen_name, nameFirst)
+        activity.title = SpannableStringBuilder.valueOf(UserColorNameManager.decideDisplayName(user.name,
+                user.screen_name, nameFirst)).also {
+            externalThemeManager.emoji?.applyTo(it)
+        }
 
         val userCreationDay = condition@ if (user.created_at >= 0) {
             val cal = Calendar.getInstance()

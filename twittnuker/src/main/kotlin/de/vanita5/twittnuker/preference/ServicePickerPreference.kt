@@ -20,29 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text.util
+package de.vanita5.twittnuker.preference
 
-import android.text.Spannable
-import android.widget.TextView
-import de.vanita5.twittnuker.extension.applyTo
-import de.vanita5.twittnuker.text.SafeSpannableString
-import de.vanita5.twittnuker.util.ExternalThemeManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ResolveInfo
+import android.util.AttributeSet
 
-import javax.inject.Inject
+abstract class ServicePickerPreference(context: Context, attrs: AttributeSet?) :
+        ComponentPickerPreference(context, attrs) {
 
-class EmojiSpannableFactory(textView: TextView) : Spannable.Factory() {
-
-    @Inject
-    lateinit internal var externalThemeManager: ExternalThemeManager
-
-    init {
-        GeneralComponent.get(textView.context).inject(this)
+    override fun getComponentName(info: ResolveInfo): ComponentName {
+        return ComponentName(info.serviceInfo.packageName, info.serviceInfo.name)
     }
 
-    override fun newSpannable(source: CharSequence): Spannable {
-        val spannable = SafeSpannableString(source)
-        externalThemeManager.emoji?.applyTo(spannable)
-        return spannable
+    override fun resolve(queryIntent: Intent): List<ResolveInfo> {
+        return packageManager.queryIntentServices(queryIntent, 0)
     }
 }

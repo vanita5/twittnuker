@@ -37,7 +37,10 @@ import de.vanita5.twittnuker.fragment.BasePreferenceFragment
 import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
 import de.vanita5.twittnuker.fragment.media.ExoPlayerPageFragment
-import de.vanita5.twittnuker.loader.*
+import de.vanita5.twittnuker.loader.CacheUserSearchLoader
+import de.vanita5.twittnuker.loader.DefaultAPIConfigLoader
+import de.vanita5.twittnuker.loader.ParcelableStatusLoader
+import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.loader.statuses.AbsRequestStatusesLoader
 import de.vanita5.twittnuker.loader.userlists.BaseUserListsLoader
 import de.vanita5.twittnuker.preference.AccountsListPreference
@@ -151,8 +154,8 @@ interface GeneralComponent {
     fun inject(service: BaseService)
 
     companion object {
-        private var instance: GeneralComponent? = null
 
+        private var instance: GeneralComponent? = null
         fun get(context: Context): GeneralComponent {
             return instance ?: run {
                 val helper = DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build()
@@ -160,5 +163,6 @@ interface GeneralComponent {
                 return@run helper
             }
         }
+
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
+import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.extension.loadProfileImage
@@ -27,8 +28,8 @@ open class SimpleUserViewHolder<out A : IContentAdapter>(
     }
 
     open fun displayUser(user: ParcelableUser) {
-        nameView.text = user.name
-        secondaryNameView.text = "@${user.screen_name}"
+        nameView.spannable = user.name
+        secondaryNameView.spannable = "@${user.screen_name}"
         if (adapter.profileImageEnabled) {
             val context = itemView.context
             adapter.requestManager.loadProfileImage(context, user, adapter.profileImageStyle,

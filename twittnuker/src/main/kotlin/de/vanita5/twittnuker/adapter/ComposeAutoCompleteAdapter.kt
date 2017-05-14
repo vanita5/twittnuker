@@ -31,6 +31,7 @@ import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.displayProfileImageKey
@@ -75,9 +76,9 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
         icon.style = profileImageStyle
 
         if (Suggestions.AutoComplete.TYPE_USERS == cursor.getString(indices.type)) {
-            text1.text =
+            text1.spannable =
                     cursor.getString(indices.title)
-            text2.text = String.format("@%s", cursor.getString(indices.summary))
+            text2.spannable = String.format("@%s", cursor.getString(indices.summary))
             if (displayProfileImage) {
                 val profileImageUrl = cursor.getString(indices.icon)
                 requestManager.loadProfileImage(context, profileImageUrl, profileImageStyle).into(icon)
@@ -87,7 +88,7 @@ class ComposeAutoCompleteAdapter(context: Context, val requestManager: RequestMa
 
             icon.clearColorFilter()
         } else {
-            text1.text = String.format("#%s", cursor.getString(indices.title))
+            text1.spannable = String.format("#%s", cursor.getString(indices.title))
             text2.setText(R.string.hashtag)
 
             icon.setImageResource(R.drawable.ic_action_hashtag)

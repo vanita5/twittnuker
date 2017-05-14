@@ -20,33 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.util.AttributeSet;
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ResolveInfo
+import android.util.AttributeSet
 
-import java.util.List;
+abstract class ActivityPickerPreference(context: Context, attrs: AttributeSet? = null) :
+        ComponentPickerPreference(context, attrs) {
 
-public abstract class ServicePickerPreference extends ComponentPickerPreference {
-
-    public ServicePickerPreference(final Context context) {
-        this(context, null);
+    override fun getComponentName(info: ResolveInfo): ComponentName {
+        return ComponentName(info.activityInfo.packageName, info.activityInfo.name)
     }
 
-    public ServicePickerPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected final ComponentName getComponentName(ResolveInfo info) {
-        return new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name);
-    }
-
-    @Override
-    protected List<ResolveInfo> resolve(Intent queryIntent) {
-        return packageManager.queryIntentServices(queryIntent, 0);
+    override fun resolve(queryIntent: Intent): List<ResolveInfo> {
+        return packageManager.queryIntentActivities(queryIntent, 0)
     }
 }

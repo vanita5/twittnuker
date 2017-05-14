@@ -35,6 +35,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.TextView
 import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.ComposeActivity
@@ -108,7 +109,7 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface,
                 val customView = actionBar.customView
                 val editQuery = customView.findViewById(R.id.editQuery) as TextView
                 editQuery.setTextColor(ThemeUtils.getColorDependent(theme.colorToolbar))
-                editQuery.text = query
+                editQuery.spannable = query
                 customView.setOnClickListener {
                     val searchIntent = Intent(context, QuickSearchBarActivity::class.java).apply {
                         putExtra(EXTRA_QUERY, query)

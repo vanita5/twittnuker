@@ -20,33 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.support.v7.preference.ListPreference
+import android.support.v7.preference.PreferenceFragmentCompat
+import android.util.AttributeSet
 
-import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.fragment.ThemedListPreferenceDialogFragmentCompat
+import de.vanita5.twittnuker.preference.iface.IDialogPreference
 
-import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_UPLOAD_MEDIA;
+open class ThemedListPreference(context: Context, attrs: AttributeSet? = null) :
+        ListPreference(context, attrs), IDialogPreference {
 
-public class MediaUploaderPreference extends ServicePickerPreference {
-
-    public MediaUploaderPreference(final Context context) {
-        super(context);
+    override fun displayDialog(fragment: PreferenceFragmentCompat) {
+        val df = ThemedListPreferenceDialogFragmentCompat.newInstance(key)
+        df.setTargetFragment(fragment, 0)
+        df.show(fragment.fragmentManager, key)
     }
-
-    public MediaUploaderPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected String getIntentAction() {
-        return INTENT_ACTION_EXTENSION_UPLOAD_MEDIA;
-    }
-
-    @Override
-    protected String getNoneEntry() {
-        return getContext().getString(R.string.media_uploader_default);
-    }
-
 }

@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.widget.CheckBox
 import android.widget.TextView
+import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
 import de.vanita5.twittnuker.extension.applyTheme
@@ -64,7 +65,7 @@ abstract class AbsUserMuteBlockDialogFragment : BaseDialogFragment(), DialogInte
                 MessageDialogFragment.show(childFragmentManager, title = getString(R.string.filter_everywhere),
                         message = getString(R.string.filter_everywhere_description), tag = "filter_everywhere_help")
             }
-            confirmMessageView.text = getMessage(user)
+            confirmMessageView.spannable = getMessage(user)
         }
         return dialog
     }

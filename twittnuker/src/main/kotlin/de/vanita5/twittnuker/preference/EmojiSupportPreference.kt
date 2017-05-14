@@ -20,33 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
 
-import java.util.List;
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.constant.IntentConstants
 
-public abstract class ActivityPickerPreference extends ComponentPickerPreference {
+class EmojiSupportPreference(context: Context, attrs: AttributeSet? = null) :
+        ActivityPickerPreference(context, attrs) {
 
-    public ActivityPickerPreference(final Context context) {
-        this(context, null);
-    }
+    override val intentAction: String
+        get() = IntentConstants.INTENT_ACTION_EMOJI_SUPPORT_ABOUT
 
-    public ActivityPickerPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected final ComponentName getComponentName(ResolveInfo info) {
-        return new ComponentName(info.activityInfo.packageName, info.activityInfo.name);
-    }
-
-    @Override
-    protected List<ResolveInfo> resolve(Intent queryIntent) {
-        return packageManager.queryIntentActivities(queryIntent, 0);
-    }
+    override val noneEntry: String
+        get() = context.getString(R.string.system_default)
 }

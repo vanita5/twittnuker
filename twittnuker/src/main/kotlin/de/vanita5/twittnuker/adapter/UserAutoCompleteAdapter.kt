@@ -33,6 +33,7 @@ import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.RequestManager
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.spannable
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
@@ -41,7 +42,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileImage
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.ParcelableLiteUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.UserColorNameManager
@@ -65,7 +66,7 @@ class UserAutoCompleteAdapter(
     private val displayProfileImage: Boolean
     private var profileImageStyle: Int
 
-    private var indices: ObjectCursor.CursorIndices<ParcelableUser>? = null
+    private var indices: ObjectCursor.CursorIndices<ParcelableLiteUser>? = null
 
     var accountKey: UserKey? = null
 
@@ -76,25 +77,22 @@ class UserAutoCompleteAdapter(
     }
 
     override fun bindView(view: View, context: Context, cursor: Cursor) {
-        val indices = this.indices!!
+        val user = indices!!.newObject(cursor)
         val text1 = view.findViewById(android.R.id.text1) as TextView
         val text2 = view.findViewById(android.R.id.text2) as TextView
         val icon = view.findViewById(android.R.id.icon) as ProfileImageView
 
         icon.style = profileImageStyle
 
-        text1.text = cursor.getString(indices[CachedUsers.NAME])
-        @SuppressLint("SetTextI18n")
-        text2.text = "@${cursor.getString(indices[CachedUsers.SCREEN_NAME])}"
+        text1.spannable = user.name
+        text2.spannable = "@${user.screen_name}"
         if (displayProfileImage) {
-            val profileImageUrl = cursor.getString(indices[CachedUsers.PROFILE_IMAGE_URL])
-            requestManager.loadProfileImage(context, profileImageUrl, profileImageStyle).into(icon)
+            requestManager.loadProfileImage(context, user, profileImageStyle).into(icon)
         } else {
             //TODO cancel image load
         }
 
         icon.visibility = if (displayProfileImage) View.VISIBLE else View.GONE
-        super.bindView(view, context, cursor)
     }
 
     fun closeCursor() {
@@ -104,8 +102,8 @@ class UserAutoCompleteAdapter(
         }
     }
 
-    override fun convertToString(cursor: Cursor?): CharSequence {
-        return cursor!!.getString(indices!![CachedUsers.SCREEN_NAME])
+    override fun convertToString(cursor: Cursor): CharSequence {
+        return cursor.getString(indices!![CachedUsers.SCREEN_NAME])
     }
 
     override fun runQueryOnBackgroundThread(constraint: CharSequence): Cursor? {
@@ -129,7 +127,7 @@ class UserAutoCompleteAdapter(
     }
 
     override fun swapCursor(cursor: Cursor?): Cursor? {
-        indices = cursor?.let { ObjectCursor.indicesFrom(it, ParcelableUser::class.java) }
+        indices = cursor?.let { ObjectCursor.indicesFrom(it, ParcelableLiteUser::class.java) }
         return super.swapCursor(cursor)
     }
 
