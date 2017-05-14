@@ -23,12 +23,12 @@
 package de.vanita5.twittnuker.loader
 
 import android.accounts.AccountManager
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.support.v4.content.FixedAsyncTaskLoader
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ListResponse
@@ -47,7 +47,7 @@ class MastodonSearchLoader(
             val am = AccountManager.get(context)
             val account = accountKey?.let {
                 AccountUtils.getAccountDetails(am, it, true)
-            } ?: throw ActivityNotFoundException()
+            } ?: throw AccountNotFoundException()
             val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
             val searchResult = mastodon.search(query, true, null)
             return ListResponse(ArrayList<Any>().apply {

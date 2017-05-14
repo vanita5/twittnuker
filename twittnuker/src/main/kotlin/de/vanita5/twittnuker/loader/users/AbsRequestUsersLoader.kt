@@ -30,6 +30,7 @@ import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.loadItemLimitKey
+import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.model.api.applyLoadLimit
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -70,7 +71,7 @@ abstract class AbsRequestUsersLoader(
         try {
             val am = AccountManager.get(context)
             details = accountKey?.let { AccountUtils.getAccountDetails(am, it, true) } ?:
-                    throw ActivityNotFoundException()
+                    throw AccountNotFoundException()
             users = getUsersInternal(details)
         } catch (e: MicroBlogException) {
             DebugLog.w(tr = e)
