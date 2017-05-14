@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.api.batchGetRelationships
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
+import de.vanita5.twittnuker.extension.model.extractFanfouHashtags
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment
@@ -84,17 +85,29 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                 }
                 return GetTimelineResult(account, activities, activities.flatMap {
                     it.sources?.toList().orEmpty()
+                }, notifications.flatMapTo(HashSet()) { notification ->
+                    notification.status?.tags?.map { it.name }.orEmpty()
                 })
             }
             AccountType.TWITTER -> {
                 val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
                 if (account.isOfficial(context)) {
-                    val activities = microBlog.getActivitiesAboutMe(paging).map {
+                    val timeline = microBlog.getActivitiesAboutMe(paging)
+                    val activities = timeline.map {
                         it.toParcelable(account, profileImageSize = profileImageSize)
                     }
 
                     return GetTimelineResult(account, activities, activities.flatMap {
                         it.sources?.toList().orEmpty()
+                    }, timeline.flatMapTo(HashSet()) { activity ->
+                        val mapResult = mutableSetOf<String>()
+                        activity.targetStatuses?.flatMapTo(mapResult) { status ->
+                            status.entities?.hashtags?.map { it.text }.orEmpty()
+                        }
+                        activity.targetObjectStatuses?.flatMapTo(mapResult) { status ->
+                            status.entities?.hashtags?.map { it.text }.orEmpty()
+                        }
+                        return@flatMapTo mapResult
                     })
                 }
             }
@@ -106,16 +119,19 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
                 }
                 return GetTimelineResult(account, activities, activities.flatMap {
                     it.sources?.toList().orEmpty()
-                })
+                }, activities.flatMap { it.extractFanfouHashtags() })
             }
         }
         val microBlog = account.newMicroBlogInstance(context, MicroBlog::class.java)
-        val activities = microBlog.getMentionsTimeline(paging).map {
+        val timeline = microBlog.getMentionsTimeline(paging)
+        val activities = timeline.map {
             InternalActivityCreator.status(it, account.key.id).toParcelable(account,
                     profileImageSize = profileImageSize)
         }
         return GetTimelineResult(account, activities, activities.flatMap {
             it.sources?.toList().orEmpty()
+        }, timeline.flatMap {
+            it.entities?.hashtags?.map { it.text }.orEmpty()
         })
     }
 

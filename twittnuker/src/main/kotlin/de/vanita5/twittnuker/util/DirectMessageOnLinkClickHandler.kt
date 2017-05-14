@@ -31,6 +31,7 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
 import de.vanita5.twittnuker.constant.phishingLinksWaringKey
 import de.vanita5.twittnuker.fragment.PhishingLinkWarningDialogFragment
+import de.vanita5.twittnuker.model.UserKey
 
 class DirectMessageOnLinkClickHandler(
         context: Context,
@@ -38,10 +39,10 @@ class DirectMessageOnLinkClickHandler(
         preferences: SharedPreferences
 ) : OnLinkClickHandler(context, manager, preferences) {
 
-    override fun openLink(link: String) {
+    override fun openLink(accountKey: UserKey?, link: String) {
         if (manager != null && manager.isActive) return
         if (!hasShortenedLinks(link)) {
-            super.openLink(link)
+            super.openLink(accountKey, link)
             return
         }
         if (context is FragmentActivity && preferences[phishingLinksWaringKey]) {
@@ -52,7 +53,7 @@ class DirectMessageOnLinkClickHandler(
             fragment.arguments = args
             fragment.show(fm, "phishing_link_warning")
         } else {
-            super.openLink(link)
+            super.openLink(accountKey, link)
         }
 
     }

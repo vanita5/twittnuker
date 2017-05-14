@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.task.cache
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.util.ArraySet
+import org.mariotaku.ktextension.ContentValues
+import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.bulkInsert
 import de.vanita5.twittnuker.extension.model.applyTo
@@ -32,26 +34,30 @@ import de.vanita5.twittnuker.extension.model.relationship
 import de.vanita5.twittnuker.extension.queryAll
 import de.vanita5.twittnuker.model.ParcelableRelationship
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
+import de.vanita5.twittnuker.model.task.GetTimelineResult
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.BaseAbstractTask
+import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
-class CacheUserRelationshipTask(
+class CacheTimelineResultTask(
         context: Context,
-        val accountKey: UserKey,
-        val accountType: String,
-        val users: Collection<ParcelableUser>,
+        val result: GetTimelineResult<*>,
         val cacheRelationship: Boolean
 ) : BaseAbstractTask<Any?, Unit, Any?>(context) {
 
     override fun doLongOperation(param: Any?) {
         val cr = context.contentResolver
-        cr.bulkInsert(CachedUsers.CONTENT_URI, users, ParcelableUser::class.java)
+        val account = result.account
+        val users = result.users
+        val hashtags = result.hashtags
 
+        cr.bulkInsert(CachedUsers.CONTENT_URI, users, ParcelableUser::class.java)
+        ContentResolverUtils.bulkInsert(cr, CachedHashtags.CONTENT_URI, hashtags.map {
+            ContentValues { this[CachedHashtags.NAME] = it.substringAfter("#") }
+        })
 
         if (cacheRelationship) {
-            val selectionArgsList = users.mapTo(mutableListOf(accountKey.toString())) {
+            val selectionArgsList = users.mapTo(mutableListOf(account.key.toString())) {
                 it.key.toString()
             }
             @SuppressLint("Recycle")

@@ -20,10 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.task
+package de.vanita5.twittnuker.extension
 
-import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableUser
+import android.net.Uri
+import okhttp3.HttpUrl
 
-data class GetTimelineResult<out T>(val account: AccountDetails, val data: List<T>,
-        val users: Collection<ParcelableUser>, val hashtags: Collection<String>)
+fun HttpUrl.toUri() : Uri {
+    return Uri.parse(toString())
+}

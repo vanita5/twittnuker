@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.BaseAbstractTask
-import de.vanita5.twittnuker.task.cache.CacheUserRelationshipTask
+import de.vanita5.twittnuker.task.cache.CacheTimelineResultTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -134,7 +134,7 @@ abstract class GetStatusesTask(
         context.contentResolver.notifyChange(contentUri, null)
         val exception = results.firstOrNull { it.second != null }?.second
         bus.post(GetStatusesTaskEvent(contentUri, false, exception))
-        cacheUserRelationship(context, results)
+        cacheItems(context, results)
         handler?.invoke(true)
     }
 
@@ -253,11 +253,11 @@ abstract class GetStatusesTask(
             return timestamp + (sortId - lastSortId) * (499 - count) / sortDiff + extraValue.toLong()
         }
 
-        fun cacheUserRelationship(context: Context, results: List<Pair<GetTimelineResult<*>?, Exception?>>) {
+        fun cacheItems(context: Context, results: List<Pair<GetTimelineResult<*>?, Exception?>>) {
             results.forEach { (result, _) ->
                 if (result == null) return@forEach
                 val account = result.account
-                val task = CacheUserRelationshipTask(context, account.key, account.type, result.users,
+                val task = CacheTimelineResultTask(context, result,
                         account.type == AccountType.STATUSNET || account.isOfficial(context))
                 TaskStarter.execute(task)
             }
