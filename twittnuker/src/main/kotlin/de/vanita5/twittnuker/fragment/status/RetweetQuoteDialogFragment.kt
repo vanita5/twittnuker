@@ -152,7 +152,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         updateTextCount(dialog, editComment.text, status, details)
     }
 
-    override fun onCancel(dialog: DialogInterface) {
+    override fun onCancel(dialog: DialogInterface?) {
         if (dialog !is Dialog) return
         if (dialog.editComment.empty) return
         dialog.saveToDrafts()
@@ -160,7 +160,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
         finishRetweetQuoteActivity()
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
+    override fun onDismiss(dialog: DialogInterface?) {
         super.onDismiss(dialog)
         finishRetweetQuoteActivity()
     }
