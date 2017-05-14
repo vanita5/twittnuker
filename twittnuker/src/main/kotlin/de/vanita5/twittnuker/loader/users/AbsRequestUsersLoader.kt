@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.users
 
 import android.accounts.AccountManager
-import android.content.ActivityNotFoundException
 import android.content.Context
 import org.mariotaku.kpreferences.get
 import de.vanita5.microblog.library.MicroBlogException
