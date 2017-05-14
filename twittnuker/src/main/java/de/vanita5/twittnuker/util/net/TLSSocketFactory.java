@@ -22,6 +22,9 @@
 
 package de.vanita5.twittnuker.util.net;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -32,6 +35,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+/**
+ * @author fkrauthan
+ */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 public class TLSSocketFactory extends SSLSocketFactory {
 
     private SSLSocketFactory internalSSLSocketFactory;
