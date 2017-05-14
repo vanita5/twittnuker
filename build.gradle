@@ -63,6 +63,7 @@ subprojects {
                     GlideTransformations: '2.0.1',
                     AndroidImageCropper : '2.4.0',
                     ExportablePreferences: '0.9.6',
+                    AbstractTask         : '0.9.5',
             ]
         }
 

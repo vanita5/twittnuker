@@ -36,6 +36,7 @@ import com.bumptech.glide.Glide
 import nl.komponents.kovenant.task
 import okhttp3.Dns
 import org.apache.commons.lang3.concurrent.ConcurrentUtils
+import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
@@ -272,6 +273,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             Class.forName(AsyncTask::class.java.name)
         } catch (ignore: ClassNotFoundException) {
         }
+        TaskStarter.setDefaultExecutor(AsyncTask.SERIAL_EXECUTOR)
         val executor = Executors.newSingleThreadExecutor()
         LoganSquareMapperFinder.setDefaultExecutor(object : LoganSquareMapperFinder.FutureExecutor {
             override fun <T> submit(callable: Callable<T>): Future<T> {
