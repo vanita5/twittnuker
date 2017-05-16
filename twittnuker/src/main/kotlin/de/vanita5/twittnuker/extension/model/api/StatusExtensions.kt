@@ -33,6 +33,7 @@ import de.vanita5.microblog.library.twitter.model.EntitySupport
 import de.vanita5.microblog.library.twitter.model.ExtendedEntitySupport
 import de.vanita5.microblog.library.twitter.model.MediaEntity
 import de.vanita5.microblog.library.twitter.model.Status
+import de.vanita5.twittnuker.exception.MalformedResponseException
 import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.extension.toSpanItem
 import de.vanita5.twittnuker.model.*
@@ -106,7 +107,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
     result.is_quote = status.isQuoteStatus
     result.quoted_id = status.quotedStatusId
     if (quoted != null) {
-        val quotedUser = quoted.user
+        val quotedUser = quoted.user ?: throw MalformedResponseException()
         result.quoted_id = quoted.id
         extras.quoted_external_url = quoted.inferredExternalUrl
 
@@ -153,7 +154,7 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
     result.in_reply_to_status_id = status.inReplyToStatusId
     result.in_reply_to_user_key = status.getInReplyToUserKey(accountKey)
 
-    val user = status.user
+    val user = status.user ?: throw MalformedResponseException()
     result.user_key = user.key
     result.user_name = user.name
     result.user_screen_name = user.screenName
