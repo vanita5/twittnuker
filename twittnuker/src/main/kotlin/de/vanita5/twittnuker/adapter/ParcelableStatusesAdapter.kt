@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS
+import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ObjectId
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -334,25 +335,24 @@ abstract class ParcelableStatusesAdapter(
         if (position == 0 && ILoadMoreSupportAdapter.START in loadMoreIndicatorPosition) {
             return ITEM_VIEW_TYPE_LOAD_INDICATOR
         }
-        when (getItemCountIndex(position)) {
+        val countIndex = getItemCountIndex(position)
+        when (countIndex) {
             ITEM_INDEX_LOAD_START_INDICATOR, ITEM_INDEX_LOAD_END_INDICATOR -> {
                 return ITEM_VIEW_TYPE_LOAD_INDICATOR
             }
             ITEM_INDEX_PINNED_STATUS -> {
                 return VIEW_TYPE_STATUS
             }
-            ITEM_INDEX_STATUS -> {
-                if (isGapItem(position)) {
-                    return ITEM_VIEW_TYPE_GAP
-                } else {
-                    return VIEW_TYPE_STATUS
-                }
+            ITEM_INDEX_STATUS -> return if (isGapItem(position)) {
+                ITEM_VIEW_TYPE_GAP
+            } else {
+                VIEW_TYPE_STATUS
             }
             ITEM_INDEX_FILTER_HEADER -> {
                 return VIEW_TYPE_FILTER_HEADER
             }
+            else -> throw UnsupportedCountIndexException(countIndex, position)
         }
-        throw AssertionError()
     }
 
     protected abstract fun onCreateStatusViewHolder(parent: ViewGroup): IStatusViewHolder

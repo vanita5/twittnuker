@@ -32,6 +32,7 @@ import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -95,11 +96,12 @@ class MessagesEntriesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (itemCounts.getItemCountIndex(position)) {
+        val countIndex = itemCounts.getItemCountIndex(position)
+        when (countIndex) {
             0 -> return ITEM_TYPE_MESSAGE_ENTRY
             1 -> return ITEM_VIEW_TYPE_LOAD_INDICATOR
+            else -> throw UnsupportedCountIndexException(countIndex, position)
         }
-        throw UnsupportedOperationException()
     }
 
     private fun updateItemCounts() {

@@ -46,10 +46,11 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
+import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.JsonSerializer
@@ -242,7 +243,8 @@ class ParcelableActivitiesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (getItemCountIndex(position)) {
+        val countIndex = getItemCountIndex(position)
+        when (countIndex) {
             ITEM_INDEX_ACTIVITY -> {
                 if (isGapItem(position)) {
                     return ITEM_VIEW_TYPE_GAP
@@ -271,8 +273,8 @@ class ParcelableActivitiesAdapter(
             ITEM_INDEX_LOAD_MORE_INDICATOR -> {
                 return ITEM_VIEW_TYPE_LOAD_INDICATOR
             }
+            else -> throw UnsupportedCountIndexException(countIndex, position)
         }
-        throw UnsupportedOperationException()
     }
 
     override fun addGapLoadingId(id: ObjectId) {

@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.constant.linkHighlightOptionKey
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
@@ -144,23 +145,22 @@ class MessagesConversationAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        when (itemCounts.getItemCountIndex(position)) {
-            ITEM_START_MESSAGE -> {
-                when (getMessage(position, reuse = true).message_type) {
-                    MessageType.STICKER -> {
-                        return ITEM_TYPE_STICKER_MESSAGE
-                    }
-                    MessageType.CONVERSATION_CREATE, MessageType.JOIN_CONVERSATION,
-                    MessageType.PARTICIPANTS_LEAVE, MessageType.PARTICIPANTS_JOIN,
-                    MessageType.CONVERSATION_NAME_UPDATE, MessageType.CONVERSATION_AVATAR_UPDATE -> {
-                        return ITEM_TYPE_NOTICE_MESSAGE
-                    }
-                    else -> return ITEM_TYPE_TEXT_MESSAGE
+        val countIndex = itemCounts.getItemCountIndex(position)
+        when (countIndex) {
+            ITEM_START_MESSAGE -> when (getMessage(position, reuse = true).message_type) {
+                MessageType.STICKER -> {
+                    return ITEM_TYPE_STICKER_MESSAGE
                 }
+                MessageType.CONVERSATION_CREATE, MessageType.JOIN_CONVERSATION,
+                MessageType.PARTICIPANTS_LEAVE, MessageType.PARTICIPANTS_JOIN,
+                MessageType.CONVERSATION_NAME_UPDATE, MessageType.CONVERSATION_AVATAR_UPDATE -> {
+                    return ITEM_TYPE_NOTICE_MESSAGE
+                }
+                else -> return ITEM_TYPE_TEXT_MESSAGE
             }
             ITEM_START_LOAD_OLDER -> return ITEM_LOAD_OLDER_INDICATOR
+            else -> throw UnsupportedCountIndexException(countIndex, position)
         }
-        throw UnsupportedOperationException()
     }
 
     fun getMessage(position: Int, reuse: Boolean = false): ParcelableMessage {
