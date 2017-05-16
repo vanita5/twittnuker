@@ -26,7 +26,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/hidden_settings">
 
-    <Preference android:layout="@layout/header_hidden_settings" />
+    <Preference
+        android:layout="@layout/header_hidden_settings" />
 
     <de.vanita5.twittnuker.preference.SeekBarDialogPreference
         android:defaultValue="10"
@@ -36,6 +37,7 @@
         app:min="5"
         app:progressTextSuffix="s" />
 
+    <de.vanita5.twittnuker.preference.HiddenSettingEntryPreference
+        android:title="@string/hidden_settings"/>
 
-    <de.vanita5.twittnuker.preference.HiddenSettingEntryPreference android:title="@string/hidden_settings"/>
 </PreferenceScreen>
