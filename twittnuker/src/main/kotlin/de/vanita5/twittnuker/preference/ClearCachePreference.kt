@@ -24,13 +24,9 @@ package de.vanita5.twittnuker.preference
 
 import android.content.Context
 import android.util.AttributeSet
-import de.vanita5.twittnuker.R
 
-class ClearCachePreference @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = R.attr.preferenceStyle
-) : AsyncTaskPreference(context, attrs, defStyle) {
+class ClearCachePreference(context: Context, attrs: AttributeSet? = null) :
+        AsyncTaskPreference(context, attrs) {
 
     override fun doInBackground() {
         val context = context ?: return

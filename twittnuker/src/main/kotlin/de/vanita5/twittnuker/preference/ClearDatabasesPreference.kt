@@ -24,15 +24,12 @@ package de.vanita5.twittnuker.preference
 
 import android.content.Context
 import android.util.AttributeSet
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.TIMELINE_POSITIONS_PREFERENCES_NAME
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
 
-class ClearDatabasesPreference(
-        context: Context,
-        attrs: AttributeSet? = null
-) : AsyncTaskPreference(context, attrs, R.attr.preferenceStyle) {
+class ClearDatabasesPreference(context: Context, attrs: AttributeSet? = null) :
+        AsyncTaskPreference(context, attrs) {
 
     override fun doInBackground() {
         val context = context ?: return
