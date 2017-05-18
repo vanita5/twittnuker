@@ -45,6 +45,7 @@ import org.mariotaku.ktextension.*
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
+import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -621,7 +622,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
                     return true
                 }
                 R.id.retweet -> {
-                    val intent = selectAccountIntent(fragment.context, status, itemId)
+                    val intent = selectAccountIntent(fragment.context, status, itemId, false)
                     fragment.startActivityForResult(intent, REQUEST_RETWEET_SELECT_ACCOUNT)
                     return true
                 }
@@ -650,7 +651,13 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
                     val accountKey = data.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY)
                     val extras = data.getBundleExtra(EXTRA_EXTRAS)
                     val status = extras.getParcelable<ParcelableStatus>(EXTRA_STATUS)
-                    fragment.executeAfterFragmentResumed {
+                    if (status.account_key.host != accountKey.host) {
+                        val composeIntent = Intent(fragment.context, ComposeActivity::class.java)
+                        composeIntent.putExtra(Intent.EXTRA_TEXT, " ${LinkCreator.getStatusWebLink(status)}")
+                        composeIntent.putExtra(EXTRA_ACCOUNT_KEY, accountKey)
+                        composeIntent.putExtra(EXTRA_SELECTION, 0)
+                        fragment.startActivity(composeIntent)
+                    } else fragment.executeAfterFragmentResumed {
                         RetweetQuoteDialogFragment.show(it.childFragmentManager, accountKey,
                                 status.id, status)
                     }
@@ -658,10 +665,13 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
             }
         }
 
-        fun selectAccountIntent(context: Context, status: ParcelableStatus, itemId: Long): Intent {
+        fun selectAccountIntent(context: Context, status: ParcelableStatus, itemId: Long,
+                sameHostOnly: Boolean = true): Intent {
             val intent = Intent(context, AccountSelectorActivity::class.java)
             intent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
-            intent.putExtra(EXTRA_ACCOUNT_HOST, status.account_key.host)
+            if (sameHostOnly) {
+                intent.putExtra(EXTRA_ACCOUNT_HOST, status.account_key.host)
+            }
             intent.putExtra(EXTRA_SINGLE_SELECTION, true)
             intent.putExtra(EXTRA_EXTRAS, Bundle {
                 this[EXTRA_STATUS] = status
