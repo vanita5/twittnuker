@@ -29,7 +29,7 @@ import android.support.v13.view.inputmethod.InputContentInfoCompat
 import android.support.v4.os.BuildCompat
 import android.text.InputType
 import android.text.Selection
-import android.text.method.ArrowKeyMovementMethod
+import android.text.method.BaseMovementMethod
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.extension.setupEmojiFactory
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer
+
 
 class ComposeEditText(
         context: Context,
@@ -67,7 +68,7 @@ class ComposeEditText(
     }
 
     override fun getDefaultMovementMethod(): MovementMethod {
-        return ArrowKeyMovementMethod.getInstance()
+        return BaseMovementMethod()
     }
 
     override fun onAttachedToWindow() {
