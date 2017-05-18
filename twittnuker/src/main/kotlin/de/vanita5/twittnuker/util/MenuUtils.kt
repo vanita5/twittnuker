@@ -42,12 +42,12 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.setActionIcon
 import org.mariotaku.ktextension.setItemAvailability
+import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -194,16 +194,13 @@ object MenuUtils {
 
             when (status.extras?.visibility) {
                 StatusVisibility.PRIVATE -> {
-                    retweet.isEnabled = false
                     retweet.setActionIcon(context, R.drawable.ic_action_lock)
                 }
                 StatusVisibility.DIRECT -> {
-                    retweet.isEnabled = false
                     retweet.setActionIcon(context, R.drawable.ic_action_message)
                     retweet.setIcon(R.drawable.ic_action_message)
                 }
                 else -> {
-                    retweet.isEnabled = true
                     retweet.setActionIcon(context, R.drawable.ic_action_retweet)
                 }
             }
