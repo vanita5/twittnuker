@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.extension.model
 
 import org.mariotaku.ktextension.addAllTo
 import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
+import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.Utils
@@ -91,6 +92,7 @@ inline val ParcelableStatus.is_my_retweet: Boolean
 
 inline val ParcelableStatus.can_retweet: Boolean
     get() {
+        if (user_key.host == USER_TYPE_FANFOU_COM) return true
         if (user_is_protected) return false
         return when (extras?.visibility) {
             StatusVisibility.PRIVATE -> false
