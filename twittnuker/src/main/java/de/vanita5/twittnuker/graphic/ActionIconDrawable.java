@@ -30,6 +30,7 @@ import android.view.MenuItem;
 
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
+@SuppressWarnings("RestrictedApi")
 public class ActionIconDrawable extends DrawableWrapper implements TwidereActionMenuItemView.IgnoreTinting {
 
     private int mDefaultColor;
