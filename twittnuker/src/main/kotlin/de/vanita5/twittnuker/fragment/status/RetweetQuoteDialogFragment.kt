@@ -27,12 +27,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.BaseColumns
 import android.support.annotation.CheckResult
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import android.view.View
-import android.widget.EditText
+import android.widget.CheckBox
 import android.widget.RelativeLayout
 import android.widget.Toast
 import com.twitter.Validator
@@ -48,6 +47,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.can_retweet
 import de.vanita5.twittnuker.extension.model.is_my_retweet
 import de.vanita5.twittnuker.extension.model.textLimit
+import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
@@ -72,7 +72,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
 
     private val Dialog.commentContainer get() = findViewById(R.id.commentContainer) as RelativeLayout
     private val Dialog.editComment get() = findViewById(R.id.editComment) as ComposeEditText
-    private val Dialog.quoteOriginal get() = findViewById(R.id.quoteOriginal) as android.widget.CheckBox
+    private val Dialog.quoteOriginal get() = findViewById(R.id.quoteOriginal) as CheckBox
 
     private val text: String?
         get() = arguments.getString(EXTRA_TEXT)
@@ -191,7 +191,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
                                showProtectedConfirmation: Boolean): Boolean {
         val twitter = twitterWrapper
         val dialog = dialog ?: return false
-        val editComment = dialog.findViewById(R.id.editComment) as EditText
+        val editComment = dialog.editComment
         if (canQuoteRetweet(account) && !editComment.empty) {
             val quoteOriginalStatus = dialog.quoteOriginal.isChecked
 
@@ -274,10 +274,8 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
 
     private fun displayNewDraftNotification(draftUri: Uri) {
         val contentResolver = context.contentResolver
-        val values = ContentValues {
-            this[BaseColumns._ID] = draftUri.lastPathSegment
-        }
-        contentResolver.insert(Drafts.CONTENT_URI_NOTIFICATIONS, values)
+        val notificationUri = Drafts.CONTENT_URI_NOTIFICATIONS.withAppendedPath(draftUri.lastPathSegment)
+        contentResolver.insert(notificationUri, null)
     }
 
     class QuoteProtectedStatusWarnFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
