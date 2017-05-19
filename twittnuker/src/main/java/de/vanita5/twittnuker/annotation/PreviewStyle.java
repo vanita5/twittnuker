@@ -27,7 +27,7 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@IntDef({PreviewStyle.NONE, PreviewStyle.SCALE, PreviewStyle.CROP, PreviewStyle.REAL_SIZE})
+@IntDef({PreviewStyle.NONE, PreviewStyle.SCALE, PreviewStyle.CROP, PreviewStyle.ACTUAL_SIZE})
 @Retention(RetentionPolicy.SOURCE)
 public @interface PreviewStyle {
 
@@ -35,5 +35,5 @@ public @interface PreviewStyle {
 
     int CROP = 1;
     int SCALE = 2;
-    int REAL_SIZE = 3;
+    int ACTUAL_SIZE = 3;
 }
