@@ -33,6 +33,7 @@
     <string name="action_center">Mitte</string>
     <string name="action_clear">Löschen</string>
     <string name="action_clear_messages">Nachrichten löschen</string>
+    <string name="action_comment">Kommentar</string>
     <string name="action_compose">Neuer Tweet</string>
     <string name="action_compose_message_convert_to_status">In Tweet umwandeln</string>
     <string name="action_connect_to_buffer">Verbinden</string>
@@ -205,7 +206,6 @@
     <string name="combined_notifications">Kompakte Notifications</string>
     <string name="combined_notifications_summary_off">Benachrichtigungen werden getrennt angezeigt</string>
     <string name="combined_notifications_summary_on">Benachrichtigungen werden zusammengefasst</string>
-    <string name="action_comment">Kommentar</string>
     <string name="comment_hint">Kommentar…</string>
     <string name="compact_cards">Kompakt anzeigen</string>
     <string name="compact_cards_summary">Mehr Tweets auf dem Bildschirm</string>
@@ -285,11 +285,9 @@
     <string name="error_message_message_too_many_participants">Zu viele Teilnehmer*innen</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_rate_limit">Twitter-Limit überschritten, probiere es in <xliff:g id="time">%s</xliff:g> noch einmal</string>
-    <string name="error_message_rate_limit_with_action">Twitter-Limit überschritten beim <xliff:g id="action">%1$s</xliff:g>, probiere es in <xliff:g id="time">%2$s</xliff:g> noch einmal</string>
     <string name="error_message_scheduler_not_available">Zeitversetztes senden nicht möglich</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
-    <string name="error_message_with_action">Fehler beim <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
     <string name="error_no_access_for_credentials">Deine Anwendung kann auf diese Ressource nicht zugreifen, hast du \'Erzwinge die Benutzung von privaten APIs\' aktiviert?</string>
     <string name="error_no_dm_permission">Twittnuker hat keine Berechtigung für Direktnachrichten.</string>
     <string name="error_title_device_incompatible">Inkompatibles Gerät</string>
