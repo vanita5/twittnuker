@@ -24,10 +24,7 @@ package de.vanita5.twittnuker.util
 
 import android.content.ContentValues
 import org.mariotaku.ktextension.mapToArray
-import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.twitter.model.SavedSearch
-import de.vanita5.microblog.library.twitter.model.Status
-import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserMention
@@ -73,12 +70,6 @@ object ContentValuesCreator {
 
     fun createSavedSearches(savedSearches: List<SavedSearch>, accountKey: UserKey): Array<ContentValues> {
         return savedSearches.mapToArray { createSavedSearch(it, accountKey) }
-    }
-
-    fun createStatus(orig: Status, accountKey: UserKey, accountType: String,
-            profileImageSize: String): ContentValues {
-        return ObjectCursor.valuesCreatorFrom(ParcelableStatus::class.java)
-                .create(orig.toParcelable(accountKey, accountType, profileImageSize))
     }
 
 }
