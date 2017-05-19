@@ -51,8 +51,8 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
-import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
+import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.model.pagination.Pagination
@@ -229,7 +229,7 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
         val selectedUsers = rangeOfSize(adapter.userStartIndex, adapter.userCount)
                 .filter { adapter.isItemChecked(it) }
                 .mapNotNull {
-                    val user = adapter.getUser(it) ?: return@mapNotNull null
+                    val user = adapter.getUser(it)
                     // Skip if already filtered
                     if (user.is_filtered) return@mapNotNull null
                     return@mapNotNull user
