@@ -65,6 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:gravity="top"
                     android:hint="@string/label_content_warning"
                     android:padding="@dimen/element_spacing_normal"
                     android:visibility="gone"/>
@@ -74,6 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
+                    android:gravity="top"
                     android:hint="@string/label_status_hint"
                     android:inputType="textMultiLine|textLongMessage|textCapSentences"
                     android:padding="@dimen/element_spacing_normal"/>
