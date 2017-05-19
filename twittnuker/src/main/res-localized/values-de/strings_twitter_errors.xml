@@ -35,4 +35,5 @@
     <!-- 215 Bad authentication data: Typically sent with 1.1 responses with HTTP code 400. The method requires authentication but it was not presented or was wholly invalid -->
     <string name="error_twitter_215">Du musst dich erneut einloggen.</string>
     <string name="error_twitter_326">Dein Account wurde gesperrt. Mehr Details unter https://twitter.com/</string>
+    <string name="error_twitter_327">Du hast diesen Tweet bereits retweeted.</string>
 </resources>
