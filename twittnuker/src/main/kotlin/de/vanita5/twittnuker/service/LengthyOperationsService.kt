@@ -45,8 +45,8 @@ import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.ManualTaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.configure
+import org.mariotaku.ktextension.getNullableTypedArrayExtra
 import org.mariotaku.ktextension.toLongOr
-import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlogException
@@ -225,11 +225,11 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
 
     private fun handleUpdateStatusIntent(intent: Intent) {
         val status = intent.getParcelableExtra<ParcelableStatusUpdate>(EXTRA_STATUS)
-        val statusParcelables = intent.getParcelableArrayExtra(EXTRA_STATUSES)
+        val statusParcelables = intent.getNullableTypedArrayExtra<ParcelableStatusUpdate>(EXTRA_STATUSES)
         val scheduleInfo = intent.getParcelableExtra<ScheduleInfo>(EXTRA_SCHEDULE_INFO)
         val statuses: Array<ParcelableStatusUpdate>
         if (statusParcelables != null) {
-            statuses = statusParcelables.toTypedArray(ParcelableStatusUpdate.CREATOR)
+            statuses = statusParcelables
         } else if (status != null) {
             statuses = arrayOf(status)
         } else

@@ -33,7 +33,7 @@ import android.widget.ListView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_account_selector.*
-import org.mariotaku.ktextension.toTypedArray
+import org.mariotaku.ktextension.getNullableTypedArrayExtra
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
@@ -50,7 +50,7 @@ class AccountSelectorActivity : BaseActivity(), OnItemClickListener {
 
     private val onlyIncludeKeys: Array<UserKey>?
         get() {
-            return intent.getParcelableArrayExtra(EXTRA_ACCOUNT_KEYS)?.toTypedArray(UserKey.CREATOR)
+            return intent.getNullableTypedArrayExtra(EXTRA_ACCOUNT_KEYS)
         }
 
     private val isOAuthOnly: Boolean
