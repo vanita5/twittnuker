@@ -236,8 +236,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
+
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(status.id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(status.user_key.getId()));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -285,8 +287,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null);
+
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(status.id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -322,8 +326,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_QUOTE);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
+
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(status.id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(status.user_key.getId()));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_QUOTE);
@@ -377,8 +383,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
+
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(status.id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(status.user_key.getId()));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -413,8 +421,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, notification.getAccountKey().toString());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, notification.getObjectUserKey().toString());
-//                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
+
+//                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(notification.getFromUser()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(notification.getObjectUserKey().getId()));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_USER);
@@ -435,8 +445,10 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_MESSAGES);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, notification.getObjectId());
-//                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
+
+//                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_id" + "=" + String.valueOf(notification.getFromUser()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_EXTRA, "item_user_id" + "=" + String.valueOf(notification.getObjectUserKey().getId()));
+
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_MESSAGES);
