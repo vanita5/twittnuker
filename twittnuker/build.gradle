@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "de.vanita5.twittnuker"
-        minSdkVersion project.properties['overrideMinSdkVersion'] ?: 14
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 34
         versionName "2.0.1"
