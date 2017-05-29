@@ -668,7 +668,7 @@
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased</string>
     <string name="message_toast_filters_import_hint">Press \"+\" to import</string>
-    <string name="message_toast_internal_storage_install_required">Installation on SD card is not supported, accounts may be lost after reboot.</string>
+    <string name="message_toast_internal_storage_install_required">Installation on SD card is not supported, accounts may get lost after reboot.</string>
     <string name="message_toast_invalid_mastodon_host">Invalid Mastodon host</string>
     <string name="message_toast_link_copied_to_clipboard">Link copied to clipboard</string>
     <string name="message_toast_livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
@@ -1115,8 +1115,6 @@
 
     <string name="subscribed_to_list">Subscribed to list \"<xliff:g id="list">%s</xliff:g>\".</string>
 
-    <string name="subscribers">Subscriber</string>
-
     <string name="summary_interactions_account_not_supported">Account not supported</string>
     <string name="summary_interactions_streaming_required">Full interactions available only when streaming enabled</string>
 
@@ -1236,6 +1234,7 @@
     <string name="title_user_list_ownerships">Created</string>
     <string name="title_user_list_subscriptions">Subscriptions</string>
     <string name="title_user_timeline_filter">Timeline filter</string>
+    <string name="title_userlist_subscribers">Subscriber</string>
     <string name="title_users_favorited_this">Users favorited this</string>
     <string name="title_users_liked_this">Users liked this</string>
     <string name="title_users_retweeted_this">Users retweeted this</string>

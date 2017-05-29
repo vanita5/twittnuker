@@ -903,7 +903,7 @@
     <string name="streaming">Streaming</string>
     <string name="style">Style</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>
-    <string name="subscribers">Follower</string>
+    <string name="title_userlist_subscribers">Follower</string>
     <string name="summary_interactions_account_not_supported">Für diesen Account nicht verfügbar</string>
     <string name="summary_interactions_streaming_required">Komplette Interaktion nur verfügbar, wenn Streaming aktiviert ist</string>
     <string name="swipe_down_to_refresh">Ziehen zum Aktualisieren</string>
