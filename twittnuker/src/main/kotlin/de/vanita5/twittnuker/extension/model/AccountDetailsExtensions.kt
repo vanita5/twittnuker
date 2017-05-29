@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.TwitterContentUtils
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
 fun AccountDetails.isOfficial(context: Context): Boolean {
     val extra = this.extras
@@ -42,7 +42,7 @@ fun AccountDetails.isOfficial(context: Context): Boolean {
     }
     val credentials = this.credentials
     if (credentials is OAuthCredentials) {
-        return TwitterContentUtils.isOfficialKey(context,
+        return InternalTwitterContentUtils.isOfficialKey(context,
                 credentials.consumer_key, credentials.consumer_secret)
     }
     return false

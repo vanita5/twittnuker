@@ -47,10 +47,10 @@ import de.vanita5.twittnuker.TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.account.cred.*
 import de.vanita5.twittnuker.util.HttpClientFactory
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sFanfouConstantPool
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
-import de.vanita5.twittnuker.util.TwitterContentUtils
 import de.vanita5.twittnuker.util.api.*
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
@@ -168,7 +168,7 @@ fun <T> newMicroBlogInstance(context: Context, endpoint: Endpoint, auth: Authori
     val factory = RestAPIFactory<MicroBlogException>()
     val extraHeaders = run {
         if (auth !is OAuthAuthorization) return@run null
-        val officialKeyType = TwitterContentUtils.getOfficialKeyType(context,
+        val officialKeyType = InternalTwitterContentUtils.getOfficialKeyType(context,
                 auth.consumerKey, auth.consumerSecret)
         return@run MicroBlogAPIFactory.getExtraHeaders(context, officialKeyType)
     } ?: UserAgentExtraHeaders(MicroBlogAPIFactory.getTwidereUserAgent(context))
