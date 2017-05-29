@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.alias.MastodonStatusUpdate
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.extension.calculateInSampleSize
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.applyUpdateStatus
@@ -931,8 +932,7 @@ class UpdateStatusTask(
             }
 
             if (imageLimit == null || imageLimit.checkGeomentry(o.outWidth, o.outHeight)) return null
-                o.inSampleSize = BitmapUtils.calculateInSampleSize(o.outWidth, o.outHeight,
-                        imageLimit.maxWidth, imageLimit.maxHeight)
+            o.inSampleSize = o.calculateInSampleSize(imageLimit.maxWidth, imageLimit.maxHeight)
             o.inJustDecodeBounds = false
             // Do actual image decoding
             val bitmap = context.contentResolver.openInputStream(mediaUri).use {

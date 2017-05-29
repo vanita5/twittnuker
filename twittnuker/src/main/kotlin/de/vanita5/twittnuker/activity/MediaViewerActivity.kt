@@ -65,7 +65,6 @@ import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.ShareProvider
 import de.vanita5.twittnuker.task.SaveFileTask
 import de.vanita5.twittnuker.task.SaveMediaToGalleryTask
-import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.PermissionUtils
 import de.vanita5.twittnuker.util.ThemeUtils
@@ -504,7 +503,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
                 Toast.makeText(activity, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
             }
         }
-        AsyncTaskUtils.executeTask(task)
+        task.execute()
     }
 
     private fun saveToStorage() {
@@ -527,7 +526,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
         }
         val saveDir = File(pubDir, "Twittnuker")
         val task = SaveMediaToGalleryTask(this, fileInfo, saveDir)
-        AsyncTaskUtils.executeTask(task)
+        task.execute()
     }
 
     private fun MediaViewerFragment.cacheFileInfo(): SaveFileTask.FileInfo? {

@@ -20,28 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.extension
 
-import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import android.graphics.BitmapFactory
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-public class AsyncTaskUtils {
-
-    public static final Executor DEFAULT_EXECUTOR = Executors.newFixedThreadPool(2);
-
-    private AsyncTaskUtils() {
+fun BitmapFactory.Options.calculateInSampleSize(preferredWidth: Int, preferredHeight: Int): Int {
+    if (preferredHeight > outHeight && preferredWidth > outWidth) {
+        return 1
     }
-
-    @SafeVarargs
-    public static <T extends AsyncTask<Parameter, ?, ?>, Parameter> T executeTask(T task, Parameter... params) {
-        task.executeOnExecutor(DEFAULT_EXECUTOR, params);
-        return task;
-    }
-
-    public static boolean isTaskRunning(@Nullable AsyncTask task) {
-        return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
-    }
+    val result = Math.round(Math.max(outWidth, outHeight) / Math.max(preferredWidth, preferredHeight).toFloat())
+    return Math.max(1, result)
 }

@@ -64,7 +64,6 @@ import de.vanita5.twittnuker.model.draft.QuoteStatusActionExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
-import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.deleteDrafts
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import java.lang.ref.WeakReference
@@ -273,7 +272,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     val args = arguments ?: return
-                    AsyncTaskUtils.executeTask(DeleteDraftsTask(activity, args.getLongArray(EXTRA_IDS)))
+                    DeleteDraftsTask(activity, args.getLongArray(EXTRA_IDS)).execute()
                 }
             }
         }

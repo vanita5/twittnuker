@@ -394,8 +394,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
             signInTask!!.cancel(true)
         }
 
-        signInTask = SignInTask(this, username, password, apiConfig)
-        AsyncTaskUtils.executeTask<AbstractSignInTask, Any>(signInTask)
+        signInTask = SignInTask(this, username, password, apiConfig).apply { execute() }
     }
 
     private fun onSignInResult(result: SignInResponse) {
@@ -471,8 +470,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
 
 
     private fun finishMastodonBrowserLogin(host: String, clientId: String, clientSecret: String, code: String) {
-        signInTask = MastodonLoginTask(this, host, clientId, clientSecret, code)
-        AsyncTaskUtils.executeTask(signInTask)
+        signInTask = MastodonLoginTask(this, host, clientId, clientSecret, code).apply { execute() }
     }
 
     private fun handleBrowserLoginResult(intent: Intent?) {
@@ -481,8 +479,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher,
         val requestToken = OAuthToken(extras.getString(EXTRA_REQUEST_TOKEN),
                 extras.getString(EXTRA_REQUEST_TOKEN_SECRET))
         val verifier = intent.getStringExtra(EXTRA_OAUTH_VERIFIER)
-        signInTask = BrowserSignInTask(this, apiConfig, requestToken, verifier)
-        AsyncTaskUtils.executeTask(signInTask)
+        signInTask = BrowserSignInTask(this, apiConfig, requestToken, verifier).apply { execute() }
     }
 
     private fun setDefaultAPI() {
