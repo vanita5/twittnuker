@@ -67,7 +67,7 @@ abstract class SyncTaskRunner(val context: Context) {
 
     fun cleanupSyncCache() {
         task {
-            context.syncDataDir.listFiles { file, name -> file.isFile }?.forEach { file ->
+            context.syncDataDir.listFiles { file, _ -> file.isFile }?.forEach { file ->
                 file.delete()
             }
         }

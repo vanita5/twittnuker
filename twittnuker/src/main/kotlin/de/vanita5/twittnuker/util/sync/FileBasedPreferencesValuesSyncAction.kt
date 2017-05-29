@@ -47,7 +47,7 @@ abstract class FileBasedPreferencesValuesSyncAction<DownloadSession : Closeable,
 
     override fun removeFromLocal(data: MutableMap<String, String>) {
         val editor = preferences.edit()
-        for ((k, v) in data) {
+        for (k in data.keys) {
             editor.remove(k)
         }
         editor.apply()
