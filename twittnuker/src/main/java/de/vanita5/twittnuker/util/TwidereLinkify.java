@@ -36,6 +36,7 @@ import com.twitter.Regex;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.text.AcctMentionSpan;
+import de.vanita5.twittnuker.text.HashtagSpan;
 import de.vanita5.twittnuker.text.TwidereURLSpan;
 
 import java.lang.annotation.Retention;
@@ -196,6 +197,8 @@ public final class TwidereLinkify implements Constants {
                     int linkType = type;
                     if (span instanceof AcctMentionSpan) {
                         linkType = LINK_TYPE_USER_ACCT;
+                    } else if (span instanceof HashtagSpan) {
+                        linkType = LINK_TYPE_HASHTAG;
                     } else if (accountKey != null && USER_TYPE_FANFOU_COM.equals(accountKey.getHost())) {
                         // Fix search path
                         if (url.startsWith("/")) {

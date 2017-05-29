@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
 import de.vanita5.twittnuker.text.AcctMentionSpan
+import de.vanita5.twittnuker.text.HashtagSpan
 import de.vanita5.twittnuker.util.HtmlBuilder
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getMediaUrl
@@ -281,8 +282,9 @@ internal fun findByOrigRange(spans: Array<SpanItem>, start: Int, end: Int): List
 internal inline val CharSequence.spanItems get() = (this as? Spanned)?.let { text ->
     text.getSpans(0, length, URLSpan::class.java).mapToArray {
         val item = it.toSpanItem(text)
-        if (it is AcctMentionSpan) {
-            item.type = SpanItem.SpanType.ACCT_MENTION
+        when (it) {
+            is AcctMentionSpan -> item.type = SpanItem.SpanType.ACCT_MENTION
+            is HashtagSpan -> item.type = SpanItem.SpanType.HASHTAG
         }
         return@mapToArray item
     }
