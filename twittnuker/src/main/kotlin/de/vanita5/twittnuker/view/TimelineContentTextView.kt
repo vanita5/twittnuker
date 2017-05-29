@@ -32,6 +32,7 @@ import android.view.MotionEvent
 import android.widget.TextView
 import org.mariotaku.chameleon.view.ChameleonTextView
 import de.vanita5.twittnuker.extension.setupEmojiFactory
+import java.lang.ref.WeakReference
 
 /**
  * Returns true when not clicking links
@@ -88,11 +89,9 @@ class TimelineContentTextView(
     }
 
     internal class InternalMovementMethod : BaseMovementMethod() {
-        private var targetSpan: ClickableSpan? = null
+        private var targetSpan: WeakReference<ClickableSpan?>? = null
 
-        override fun initialize(widget: TextView, text: Spannable) {
-
-        }
+        override fun canSelectArbitrarily() = true
 
         override fun onTouchEvent(widget: TextView, text: Spannable, event: MotionEvent): Boolean {
             when (event.actionMasked) {
@@ -103,22 +102,22 @@ class TimelineContentTextView(
                     val line = layout.getLineForVertical(Math.round(y))
                     val offset = layout.getOffsetForHorizontal(line, x)
                     if (x <= layout.getLineWidth(line)) {
-                        targetSpan = text.getSpans(offset, offset, ClickableSpan::class.java).firstOrNull()
+                        targetSpan = WeakReference(text.getSpans(offset, offset, ClickableSpan::class.java).firstOrNull())
                     } else {
                         targetSpan = null
                     }
                 }
                 MotionEvent.ACTION_UP -> {
-                    targetSpan?.onClick(widget)
-                    val handled = targetSpan != null
+                    val span = targetSpan?.get() ?: return false
+                    span.onClick(widget)
                     targetSpan = null
-                    return handled
+                    return true
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     targetSpan = null
                 }
             }
-            return targetSpan != null
+            return targetSpan?.get() != null
         }
 
     }
