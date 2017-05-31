@@ -32,19 +32,22 @@ import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.push.PushBackendServer
 
-class PushNotificationStatusPreference @JvmOverloads constructor(private val mContext: Context, attrs: AttributeSet, defStyle: Int = R.attr.preferenceStyle) : Preference(mContext, attrs, defStyle), TwittnukerConstants {
-    private val mPreferences: SharedPreferences
+class PushNotificationStatusPreference @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = R.attr.preferenceStyle
+) : Preference(context, attrs, defStyle) {
+
+    private val preferences: SharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
 
     init {
-        mPreferences = mContext.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-
         setTitle(R.string.push_status_title)
 
-        if (mPreferences.getBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false)) {
+        if (preferences.getBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false)) {
             setSummary(R.string.push_status_connected)
         } else {
             setSummary(R.string.push_status_disconnected)
@@ -55,22 +58,21 @@ class PushNotificationStatusPreference @JvmOverloads constructor(private val mCo
         setSummary(R.string.push_status_disconnecting)
         super.onClick()
 
-        val task = object : AbstractTask<Void, Void, PushNotificationStatusPreference>() {
+        val task = object : AbstractTask<Any?, Unit, PushNotificationStatusPreference>() {
 
-            override fun afterExecute(pushNotificationStatusPreference: PushNotificationStatusPreference?, aVoid: Void?) {
+            override fun afterExecute(pushNotificationStatusPreference: PushNotificationStatusPreference?, result: Unit?) {
                 pushNotificationStatusPreference!!.setSummary(R.string.push_status_disconnected)
             }
 
-            override fun doLongOperation(aVoid: Void): Void? {
-                val currentToken = mPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null)
+            override fun doLongOperation(param: Any?) {
+                val currentToken = preferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null)
 
                 if (!TextUtils.isEmpty(currentToken)) {
-                    val backend = PushBackendServer(mContext)
+                    val backend = PushBackendServer(context)
                     backend.remove(currentToken)
-                    mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply()
-                    mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply()
+                    preferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply()
+                    preferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply()
                 }
-                return null
             }
         }
         task.callback = this
