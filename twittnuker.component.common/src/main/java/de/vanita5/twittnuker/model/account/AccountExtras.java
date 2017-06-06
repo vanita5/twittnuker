@@ -25,9 +25,12 @@ package de.vanita5.twittnuker.model.account;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import de.vanita5.microblog.library.twitter.annotation.MediaCategory;
 
 public interface AccountExtras extends Parcelable {
 
@@ -76,6 +79,22 @@ public interface AccountExtras extends Parcelable {
             this.maxSizeAsync = maxSizeAsync;
         }
 
+        public boolean checkSize(long size, boolean async) {
+            final long limit = async ? getMaxSizeAsync() : getMaxSizeSync();
+            if (limit <= 0 || size <= 0) return true;
+            return size <= limit;
+        }
+
+        @Override
+        public String toString() {
+            return "ImageLimit{" +
+                    "maxWidth=" + maxWidth +
+                    ", maxHeight=" + maxHeight +
+                    ", maxSizeSync=" + maxSizeSync +
+                    ", maxSizeAsync=" + maxSizeAsync +
+                    '}';
+        }
+
         @NonNull
         public static ImageLimit ofSize(int width, int height) {
             final ImageLimit limit = new ImageLimit();
@@ -84,10 +103,18 @@ public interface AccountExtras extends Parcelable {
             return limit;
         }
 
-        public boolean checkSize(long size, boolean async) {
-            final long limit = async ? getMaxSizeAsync() : getMaxSizeSync();
-            if (limit <= 0 || size <= 0) return true;
-            return size <= limit;
+        @NonNull
+        public static ImageLimit twitterDefault(@Nullable @MediaCategory String category) {
+            if (MediaCategory.DM_IMAGE.equals(category)) {
+                ImageLimit limit = new ImageLimit();
+                limit.setMaxSizeSync(5 * 1024 * 1024);
+                limit.setMaxSizeAsync(5 * 1024 * 1024);
+                return limit;
+            }
+            final ImageLimit limit = new ImageLimit();
+            limit.setMaxSizeSync(3 * 1024 * 1024);
+            limit.setMaxSizeAsync(3 * 1024 * 1024);
+            return limit;
         }
 
     }
@@ -320,6 +347,28 @@ public interface AccountExtras extends Parcelable {
             if (min > 0 && num < min) return false;
             if (max > 0 && num > max) return false;
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return "VideoLimit{" +
+                    "supported=" + supported +
+                    ", minWidth=" + minWidth +
+                    ", minHeight=" + minHeight +
+                    ", maxWidth=" + maxWidth +
+                    ", maxHeight=" + maxHeight +
+                    ", canRotateGeometryLimit=" + canRotateGeometryLimit +
+                    ", maxSizeSync=" + maxSizeSync +
+                    ", maxSizeAsync=" + maxSizeAsync +
+                    ", minAspectRatio=" + minAspectRatio +
+                    ", maxAspectRatio=" + maxAspectRatio +
+                    ", minFrameRate=" + minFrameRate +
+                    ", maxFrameRate=" + maxFrameRate +
+                    ", minDurationSync=" + minDurationSync +
+                    ", minDurationAsync=" + minDurationAsync +
+                    ", maxDurationSync=" + maxDurationSync +
+                    ", maxDurationAsync=" + maxDurationAsync +
+                    '}';
         }
 
         public static VideoLimit twitterDefault() {

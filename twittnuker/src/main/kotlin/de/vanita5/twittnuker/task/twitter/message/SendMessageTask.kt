@@ -27,6 +27,7 @@ import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.TwitterUpload
+import de.vanita5.microblog.library.twitter.annotation.MediaCategory
 import de.vanita5.microblog.library.twitter.model.DirectMessage
 import de.vanita5.microblog.library.twitter.model.NewDm
 import org.mariotaku.sqliteqb.library.Expression
@@ -143,9 +144,9 @@ class SendMessageTask(
             message: ParcelableNewMessage): GetMessagesTask.DatabaseUpdateData {
         val recipientId = message.recipient_ids.singleOrNull() ?: throw MicroBlogException("No recipient")
         val category = when (message.media?.firstOrNull()?.type) {
-            ParcelableMedia.Type.IMAGE -> "dm_image"
-            ParcelableMedia.Type.VIDEO -> "dm_video"
-            ParcelableMedia.Type.ANIMATED_GIF -> "dm_gif"
+            ParcelableMedia.Type.IMAGE -> MediaCategory.DM_IMAGE
+            ParcelableMedia.Type.VIDEO -> MediaCategory.DM_VIDEO
+            ParcelableMedia.Type.ANIMATED_GIF -> MediaCategory.DM_GIF
             else -> null
         }
         val response = uploadMediaThen(account, message, category) { mediaId ->

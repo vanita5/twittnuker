@@ -24,6 +24,7 @@
 package de.vanita5.microblog.library.twitter;
 
 import de.vanita5.microblog.library.MicroBlogException;
+import de.vanita5.microblog.library.twitter.annotation.MediaCategory;
 import de.vanita5.microblog.library.twitter.model.MediaUploadResponse;
 import de.vanita5.microblog.library.twitter.model.NewMediaMetadata;
 import de.vanita5.microblog.library.twitter.model.ResponseCode;
@@ -51,7 +52,7 @@ public interface TwitterUpload {
     @Params(@KeyValue(key = "command", value = "INIT"))
     MediaUploadResponse initUploadMedia(@Param("media_type") String mediaType,
                                         @Param("total_bytes") long totalBytes,
-                                        @Param("media_category") String mediaCategory,
+                                        @MediaCategory @Param("media_category") String mediaCategory,
                                         @Param(value = "additional_owners", arrayDelimiter = ',')
                                         String[] additionalOwners) throws MicroBlogException;
 
