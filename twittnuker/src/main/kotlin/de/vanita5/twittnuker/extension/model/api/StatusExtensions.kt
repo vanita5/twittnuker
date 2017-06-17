@@ -34,12 +34,12 @@ import de.vanita5.microblog.library.twitter.model.ExtendedEntitySupport
 import de.vanita5.microblog.library.twitter.model.MediaEntity
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.exception.MalformedResponseException
+import de.vanita5.twittnuker.extension.model.addFilterFlag
 import de.vanita5.twittnuker.extension.model.toParcelable
 import de.vanita5.twittnuker.extension.toSpanItem
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.text.HashtagSpan
 import de.vanita5.twittnuker.util.HtmlBuilder

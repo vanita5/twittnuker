@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.updateExtraInformation
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -43,7 +44,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.draft.StatusObjectActionExtras
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.event.StatusRetweetedEvent
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
@@ -74,7 +74,7 @@ class RetweetStatusTask(
                 microBlog.retweetStatus(statusId).toParcelable(account)
             }
         }
-        ParcelableStatusUtils.updateExtraInformation(result, account)
+        result.updateExtraInformation(account)
         Utils.setLastSeen(context, result.mentions, System.currentTimeMillis())
 
         resolver.updateStatusInfo(DataStoreUtils.STATUSES_ACTIVITIES_URIS, Statuses.COLUMNS,

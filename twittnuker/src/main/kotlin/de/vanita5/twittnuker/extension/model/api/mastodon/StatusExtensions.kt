@@ -28,9 +28,9 @@ import android.text.Spanned
 import org.mariotaku.ktextension.isNotNullOrEmpty
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.microblog.library.mastodon.model.Status
+import de.vanita5.twittnuker.extension.model.addFilterFlag
 import de.vanita5.twittnuker.extension.model.api.spanItems
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils.addFilterFlag
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.text.HashtagSpan
 import de.vanita5.twittnuker.util.HtmlEscapeHelper

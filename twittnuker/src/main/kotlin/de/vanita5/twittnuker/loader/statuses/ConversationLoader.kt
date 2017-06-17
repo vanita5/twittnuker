@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.extension.atto.firstElementOrNull
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.model.makeOriginal
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -50,7 +51,6 @@ import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import java.text.ParseException
 import java.util.*
@@ -68,7 +68,7 @@ class ConversationLoader(
         private set
 
     init {
-        ParcelableStatusUtils.makeOriginalStatus(this.status)
+        status.makeOriginal()
     }
 
     @Throws(MicroBlogException::class)
