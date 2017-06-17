@@ -70,6 +70,7 @@ import de.vanita5.twittnuker.util.PermissionUtils
 import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.support.WindowSupport
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout
 import de.vanita5.twittnuker.view.viewer.MediaSwipeCloseContainer
 import java.io.File
 import javax.inject.Inject
@@ -156,10 +157,12 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
         swipeContainer.backgroundAlpha = 1f
         WindowSupport.setStatusBarColor(window, Color.TRANSPARENT)
         activityLayout.setStatusBarColor(overrideTheme.colorToolbar)
-        activityLayout.setWindowInsetsListener { l, t, r, b ->
-            val statusBarHeight = t - ThemeUtils.getActionBarHeight(this)
-            activityLayout.setStatusBarHeight(statusBarHeight)
-            onFitSystemWindows(Rect(l, t, r, b))
+        activityLayout.windowInsetsListener = object : TintedStatusFrameLayout.WindowInsetsListener {
+            override fun onApplyWindowInsets(left: Int, top: Int, right: Int, bottom: Int) {
+                val statusBarHeight = top - ThemeUtils.getActionBarHeight(this@MediaViewerActivity)
+                activityLayout.setStatusBarHeight(statusBarHeight)
+                onFitSystemWindows(Rect(left, top, right, bottom))
+            }
         }
     }
 

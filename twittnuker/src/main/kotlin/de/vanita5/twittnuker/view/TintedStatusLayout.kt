@@ -20,11 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.view
 
-public interface TintedStatusLayout extends IExtendedView {
-    void setStatusBarColor(int color);
+import de.vanita5.twittnuker.view.iface.IExtendedView
 
-    void setSetPaddingEnabled(boolean enabled);
+interface TintedStatusLayout : IExtendedView {
+    fun setStatusBarColor(color: Int)
+
+    var setPaddingEnabled: Boolean
 
 }

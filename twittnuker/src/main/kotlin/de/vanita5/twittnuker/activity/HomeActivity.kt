@@ -229,7 +229,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             }
         }
 
-        homeContent.setOnFitSystemWindowsListener(this)
+        homeContent.onFitSystemWindowsListener = this
         mainPager.adapter = pagerAdapter
         mainTabs.setViewPager(mainPager)
         mainTabs.setOnPageChangeListener(this)

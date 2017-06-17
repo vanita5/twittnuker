@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
+import de.vanita5.twittnuker.view.iface.IExtendedView
 
 abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInterface,
         SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback, ControlBarOffsetListener,
@@ -73,19 +74,21 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
 
         addTabs(pagerAdapter)
         toolbarTabs.notifyDataSetChanged()
-
-        toolbarContainer.setOnSizeChangedListener { _, _, _, _, _ ->
-            val pageLimit = viewPager.offscreenPageLimit
-            val currentItem = viewPager.currentItem
-            val count = pagerAdapter.count
-            for (i in 0 until count) {
-                if (i > currentItem - pageLimit - 1 || i < currentItem + pageLimit) {
-                    val obj = pagerAdapter.instantiateItem(viewPager, i)
-                    if (obj is IBaseFragment<*>) {
-                        obj.requestFitSystemWindows()
+        toolbarContainer.onSizeChangedListener = object : IExtendedView.OnSizeChangedListener {
+            override fun onSizeChanged(view: View, w: Int, h: Int, oldw: Int, oldh: Int) {
+                val pageLimit = viewPager.offscreenPageLimit
+                val currentItem = viewPager.currentItem
+                val count = pagerAdapter.count
+                for (i in 0 until count) {
+                    if (i > currentItem - pageLimit - 1 || i < currentItem + pageLimit) {
+                        val obj = pagerAdapter.instantiateItem(viewPager, i)
+                        if (obj is IBaseFragment<*>) {
+                            obj.requestFitSystemWindows()
+                        }
                     }
                 }
             }
+
         }
 
         if (savedInstanceState == null) {

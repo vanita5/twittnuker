@@ -33,11 +33,12 @@ import android.widget.RelativeLayout
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.view.iface.IExtendedView
 
-open class ExtendedRelativeLayout(context: Context, attrs: AttributeSet? = null) : RelativeLayout(context, attrs), IExtendedView {
+open class ExtendedRelativeLayout(context: Context, attrs: AttributeSet? = null) :
+        RelativeLayout(context, attrs), IExtendedView {
 
-    private var touchInterceptor: IExtendedView.TouchInterceptor? = null
-    private var onSizeChangedListener: IExtendedView.OnSizeChangedListener? = null
-    private var onFitSystemWindowsListener: IExtendedView.OnFitSystemWindowsListener? = null
+    override var touchInterceptor: IExtendedView.TouchInterceptor? = null
+    override var onSizeChangedListener: IExtendedView.OnSizeChangedListener? = null
+    override var onFitSystemWindowsListener: IExtendedView.OnFitSystemWindowsListener? = null
     private var usePaddingBackup: Boolean = false
 
     private val paddingBackup = Rect()
@@ -66,18 +67,6 @@ open class ExtendedRelativeLayout(context: Context, attrs: AttributeSet? = null)
             if (ret) return true
         }
         return super.onInterceptTouchEvent(event)
-    }
-
-    override fun setOnFitSystemWindowsListener(listener: IExtendedView.OnFitSystemWindowsListener) {
-        onFitSystemWindowsListener = listener
-    }
-
-    override fun setOnSizeChangedListener(listener: IExtendedView.OnSizeChangedListener) {
-        onSizeChangedListener = listener
-    }
-
-    override fun setTouchInterceptor(listener: IExtendedView.TouchInterceptor) {
-        touchInterceptor = listener
     }
 
     @Deprecated("Deprecated in Android")
