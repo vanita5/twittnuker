@@ -17,6 +17,13 @@ buildscript {
 }
 
 allprojects {
+
+    ext {
+        projectGroupId = 'de.vanita5.twittnuker'
+        projectVersionCode = 34
+        projectVersionName = '2.0.1'
+    }
+
     repositories {
         jcenter()
         mavenCentral()

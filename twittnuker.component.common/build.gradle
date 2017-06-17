@@ -25,12 +25,22 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 
+group = projectGroupId
+version = projectVersionName
+archivesBaseName = 'common-component'
+
+ext {
+    projectDescription = 'Common commonent library for Twittnuker app'
+    projectUrl = 'https://github.com/vanita5/twittnuker'
+    projectVcsUrl = 'https://github.com/vanita5/twittnuker.git'
+}
+
 android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "3.0"
+        versionCode projectVersionCode
+        versionName projectVersionName
     }
     buildTypes {
         release {
