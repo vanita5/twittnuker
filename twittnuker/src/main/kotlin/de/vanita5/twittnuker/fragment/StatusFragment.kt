@@ -484,7 +484,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         if (status == null || activity == null) return
         val args = Bundle {
             this[EXTRA_ACCOUNT_KEY] = status.account_key
-            this[EXTRA_STATUS_ID] = status.load_info_id
+            this[EXTRA_STATUS_ID] = status.originalId
             this[EXTRA_SINCE_ID] = sinceId
             this[EXTRA_MAX_ID] = maxId
             this[EXTRA_STATUS] = status
@@ -502,7 +502,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         if (status == null || host == null || isDetached) return
         val args = Bundle {
             this[EXTRA_ACCOUNT_KEY] = status.account_key
-            this[EXTRA_STATUS_ID] = status.load_info_id
+            this[EXTRA_STATUS_ID] = status.originalId
         }
         if (activityLoaderInitialized) {
             loaderManager.restartLoader(LOADER_ID_STATUS_ACTIVITY, args, statusActivityLoaderCallback)
@@ -690,8 +690,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             } else {
                 dest = prefDest
             }
-            val statusId = if (status.is_retweet) status.retweet_id else status.id
-            return twitter.showTranslation(statusId, dest)
+            return twitter.showTranslation(status.originalId, dest)
         }
 
         override fun onSucceed(callback: Any?, result: TranslationResult) {
@@ -1245,22 +1244,12 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                         if (count == null || status == null) return
                         when (count.type) {
                             KEY_RETWEET_COUNT -> {
-                                if (status.is_retweet) {
-                                    IntentUtils.openStatusRetweeters(context, status.account_key,
-                                            status.retweet_id)
-                                } else {
-                                    IntentUtils.openStatusRetweeters(context, status.account_key,
-                                            status.id)
-                                }
+                                IntentUtils.openStatusRetweeters(context, status.account_key,
+                                        status.originalId)
                             }
                             KEY_FAVORITE_COUNT -> {
-                                if (status.is_retweet) {
-                                    IntentUtils.openStatusFavoriters(context, status.account_key,
-                                            status.retweet_id)
-                                } else {
-                                    IntentUtils.openStatusFavoriters(context, status.account_key,
-                                            status.id)
-                                }
+                                IntentUtils.openStatusFavoriters(context, status.account_key,
+                                        status.originalId)
                             }
                         }
                     }
@@ -2148,9 +2137,6 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 this.sinceSortId = sinceSortId
             }
         }
-
-        private inline val ParcelableStatus.load_info_id: String
-            get() = if (is_retweet) (retweet_id ?: id) else id
 
     }
 }

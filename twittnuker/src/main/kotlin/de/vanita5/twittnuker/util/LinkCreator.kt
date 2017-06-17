@@ -25,10 +25,14 @@ package de.vanita5.twittnuker.util
 import android.net.Uri
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.originalId
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 
+/**
+ * Creates links for sharing
+ */
 object LinkCreator {
 
     private val AUTHORITY_TWITTER = "twitter.com"
@@ -105,11 +109,7 @@ object LinkCreator {
         if (USER_TYPE_FANFOU_COM == status.account_key.host) {
             return getFanfouStatusLink(status.id)
         }
-        if (status.is_retweet) {
-            return getTwitterStatusLink(status.user_screen_name, status.retweet_id)
-        } else {
-            return getTwitterStatusLink(status.user_screen_name, status.id)
-        }
+        return getTwitterStatusLink(status.user_screen_name, status.originalId)
     }
 
     fun getQuotedStatusWebLink(status: ParcelableStatus): Uri {
