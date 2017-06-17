@@ -28,7 +28,10 @@ import android.database.MergeCursor
 import android.net.Uri
 import android.text.TextUtils
 import org.mariotaku.ktextension.mapToArray
-import org.mariotaku.sqliteqb.library.*
+import org.mariotaku.sqliteqb.library.Columns
+import org.mariotaku.sqliteqb.library.Expression
+import org.mariotaku.sqliteqb.library.OrderBy
+import org.mariotaku.sqliteqb.library.SQLConstants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
@@ -107,15 +110,16 @@ object SuggestionsCursorCreator {
         } else {
             val queryTrimmed = query.replace("_", "^_").substringAfter("@")
 
-            if (!hasName(db, queryTrimmed)) {
+            val usersCursor = getUsersCursor(db, manager, nonNullProjection, accountKey, filterHost,
+                    filterType, query, queryTrimmed, 10)
+            if (!usersCursor.hasName(queryTrimmed)) {
                 val m = PATTERN_SCREEN_NAME.matcher(query)
                 if (m.matches()) {
                     val screenName = m.group(1)
                     cursors.add(getScreenNameCursor(nonNullProjection, screenName))
                 }
             }
-            cursors.add(getUsersCursor(db, manager, nonNullProjection, accountKey, filterHost,
-                    filterType, query, queryTrimmed))
+            cursors.add(usersCursor)
         }
         return MergeCursor(cursors.toTypedArray())
     }
@@ -158,7 +162,7 @@ object SuggestionsCursorCreator {
 
     private fun getUsersCursor(db: SQLiteDatabaseWrapper, manager: UserColorNameManager,
             projection: Array<String>, accountKey: UserKey, filterHost: String?, filterType: String?,
-            query: String, queryTrimmed: String): Cursor {
+            query: String, queryTrimmed: String, limit: Int = 0): Cursor {
         val usersSelection = Expression.or(
                 Expression.likeRaw(Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
                 Expression.likeRaw(Columns.Column(CachedUsers.NAME), "?||'%'", "^")
@@ -169,7 +173,8 @@ object SuggestionsCursorCreator {
         val orderBy = OrderBy(order, ascending)
         val usersProjection = projection.mapToArray { suggestionUsersProjectionMap[it]!! }
         val usersQuery = CachedUsersQueryBuilder.withScore(usersProjection,
-                usersSelection, selectionArgs, orderBy.sql, accountKey, filterHost, filterType, 0)
+                usersSelection, selectionArgs, orderBy.sql, accountKey, filterHost, filterType,
+                limit)
         return db.rawQuery(usersQuery.first.sql, usersQuery.second)
     }
 
@@ -206,14 +211,15 @@ object SuggestionsCursorCreator {
         return cursor
     }
 
-    private fun hasName(db: SQLiteDatabaseWrapper, queryTrimmed: String): Boolean {
-        val exactUserSelection = Expression.or(Expression.likeRaw(Columns.Column(CachedUsers.SCREEN_NAME), "?", "^"))
-        val exactUserCursor = db.query(CachedUsers.TABLE_NAME, arrayOf(SQLFunctions.COUNT()),
-                exactUserSelection.sql, arrayOf(queryTrimmed), null, null, null, "1")
-        try {
-            return exactUserCursor.moveToPosition(0) && exactUserCursor.getInt(0) > 0
-        } finally {
-            exactUserCursor.close()
+    private fun Cursor.hasName(queryTrimmed: String): Boolean {
+        val valueIdx = getColumnIndex(Suggestions.VALUE)
+        moveToFirst()
+        while (!isAfterLast) {
+            if (queryTrimmed.equals(getString(valueIdx), true)) {
+                return true
+            }
+            moveToNext()
         }
+        return false
     }
 }
