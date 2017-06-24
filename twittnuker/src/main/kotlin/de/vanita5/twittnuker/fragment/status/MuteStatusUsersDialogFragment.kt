@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.referencedUsers
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.CreateUserMuteDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -52,10 +53,7 @@ class MuteStatusUsersDialogFragment : BaseDialogFragment() {
             CreateUserMuteDialogFragment.show(fragmentManager, referencedUsers[which])
         }
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.onShow { it.applyTheme() }
         return dialog
     }
 }

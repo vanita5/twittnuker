@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_LIST
+import de.vanita5.twittnuker.extension.applyOnShow
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableUserList
 
@@ -58,10 +59,7 @@ class DestroyUserListSubscriptionDialogFragment : BaseDialogFragment(), DialogIn
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.applyOnShow { applyTheme() }
         return dialog
     }
 

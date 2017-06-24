@@ -35,9 +35,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.CheckBox
-import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.dialog_block_mute_filter_user_confirm.*
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
@@ -267,11 +268,10 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-                val confirmMessageView = dialog.findViewById(R.id.confirmMessage) as TextView
-                val filterEverywhereHelp = dialog.findViewById(R.id.filterEverywhereHelp)!!
+            dialog.onShow { dialog ->
+                dialog.applyTheme()
+                val confirmMessageView = dialog.confirmMessage
+                val filterEverywhereHelp = dialog.filterEverywhereHelp
                 filterEverywhereHelp.setOnClickListener {
                     MessageDialogFragment.show(childFragmentManager, title = getString(R.string.filter_everywhere),
                             message = getString(R.string.filter_everywhere_description), tag = "filter_everywhere_help")

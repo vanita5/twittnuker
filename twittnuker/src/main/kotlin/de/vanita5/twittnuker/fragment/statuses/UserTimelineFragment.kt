@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.userTimelineFilterKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment
 import de.vanita5.twittnuker.loader.statuses.UserTimelineLoader
@@ -172,10 +173,7 @@ class UserTimelineFragment : ParcelableStatusesFragment() {
                 (targetFragment as UserTimelineFragment).reloadAllStatuses()
             }
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
 

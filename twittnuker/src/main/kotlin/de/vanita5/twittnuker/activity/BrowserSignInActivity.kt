@@ -39,6 +39,7 @@ import org.attoparser.ParseException
 import org.mariotaku.ktextension.dismissDialogFragment
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient
@@ -264,8 +265,7 @@ class BrowserSignInActivity : BaseActivity() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val dialog = super.onCreateDialog(savedInstanceState)
-            dialog.setOnShowListener {
-                it as Dialog
+            dialog.onShow {
                 it.window.attributes = it.window.attributes?.apply {
                     width = WindowManager.LayoutParams.MATCH_PARENT
                 }
@@ -273,7 +273,7 @@ class BrowserSignInActivity : BaseActivity() {
                 val msg = this.msg
                 val transport = msg?.obj as? WebView.WebViewTransport ?: run {
                     dismiss()
-                    return@setOnShowListener
+                    return@onShow
                 }
                 transport.webView = it.findViewById<WebView>(R.id.webView)
                 msg.sendToTarget()

@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.activity.UserListSelectorActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.applyOnShow
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -237,10 +238,7 @@ class CreateQuickAccessShortcutActivity : BaseActivity() {
                 (activity as CreateQuickAccessShortcutActivity).onItemSelected(which)
             }
             return builder.create().apply {
-                setOnShowListener { it ->
-                    it as AlertDialog
-                    it.applyTheme()
-                }
+                applyOnShow { applyTheme() }
             }
         }
 

@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.ParcelableStatus
 
@@ -54,10 +55,7 @@ abstract class AbsSimpleStatusOperationDialogFragment : BaseDialogFragment(), Di
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.onShow { it.applyTheme() }
         return dialog
     }
 

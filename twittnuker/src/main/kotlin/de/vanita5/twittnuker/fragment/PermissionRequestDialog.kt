@@ -32,6 +32,7 @@ import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 
 class PermissionRequestDialog : BaseDialogFragment() {
 
@@ -49,10 +50,7 @@ class PermissionRequestDialog : BaseDialogFragment() {
             callback.onPermissionRequestCancelled(requestCode)
         }
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.onShow { it.applyTheme() }
         return dialog
     }
 

@@ -37,7 +37,7 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.DataExportActivity;
 import de.vanita5.twittnuker.activity.DataImportActivity;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
 public class SettingsImportExportPreference extends DialogPreference implements IDialogPreference {
@@ -88,7 +88,7 @@ public class SettingsImportExportPreference extends DialogPreference implements 
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
+                    DialogExtensionsKt.applyTheme((AlertDialog) dialog);
                 }
             });
             return dialog;

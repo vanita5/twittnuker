@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 
@@ -127,7 +127,7 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseDialog
 
     @Override
     public final void onShow(final DialogInterface dialog) {
-        AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
+        DialogExtensionsKt.applyTheme((AlertDialog) dialog);
         updatePositiveButton(dialog);
     }
 

@@ -27,9 +27,13 @@ import android.content.SharedPreferences
 import android.support.v4.app.DialogFragment
 import com.squareup.otto.Bus
 import com.twitter.Validator
+import okhttp3.Dns
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
-import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
+import de.vanita5.twittnuker.util.DebugModeUtils
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
+import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
@@ -50,6 +54,8 @@ open class BaseDialogFragment : DialogFragment() {
     lateinit var keyboardShortcutsHandler: KeyboardShortcutsHandler
     @Inject
     lateinit var bus: Bus
+    @Inject
+    lateinit var dns: Dns
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject

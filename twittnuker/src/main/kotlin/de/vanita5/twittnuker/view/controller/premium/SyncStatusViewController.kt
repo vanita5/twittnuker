@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.activity.PremiumDashboardActivity
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.fragment.sync.SyncSettingsFragment
@@ -120,10 +121,7 @@ class SyncStatusViewController : PremiumDashboardActivity.ExtraFeatureViewContro
                         arguments.getInt(EXTRA_POSITION), REQUEST_CONNECT_NETWORK_STORAGE)
             }
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
     }

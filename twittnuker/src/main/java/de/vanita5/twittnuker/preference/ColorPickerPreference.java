@@ -41,7 +41,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 
@@ -155,7 +155,7 @@ public class ColorPickerPreference extends DialogPreference implements
         public void onShow(DialogInterface dialog) {
             final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
             final AlertDialog alertDialog = (AlertDialog) dialog;
-            AlertDialogExtensionsKt.applyTheme(alertDialog);
+            DialogExtensionsKt.applyTheme(alertDialog);
             final View windowView = alertDialog.getWindow().getDecorView();
             if (windowView == null) return;
             mController = new ColorPickerDialog.Controller(getContext(), windowView);

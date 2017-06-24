@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.util.DeviceUtils
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
@@ -401,10 +402,7 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
             }
             builder.setPositiveButton(android.R.string.ok, this)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
 

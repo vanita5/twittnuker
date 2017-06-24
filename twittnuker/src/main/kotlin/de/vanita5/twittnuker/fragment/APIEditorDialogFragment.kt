@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.extension.setSelectedItem
 import de.vanita5.twittnuker.loader.DefaultAPIConfigLoader
 import de.vanita5.twittnuker.model.CustomAPIConfig
@@ -83,8 +84,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
         builder.setNegativeButton(android.R.string.cancel, null)
 
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
+        dialog.onShow {
             it.applyTheme()
             if (arguments?.getBoolean(EXTRA_SHOW_LOAD_DEFAULTS) ?: false) {
                 loadDefaults.visibility = View.VISIBLE
@@ -172,10 +172,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             builder.setAdapter(adapter, this)
             loaderManager.initLoader(0, null, this)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
 

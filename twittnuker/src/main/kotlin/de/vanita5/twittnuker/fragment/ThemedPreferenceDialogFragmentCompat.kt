@@ -30,6 +30,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.preference.PreferenceDialogFragmentCompat
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 
 import javax.inject.Inject
@@ -63,7 +64,7 @@ abstract class ThemedPreferenceDialogFragmentCompat : PreferenceDialogFragmentCo
         onPrepareDialogBuilder(builder)
         // Create the dialog
         val dialog = builder.create()
-        dialog.setOnShowListener { dialog -> (dialog as AlertDialog).applyTheme() }
+        dialog.onShow { it.applyTheme() }
         if (needInputMethod()) {
             supportRequestInputMethod(dialog)
         }

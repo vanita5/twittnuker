@@ -26,7 +26,6 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
@@ -43,14 +42,11 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.CheckBox
-import com.rengwuxian.materialedittext.MaterialEditText
 import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.model.UserList
-import de.vanita5.microblog.library.twitter.model.UserListUpdate
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -59,6 +55,7 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.statuses.UserListTimelineFragment
@@ -70,7 +67,6 @@ import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UserListSubscriptionEvent
 import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
-import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.*
 
 class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
@@ -331,57 +327,6 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
         }
     }
 
-    class EditUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
-
-        private val accountKey by lazy { arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY) }
-        private val listId: String by lazy { arguments.getString(EXTRA_LIST_ID) }
-
-        override fun onClick(dialog: DialogInterface, which: Int) {
-            when (which) {
-                DialogInterface.BUTTON_POSITIVE -> {
-                    val alertDialog = dialog as AlertDialog
-                    val editName = alertDialog.findViewById(R.id.name) as MaterialEditText
-                    val editDescription = alertDialog.findViewById(R.id.description) as MaterialEditText
-                    val editIsPublic = alertDialog.findViewById(R.id.is_public) as CheckBox
-                    val name = ParseUtils.parseString(editName.text)
-                    val description = ParseUtils.parseString(editDescription.text)
-                    val isPublic = editIsPublic.isChecked
-                    if (TextUtils.isEmpty(name)) return
-                    val update = UserListUpdate()
-                    update.setMode(if (isPublic) UserList.Mode.PUBLIC else UserList.Mode.PRIVATE)
-                    update.setName(name)
-                    update.setDescription(description)
-                    twitterWrapper.updateUserListDetails(accountKey, listId, update)
-                }
-            }
-
-        }
-
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val builder = AlertDialog.Builder(context)
-            builder.setView(R.layout.dialog_user_list_detail_editor)
-            builder.setTitle(R.string.title_user_list)
-            builder.setPositiveButton(android.R.string.ok, this)
-            builder.setNegativeButton(android.R.string.cancel, this)
-            val dialog = builder.create()
-            dialog.setOnShowListener { dialog ->
-                dialog as AlertDialog
-                dialog.applyTheme()
-                val editName = dialog.findViewById(R.id.name) as MaterialEditText
-                val editDescription = dialog.findViewById(R.id.description) as MaterialEditText
-                val editPublic = dialog.findViewById(R.id.is_public) as CheckBox
-                editName.addValidator(UserListNameValidator(getString(R.string.invalid_list_name)))
-                if (savedInstanceState == null) {
-                    editName.setText(arguments.getString(EXTRA_LIST_NAME))
-                    editDescription.setText(arguments.getString(EXTRA_DESCRIPTION))
-                    editPublic.isChecked = arguments.getBoolean(EXTRA_IS_PUBLIC, true)
-                }
-            }
-            return dialog
-        }
-
-    }
-
     internal class ParcelableUserListLoader(
             context: Context,
             private val omitIntentExtra: Boolean,
@@ -438,10 +383,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
             builder.setMessage(userList.description)
             builder.setPositiveButton(android.R.string.ok, null)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
     }

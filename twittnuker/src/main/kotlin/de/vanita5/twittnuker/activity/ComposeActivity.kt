@@ -77,13 +77,10 @@ import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.*
-import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.getCachedLocation
-import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.text.twitter.ReplyTextAndMentions
 import de.vanita5.twittnuker.extension.text.twitter.extractReplyTextAndMentions
-import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback
 import de.vanita5.twittnuker.model.*
@@ -1778,10 +1775,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             builder.setPositiveButton(R.string.send_anyway, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.applyOnShow { applyTheme() }
             return dialog
         }
     }
@@ -1817,10 +1811,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             builder.setNeutralButton(R.string.action_compose_message_convert_to_status, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.applyOnShow { applyTheme() }
             return dialog
         }
     }

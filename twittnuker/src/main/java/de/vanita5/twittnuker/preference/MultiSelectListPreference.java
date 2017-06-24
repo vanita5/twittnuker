@@ -37,7 +37,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
 abstract class MultiSelectListPreference extends DialogPreference implements IDialogPreference {
@@ -106,7 +106,7 @@ abstract class MultiSelectListPreference extends DialogPreference implements IDi
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
+                    DialogExtensionsKt.applyTheme((AlertDialog) dialog);
                 }
             });
             return dialog;

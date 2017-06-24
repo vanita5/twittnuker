@@ -28,10 +28,13 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.widget.CheckBox
+import android.widget.EditText
 import com.rengwuxian.materialedittext.MaterialEditText
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.extension.applyOnShow
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.positive
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.ParseUtils
@@ -41,16 +44,9 @@ class CreateUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnCli
     override fun onClick(dialog: DialogInterface, which: Int) {
         when (which) {
             DialogInterface.BUTTON_POSITIVE -> {
-                val alertDialog = dialog as AlertDialog
-                val accountKey: UserKey = arguments.getParcelable(EXTRA_ACCOUNT_KEY)
-                val editName = alertDialog.findViewById(R.id.name) as MaterialEditText
-                val editDescription = alertDialog.findViewById(R.id.description) as MaterialEditText
-                val editPublic = alertDialog.findViewById(R.id.is_public) as CheckBox
-                val name = ParseUtils.parseString(editName.text)
-                val description = ParseUtils.parseString(editDescription.text)
-                val isPublic = editPublic.isChecked
-                if (TextUtils.isEmpty(name)) return
-                twitterWrapper.createUserListAsync(accountKey, name, isPublic, description)
+                // Workaround for "Invalid Android class type: UNKNOWN"
+                dialog as Dialog
+
             }
         }
 
@@ -61,13 +57,22 @@ class CreateUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnCli
         builder.setView(R.layout.dialog_user_list_detail_editor)
 
         builder.setTitle(R.string.new_user_list)
-        builder.setPositiveButton(android.R.string.ok, this)
-        builder.setNegativeButton(android.R.string.cancel, this)
+        builder.positive(android.R.string.ok) { dialog ->
+            val accountKey: UserKey = arguments.getParcelable(EXTRA_ACCOUNT_KEY)
+            val editName = dialog.findViewById<EditText>(R.id.editName)!!
+            val editDescription = dialog.findViewById<EditText>(R.id.editDescription)!!
+            val editPublic = dialog.findViewById<CheckBox>(R.id.isPublic)!!
+            val name = ParseUtils.parseString(editName.text)
+            val description = ParseUtils.parseString(editDescription.text)
+            val isPublic = editPublic.isChecked
+            if (TextUtils.isEmpty(name)) return@positive
+            twitterWrapper.createUserListAsync(accountKey, name, isPublic, description)
+        }
+        builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-            val editName = it.findViewById(R.id.name) as MaterialEditText
+        dialog.applyOnShow {
+            applyTheme()
+            val editName = dialog.findViewById<MaterialEditText>(R.id.editName)!!
             editName.addValidator(UserListNameValidator(getString(R.string.invalid_list_name)))
         }
         return dialog

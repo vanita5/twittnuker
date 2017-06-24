@@ -32,6 +32,7 @@ import me.uucky.colorpicker.ColorPickerDialog
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.iface.IDialogFragmentCallback
 
 class ColorPickerDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
@@ -78,8 +79,7 @@ class ColorPickerDialogFragment : BaseDialogFragment(), DialogInterface.OnClickL
         }
         builder.setNegativeButton(android.R.string.cancel, this)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
+        dialog.onShow {
             it.applyTheme()
             mController = ColorPickerDialog.Controller(it.context, it.window.decorView)
 

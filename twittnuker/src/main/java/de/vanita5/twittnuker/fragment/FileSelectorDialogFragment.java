@@ -48,7 +48,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -125,7 +125,7 @@ public class FileSelectorDialogFragment extends BaseDialogFragment implements Lo
             @Override
             public void onShow(final DialogInterface dialog) {
                 final AlertDialog alertDialog = (AlertDialog) dialog;
-                AlertDialogExtensionsKt.applyTheme(alertDialog);
+                DialogExtensionsKt.applyTheme(alertDialog);
                 final ListView listView = alertDialog.getListView();
                 listView.setOnItemClickListener(FileSelectorDialogFragment.this);
             }

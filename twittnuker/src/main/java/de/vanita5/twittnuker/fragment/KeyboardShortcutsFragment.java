@@ -42,7 +42,7 @@ import android.view.MenuItem;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.KeyboardShortcutPreferenceCompatActivity;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 
@@ -151,7 +151,7 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
+                    DialogExtensionsKt.applyTheme((AlertDialog) dialog);
                 }
             });
             return dialog;

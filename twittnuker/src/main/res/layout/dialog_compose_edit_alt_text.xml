@@ -30,7 +30,7 @@
     android:padding="@dimen/element_spacing_large">
 
     <de.vanita5.twittnuker.view.FixedEditText
-        android:id="@+id/edit_text"
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"

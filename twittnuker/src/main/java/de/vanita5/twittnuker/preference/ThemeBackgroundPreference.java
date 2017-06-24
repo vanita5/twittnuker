@@ -45,7 +45,7 @@ import android.widget.SeekBar;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
+import de.vanita5.twittnuker.extension.DialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
 public class ThemeBackgroundPreference extends DialogPreference implements Constants,
@@ -193,7 +193,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
                 @Override
                 public void onShow(DialogInterface dialog) {
                     final AlertDialog alertDialog = (AlertDialog) dialog;
-                    AlertDialogExtensionsKt.applyTheme(alertDialog);
+                    DialogExtensionsKt.applyTheme(alertDialog);
                     if (preferences != null) {
                         final LayoutInflater inflater = alertDialog.getLayoutInflater();
                         final ListView listView = alertDialog.getListView();

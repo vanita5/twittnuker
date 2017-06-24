@@ -39,6 +39,7 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ExpandableListView
 import android.widget.TextView
+import kotlinx.android.synthetic.main.dialog_expandable_list.*
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
@@ -52,6 +53,7 @@ import de.vanita5.microblog.library.twitter.model.Location
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.UserKey
@@ -115,10 +117,9 @@ class TrendsLocationSelectorActivity : BaseActivity() {
             selectorBuilder.setView(R.layout.dialog_expandable_list)
             selectorBuilder.setNegativeButton(android.R.string.cancel, null)
             val dialog = selectorBuilder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-                val listView = it.findViewById(R.id.expandableList) as ExpandableListView
+            dialog.onShow { dialog ->
+                dialog.applyTheme()
+                val listView = dialog.expandableList
                 val adapter = ExpandableTrendLocationsListAdapter(context)
                 adapter.data = list
                 listView.setAdapter(adapter)

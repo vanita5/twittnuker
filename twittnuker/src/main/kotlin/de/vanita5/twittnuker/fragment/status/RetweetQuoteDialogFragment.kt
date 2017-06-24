@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.can_retweet
 import de.vanita5.twittnuker.extension.model.is_my_retweet
 import de.vanita5.twittnuker.extension.model.textLimit
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.*
@@ -313,10 +314,7 @@ class RetweetQuoteDialogFragment : AbsStatusDialogFragment() {
             builder.setPositiveButton(R.string.send_anyway, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
 

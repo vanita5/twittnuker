@@ -32,6 +32,7 @@ import android.support.v7.app.AlertDialog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 
 class PhishingLinkWarningDialogFragment : BaseDialogFragment(), OnClickListener {
 
@@ -55,10 +56,7 @@ class PhishingLinkWarningDialogFragment : BaseDialogFragment(), OnClickListener 
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.onShow { it.applyTheme() }
         return dialog
     }
 

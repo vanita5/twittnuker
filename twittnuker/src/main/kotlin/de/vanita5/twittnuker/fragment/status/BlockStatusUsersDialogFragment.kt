@@ -29,6 +29,7 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.applyOnShow
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.referencedUsers
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -52,10 +53,7 @@ class BlockStatusUsersDialogFragment : BaseDialogFragment() {
             CreateUserBlockDialogFragment.show(fragmentManager, referencedUsers[which])
         }
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.applyOnShow { applyTheme() }
         return dialog
     }
 }

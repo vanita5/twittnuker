@@ -31,6 +31,7 @@ import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_MESSAGE
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TITLE
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.onShow
 
 class MessageDialogFragment : BaseDialogFragment() {
 
@@ -42,10 +43,7 @@ class MessageDialogFragment : BaseDialogFragment() {
         builder.setMessage(args.getString(EXTRA_MESSAGE))
         builder.setPositiveButton(android.R.string.ok, null)
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-        }
+        dialog.onShow { it.applyTheme() }
         return dialog
     }
 

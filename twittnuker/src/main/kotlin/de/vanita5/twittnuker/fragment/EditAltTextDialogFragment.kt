@@ -26,15 +26,16 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
-import android.widget.EditText
+import kotlinx.android.synthetic.main.dialog_compose_edit_alt_text.*
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
+import org.mariotaku.ktextension.string
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TEXT
+import de.vanita5.twittnuker.extension.applyOnShow
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.util.ParseUtils
 
 class EditAltTextDialogFragment : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -44,18 +45,15 @@ class EditAltTextDialogFragment : BaseDialogFragment() {
         builder.setNegativeButton(android.R.string.cancel, null)
         val position = arguments.getInt(EXTRA_POSITION)
         builder.setPositiveButton(android.R.string.ok) { dialog, _ ->
-            val editText = (dialog as Dialog).findViewById<EditText>(R.id.edit_text)
-            val altText = ParseUtils.parseString(editText.text)
+            val altText = (dialog as Dialog).editText.string
             callback?.onSetAltText(position, altText)
         }
         builder.setNeutralButton(R.string.action_clear) { _, _ ->
             callback?.onSetAltText(position, null)
         }
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
-            it.applyTheme()
-            val editText = it.findViewById(R.id.edit_text) as EditText
+        dialog.applyOnShow {
+            applyTheme()
             editText.setText(arguments.getString(EXTRA_TEXT))
         }
         return dialog

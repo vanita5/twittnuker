@@ -26,12 +26,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.widget.DatePicker
-import android.widget.TimePicker
-import android.widget.ViewAnimator
+import kotlinx.android.synthetic.main.dialog_date_time_picker.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.displayedChildId
+import de.vanita5.twittnuker.extension.onShow
 import java.util.*
 
 
@@ -53,15 +52,14 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
             listener?.onDateCleared()
         }
         val dialog = builder.create()
-        dialog.setOnShowListener {
-            it as AlertDialog
+        dialog.onShow {
             it.applyTheme()
 
             val positiveButton = it.getButton(DialogInterface.BUTTON_POSITIVE)
 
-            val viewAnimator = it.findViewById(R.id.viewAnimator) as ViewAnimator
-            val datePicker = it.findViewById(R.id.datePicker) as DatePicker
-            val timePicker = it.findViewById(R.id.timePicker) as TimePicker
+            val viewAnimator = it.viewAnimator
+            val datePicker = it.datePicker
+            val timePicker = it.timePicker
             val calendar = Calendar.getInstance()
 
             fun showTimePicker() {

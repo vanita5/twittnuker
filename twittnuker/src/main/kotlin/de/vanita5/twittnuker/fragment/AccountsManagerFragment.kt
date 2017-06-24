@@ -48,6 +48,8 @@ import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_AUTH_TOKEN_TYPE
+import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
@@ -58,6 +60,7 @@ import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.extension.model.setColor
 import de.vanita5.twittnuker.extension.model.setPosition
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.AccountPreferences
@@ -249,10 +252,7 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
             builder.setTitle(R.string.title_account_delete_confirm)
             builder.setMessage(R.string.message_account_delete_confirm)
             val dialog = builder.create()
-            dialog.setOnShowListener {
-                it as AlertDialog
-                it.applyTheme()
-            }
+            dialog.onShow { it.applyTheme() }
             return dialog
         }
 

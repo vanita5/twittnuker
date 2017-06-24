@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -81,14 +82,13 @@ abstract class AbsStatusDialogFragment : BaseDialogFragment() {
         adapter.showAccountsColor = true
 
         val dialog = builder.create()
-        dialog.setOnShowListener { dialog ->
-            dialog as AlertDialog
+        dialog.onShow { dialog ->
             dialog.applyTheme()
 
             val am = AccountManager.get(context)
             val details = AccountUtils.getAccountDetails(am, accountKey, true) ?: run {
                 dismiss()
-                return@setOnShowListener
+                return@onShow
             }
             val weakThis = WeakReference(this)
             val weakHolder = WeakReference(StatusViewHolder(adapter = adapter, itemView = dialog.itemContent).apply {
