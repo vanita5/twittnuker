@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view.holder
 
 import android.view.View
+import kotlinx.android.synthetic.main.adapter_item_dashboard_account.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.AccountSelectorAdapter
 import de.vanita5.twittnuker.adapter.RecyclerPagerAdapter
@@ -35,11 +36,10 @@ class AccountProfileImageViewHolder(
         itemView: View
 ) : RecyclerPagerAdapter.ViewHolder(itemView), View.OnClickListener {
 
-    val iconView: ShapedImageView
+    val iconView: ShapedImageView = itemView.icon
 
     init {
         itemView.setOnClickListener(this)
-        iconView = itemView.findViewById(R.id.icon) as ShapedImageView
         iconView.style = adapter.profileImageStyle
     }
 
@@ -52,6 +52,10 @@ class AccountProfileImageViewHolder(
         adapter.requestManager.loadProfileImage(itemView.context, account,
                 adapter.profileImageStyle, iconView.cornerRadius,
                 iconView.cornerRadiusRatio).into(iconView)
+    }
+
+    companion object {
+        const val layoutResource = R.layout.adapter_item_dashboard_account
     }
 
 }

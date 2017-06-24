@@ -27,7 +27,7 @@ import android.support.v4.view.MarginLayoutParamsCompat
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import kotlinx.android.synthetic.main.list_item_activity_summary_compact.view.*
 import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.spannable
 import de.vanita5.twittnuker.R
@@ -37,32 +37,27 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableLiteUser
-import de.vanita5.twittnuker.view.BadgeView
-import de.vanita5.twittnuker.view.IconActionView
-import de.vanita5.twittnuker.view.ProfileImageView
-import de.vanita5.twittnuker.view.ShortTimeView
-import de.vanita5.twittnuker.view.iface.IColorLabelView
 
 class ActivityTitleSummaryViewHolder(
         itemView: View,
         private val adapter: ParcelableActivitiesAdapter
 ) : ViewHolder(itemView), View.OnClickListener {
 
-    private val itemContent = itemView.findViewById(R.id.itemContent) as IColorLabelView
-    private val activityTypeView = itemView.findViewById(R.id.activity_type) as IconActionView
-    private val titleView = itemView.findViewById(R.id.title) as TextView
-    private val summaryView = itemView.findViewById(R.id.summary) as TextView
-    private val timeView = itemView.findViewById(R.id.time) as ShortTimeView
-    private val profileImagesContainer = itemView.findViewById(R.id.profile_images_container) as ViewGroup
-    private val profileImageMoreNumber = itemView.findViewById(R.id.activity_profile_image_more_number) as BadgeView
+    private val itemContent = itemView.itemContent
+    private val activityTypeView = itemView.activityType
+    private val titleView = itemView.title
+    private val summaryView = itemView.summary
+    private val timeView = itemView.time
+    private val profileImagesContainer = itemView.profileImagesContainer
+    private val profileImageMoreNumber = itemView.activityProfileImageMoreNumber
     private val profileImageViews = arrayOf(
-            itemView.findViewById(R.id.activity_profile_image_0) as ProfileImageView,
-            itemView.findViewById(R.id.activity_profile_image_1) as ProfileImageView,
-            itemView.findViewById(R.id.activity_profile_image_2) as ProfileImageView,
-            itemView.findViewById(R.id.activity_profile_image_3) as ProfileImageView,
-            itemView.findViewById(R.id.activity_profile_image_4) as ProfileImageView
+            itemView.activityProfileImage0,
+            itemView.activityProfileImage1,
+            itemView.activityProfileImage2,
+            itemView.activityProfileImage3,
+            itemView.activityProfileImage4
     )
-    private val profileImageSpace: View = itemView.findViewById(R.id.profile_image_space)
+    private val profileImageSpace: View = itemView.profileImageSpace
 
     private var activityEventListener: IActivitiesAdapter.ActivityEventListener? = null
 

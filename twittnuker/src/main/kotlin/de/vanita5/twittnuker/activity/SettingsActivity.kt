@@ -372,8 +372,8 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
     ) : Entry() {
 
         override fun bind(view: View) {
-            (view.findViewById(android.R.id.icon) as ImageView).setImageResource(icon)
-            (view.findViewById(android.R.id.title) as TextView).text = title
+            view.findViewById<ImageView>(android.R.id.icon).setImageResource(icon)
+            view.findViewById<TextView>(android.R.id.title).text = title
         }
 
     }
@@ -382,7 +382,7 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
 
         override fun bind(view: View) {
             val theme = Chameleon.getOverrideTheme(view.context, view.context)
-            val textView = view.findViewById(android.R.id.title) as TextView
+            val textView: TextView = view.findViewById(android.R.id.title)
             textView.setTextColor(ThemeUtils.getOptimalAccentColor(theme.colorAccent,
                     theme.colorForeground))
             textView.text = title

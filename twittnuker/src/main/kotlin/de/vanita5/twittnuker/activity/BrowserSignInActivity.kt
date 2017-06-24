@@ -42,7 +42,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient
-
 import java.io.IOException
 import java.io.StringReader
 import java.lang.ref.WeakReference
@@ -229,38 +228,38 @@ class BrowserSignInActivity : BaseActivity() {
         }
 
         override fun onPause() {
-            val webView = view?.findViewById(R.id.webView) as? WebView
+            val webView: WebView? = view?.findViewById(R.id.webView)
             webView?.onPause()
             super.onPause()
         }
 
         override fun onResume() {
             super.onResume()
-            val webView = view?.findViewById(R.id.webView) as? WebView
+            val webView: WebView? = view?.findViewById(R.id.webView)
             webView?.onResume()
         }
 
         override fun onDestroy() {
-            val webView = view?.findViewById(R.id.webView) as? WebView
+            val webView: WebView? = view?.findViewById(R.id.webView)
             webView?.destroy()
             super.onDestroy()
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            val webView = view.findViewById(R.id.webView) as WebView
+            val webView: WebView = view.findViewById(R.id.webView)
             val webSettings = webView.settings
             webSettings.applyDefault()
-            webView.setWebViewClient(object : WebViewClient() {
+            webView.webViewClient = object : WebViewClient() {
                 @Suppress("OverridingDeprecatedMember")
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?) = false
 
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?) = false
-            })
-            webView.setWebChromeClient(object : WebChromeClient() {
+            }
+            webView.webChromeClient = object : WebChromeClient() {
                 override fun onCloseWindow(window: WebView) {
                     dismiss()
                 }
-            })
+            }
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -276,7 +275,7 @@ class BrowserSignInActivity : BaseActivity() {
                     dismiss()
                     return@setOnShowListener
                 }
-                transport.webView = it.findViewById(R.id.webView) as WebView
+                transport.webView = it.findViewById<WebView>(R.id.webView)
                 msg.sendToTarget()
             }
             return dialog

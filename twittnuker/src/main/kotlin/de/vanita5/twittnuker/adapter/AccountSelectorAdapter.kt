@@ -30,9 +30,9 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment
-import de.vanita5.twittnuker.view.transformer.AccountsSelectorTransformer
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.view.holder.AccountProfileImageViewHolder
+import de.vanita5.twittnuker.view.transformer.AccountsSelectorTransformer
 import java.util.*
 
 class AccountSelectorAdapter(
@@ -94,7 +94,7 @@ class AccountSelectorAdapter(
                 return AccountsDashboardFragment.AccountSpaceViewHolder(view)
             }
             ITEM_VIEW_TYPE_ICON -> {
-                val view = inflater.inflate(R.layout.adapter_item_dashboard_account, container, false)
+                val view = inflater.inflate(AccountProfileImageViewHolder.layoutResource, container, false)
                 return AccountProfileImageViewHolder(this, view)
             }
         }

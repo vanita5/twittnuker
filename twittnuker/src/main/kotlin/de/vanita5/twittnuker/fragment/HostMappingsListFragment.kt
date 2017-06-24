@@ -38,7 +38,6 @@ import android.widget.*
 import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.CompoundButton.OnCheckedChangeListener
 import kotlinx.android.synthetic.main.fragment_content_listview.*
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.HOST_MAPPING_PREFERENCES_NAME
 import de.vanita5.twittnuker.adapter.ArrayAdapter
@@ -249,8 +248,8 @@ class HostMappingsListFragment : AbsContentListViewFragment<HostMappingsListFrag
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
-            val text1 = view.findViewById(android.R.id.text1) as TextView
-            val text2 = view.findViewById(android.R.id.text2) as TextView
+            val text1 = view.findViewById<TextView>(android.R.id.text1)
+            val text2 = view.findViewById<TextView>(android.R.id.text2)
             val (key, value) = getItem(position)
             text1.text = key
             if (key == value) {
