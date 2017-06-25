@@ -21,17 +21,17 @@ buildscript {
     }
 
     dependencies {
-        // START Non-FOSS component
-        classpath "io.fabric.tools:gradle:${libVersions['FabricPlugin']}"
-        classpath 'com.google.gms:google-services:3.0.0'
-        // END Non-FOSS component
-
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${libVersions['Kotlin']}"
-        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${libVersions['Kotlin']}"
-        classpath('fr.avianey.androidsvgdrawable:gradle-plugin:3.0.0') {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${kotlinVersion}"
+        classpath("fr.avianey.androidsvgdrawable:gradle-plugin:${pluginVersions['AndroidSvgDrawable']}") {
             // should be excluded to avoid conflict
             exclude group: 'xerces'
         }
+
+        // START Non-FOSS component
+        classpath "io.fabric.tools:gradle:${pluginVersions['Fabric']}"
+        classpath "com.google.gms:google-services:${pluginVersions['PlayServices']}"
+        // END Non-FOSS component
     }
 }
 
@@ -252,5 +252,5 @@ task svgToMipmap(type: SvgDrawableTask) {
 }
 
 // START Non-FOSS component
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 // END Non-FOSS component

@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
@@ -39,18 +38,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.ParseUtils
 
-class CreateUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
-
-    override fun onClick(dialog: DialogInterface, which: Int) {
-        when (which) {
-            DialogInterface.BUTTON_POSITIVE -> {
-                // Workaround for "Invalid Android class type: UNKNOWN"
-                dialog as Dialog
-
-            }
-        }
-
-    }
+class CreateUserListDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
@@ -68,7 +56,6 @@ class CreateUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnCli
             if (TextUtils.isEmpty(name)) return@positive
             twitterWrapper.createUserListAsync(accountKey, name, isPublic, description)
         }
-        builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
         dialog.applyOnShow {
             applyTheme()

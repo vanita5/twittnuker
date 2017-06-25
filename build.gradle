@@ -36,6 +36,12 @@ allprojects {
 subprojects {
     buildscript {
         ext {
+            kotlinVersion = '1.1.2-5'
+            pluginVersions = [
+                    AndroidSvgDrawable: '3.0.0',
+                    Fabric            : '1.22.1',
+                    PlayServices      : '3.1.0',
+            ]
             libVersions = [
                     Kotlin              : '1.1.2-5',
                     SupportLib          : '26.0.0-beta2',
@@ -45,7 +51,6 @@ subprojects {
                     PlayServices        : '11.0.1',
                     MapsUtils           : '0.4.4',
                     Crashlyrics         : '2.6.8',
-                    FabricPlugin        : '1.22.1',
                     DropboxCoreSdk      : '2.1.2',
                     GoogleDriveApi      : 'v3-rev61-1.22.0',
                     Exoplayer           : 'r2.2.0',
@@ -102,7 +107,6 @@ subprojects {
 
             }
         }
-
 
     }
 
