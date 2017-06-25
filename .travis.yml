@@ -45,7 +45,7 @@ cache:
     - $HOME/.m2/
 
 before_install:
-  - $ANDROID_HOME/tools/bin/sdkmanager --update
+  - yes y | $ANDROID_HOME/tools/bin/sdkmanager --update
   - yes y | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   # #- echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
   # #- emulator -avd test -no-skin -no-audio -no-window &
