@@ -62,12 +62,9 @@ import de.vanita5.twittnuker.alias.MastodonStatusUpdate
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.extension.calculateInSampleSize
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
-import de.vanita5.twittnuker.extension.model.applyUpdateStatus
-import de.vanita5.twittnuker.extension.model.getMediaSizeLimit
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.text.twitter.getTweetLength
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
@@ -474,7 +471,7 @@ class UpdateStatusTask(
 
         val details = statusUpdate.accounts[index]
         if (statusUpdate.draft_action == Draft.Action.REPLY && inReplyToStatus != null) {
-            status.inReplyToId(inReplyToStatus.id)
+            status.inReplyToId(inReplyToStatus.originalId)
         }
         val mediaIds = pendingUpdate.mediaIds[index]
         if (mediaIds != null) {
