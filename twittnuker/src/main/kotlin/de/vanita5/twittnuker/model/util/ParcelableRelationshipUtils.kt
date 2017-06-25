@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.model.util
 
 import android.content.ContentResolver
 import android.support.v4.util.ArraySet
-import de.vanita5.microblog.library.twitter.model.Relationship
 import de.vanita5.microblog.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.bulkInsert
@@ -35,25 +34,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
 import de.vanita5.twittnuker.util.updateItems
 
 object ParcelableRelationshipUtils {
-
-    fun create(accountKey: UserKey, userKey: UserKey, relationship: Relationship?,
-               filtering: Boolean = false): ParcelableRelationship {
-        val obj = ParcelableRelationship()
-        obj.account_key = accountKey
-        obj.user_key = userKey
-        if (relationship != null) {
-            obj.following = relationship.isSourceFollowingTarget
-            obj.followed_by = relationship.isSourceFollowedByTarget
-            obj.blocking = relationship.isSourceBlockingTarget
-            obj.blocked_by = relationship.isSourceBlockedByTarget
-            obj.muting = relationship.isSourceMutingTarget
-            obj.retweet_enabled = relationship.isSourceWantRetweetsFromTarget
-            obj.notifications_enabled = relationship.isSourceNotificationsEnabledForTarget
-            obj.can_dm = relationship.canSourceDMTarget()
-        }
-        obj.filtering = filtering
-        return obj
-    }
 
     fun create(user: ParcelableUser, filtering: Boolean): ParcelableRelationship {
         val obj = ParcelableRelationship()
