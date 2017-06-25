@@ -14,9 +14,9 @@ android:
     - android-26
 
     # Additional components
-    #- extra-google-google_play_services
-    #- extra-google-m2repository
-    #- extra-android-m2repository
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 env:
   global:
@@ -31,9 +31,9 @@ addons:
       - sshpass
 
 licenses:
-    #- 'android-sdk-preview-license-.+'
+    - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
-    #- 'google-gdk-license-.+'
+    - 'google-gdk-license-.+'
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -50,6 +50,7 @@ before_install:
   # #- emulator -avd test -no-skin -no-audio -no-window &
   # #- android-wait-for-emulator
   # #- adb shell input keyevent 82 &
+  - yes y | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
 script:
   - ./gradlew clean assembleDebug
