@@ -75,10 +75,10 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.view.ProfileImageView
-import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
+import de.vanita5.twittnuker.view.iface.IExtendedView.OnApplySystemWindowInsetsListener
 
 class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<Cursor?>,
-        OnItemSelectedListener, OnItemClickListener, OnFitSystemWindowsListener,
+        OnItemSelectedListener, OnItemClickListener, OnApplySystemWindowInsetsListener,
         SwipeDismissListViewTouchListener.DismissCallbacks {
 
     private val systemWindowsInsets = Rect()
@@ -113,7 +113,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
                 accountSpinner.setSelection(index)
             }
         }
-        mainContent.onFitSystemWindowsListener = this
+        mainContent.onApplySystemWindowInsetsListener = this
         suggestionsList.adapter = SuggestionsAdapter(this)
         suggestionsList.onItemClickListener = this
 
@@ -259,7 +259,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         adapter.changeCursor(null)
     }
 
-    override fun onFitSystemWindows(insets: Rect) {
+    override fun onApplySystemWindowInsets(insets: Rect) {
         systemWindowsInsets.set(insets)
         updateWindowAttributes()
     }

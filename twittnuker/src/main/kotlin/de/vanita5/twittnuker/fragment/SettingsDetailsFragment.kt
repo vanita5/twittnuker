@@ -25,9 +25,12 @@ package de.vanita5.twittnuker.fragment
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import android.support.v4.view.ViewCompat
 import android.support.v7.preference.PreferenceScreen
+import android.view.View
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.activity.SettingsActivity
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SHOULD_TERMINATE
 import de.vanita5.twittnuker.util.Utils
 
 class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChangeListener {
@@ -57,6 +60,12 @@ class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChan
         if (resId != 0) {
             addPreferencesFromResource(resId)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        listView.fitsSystemWindows = true
+        ViewCompat.requestApplyInsets(listView)
     }
 
     override fun onStart() {

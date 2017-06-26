@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.onShow
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.statuses.UserListTimelineFragment
 import de.vanita5.twittnuker.fragment.users.UserListMembersFragment
@@ -70,7 +70,7 @@ import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
 import de.vanita5.twittnuker.util.*
 
 class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener,
-        LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
+        LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowInsetsCallback,
         SupportFragmentCallback {
 
     private var userListLoaderInitialized: Boolean = false

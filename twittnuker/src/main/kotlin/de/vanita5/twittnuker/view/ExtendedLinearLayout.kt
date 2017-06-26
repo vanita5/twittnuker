@@ -22,18 +22,21 @@
 
 package de.vanita5.twittnuker.view
 
+import android.annotation.TargetApi
 import android.content.Context
-import android.graphics.Rect
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.WindowInsets
 import android.widget.LinearLayout
 import de.vanita5.twittnuker.view.iface.IExtendedView
+import org.mariotaku.ktextension.systemWindowInsets
 
 class ExtendedLinearLayout(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs), IExtendedView {
 
     override var touchInterceptor: IExtendedView.TouchInterceptor? = null
     override var onSizeChangedListener: IExtendedView.OnSizeChangedListener? = null
-    override var onFitSystemWindowsListener: IExtendedView.OnFitSystemWindowsListener? = null
+    override var onApplySystemWindowInsetsListener: IExtendedView.OnApplySystemWindowInsetsListener? = null
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         if (touchInterceptor != null) {
@@ -51,11 +54,10 @@ class ExtendedLinearLayout(context: Context, attrs: AttributeSet? = null) : Line
         return super.onInterceptTouchEvent(event)
     }
 
-    override fun fitSystemWindows(insets: Rect): Boolean {
-        if (onFitSystemWindowsListener != null) {
-            onFitSystemWindowsListener!!.onFitSystemWindows(insets)
-        }
-        return super.fitSystemWindows(insets)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        onApplySystemWindowInsetsListener?.onApplySystemWindowInsets(insets.systemWindowInsets)
+        return super.onApplyWindowInsets(insets)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.fragment.filter.FiltersImportBlocksFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersImportMutesFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersSubscriptionsFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -77,7 +77,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
-class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity,
+class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControlBarActivity,
         SupportFragmentCallback {
 
     private lateinit var multiSelectHandler: MultiSelectEventHandler
@@ -208,11 +208,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         return false
     }
 
-    override fun onFitSystemWindows(insets: Rect) {
-        super.onFitSystemWindows(insets)
+    override fun onApplySystemWindowInsets(insets: Rect) {
+        super.onApplySystemWindowInsets(insets)
         val fragment = currentVisibleFragment
         if (fragment is IBaseFragment<*>) {
-            fragment.requestFitSystemWindows()
+            fragment.requestApplyInsets()
         }
     }
 

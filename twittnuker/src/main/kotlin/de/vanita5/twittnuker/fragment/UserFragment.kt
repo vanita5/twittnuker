@@ -115,7 +115,7 @@ import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -154,7 +154,7 @@ import java.util.*
 
 class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         OnSizeChangedListener, OnTouchListener, DrawerCallback, SupportFragmentCallback,
-        SystemWindowsInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener,
+        SystemWindowInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener,
         KeyboardShortcutCallback, UserColorChangedListener,
         IToolBarSupportFragment, StatusesFragmentDelegate,
         AbsContentRecyclerViewFragment.RefreshCompleteListener {
@@ -555,7 +555,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         return false
     }
 
-    override fun getSystemWindowsInsets(insets: Rect): Boolean {
+    override fun getSystemWindowInsets(insets: Rect): Boolean {
         return false
     }
 
@@ -1144,7 +1144,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     private val keyboardShortcutRecipient: Fragment?
         get() = currentVisibleFragment
 
-    override fun fitSystemWindows(insets: Rect) {
+    override fun applySystemWindowInsets(insets: Rect) {
     }
 
     override fun setupWindow(activity: FragmentActivity): Boolean {
@@ -1276,7 +1276,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     override fun onSizeChanged(view: View, w: Int, h: Int, oldw: Int, oldh: Int) {
         bannerWidth = w
         if (w != oldw || h != oldh) {
-            requestFitSystemWindows()
+            requestApplyInsets()
         }
     }
 

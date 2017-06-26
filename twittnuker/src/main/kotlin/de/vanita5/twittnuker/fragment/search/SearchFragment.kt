@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.AbsToolbarTabPagesFragment
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.statuses.MediaStatusesSearchFragment
@@ -62,7 +62,7 @@ import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.ThemeUtils
 
 class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface,
-        SupportFragmentCallback, SystemWindowsInsetsCallback, ControlBarOffsetListener,
+        SupportFragmentCallback, SystemWindowInsetsCallback, ControlBarOffsetListener,
         OnPageChangeListener, LinkHandlerActivity.HideUiOnScroll {
 
     val accountKey: UserKey

@@ -79,7 +79,7 @@ class ExternalBrowserPageFragment : MediaViewerFragment() {
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            activity?.supportInvalidateOptionsMenu()
+            activity?.invalidateOptionsMenu()
         }
     }
 }

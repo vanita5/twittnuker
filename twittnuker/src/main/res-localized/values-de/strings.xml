@@ -288,6 +288,7 @@
     <string name="error_message_scheduler_not_available">Zeitversetztes senden nicht möglich</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
+    <string name="error_message_video_upload_not_supported">Videos hochladen wird nicht unterstützt</string>
     <string name="error_no_access_for_credentials">Deine Anwendung kann auf diese Ressource nicht zugreifen, hast du \'Erzwinge die Benutzung von privaten APIs\' aktiviert?</string>
     <string name="error_no_dm_permission">Twittnuker hat keine Berechtigung für Direktnachrichten.</string>
     <string name="error_title_device_incompatible">Inkompatibles Gerät</string>
@@ -767,7 +768,7 @@
     <string name="projects_we_took_part">Projekte an denen wir teilgenommen haben</string>
     <!-- Normally you don't need to translate this -->
     <string name="provider_default">Twittnuker</string>
-    <!-- Fanfou is a Chinese micro blogging website http://fanfou.com/ -->
+    <!-- Fanfou is a Chinese micro blogging website https://fanfou.com/ -->
     <string name="provider_fanfou">Fanfou</string>
     <string name="provider_gnusocial_de">GNUSocial.de</string>
     <string name="provider_gnusocial_net">GNUSocial.net</string>
@@ -1064,7 +1065,6 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="error_message_video_upload_not_supported">Video Upload wird nicht unterstützt</string>
 
 
     <!-- Twittnuker -->
