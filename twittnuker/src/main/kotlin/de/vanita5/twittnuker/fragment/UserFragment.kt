@@ -148,7 +148,6 @@ import de.vanita5.twittnuker.util.support.ViewSupport
 import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
 import java.lang.ref.WeakReference
 import java.util.*
@@ -557,7 +556,9 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
     }
 
     override fun getSystemWindowInsets(caller: Fragment, insets: Rect): Boolean {
-        return false
+        insetsCallback?.getSystemWindowInsets(this, insets)
+        insets.top = 0
+        return true
     }
 
     fun getUserInfo(accountKey: UserKey, userKey: UserKey?, screenName: String?,

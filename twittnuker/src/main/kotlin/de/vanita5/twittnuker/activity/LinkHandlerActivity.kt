@@ -34,6 +34,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks
 import android.support.v4.app.NavUtils
+import android.support.v4.view.ViewCompat
 import android.support.v4.view.WindowCompat
 import android.support.v4.view.WindowInsetsCompat
 import android.support.v7.widget.Toolbar
@@ -69,6 +70,7 @@ import de.vanita5.twittnuker.fragment.search.MastodonSearchFragment
 import de.vanita5.twittnuker.fragment.search.SearchFragment
 import de.vanita5.twittnuker.fragment.statuses.*
 import de.vanita5.twittnuker.fragment.users.*
+import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
@@ -139,6 +141,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
                 supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
                 supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY)
             }
+            ViewCompat.setOnApplyWindowInsetsListener(window.decorView, this)
             contentFragmentId = android.R.id.content
         } else {
             setContentView(R.layout.activity_link_handler)
@@ -169,6 +172,8 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
         setTitle(linkId, uri)
         finishOnly = uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY)?.toBoolean() ?: false
 
+        supportActionBar?.setBackgroundDrawable(ActionBarColorDrawable.create(overrideTheme.colorToolbar,
+                true))
         if (fragment is IToolBarSupportFragment) {
             ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
         }
@@ -215,7 +220,9 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
         if (fragment is IBaseFragment<*>) {
             fragment.requestApplyInsets()
         }
-
+        if (fragment is IToolBarSupportFragment) {
+            return result
+        }
         return result.consumeSystemWindowInsets()
     }
 
