@@ -55,7 +55,7 @@ interface IBaseFragment<out F : Fragment> {
             return
         }
         val insets = Rect()
-        if (callback.getSystemWindowInsets(insets)) {
+        if (callback.getSystemWindowInsets(fragment, insets)) {
             onApplySystemWindowInsets(insets)
         }
     }
@@ -66,7 +66,7 @@ interface IBaseFragment<out F : Fragment> {
     }
 
     interface SystemWindowInsetsCallback {
-        fun getSystemWindowInsets(insets: Rect): Boolean
+        fun getSystemWindowInsets(caller: Fragment, insets: Rect): Boolean
     }
 
     fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (F) -> Unit): Promise<Unit, Exception>

@@ -31,6 +31,7 @@ import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StyleRes
+import android.support.v4.app.Fragment
 import android.support.v4.graphics.ColorUtils
 import android.support.v4.view.OnApplyWindowInsetsListener
 import android.support.v4.view.WindowInsetsCompat
@@ -175,7 +176,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     var keyMetaState: Int = 0
         private set
 
-    override fun getSystemWindowInsets(insets: Rect): Boolean {
+    override fun getSystemWindowInsets(caller: Fragment, insets: Rect): Boolean {
         if (systemWindowsInsets == null) return false
         insets.set(systemWindowsInsets)
         return true

@@ -456,6 +456,10 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         // No-op
     }
 
+    override fun onApplySystemWindowInsets(insets: Rect) {
+        recyclerView.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+    }
+
     override val reachingEnd: Boolean
         get() {
             val lm = layoutManager

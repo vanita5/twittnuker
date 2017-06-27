@@ -58,6 +58,7 @@ import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.graphics.ColorUtils
+import android.support.v4.view.OnApplyWindowInsetsListener
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager.OnPageChangeListener
 import android.support.v4.view.WindowCompat
@@ -555,7 +556,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         return false
     }
 
-    override fun getSystemWindowInsets(insets: Rect): Boolean {
+    override fun getSystemWindowInsets(caller: Fragment, insets: Rect): Boolean {
         return false
     }
 
@@ -675,8 +676,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         })
 
 
-        userFragmentView.windowInsetsListener = object : TintedStatusFrameLayout.WindowInsetsListener {
-            override fun onApplyWindowInsets(left: Int, top: Int, right: Int, bottom: Int) {
+        userFragmentView.windowInsetsListener = OnApplyWindowInsetsListener listener@ { _, insets ->
+            val top = insets.systemWindowInsetTop
                 profileContentContainer.setPadding(0, top, 0, 0)
                 profileBannerSpace.statusBarHeight = top
 
@@ -687,7 +688,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     }
                     profileBannerSpace.toolbarHeight = toolbarHeight
                 }
-            }
+            return@listener insets
         }
 
         profileContentContainer.onSizeChangedListener = object : OnSizeChangedListener {

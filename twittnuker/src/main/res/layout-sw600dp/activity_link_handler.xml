@@ -21,10 +21,11 @@
   ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout
+<de.vanita5.twittnuker.view.TintedStatusRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -66,4 +67,4 @@
         android:layout_below="@+id/toolbar"
         android:background="?android:windowContentOverlay"/>
 
-</RelativeLayout>
+</de.vanita5.twittnuker.view.TintedStatusRelativeLayout>
