@@ -29,6 +29,11 @@ inline val WindowInsetsCompat.systemWindowInsets: Rect
     get() = Rect(systemWindowInsetLeft, systemWindowInsetTop, systemWindowInsetRight,
             systemWindowInsetBottom)
 
+fun WindowInsetsCompat.getSystemWindowInsets(rect: Rect) {
+    rect.set(systemWindowInsetLeft, systemWindowInsetTop, systemWindowInsetRight,
+            systemWindowInsetBottom)
+}
+
 inline val WindowInsets.systemWindowInsets: Rect
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     get() = Rect(systemWindowInsetLeft, systemWindowInsetTop, systemWindowInsetRight,

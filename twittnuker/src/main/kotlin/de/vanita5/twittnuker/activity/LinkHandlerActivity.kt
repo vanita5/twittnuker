@@ -26,7 +26,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Rect
 import android.net.Uri
 import android.os.BadParcelableException
 import android.os.Bundle
@@ -36,6 +35,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks
 import android.support.v4.app.NavUtils
 import android.support.v4.view.WindowCompat
+import android.support.v4.view.WindowInsetsCompat
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -208,8 +208,8 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
         return false
     }
 
-    override fun onApplySystemWindowInsets(insets: Rect) {
-        super.onApplySystemWindowInsets(insets)
+    override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+        return super.onApplyWindowInsets(v, insets)
         val fragment = currentVisibleFragment
         if (fragment is IBaseFragment<*>) {
             fragment.requestApplyInsets()

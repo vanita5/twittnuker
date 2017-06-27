@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
+import de.vanita5.twittnuker.annotation.NavbarStyle
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
@@ -95,11 +96,12 @@ val streamingNonMeteredNetworkKey = KBooleanKey(KEY_STREAMING_NON_METERED_NETWOR
 val streamingPowerSavingKey = KBooleanKey(KEY_STREAMING_POWER_SAVING, false)
 val quickSendKey = KBooleanKey(KEY_QUICK_SEND, false)
 val refreshAfterTweetKey = KBooleanKey(KEY_REFRESH_AFTER_TWEET, false)
+val refreshOnStartKey = KBooleanKey(KEY_REFRESH_ON_START, false)
 val homeRefreshMentionsKey = KBooleanKey(KEY_HOME_REFRESH_MENTIONS, true)
 val homeRefreshDirectMessagesKey = KBooleanKey(KEY_HOME_REFRESH_DIRECT_MESSAGES, true)
 val homeRefreshSavedSearchesKey = KBooleanKey(KEY_HOME_REFRESH_SAVED_SEARCHES, false)
 val composeStatusVisibilityKey = KNullableStringKey("compose_status_visibility", null)
-val navbarStyleKey = KStringKey(KEY_NAVBAR_STYLE, "default")
+val navbarStyleKey = KStringKey(KEY_NAVBAR_STYLE, NavbarStyle.DEFAULT)
 
 object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
     override fun read(preferences: SharedPreferences) = preferences.getInt(key, def).coerceIn(100,

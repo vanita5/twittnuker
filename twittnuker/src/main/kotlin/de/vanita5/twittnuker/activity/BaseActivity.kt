@@ -32,6 +32,8 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StyleRes
 import android.support.v4.graphics.ColorUtils
+import android.support.v4.view.OnApplyWindowInsetsListener
+import android.support.v4.view.WindowInsetsCompat
 import android.support.v7.app.TwilightManagerAccessor
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
@@ -49,6 +51,8 @@ import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonActivity
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.getSystemWindowInsets
+import org.mariotaku.ktextension.systemWindowInsets
 import org.mariotaku.ktextension.unregisterReceiverSafe
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
@@ -56,6 +60,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import de.vanita5.twittnuker.annotation.NavbarStyle
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.model.DefaultFeatures
@@ -72,14 +77,13 @@ import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
-import de.vanita5.twittnuker.view.iface.IExtendedView.OnApplySystemWindowInsetsListener
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import javax.inject.Inject
 
 @SuppressLint("Registered")
 open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThemedActivity,
-        IControlBarActivity, OnApplySystemWindowInsetsListener, SystemWindowInsetsCallback,
+        IControlBarActivity, OnApplyWindowInsetsListener, SystemWindowInsetsCallback,
         KeyboardShortcutCallback, OnPreferenceDisplayDialogCallback {
 
     @Inject
@@ -166,7 +170,8 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     }
 
     // Data fields
-    private var systemWindowsInsets: Rect? = null
+    protected var systemWindowsInsets: Rect? = null
+        private set
     var keyMetaState: Int = 0
         private set
 
@@ -176,13 +181,14 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         return true
     }
 
-    override fun onApplySystemWindowInsets(insets: Rect) {
-        if (systemWindowsInsets == null)
-            systemWindowsInsets = Rect(insets)
-        else {
-            systemWindowsInsets!!.set(insets)
+    override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+        if (systemWindowsInsets == null) {
+            systemWindowsInsets = insets.systemWindowInsets
+        } else {
+            insets.getSystemWindowInsets(systemWindowsInsets!!)
         }
         notifyControlBarOffsetChanged()
+        return insets
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
@@ -233,7 +239,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         if (themeResource != 0) {
             setTheme(themeResource)
         }
-        setNavigationStyle(prefs[navbarStyleKey], themeColor)
+        onApplyNavigationStyle(prefs[navbarStyleKey], themeColor)
         super.onCreate(savedInstanceState)
         ActivitySupport.setTaskDescription(this, TaskDescriptionCompat(title.toString(), null,
                 ColorUtils.setAlphaComponent(overrideTheme.colorToolbar, 0xFF)))
@@ -374,13 +380,13 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         return getCurrentThemeResource(this, theme)
     }
 
-    private fun setNavigationStyle(navbarStyle: String, themeColor: Int) {
+    private fun onApplyNavigationStyle(navbarStyle: String, themeColor: Int) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return
         when (navbarStyle) {
-            "transparent" -> {
+            NavbarStyle.TRANSPARENT -> {
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
             }
-            "colored" -> {
+            NavbarStyle.COLORED -> {
                 WindowSupport.setNavigationBarColor(window, themeColor)
             }
         }

@@ -129,7 +129,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragmen
         return actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 
-    override fun applySystemWindowInsets(insets: Rect) {
+    override fun onApplySystemWindowInsets(insets: Rect) {
         listView.setPadding(insets.left, insets.top, insets.right, insets.bottom)
     }
 
