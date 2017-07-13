@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.task.twitter
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.util.ArraySet
+import org.mariotaku.ktextension.addTo
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
@@ -66,17 +66,12 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
             AccountType.MASTODON -> {
                 val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
                 val notifications = mastodon.getNotifications(paging)
-                val allUsers = notifications.flatMap {
-                    val user = it.account
-                    val statusUser = it.status?.account
-                    return@flatMap when {
-                        user != null && statusUser != null -> listOf(user, statusUser)
-                        user != null -> listOf(user)
-                        statusUser != null -> listOf(statusUser)
-                        else -> emptyList()
-                    }
+                val userIds = notifications.flatMapTo(HashSet()) {
+                    val mapResult = mutableSetOf<String>()
+                    it?.account?.id?.addTo(mapResult)
+                    it.status?.account?.id?.addTo(mapResult)
+                    return@flatMapTo mapResult
                 }
-                val userIds = allUsers.mapTo(ArraySet<String>()) { it.id }
                 val relationships = mastodon.batchGetRelationships(userIds)
                 val activities = notifications.mapNotNull {
                     val activity = it.toParcelable(account, relationships)

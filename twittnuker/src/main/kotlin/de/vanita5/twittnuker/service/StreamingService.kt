@@ -54,11 +54,12 @@ import de.vanita5.twittnuker.constant.streamingEnabledKey
 import de.vanita5.twittnuker.constant.streamingNonMeteredNetworkKey
 import de.vanita5.twittnuker.constant.streamingPowerSavingKey
 import de.vanita5.twittnuker.extension.model.*
-import de.vanita5.twittnuker.extension.model.api.*
+import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
+import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
-import de.vanita5.twittnuker.model.util.*
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
@@ -490,10 +491,14 @@ class StreamingService : BaseService() {
         fun startOrStopService(context: Context) {
             val streamingIntent = Intent(context, StreamingService::class.java)
             val holder = DependencyHolder.get(context)
-            if (holder.activityTracker.isHomeActivityLaunched) {
-                context.startService(streamingIntent)
-            } else {
-                context.stopService(streamingIntent)
+            try {
+                if (holder.activityTracker.isHomeActivityLaunched) {
+                    context.startService(streamingIntent)
+                } else {
+                    context.stopService(streamingIntent)
+                }
+            } catch (e: IllegalStateException) {
+                // This shouldn't happen, catch it.
             }
         }
     }
