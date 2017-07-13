@@ -26,8 +26,8 @@ package de.vanita5.microblog.library.twitter.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.microblog.library.twitter.util.InternalParseUtil;
+import org.mariotaku.restfu.http.HttpResponse;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -77,23 +77,8 @@ public class QueryResult extends AbstractList<Status> implements TwitterResponse
 
     @Override
     public int size() {
+        if (statuses == null) return 0;
         return statuses.size();
-    }
-
-    public double getCompletedIn() {
-        return metadata.completedIn;
-    }
-
-    public long getMaxId() {
-        return metadata.maxId;
-    }
-
-    public String getQuery() {
-        return metadata.query;
-    }
-
-    public int getResultsPerPage() {
-        return metadata.count;
     }
 
     @Override
@@ -117,10 +102,32 @@ public class QueryResult extends AbstractList<Status> implements TwitterResponse
     }
 
     public long getSinceId() {
+        if (metadata == null) return -1;
         return metadata.sinceId;
     }
 
+    public double getCompletedIn() {
+        if (metadata == null) return Double.NaN;
+        return metadata.completedIn;
+    }
+
+    public long getMaxId() {
+        if (metadata == null) return -1;
+        return metadata.maxId;
+    }
+
+    public String getQuery() {
+        if (metadata == null) return null;
+        return metadata.query;
+    }
+
+    public int getResultsPerPage() {
+        if (metadata == null) return -1;
+        return metadata.count;
+    }
+
     public String getWarning() {
+        if (metadata == null) return null;
         return metadata.warning;
     }
 
