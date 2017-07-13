@@ -42,8 +42,7 @@ class AccountPreferences(
         private val preferences: SharedPreferences,
         val accountKey: UserKey
 ) {
-    private val accountPreferences = context.getSharedPreferences(
-            "$ACCOUNT_PREFERENCES_NAME_PREFIX$accountKey", Context.MODE_PRIVATE)
+    private val accountPreferences = getSharedPreferencesForAccount(context, accountKey)
 
     val defaultNotificationLightColor: Int
         get() {
@@ -153,8 +152,12 @@ class AccountPreferences(
         }
 
         fun getSharedPreferencesForAccount(context: Context, accountKey: UserKey): SharedPreferences {
-            return context.getSharedPreferences("$ACCOUNT_PREFERENCES_NAME_PREFIX$accountKey",
+            return context.getSharedPreferences("$ACCOUNT_PREFERENCES_NAME_PREFIX${accountKey.sanitized()}",
                     Context.MODE_PRIVATE)
+        }
+
+        private fun UserKey.sanitized(): String {
+            return toString().replace(Regex("[^\\w\\d@-_.]"), "_")
         }
     }
 }
