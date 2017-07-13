@@ -55,10 +55,6 @@ fun Status.applyTo(accountKey: UserKey, result: ParcelableStatus) {
     result.sort_id = sortId
     result.timestamp = createdAt?.time ?: 0
 
-    extras.summary_text = spoilerText?.let(EmojioneTranslator::translate)
-    extras.visibility = visibility
-    extras.external_url = url
-
     val retweetedStatus = reblog
     result.is_retweet = retweetedStatus != null
     result.retweeted = isReblogged
@@ -111,6 +107,9 @@ fun Status.applyTo(accountKey: UserKey, result: ParcelableStatus) {
 
     extras.display_text_range = calculateDisplayTextRange(result.text_unescaped, result.spans,
             result.media)
+    extras.summary_text = status.spoilerText?.let(EmojioneTranslator::translate)
+    extras.visibility = status.visibility
+    extras.external_url = status.url
 
     // Try to complete mastodon `in_reply_to` info
     val inReplyToMention = result.mentions?.firstOrNull {
