@@ -20,10 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference.iface;
+package de.vanita5.twittnuker.preference.iface
 
-import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat
 
-public interface IDialogPreference {
-    void displayDialog(PreferenceFragmentCompat fragment);
+interface IDialogPreference {
+    fun displayDialog(fragment: PreferenceFragmentCompat)
 }
