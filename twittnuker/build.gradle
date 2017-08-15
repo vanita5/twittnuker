@@ -8,16 +8,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidsvgdrawable'
 
-// START Non-FOSS component
-apply plugin: 'io.fabric'
-// END Non-FOSS component
-
 buildscript {
     repositories {
         jcenter()
-        // START Non-FOSS component
-        maven { url 'https://maven.fabric.io/public' }
-        // END Non-FOSS component
     }
 
     dependencies {
@@ -29,7 +22,6 @@ buildscript {
         }
 
         // START Non-FOSS component
-        classpath "io.fabric.tools:gradle:${pluginVersions['Fabric']}"
         classpath "com.google.gms:google-services:${pluginVersions['PlayServices']}"
         // END Non-FOSS component
     }
@@ -95,9 +87,6 @@ repositories {
         url "https://jitpack.io"
     }
     maven { url 'https://s3.amazonaws.com/repo.commonsware.com' }
-    // START Non-FOSS component
-    maven { url 'https://maven.fabric.io/public' }
-    // END Non-FOSS component
     flatDir { dirs "$projectDir/lib" }
 }
 
@@ -112,9 +101,6 @@ dependencies {
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-auth:${libVersions['PlayServices']}"
     compile "com.google.android.gms:play-services-gcm:${libVersions['PlayServices']}"
-    compile("com.crashlytics.sdk.android:crashlytics:${libVersions['Crashlyrics']}@aar") {
-        transitive = true
-    }
     compile "com.dropbox.core:dropbox-core-sdk:${libVersions['DropboxCoreSdk']}"
     compile("com.google.apis:google-api-services-drive:${libVersions['GoogleDriveApi']}") {
         exclude group: 'org.apache.httpcomponents'
