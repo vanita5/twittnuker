@@ -329,11 +329,12 @@ public class KeyboardShortcutsHandler implements KeyboardShortcutConstants {
     public static final class KeyboardShortcutSpec {
 
         private String action;
+        @Nullable
         private String contextTag;
         private int keyMeta;
         private String keyName;
 
-        public KeyboardShortcutSpec(String contextTag, int keyMeta, String keyName, String action) {
+        public KeyboardShortcutSpec(@Nullable String contextTag, int keyMeta, String keyName, String action) {
             this.contextTag = contextTag;
             this.keyMeta = keyMeta;
             this.keyName = keyName;
@@ -362,11 +363,12 @@ public class KeyboardShortcutsHandler implements KeyboardShortcutConstants {
             return action;
         }
 
+        @Nullable
         public String getContextTag() {
             return contextTag;
         }
 
-        public void setContextTag(String contextTag) {
+        public void setContextTag(@Nullable String contextTag) {
             this.contextTag = contextTag;
         }
 
