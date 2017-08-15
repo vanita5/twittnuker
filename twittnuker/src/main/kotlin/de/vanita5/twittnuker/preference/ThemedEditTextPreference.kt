@@ -30,7 +30,8 @@ import android.util.AttributeSet
 import de.vanita5.twittnuker.fragment.ThemedEditTextPreferenceDialogFragmentCompat
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 
-class ThemedEditTextPreference(context: Context, attrs: AttributeSet? = null) : EditTextPreference(context, attrs), IDialogPreference {
+class ThemedEditTextPreference(context: Context, attrs: AttributeSet? = null) :
+        EditTextPreference(context, attrs), IDialogPreference {
 
     override fun displayDialog(fragment: PreferenceFragmentCompat) {
         val df = ThemedEditTextPreferenceDialogFragmentCompat.newInstance(key)

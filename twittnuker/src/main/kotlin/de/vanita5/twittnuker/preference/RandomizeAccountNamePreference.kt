@@ -68,7 +68,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
     }
 
     override fun onClick() {
-        persistBoolean(!getPersistedBoolean(false));
+        persistBoolean(!getPersistedBoolean(false))
         notifyChanged()
         super.onClick()
     }
@@ -76,7 +76,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
     override fun displayDialog(fragment: PreferenceFragmentCompat) {
         val df = RenameAccountsConfirmDialogFragment.newInstance(key, getPersistedBoolean(false))
         df.setTargetFragment(fragment, 0)
-        df.show(fragment.childFragmentManager, key)
+        df.show(fragment.fragmentManager, key)
     }
 
     class RenameAccountsConfirmDialogFragment : PreferenceDialogFragmentCompat() {
