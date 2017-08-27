@@ -109,9 +109,6 @@
             android:required="false" />
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="b955b719fb7fabaa53d4e614c3975c88bc556ab4" />
-        <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIKbKATV1AGbLB4kem3w8QaPVJSPVVumbMHxkfwA" />
         <meta-data
