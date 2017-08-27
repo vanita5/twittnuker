@@ -22,6 +22,7 @@
     <string name="action_add_member">Mitglied hinzufügen</string>
     <string name="action_add_tab">Tab hinzufügen</string>
     <string name="action_add_to_filter">Zum Filter hinzufügen</string>
+    <string name="action_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
     <string name="action_add_to_list">Zur Liste hinzufügen</string>
     <!-- [verb] Action for blocking user -->
     <string name="action_block">Blockieren</string>
