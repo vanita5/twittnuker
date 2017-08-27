@@ -199,8 +199,8 @@ dependencies {
     implementation "nl.komponents.kovenant:kovenant-combine:${libVersions['Kovenant']}"
 
     compile "org.sufficientlysecure:donations:2.5"
-    compile "com.squareup.retrofit2:retrofit:2.1.0"
-    compile "com.squareup.retrofit2:converter-gson:2.1.0"
+    compile "com.squareup.retrofit2:retrofit:2.3.0"
+    compile "com.squareup.retrofit2:converter-gson:2.3.0"
 
     compile "com.klinkerapps:giphy:1.0.3"
 
