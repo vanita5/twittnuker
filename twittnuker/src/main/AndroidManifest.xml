@@ -92,6 +92,7 @@
     <application
         android:name=".app.TwittnukerApplication"
         android:allowBackup="true"
+        android:appCategory="social"
         android:backupAgent=".backup.TwidereBackupAgentHelper"
         android:description="@string/app_description"
         android:fullBackupContent="true"

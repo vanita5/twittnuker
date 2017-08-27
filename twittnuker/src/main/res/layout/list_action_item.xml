@@ -30,15 +30,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <de.vanita5.twittnuker.view.FixedTextView
         android:id="@android:id/text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>

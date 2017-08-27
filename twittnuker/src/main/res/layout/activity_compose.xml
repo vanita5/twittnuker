@@ -155,6 +155,7 @@
             android:layout_toEndOf="@+id/accountSelectorButton"
             android:layout_toRightOf="@id/accountSelectorButton"
             android:clickable="true"
+            android:focusable="true"
             android:overScrollMode="never"
             android:visibility="gone"
             tools:listitem="@layout/adapter_item_compose_account"/>
@@ -168,6 +169,7 @@
             android:layout_toEndOf="@+id/accountSelectorButton"
             android:layout_toRightOf="@id/accountSelectorButton"
             android:clickable="true"
+            android:focusable="true"
             android:visibility="visible">
 
             <HorizontalScrollView
@@ -238,6 +240,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:clickable="true"
+            android:focusable="true"
             android:paddingBottom="@dimen/element_spacing_msmall"
             android:paddingEnd="@dimen/element_spacing_msmall"
             android:paddingLeft="@dimen/element_spacing_msmall"

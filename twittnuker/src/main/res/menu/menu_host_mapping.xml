@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
@@ -22,12 +21,12 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item
-		android:id="@+id/add"
-		android:icon="@drawable/ic_action_add"
-        app:showAsAction="always"
-        android:title="@string/add_host_mapping"/>
+    <item
+        android:id="@+id/add"
+        android:icon="@drawable/ic_action_add"
+        android:title="@string/add_host_mapping"
+        app:showAsAction="always" />
 
 </menu>

@@ -22,9 +22,9 @@
   -->
 
 <LinearLayout
-    android:id="@+id/countItem"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/countItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="0"
@@ -42,18 +42,18 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/element_spacing_small"
         android:layout_marginRight="@dimen/element_spacing_small"
+        android:maxLines="1"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorPrimary"
         android:textStyle="bold"
-        tools:text="255"
-        android:maxLines="1"/>
+        tools:text="255"/>
 
     <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorSecondary"
-        tools:text="Count"
-        android:maxLines="1"/>
+        tools:text="Count"/>
 </LinearLayout>

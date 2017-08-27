@@ -22,10 +22,10 @@
   -->
 
 <de.vanita5.twittnuker.view.AccountDashboardHeaderView
-    android:id="@+id/accountDashboardHeader"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/accountDashboardHeader"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
@@ -195,6 +195,7 @@
         android:layout_alignBottom="@+id/profileContainer"
         android:layout_alignTop="@+id/profileContainer"
         android:clickable="true"
+        android:focusable="true"
         tools:visibility="gone">
 
         <de.vanita5.twittnuker.view.FixedTextView

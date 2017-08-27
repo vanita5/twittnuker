@@ -69,7 +69,7 @@
         android:ellipsize="none"
         android:gravity="center"
         android:padding="@dimen/element_spacing_xsmall"
-        android:textColor="@android:color/white"
-        android:maxLines="1"/>
+        android:singleLine="true"
+        android:textColor="@android:color/white"/>
 
 </view>
