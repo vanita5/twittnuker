@@ -20,27 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.activity.presentation
 
-import android.content.Context
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
-import java.io.OutputStream
+import android.os.Bundle
+import de.vanita5.twittnuker.activity.BaseActivity
+import de.vanita5.twittnuker.util.TaskServiceRunner
 
 
-fun tempFileInputStream(context: Context, write: (OutputStream) -> Unit): InputStream {
-    val file = File.createTempFile("twittnuker__temp_is_file", ".tmp", context.cacheDir)
-    file.outputStream().use { write(it) }
-    return TempFileInputStream(file)
-}
-
-internal class TempFileInputStream(val file: File) : FileInputStream(file) {
-    override fun close() {
-        try {
-            super.close()
-        } finally {
-            file.delete()
-        }
+class ToggleRefreshActivity : BaseActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        taskServiceRunner.runTask(TaskServiceRunner.ACTION_REFRESH_LAUNCH_PRESENTATIONS) {}
+        finish()
     }
 }

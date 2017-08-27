@@ -37,11 +37,13 @@ import android.support.v7.app.TwilightManagerAccessor
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
 import kotlinx.android.synthetic.main.activity_main.*
 import nl.komponents.kovenant.Promise
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonActivity
 import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.componentIcon
 import org.mariotaku.ktextension.contains
 import org.mariotaku.restfu.http.RestHttpClient
@@ -50,6 +52,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
+import de.vanita5.twittnuker.constant.lastLaunchPresentationTimeKey
 import de.vanita5.twittnuker.constant.themeColorKey
 import de.vanita5.twittnuker.constant.themeKey
 import de.vanita5.twittnuker.extension.model.hasInvalidAccount
@@ -63,7 +66,10 @@ import de.vanita5.twittnuker.util.StrictModeUtils
 import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.cache.JsonCache
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import de.vanita5.twittnuker.util.support.ViewSupport
+import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
@@ -110,6 +116,12 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
         skipPresentation.setOnClickListener {
             launchDirectly()
         }
+        if (BuildConfig.DEBUG) {
+            skipPresentation.setOnLongClickListener {
+                handler.removeCallbacks(launchLaterRunnable)
+                return@setOnLongClickListener true
+            }
+        }
         controlOverlay.setOnClickListener {
             val presentation = controlOverlay.tag as? LaunchPresentation ?: return@setOnClickListener
             val uri = presentation.url?.let(Uri::parse) ?: return@setOnClickListener
@@ -123,13 +135,27 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
                     insets.systemWindowInsetRight, 0)
             return@lambda insets.consumeSystemWindowInsets()
         }
+        ViewSupport.setOutlineProvider(skipPresentation, ViewOutlineProviderCompat.BACKGROUND)
 
+        showPresentationOrLaunch()
+    }
+
+    private fun showPresentationOrLaunch() {
+        val lastLaunchPresentationTime = preferences[lastLaunchPresentationTimeKey]
+        val maximumDuration = TimeUnit.HOURS.toMillis(6)
+        // Show again at least 6 hours later
+        if (!BuildConfig.DEBUG && lastLaunchPresentationTime >= 0 &&
+                System.currentTimeMillis() - lastLaunchPresentationTime < maximumDuration) {
+            launchDirectly()
+            return
+        }
         val presentation = jsonCache.getList(RefreshLaunchPresentationsTask.JSON_CACHE_KEY,
                 LaunchPresentation::class.java)?.firstOrNull {
             it.shouldShow()
         }
         if (presentation != null) {
             displayPresentation(presentation)
+            preferences[lastLaunchPresentationTimeKey] = System.currentTimeMillis()
             launchLater()
         } else {
             launchDirectly()
@@ -176,7 +202,9 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
     private fun displayPresentation(presentation: LaunchPresentation) {
         skipPresentation.visibility = View.VISIBLE
         controlOverlay.tag = presentation
-        Glide.with(this).load(presentation.images.first().url).into(presentationView)
+        Glide.with(this).load(presentation.images.first().url)
+                .priority(Priority.HIGH)
+                .into(presentationView)
     }
 
     private fun launchDirectly() {
@@ -208,6 +236,7 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
                 Toast.makeText(this, R.string.message_toast_internal_storage_install_required, Toast.LENGTH_LONG).show()
             }
             startActivity(Intent(this, HomeActivity::class.java))
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
         finish()
     }

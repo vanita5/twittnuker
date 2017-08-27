@@ -80,6 +80,7 @@
     <string name="action_quote">Zitat</string>
     <string name="action_record_video">Video aufnehmen</string>
     <string name="action_refresh">Aktualisieren</string>
+    <string name="action_refresh_launch_presentations">Startbildschirm aktualisieren</string>
     <string name="action_register">Registrieren</string>
     <string name="action_remove_conversation_avatar">Bild entfernen</string>
     <string name="action_reply">Antworten</string>
