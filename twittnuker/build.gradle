@@ -151,6 +151,7 @@ dependencies {
     implementation "pl.droidsonroids.gif:android-gif-drawable:${libVersions['AndroidGIFDrawable']}"
     implementation 'com.sprylab.android.texturevideoview:texturevideoview:1.2.1'
     implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'org.apache.commons:commons-text:1.1'
     implementation 'commons-primitives:commons-primitives:1.0'
     implementation "org.apache.james:apache-mime4j-core:${libVersions['Mime4J']}"
     implementation "org.apache.james:apache-mime4j-storage:${libVersions['Mime4J']}"

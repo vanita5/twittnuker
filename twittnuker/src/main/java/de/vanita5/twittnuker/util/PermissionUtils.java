@@ -24,15 +24,15 @@ package de.vanita5.twittnuker.util;
 
 import android.content.pm.PackageManager;
 
-import org.apache.commons.lang3.ArrayUtils;
+import kotlin.collections.ArraysKt;
 
 public class PermissionUtils {
     private PermissionUtils() {
     }
 
     public static int getPermission(String[] permissions, int[] grantResults, String permission) {
-        final int idx = ArrayUtils.indexOf(permissions, permission);
-        if (idx != -1) return grantResults[idx];
+        final int idx = ArraysKt.indexOf(permissions, permission);
+        if (idx >= 0) return grantResults[idx];
         return 0;
     }
 

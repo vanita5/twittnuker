@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.util;
 
 import android.os.Bundle;
 
-import org.apache.commons.lang3.ArrayUtils;
+import kotlin.collections.ArraysKt;
 
 public class CompareUtils {
 
@@ -34,7 +34,7 @@ public class CompareUtils {
     public static boolean bundleEquals(final Bundle bundle1, final Bundle bundle2, final String... ignoredKeys) {
         if (bundle1 == null || bundle2 == null) return bundle1 == bundle2;
         for (String key : bundle1.keySet()) {
-            if (!ArrayUtils.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
+            if (!ArraysKt.contains(ignoredKeys, key) && !objectEquals(bundle1.get(key), bundle2.get(key)))
                 return false;
         }
         return true;

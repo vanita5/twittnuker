@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.lang.reflect.Array;
+
+import kotlin.collections.ArraysKt;
 
 public final class TwidereArrayUtils {
 
@@ -37,7 +37,7 @@ public final class TwidereArrayUtils {
     public static boolean contains(final Object[] array, final Object[] values) {
         if (array == null || values == null) return false;
         for (final Object value : values) {
-            if (!ArrayUtils.contains(array, value)) return false;
+            if (!ArraysKt.contains(array, value)) return false;
         }
         return true;
     }
@@ -46,7 +46,7 @@ public final class TwidereArrayUtils {
         if (array1 == null || array2 == null) return array1 == array2;
         if (array1.length != array2.length) return false;
         for (Object item : array1) {
-            if (!ArrayUtils.contains(array2, item)) return false;
+            if (!ArraysKt.contains(array2, item)) return false;
         }
         return true;
     }

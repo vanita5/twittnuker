@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.util.content;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Constraint;
 import org.mariotaku.sqliteqb.library.NewColumn;
@@ -39,6 +38,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import kotlin.collections.ArraysKt;
+import kotlin.ranges.IntRange;
 
 import static org.mariotaku.sqliteqb.library.SQLQueryBuilder.alterTable;
 import static org.mariotaku.sqliteqb.library.SQLQueryBuilder.createTable;
@@ -103,8 +105,8 @@ public final class DatabaseUpgradeHelper {
         final List<String> newInsertColsList = new ArrayList<>();
         for (final String newCol : newCols) {
             final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-            if (ArrayUtils.contains(oldCols, newCol) || oldAliasedCol != null
-                    && ArrayUtils.contains(oldCols, oldAliasedCol)) {
+            if (ArraysKt.contains(oldCols, newCol) || oldAliasedCol != null
+                    && ArraysKt.contains(oldCols, oldAliasedCol)) {
                 newInsertColsList.add(newCol);
             }
         }
@@ -115,7 +117,7 @@ public final class DatabaseUpgradeHelper {
         for (int i = 0, j = oldDataCols.length; i < j; i++) {
             final String newCol = newInsertCols[i];
             final String oldAliasedCol = colAliases != null ? colAliases.get(newCol) : null;
-            if (oldAliasedCol != null && ArrayUtils.contains(oldCols, oldAliasedCol)) {
+            if (oldAliasedCol != null && ArraysKt.contains(oldCols, oldAliasedCol)) {
                 oldDataCols[i] = new Columns.Column(oldAliasedCol, newCol);
             } else {
                 oldDataCols[i] = new Columns.Column(newCol);
@@ -146,7 +148,7 @@ public final class DatabaseUpgradeHelper {
                 notNullCols[count++] = column.getName();
             }
         }
-        return ArrayUtils.subarray(notNullCols, 0, count);
+        return ArraysKt.sliceArray(notNullCols, new IntRange(0, count - 1));
     }
 
 }

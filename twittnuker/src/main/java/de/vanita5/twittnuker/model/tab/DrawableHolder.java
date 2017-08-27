@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.mariotaku.kpreferences.SharedPreferencesExtensionsKt;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.PreferenceKeysKt;
