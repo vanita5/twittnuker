@@ -25,10 +25,7 @@ package de.vanita5.twittnuker.util.dagger
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import dagger.Component
-import de.vanita5.twittnuker.activity.BaseActivity
-import de.vanita5.twittnuker.activity.ComposeActivity
-import de.vanita5.twittnuker.activity.MediaViewerActivity
-import de.vanita5.twittnuker.activity.PremiumDashboardActivity
+import de.vanita5.twittnuker.activity.*
 import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -153,9 +150,11 @@ interface GeneralComponent {
 
     fun inject(service: BaseService)
 
-    companion object {
+    fun inject(activity: MainActivity)
 
+    companion object {
         private var instance: GeneralComponent? = null
+
         fun get(context: Context): GeneralComponent {
             return instance ?: run {
                 val helper = DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build()

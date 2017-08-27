@@ -21,7 +21,7 @@
         <item name="lightThemeResource">@style/Theme.Twidere.Light.NoActionBar</item>
     </style>
 
-    <style name="Theme.Twidere.Compose" parent="Theme.Twidere.Compose.DayNight">
+    <style name="Theme.Twidere.Compose" parent="Theme.Twidere.Compose.DayNight">themes_base_dark.xml
         <item name="darkThemeResource">@style/Theme.Twidere.Dark.Compose</item>
         <item name="lightThemeResource">@style/Theme.Twidere.Light.Compose</item>
     </style>
@@ -50,6 +50,11 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
 
         <item name="colorToolbar">#80000000</item>
+    </style>
+
+    <style name="Theme.Twidere.Launcher" parent="Theme.Twidere.Dark.NoActionBar">
+        <item name="darkThemeResource">@style/Theme.Twidere.Dark.Launcher</item>
+        <item name="lightThemeResource">@style/Theme.Twidere.Light.Launcher</item>
     </style>
 
 </resources>

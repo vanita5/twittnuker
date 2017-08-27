@@ -26,6 +26,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import de.vanita5.twittnuker.model.filter.UrlFiltersSubscriptionProviderArguments
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -39,7 +40,7 @@ class UrlFiltersSubscriptionProviderTest {
         if (!(cm.activeNetworkInfo?.isConnected ?: false)) return
 
         val url = "https://raw.githubusercontent.com/mariotaku/wtb/master/twidere/bots.xml"
-        val arguments = UrlFiltersSubscriptionProvider.Arguments().apply {
+        val arguments = UrlFiltersSubscriptionProviderArguments().apply {
             this.url = url
         }
         val provider = UrlFiltersSubscriptionProvider(context, arguments)

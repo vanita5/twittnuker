@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util.filter
 
 import android.content.Context
+import de.vanita5.twittnuker.model.filter.UrlFiltersSubscriptionProviderArguments
 import de.vanita5.twittnuker.util.JsonSerializer
 import java.io.IOException
 
@@ -34,7 +35,7 @@ abstract class LocalFiltersSubscriptionProvider(val context: Context) : FiltersS
                 "url" -> {
                     if (arguments == null) return null
                     val argsObj = try {
-                        JsonSerializer.parse(arguments, UrlFiltersSubscriptionProvider.Arguments::class.java)
+                        JsonSerializer.parse(arguments, UrlFiltersSubscriptionProviderArguments::class.java)
                     } catch (e: IOException) {
                         return null
                     }

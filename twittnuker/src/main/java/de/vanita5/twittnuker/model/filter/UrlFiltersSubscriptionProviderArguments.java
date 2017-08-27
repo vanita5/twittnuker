@@ -20,25 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.emoji
+package de.vanita5.twittnuker.model.filter;
 
-import android.content.Context
-import org.apache.commons.text.translate.CharSequenceTranslator
-import org.mariotaku.commons.emojione.ShortnameToUnicodeTranslator
-import java.io.Writer
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-object EmojioneTranslator: CharSequenceTranslator() {
+@JsonObject
+public class UrlFiltersSubscriptionProviderArguments {
+    @JsonField(name = "url")
+    private String url;
 
-    private var implementation: ShortnameToUnicodeTranslator? = null
-
-    fun init(context: Context) {
-        if (implementation != null)return
-        implementation = ShortnameToUnicodeTranslator(context)
+    public String getUrl() {
+        return url;
     }
 
-    override fun translate(input: CharSequence?, index: Int, out: Writer?): Int {
-        val translator = implementation ?: return 0
-        return translator.translate(input, index, out)
+    public void setUrl(String url) {
+        this.url = url;
     }
-
 }

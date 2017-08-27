@@ -28,11 +28,13 @@ import com.squareup.otto.Bus
 import com.twitter.Extractor
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.ReadStateManager
 import de.vanita5.twittnuker.util.UserColorNameManager
+import de.vanita5.twittnuker.util.cache.JsonCache
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -65,6 +67,8 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
     @Inject
+    lateinit var restHttpClient: RestHttpClient
+    @Inject
     lateinit var defaultFeatures: DefaultFeatures
     @Inject
     lateinit var scheduleProviderFactory: StatusScheduleProvider.Factory
@@ -74,6 +78,8 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var syncPreferences: SyncPreferences
     @Inject
     lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
+    @Inject
+    lateinit var jsonCache: JsonCache
 
     val scheduleProvider: StatusScheduleProvider?
         get() = scheduleProviderFactory.newInstance(context)

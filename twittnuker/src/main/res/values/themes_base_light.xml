@@ -128,4 +128,7 @@
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowActionModeOverlay">false</item>
     </style>
+
+    <style name="Theme.Twidere.Light.Launcher" parent="Theme.Twidere.Light.NoActionBar"/>
+
 </resources>

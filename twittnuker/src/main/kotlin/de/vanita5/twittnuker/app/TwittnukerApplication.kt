@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import de.vanita5.twittnuker.util.emoji.EmojioneTranslator
 import de.vanita5.twittnuker.util.kovenant.startKovenant
 import de.vanita5.twittnuker.util.kovenant.stopKovenant
 import de.vanita5.twittnuker.util.media.MediaPreloader
@@ -125,6 +126,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             StrictModeUtils.detectAllVmPolicy()
         }
         super.onCreate()
+        EmojioneTranslator.init(this)
         applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()

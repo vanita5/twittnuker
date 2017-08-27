@@ -20,25 +20,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.emoji
+package de.vanita5.twittnuker.extension.model
 
-import android.content.Context
-import org.apache.commons.text.translate.CharSequenceTranslator
-import org.mariotaku.commons.emojione.ShortnameToUnicodeTranslator
-import java.io.Writer
+import de.vanita5.twittnuker.model.presentation.LaunchPresentation
+import java.util.*
 
-object EmojioneTranslator: CharSequenceTranslator() {
 
-    private var implementation: ShortnameToUnicodeTranslator? = null
-
-    fun init(context: Context) {
-        if (implementation != null)return
-        implementation = ShortnameToUnicodeTranslator(context)
+fun LaunchPresentation.shouldShow(): Boolean {
+    // Check language
+    val locale = Locale.getDefault()
+    if (locales != null && locales.none { it.matches(locale) }) {
+        return false
     }
-
-    override fun translate(input: CharSequence?, index: Int, out: Writer?): Int {
-        val translator = implementation ?: return 0
-        return translator.translate(input, index, out)
+    // Check date/time
+    val date = Date()
+    if (schedule != null && !schedule.matches(date)) {
+        return false
     }
+    return true
+}
 
+fun LaunchPresentation.Schedule.matches(date: Date): Boolean {
+    val cal = Calendar.getInstance()
+    cal.time = date
+    return cron.matches(cal)
+}
+
+
+fun LaunchPresentation.Locale.matches(locale: Locale): Boolean {
+    if (language != locale.language) return false
+    if (country == null) {
+        return locale.country.isNullOrEmpty()
+    }
+    return country == locale.country
 }

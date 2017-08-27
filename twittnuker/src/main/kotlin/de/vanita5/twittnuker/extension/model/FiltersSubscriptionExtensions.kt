@@ -26,10 +26,10 @@ import android.content.ComponentName
 import android.content.Context
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.FiltersSubscription
+import de.vanita5.twittnuker.model.filter.UrlFiltersSubscriptionProviderArguments
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.filter.FiltersSubscriptionProvider
 import de.vanita5.twittnuker.util.filter.LocalFiltersSubscriptionProvider
-import de.vanita5.twittnuker.util.filter.UrlFiltersSubscriptionProvider
 
 
 fun FiltersSubscription.instantiateComponent(context: Context): FiltersSubscriptionProvider? {
@@ -57,7 +57,7 @@ fun FiltersSubscription.getComponentLabel(context: Context): CharSequence {
 
 fun FiltersSubscription.setupUrl(url: String) {
     this.component = ":url"
-    this.arguments = JsonSerializer.serialize(UrlFiltersSubscriptionProvider.Arguments().apply {
+    this.arguments = JsonSerializer.serialize(UrlFiltersSubscriptionProviderArguments().apply {
         this.url = url
     })
 }

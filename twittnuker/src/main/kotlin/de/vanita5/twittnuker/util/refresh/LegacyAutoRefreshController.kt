@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.constant.refreshIntervalKey
 import de.vanita5.twittnuker.service.JobTaskService.Companion.JOB_IDS_REFRESH
 import de.vanita5.twittnuker.service.LegacyTaskService
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_FILTERS_SUBSCRIPTIONS
+import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_LAUNCH_PRESENTATIONS
 import java.util.concurrent.TimeUnit
 
 class LegacyAutoRefreshController(
@@ -59,6 +60,7 @@ class LegacyAutoRefreshController(
     override fun appStarted() {
         rescheduleAll()
         rescheduleFiltersSubscriptionsRefresh()
+        rescheduleLaunchPresentationsRefresh()
     }
 
     override fun rescheduleAll() {
@@ -87,6 +89,15 @@ class LegacyAutoRefreshController(
         val triggerAt = SystemClock.elapsedRealtime() + interval
         val intent = Intent(context, LegacyTaskService::class.java)
         intent.action = ACTION_REFRESH_FILTERS_SUBSCRIPTIONS
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAt, interval,
+                PendingIntent.getService(context, 0, intent, 0))
+    }
+
+    private fun rescheduleLaunchPresentationsRefresh() {
+        val interval = TimeUnit.HOURS.toMillis(6)
+        val triggerAt = SystemClock.elapsedRealtime() + interval
+        val intent = Intent(context, LegacyTaskService::class.java)
+        intent.action = ACTION_REFRESH_LAUNCH_PRESENTATIONS
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAt, interval,
                 PendingIntent.getService(context, 0, intent, 0))
     }

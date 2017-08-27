@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.constant.refreshIntervalKey
 import de.vanita5.twittnuker.service.JobTaskService
 import de.vanita5.twittnuker.service.JobTaskService.Companion.JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS
+import de.vanita5.twittnuker.service.JobTaskService.Companion.JOB_ID_REFRESH_LAUNCH_PRESENTATIONS
 import java.util.concurrent.TimeUnit
 import android.Manifest.permission as AndroidPermissions
 
@@ -42,7 +43,7 @@ class JobSchedulerAutoRefreshController(
         context: Context,
         kPreferences: KPreferences
 ) : AutoRefreshController(context, kPreferences) {
-    val scheduler: JobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+    private val scheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
     override fun appStarted() {
         val allJobs = scheduler.allPendingJobs
@@ -55,6 +56,9 @@ class JobSchedulerAutoRefreshController(
         }
         if (allJobs.none { job -> job.id == JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS }) {
             scheduleJob(JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS, TimeUnit.HOURS.toMillis(4))
+        }
+        if (allJobs.none { job -> job.id == JOB_ID_REFRESH_LAUNCH_PRESENTATIONS }) {
+            scheduleJob(JOB_ID_REFRESH_LAUNCH_PRESENTATIONS, TimeUnit.HOURS.toMillis(6))
         }
     }
 

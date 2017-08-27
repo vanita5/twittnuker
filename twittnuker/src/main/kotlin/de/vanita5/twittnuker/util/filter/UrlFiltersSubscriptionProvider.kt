@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.util.filter
 
 import android.content.Context
 import android.net.Uri
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.http.HttpRequest
 import org.mariotaku.restfu.http.MultiValueMap
@@ -34,6 +32,7 @@ import org.mariotaku.restfu.http.mime.Body
 import de.vanita5.twittnuker.extension.model.parse
 import de.vanita5.twittnuker.extension.newPullParser
 import de.vanita5.twittnuker.model.FiltersData
+import de.vanita5.twittnuker.model.filter.UrlFiltersSubscriptionProviderArguments
 import de.vanita5.twittnuker.util.ETagCache
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
@@ -41,7 +40,10 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-class UrlFiltersSubscriptionProvider(context: Context, val arguments: Arguments) : LocalFiltersSubscriptionProvider(context) {
+class UrlFiltersSubscriptionProvider(
+        context: Context,
+        val arguments: UrlFiltersSubscriptionProviderArguments
+) : LocalFiltersSubscriptionProvider(context) {
     @Inject
     internal lateinit var restHttpClient: RestHttpClient
     @Inject
@@ -129,9 +131,4 @@ class UrlFiltersSubscriptionProvider(context: Context, val arguments: Arguments)
         }
     }
 
-    @JsonObject
-    class Arguments {
-        @JsonField(name = arrayOf("url"))
-        lateinit var url: String
-    }
 }

@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
+import de.vanita5.twittnuker.task.filter.RefreshLaunchPresentationsTask
 import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.twitter.GetHomeTimelineTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
@@ -60,7 +61,8 @@ class TaskServiceRunner(
         Log.d(LOGTAG, "TaskServiceRunner run task $action")
         when (action) {
             ACTION_REFRESH_HOME_TIMELINE, ACTION_REFRESH_NOTIFICATIONS,
-            ACTION_REFRESH_DIRECT_MESSAGES, ACTION_REFRESH_FILTERS_SUBSCRIPTIONS -> {
+            ACTION_REFRESH_DIRECT_MESSAGES, ACTION_REFRESH_FILTERS_SUBSCRIPTIONS,
+            ACTION_REFRESH_LAUNCH_PRESENTATIONS -> {
                 val task = createRefreshTask(action) ?: return false
                 task.callback = callback
                 TaskStarter.execute(task)
@@ -116,13 +118,16 @@ class TaskServiceRunner(
             ACTION_REFRESH_FILTERS_SUBSCRIPTIONS -> {
                 return RefreshFiltersSubscriptionsTask(context)
             }
+            ACTION_REFRESH_LAUNCH_PRESENTATIONS -> {
+                return RefreshLaunchPresentationsTask(context)
+            }
         }
         return null
     }
 
     @StringDef(ACTION_REFRESH_HOME_TIMELINE, ACTION_REFRESH_NOTIFICATIONS, ACTION_REFRESH_DIRECT_MESSAGES,
-            ACTION_REFRESH_FILTERS_SUBSCRIPTIONS, ACTION_SYNC_DRAFTS, ACTION_SYNC_FILTERS,
-            ACTION_SYNC_USER_COLORS)
+            ACTION_REFRESH_FILTERS_SUBSCRIPTIONS, ACTION_REFRESH_LAUNCH_PRESENTATIONS,
+            ACTION_SYNC_DRAFTS, ACTION_SYNC_FILTERS, ACTION_SYNC_USER_COLORS)
     @Retention(AnnotationRetention.SOURCE)
     annotation class Action
 
@@ -157,6 +162,8 @@ class TaskServiceRunner(
         const val ACTION_REFRESH_DIRECT_MESSAGES = INTENT_PACKAGE_PREFIX + "REFRESH_DIRECT_MESSAGES"
         @Action
         const val ACTION_REFRESH_FILTERS_SUBSCRIPTIONS = INTENT_PACKAGE_PREFIX + "REFRESH_FILTERS_SUBSCRIPTIONS"
+        @Action
+        const val ACTION_REFRESH_LAUNCH_PRESENTATIONS = INTENT_PACKAGE_PREFIX + "REFRESH_LAUNCH_PRESENTATIONS"
         @Action
         const val ACTION_SYNC_DRAFTS = INTENT_PACKAGE_PREFIX + "SYNC_DRAFTS"
         @Action
