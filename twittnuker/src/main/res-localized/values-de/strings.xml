@@ -50,6 +50,9 @@
     <string name="action_edit_conversation_avatar">Bild bearbeiten</string>
     <string name="action_edit_conversation_name">Name bearbeiten</string>
     <string name="action_edit_filter_rule">Regel bearbeiten</string>
+    <string name="action_enable">Aktivieren</string>
+    <string name="action_enable_notifications">Benachrichtigungen</string>
+    <string name="action_enable_retweets">Retweets erlauben</string>
     <string name="action_favorite">Favorisieren</string>
     <string name="action_filter_import_from_blocked_users">Importiere blockierte Accounts</string>
     <string name="action_filter_import_from_muted_users">Importiere stummgeschaltete Accounts</string>
@@ -274,8 +277,6 @@
     <string name="ellipsis">&#8230;</string>
     <string name="emoji_support">Emoji Support</string>
     <string name="empty_content">Leerer Inhalt</string>
-    <string name="enable_notifications">Benachrichtigen</string>
-    <string name="enable_retweets">Retweets erlauben</string>
     <string name="enable_streaming">Streaming freischalten</string>
     <string name="error_info_oauth_timestamp_error">Bitte überprüfe dein Systemdatum und die Zeiteinstellungen.</string>
     <string name="error_message">Fehler <xliff:g id="message">%s</xliff:g></string>
@@ -540,6 +541,7 @@
     <string name="message_sync_disconnect_from_name_confirm">Von <xliff:g example="ownCloud" id="name">%s</xliff:g> trennen?</string>
     <string name="message_sync_last_synced_time">Zuletzt synchronisiert: <xliff:g example="2017/1/1 12:00" id="time">%s </xliff:g></string>
     <string name="message_tab_field_is_required">\"<xliff:g example="Field" id="name">%s</xliff:g>\" darf nicht leer sein</string>
+    <string name="message_title_promotions_reward">Enable promotions to use all enhanced features for free, we promise not to disturb you!</string>
     <!--
       ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
       ~ periods should be omitted
@@ -986,6 +988,7 @@
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_pin_status_confirm">Tweet anheften</string>
     <string name="title_premium_features_name">Twittnuker</string>
+    <string name="title_promotions_reward">Promotions reward</string>
     <string name="title_public_timeline">Öffentliche Timeline</string>
     <string name="title_quick_action">Quick Action</string>
     <string name="title_retweet_quote_confirm">Retweet</string>
@@ -1069,6 +1072,7 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
+    <string name="action_disable_promotions">Disable promotions</string>
 
 
     <!-- Twittnuker -->

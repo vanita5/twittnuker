@@ -28,12 +28,13 @@ import de.vanita5.twittnuker.view.ContainerView
 
 
 class DummyExtraFeaturesService : ExtraFeaturesService() {
-
     override fun getDashboardControllers() = emptyList<Class<ContainerView.ViewController>>()
 
     override fun isSupported(feature: String?): Boolean = false
 
     override fun isEnabled(feature: String): Boolean = false
+
+    override fun isPurchased(feature: String): Boolean = false
 
     override fun destroyPurchase(): Boolean = false
 

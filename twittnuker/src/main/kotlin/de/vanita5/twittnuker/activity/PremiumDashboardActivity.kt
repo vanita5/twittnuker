@@ -44,10 +44,14 @@ import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
+import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
+import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
+import de.vanita5.twittnuker.constant.promotionsEnabledKey
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.Analyzer
@@ -125,6 +129,12 @@ class PremiumDashboardActivity : BaseActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        menu.setItemAvailability(R.id.disable_promotions, preferences[promotionsEnabledKey])
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -158,6 +168,10 @@ class PremiumDashboardActivity : BaseActivity() {
                         }
                     }
                 }
+            }
+            R.id.disable_promotions -> {
+                preferences[promotionsEnabledKey] = false
+                recreate()
             }
         }
         return true

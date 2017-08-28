@@ -33,6 +33,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.media.MediaPreloader
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 import javax.inject.Inject
 
@@ -78,6 +79,10 @@ class DependencyHolder internal constructor(context: Context) {
         internal set
     @Inject
     lateinit var timelineSyncManagerFactory: TimelineSyncManager.Factory
+        internal set
+
+    @Inject
+    lateinit var extraFeaturesService: ExtraFeaturesService
         internal set
 
     init {
