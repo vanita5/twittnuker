@@ -27,7 +27,6 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.commons.io.StreamUtils
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate
 import de.vanita5.twittnuker.util.DebugLog
@@ -72,9 +71,12 @@ open class AbsAddMediaTask<Callback>(
                 } else {
                     destination = source
                 }
-                return@mapIndexedNotNull ParcelableMediaUpdate(destination.toString(), mediaType)
+                // File is copied locally, so delete on success
+                return@mapIndexedNotNull ParcelableMediaUpdate(destination.toString(), mediaType).apply {
+                    delete_on_success = true
+                }
             } catch (e: IOException) {
-                DebugLog.w(Constants.LOGTAG, tr = e)
+                DebugLog.w(tr = e)
                 return@mapIndexedNotNull null
             } finally {
                 os?.close()
