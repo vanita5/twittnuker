@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
@@ -33,6 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.set
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate
 import de.vanita5.twittnuker.test.R
@@ -167,7 +167,12 @@ class ComposeActivityTest {
         activity.finish()
     }
 
-    private fun Activity.getStatusUpdateTest(checkLength: Boolean): ParcelableStatusUpdate {
+    private fun ComposeActivity.requestSkipDraft() {
+        val shouldSkipDraft = javaClass.getDeclaredField("shouldSkipDraft")
+        this[shouldSkipDraft] = true
+    }
+
+    private fun ComposeActivity.getStatusUpdateTest(checkLength: Boolean): ParcelableStatusUpdate {
         val getStatusUpdate = javaClass.getDeclaredMethod("getStatusUpdate",
                 kotlin.Boolean::class.java).apply {
             isAccessible = true

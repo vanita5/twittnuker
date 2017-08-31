@@ -20,27 +20,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.extension
 
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnit4
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import java.util.*
+import de.vanita5.twittnuker.util.DebugLog
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
+import java.io.OutputStream
 
-@RunWith(AndroidJUnit4::class)
-class IOFunctionsKtTest {
-    @Test
-    fun testTempFileInputStream() {
-        val context = InstrumentationRegistry.getTargetContext()
-        val random = Random()
-        val testData = ByteArray(1024)
-        random.nextBytes(testData)
-        val compareData = tempFileInputStream(context) { os ->
-            os.write(testData)
-        }.readBytes(1024)
-        Assert.assertArrayEquals(testData, compareData)
+fun File.tempInputStream(write: (OutputStream) -> Unit): InputStream {
+    val file = File.createTempFile("twittnuker__temp_is_file", ".tmp", this)
+    file.outputStream().use { write(it) }
+    return TempFileInputStream(file)
+}
+
+internal class TempFileInputStream(val file: File) : FileInputStream(file) {
+    override fun close() {
+        try {
+            super.close()
+        } finally {
+            file.delete()
+        }
     }
 
+    override fun finalize() {
+        if (file.exists()) {
+            DebugLog.w(msg = "Stream not properly closed, ${file.absolutePath} not deleted")
+        }
+        super.finalize()
+    }
 }

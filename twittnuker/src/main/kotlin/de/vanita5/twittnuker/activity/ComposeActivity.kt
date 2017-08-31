@@ -733,10 +733,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         mediaPreviewAdapter.setAltText(position, altText)
     }
 
-    internal fun requestSkipDraft() {
-        shouldSkipDraft = true
-    }
-
     private fun locationMenuItemSelected(item: MenuItem) {
         item.isChecked = true
         var attachLocationChecked = false
@@ -1485,7 +1481,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     private fun discardTweet() {
         val context = applicationContext
         val media = mediaList
-        task { media.forEach { media -> Utils.deleteMedia(context, Uri.parse(media.uri)) } }
+        task { media.forEach { Utils.deleteMedia(context, Uri.parse(it.uri)) } }
     }
 
     private fun getStatusUpdate(checkLength: Boolean): ParcelableStatusUpdate {

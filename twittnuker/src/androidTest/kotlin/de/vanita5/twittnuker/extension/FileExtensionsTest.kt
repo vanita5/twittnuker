@@ -20,27 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.extension
 
-import android.content.Context
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
-import java.io.OutputStream
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.*
 
-
-fun tempFileInputStream(context: Context, write: (OutputStream) -> Unit): InputStream {
-    val file = File.createTempFile("twittnuker__temp_is_file", ".tmp", context.cacheDir)
-    file.outputStream().use { write(it) }
-    return TempFileInputStream(file)
-}
-
-internal class TempFileInputStream(val file: File) : FileInputStream(file) {
-    override fun close() {
-        try {
-            super.close()
-        } finally {
-            file.delete()
-        }
+@RunWith(AndroidJUnit4::class)
+class FileExtensionsTest {
+    @Test
+    fun testTempFileInputStream() {
+        val context = InstrumentationRegistry.getTargetContext()
+        val random = Random()
+        val testData = ByteArray(1024)
+        random.nextBytes(testData)
+        val compareData = context.cacheDir.tempInputStream { os ->
+            os.write(testData)
+        }.use { it.readBytes(1024) }
+        Assert.assertArrayEquals(testData, compareData)
     }
+
 }
