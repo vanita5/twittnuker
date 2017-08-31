@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
@@ -194,7 +195,7 @@ class StreamingService : BaseService() {
         val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val contentTitle = getString(R.string.app_name)
         val contentText = getString(R.string.streaming_service_running)
-        val builder = NotificationCompat.Builder(this)
+        val builder = NotificationChannelSpec.serviceStatuses.notificationBuilder(this)
         builder.setOngoing(true)
         builder.setSmallIcon(R.drawable.ic_stat_twittnuker)
         builder.setContentTitle(contentTitle)

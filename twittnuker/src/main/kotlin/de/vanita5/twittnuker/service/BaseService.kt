@@ -29,6 +29,7 @@ import com.twitter.Extractor
 import com.twitter.Validator
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
+import de.vanita5.twittnuker.util.notification.ContentNotificationManager
 import javax.inject.Inject
 
 abstract class BaseService : Service() {

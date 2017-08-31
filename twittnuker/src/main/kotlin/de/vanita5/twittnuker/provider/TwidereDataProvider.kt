@@ -31,10 +31,8 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteFullException
 import android.net.Uri
-import android.os.Binder
 import android.os.Handler
 import android.os.Looper
-import android.os.Process
 import android.support.v4.text.BidiFormatter
 import com.squareup.otto.Bus
 import okhttp3.Dns
@@ -44,7 +42,6 @@ import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.extension.withAppendedPath
@@ -57,6 +54,7 @@ import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.database.CachedUsersQueryBuilder
 import de.vanita5.twittnuker.util.database.SuggestionsCursorCreator
+import de.vanita5.twittnuker.util.notification.ContentNotificationManager
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import javax.inject.Inject

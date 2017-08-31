@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.util.notification
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -51,14 +51,18 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.api.formattedTextWithIndices
 import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.getTitle
+import de.vanita5.twittnuker.extension.model.notificationBuilder
 import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.receiver.NotificationReceiver
 import de.vanita5.twittnuker.service.LengthyOperationsService
+import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.database.FilterQueryBuilder
 import org.oshkimaadziig.george.androidutils.SpanFormatter
 import java.io.IOException
@@ -134,7 +138,7 @@ class ContentNotificationManager(
             }
 
             // Setup notification
-            val builder = NotificationCompat.Builder(context)
+            val builder = NotificationChannelSpec.contentUpdates.notificationBuilder(context)
             builder.setAutoCancel(true)
             builder.setSmallIcon(R.drawable.ic_stat_twitter)
             builder.setTicker(notificationTitle)
@@ -175,7 +179,7 @@ class ContentNotificationManager(
         @SuppressLint("Recycle")
         val c = cr.query(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
                 OrderBy(Activities.TIMESTAMP, false).sql) ?: return
-        val builder = NotificationCompat.Builder(context)
+        val builder = NotificationChannelSpec.contentInteractions.notificationBuilder(context)
         val pebbleNotificationStringBuilder = StringBuilder()
         try {
             val count = c.count
@@ -277,18 +281,18 @@ class ContentNotificationManager(
 
             var messageSum: Int = 0
             var newLastReadTimestamp = -1L
-            cur.forEachRow { cur, _ ->
-                val unreadCount = cur.getInt(indices[Conversations.UNREAD_COUNT])
+            cur.forEachRow { c, _ ->
+                val unreadCount = c.getInt(indices[Conversations.UNREAD_COUNT])
                 if (unreadCount <= 0) return@forEachRow false
                 if (newLastReadTimestamp != -1L) {
-                    newLastReadTimestamp = cur.getLong(indices[Conversations.LAST_READ_TIMESTAMP])
+                    newLastReadTimestamp = c.getLong(indices[Conversations.LAST_READ_TIMESTAMP])
                 }
                 messageSum += unreadCount
                 return@forEachRow true
             }
             if (messageSum == 0) return
 
-            val builder = NotificationCompat.Builder(context)
+            val builder = NotificationChannelSpec.contentMessages.notificationBuilder(context)
             applyNotificationPreferences(builder, pref, pref.directMessagesNotificationType)
             builder.setSmallIcon(R.drawable.ic_stat_message)
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
@@ -305,8 +309,8 @@ class ContentNotificationManager(
             builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.DIRECT_MESSAGES,
                     accountKey, newLastReadTimestamp, false))
 
-            val remaining = cur.forEachRow(5) { cur, pos ->
-                val conversation = indices.newObject(cur)
+            val remaining = cur.forEachRow(5) { c, pos ->
+                val conversation = indices.newObject(c)
                 if (conversation.notificationDisabled) return@forEachRow false
                 val title = conversation.getTitle(context, userColorNameManager, nameFirst)
                 val summary = conversation.getSummaryText(context, userColorNameManager, nameFirst)
@@ -336,7 +340,7 @@ class ContentNotificationManager(
         val userDisplayName = userColorNameManager.getDisplayName(status.user,
                 preferences[nameFirstKey])
         val statusUri = LinkCreator.getTwidereStatusLink(accountKey, status.id)
-        val builder = NotificationCompat.Builder(context)
+        val builder = NotificationChannelSpec.contentSubscriptions.notificationBuilder(context)
         builder.color = userColorNameManager.getUserColor(userKey)
         builder.setAutoCancel(true)
         builder.setWhen(status.createdAt?.time ?: 0)
@@ -381,7 +385,7 @@ class ContentNotificationManager(
         uriBuilder.scheme(SCHEME_TWITTNUKER)
         uriBuilder.authority(AUTHORITY_DRAFTS)
         intent.data = uriBuilder.build()
-        val nb = NotificationCompat.Builder(context)
+        val nb = NotificationChannelSpec.contentNotices.notificationBuilder(context)
         nb.setTicker(message)
         nb.setContentTitle(title)
         nb.setContentText(item.text)
@@ -401,7 +405,6 @@ class ContentNotificationManager(
                 PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
         nb.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT))
-        nb.setGroup("drafts")
         notificationManager.notify(draftUri.toString(), NOTIFICATION_ID_DRAFTS, nb.build())
         return draftId
     }

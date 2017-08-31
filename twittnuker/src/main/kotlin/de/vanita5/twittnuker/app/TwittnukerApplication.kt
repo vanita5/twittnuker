@@ -62,6 +62,8 @@ import de.vanita5.twittnuker.util.kovenant.startKovenant
 import de.vanita5.twittnuker.util.kovenant.stopKovenant
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.notification.ContentNotificationManager
+import de.vanita5.twittnuker.util.notification.NotificationChannelsManager
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.sync.DataSyncProvider
@@ -127,6 +129,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         }
         super.onCreate()
         EmojioneTranslator.init(this)
+        NotificationChannelsManager.createChannels(this)
         applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()

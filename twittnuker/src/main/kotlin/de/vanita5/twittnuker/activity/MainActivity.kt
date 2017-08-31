@@ -38,9 +38,6 @@ import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_main.*
 import nl.komponents.kovenant.Promise
 import org.mariotaku.chameleon.Chameleon
@@ -55,7 +52,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
-import de.vanita5.twittnuker.constant.lastLaunchPresentationTimeKey
+import de.vanita5.twittnuker.constant.lastLaunchTimeKey
 import de.vanita5.twittnuker.constant.promotionsEnabledKey
 import de.vanita5.twittnuker.constant.themeColorKey
 import de.vanita5.twittnuker.constant.themeKey
@@ -151,14 +148,14 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
     }
 
     private fun showPresentationOrLaunch() {
-        val lastLaunchPresentationTime = preferences[lastLaunchPresentationTimeKey]
+        val lastLaunchTime = preferences[lastLaunchTimeKey]
         val maximumDuration = if (BuildConfig.DEBUG) {
             TimeUnit.SECONDS.toMillis(30)
         } else {
             TimeUnit.HOURS.toMillis(6)
         }
         // Show again at least 6 hours later (30 secs for debug builds)
-        if (lastLaunchPresentationTime >= 0 && System.currentTimeMillis() - lastLaunchPresentationTime < maximumDuration) {
+        if (lastLaunchTime >= 0 && System.currentTimeMillis() - lastLaunchTime < maximumDuration) {
             launchDirectly()
             return
         }
@@ -215,20 +212,6 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
         skipPresentation.visibility = View.VISIBLE
         controlOverlay.tag = presentation
         Glide.with(this).load(presentation.images.first().url)
-                .listener(object : RequestListener<String, GlideDrawable> {
-                    override fun onException(e: Exception?, model: String?,
-                            target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: GlideDrawable?, model: String?,
-                            target: Target<GlideDrawable>?, isFromMemoryCache: Boolean,
-                            isFirstResource: Boolean): Boolean {
-                        preferences[lastLaunchPresentationTimeKey] = System.currentTimeMillis()
-                        return false
-                    }
-
-                })
                 .priority(Priority.HIGH)
                 .into(presentationView)
     }
@@ -248,6 +231,7 @@ open class MainActivity : ChameleonActivity(), IBaseActivity<MainActivity> {
     }
 
     private fun performLaunch() {
+        preferences[lastLaunchTimeKey] = System.currentTimeMillis()
         val am = AccountManager.get(this)
         if (!DeviceUtils.checkCompatibility()) {
             startActivity(Intent(this, IncompatibleAlertActivity::class.java))

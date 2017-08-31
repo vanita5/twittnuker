@@ -43,6 +43,7 @@
     <!-- [verb] Action for deleting a file or a twitter object like tweet-->
     <string name="action_delete">Löschen</string>
     <string name="action_delete_messages">Nachrichten löschen</string>
+    <string name="action_disable_promotions">Disable promotions</string>
     <string name="action_dont_restart">Nicht neustarten</string>
     <string name="action_dont_terminate">Nicht beenden</string>
     <!-- [verb] Edit image/settings etc. -->
@@ -640,6 +641,16 @@
     <string name="no_user_found">Niemanden gefunden</string>
     <string name="no_version_suffix">Kein Versionszusatz</string>
     <string name="none">Nichts</string>
+    <string name="notification_channel_description_content_interactions">Interaktionen wie Mentions oder Retweets</string>
+    <string name="notification_channel_description_content_messages">Wichtige Nachrichten wie DMs</string>
+    <string name="notification_channel_name_app_notices">Hinweise</string>
+    <string name="notification_channel_name_background_progresses">Hintergrundprozesse</string>
+    <string name="notification_channel_name_content_interactions">Interaktionen</string>
+    <string name="notification_channel_name_content_messages">Nachrichten</string>
+    <string name="notification_channel_name_content_notices">Hinweise</string>
+    <string name="notification_channel_name_content_subscriptions">Abonnements</string>
+    <string name="notification_channel_name_content_updates">Updates</string>
+    <string name="notification_channel_name_service_statuses">Service Status</string>
     <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> hat dir eine Direktnachricht geschickt.</string>
     <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g>  hat dir <xliff:g id="messages_count">%2$d</xliff:g> Direktnachrichten gesendet.</string>
     <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="users_count">%2$d</xliff:g> andere haben dir <xliff:g id="messages_count">%3$d</xliff:g> Direktnachrichten gesendet.</string>
@@ -1072,7 +1083,6 @@
     <string name="users_blocked">Blockierte Nutzerkonten.</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
-    <string name="action_disable_promotions">Disable promotions</string>
 
 
     <!-- Twittnuker -->

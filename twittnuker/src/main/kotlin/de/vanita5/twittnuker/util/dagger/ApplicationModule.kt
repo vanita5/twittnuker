@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.util.gifshare.GifShareProvider
 import de.vanita5.twittnuker.util.media.MediaPreloader
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.notification.ContentNotificationManager
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
