@@ -40,7 +40,7 @@ class CreateComposeShortcutActivity : Activity() {
         val launchIntent = Intent(INTENT_ACTION_COMPOSE).apply {
             `package` = BuildConfig.APPLICATION_ID
         }
-        val icon = BitmapFactory.decodeResource(resources, R.drawable.ic_app_shortcut_compose,
+        val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_shortcut_compose,
                 BitmapFactory.Options().apply { inMutable = true }).apply {
             val appIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher, BitmapFactory.Options().apply {
                 inSampleSize = 3

@@ -68,13 +68,18 @@
 # Retrofit
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
 -dontwarn com.squareup.okhttp.**
 
 -dontwarn rx.**
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
 -keepattributes Signature
 -keepattributes Exceptions
+-dontwarn javax.annotation.**
 
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
