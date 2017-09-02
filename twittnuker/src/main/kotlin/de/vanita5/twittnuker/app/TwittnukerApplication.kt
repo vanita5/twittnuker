@@ -129,7 +129,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         }
         super.onCreate()
         EmojioneTranslator.init(this)
-        NotificationChannelsManager.createChannels(this)
+        NotificationChannelsManager.initialize(this)
         applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()
@@ -151,7 +151,10 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
 
         Analyzer.preferencesChanged(sharedPreferences)
         DataSyncProvider.Factory.notifyUpdate(this)
+
+        NotificationChannelsManager.updateAccountChannelsAndGroups(this)
     }
+
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         applyLanguageSettings()
@@ -288,6 +291,10 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 return executor.submit(callable)
             }
         })
+    }
+
+    private fun updateAccountNotificationGroup() {
+
     }
 
     companion object {

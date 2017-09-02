@@ -23,9 +23,24 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
+import android.net.Uri
 import android.support.v4.app.NotificationCompat
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 
 fun NotificationChannelSpec.notificationBuilder(context: Context): NotificationCompat.Builder {
     return NotificationCompat.Builder(context, id)
+}
+
+fun NotificationChannelSpec.accountNotificationBuilder(context: Context, accountKey: UserKey): NotificationCompat.Builder {
+    if (!grouped) throw IllegalArgumentException("Requires grouped channel")
+    return NotificationCompat.Builder(context, accountKey.notificationChannelId(id)).setGroup(accountKey.notificationChannelGroupId())
+}
+
+fun UserKey.notificationChannelId(id: String): String {
+    return "${id}_${Uri.encode(toString())}"
+}
+
+fun UserKey.notificationChannelGroupId(): String {
+    return Uri.encode(toString())
 }

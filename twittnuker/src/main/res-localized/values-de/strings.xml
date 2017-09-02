@@ -647,7 +647,6 @@
     <string name="notification_channel_name_background_progresses">Hintergrundprozesse</string>
     <string name="notification_channel_name_content_interactions">Interaktionen</string>
     <string name="notification_channel_name_content_messages">Nachrichten</string>
-    <string name="notification_channel_name_content_notices">Hinweise</string>
     <string name="notification_channel_name_content_subscriptions">Abonnements</string>
     <string name="notification_channel_name_content_updates">Updates</string>
     <string name="notification_channel_name_service_statuses">Service Status</string>

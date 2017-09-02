@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.notification
 
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
@@ -48,14 +49,12 @@ import de.vanita5.twittnuker.annotation.NotificationType
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.formattedTextWithIndices
-import de.vanita5.twittnuker.extension.model.getSummaryText
-import de.vanita5.twittnuker.extension.model.getTitle
-import de.vanita5.twittnuker.extension.model.notificationBuilder
-import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
@@ -138,7 +137,8 @@ class ContentNotificationManager(
             }
 
             // Setup notification
-            val builder = NotificationChannelSpec.contentUpdates.notificationBuilder(context)
+            val builder = NotificationChannelSpec.contentUpdates.accountNotificationBuilder(context,
+                    accountKey)
             builder.setAutoCancel(true)
             builder.setSmallIcon(R.drawable.ic_stat_twitter)
             builder.setTicker(notificationTitle)
@@ -151,7 +151,6 @@ class ContentNotificationManager(
                     accountKey, positionKey, false))
             builder.setNumber(statusesCount)
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
-            builder.setGroup("timeline")
             applyNotificationPreferences(builder, pref, pref.homeTimelineNotificationType)
             try {
                 val notificationId = Utils.getNotificationId(NOTIFICATION_ID_HOME_TIMELINE, accountKey)
@@ -168,8 +167,10 @@ class ContentNotificationManager(
     }
 
     fun showInteractions(pref: AccountPreferences, position: Long) {
+        val am = AccountManager.get(context)
         val cr = context.contentResolver
         val accountKey = pref.accountKey
+        val account = AccountUtils.getAccountDetails(am, accountKey, false) ?: return
         val where = Expression.and(
                 Expression.equalsArgs(Activities.ACCOUNT_KEY),
                 Expression.greaterThan(Activities.POSITION_KEY, position),
@@ -179,7 +180,8 @@ class ContentNotificationManager(
         @SuppressLint("Recycle")
         val c = cr.query(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
                 OrderBy(Activities.TIMESTAMP, false).sql) ?: return
-        val builder = NotificationChannelSpec.contentInteractions.notificationBuilder(context)
+        val builder = NotificationChannelSpec.contentInteractions.accountNotificationBuilder(context,
+                accountKey)
         val pebbleNotificationStringBuilder = StringBuilder()
         try {
             val count = c.count
@@ -189,7 +191,7 @@ class ContentNotificationManager(
             applyNotificationPreferences(builder, pref, pref.mentionsNotificationType)
 
             val resources = context.resources
-            val accountName = DataStoreUtils.getAccountDisplayName(context, accountKey, nameFirst)
+            val accountName = userColorNameManager.getDisplayName(account.user, nameFirst)
             builder.setContentText(accountName)
             val style = NotificationCompat.InboxStyle()
             builder.setStyle(style)
@@ -249,7 +251,6 @@ class ContentNotificationManager(
             builder.setContentTitle(title)
             style.setBigContentTitle(title)
             builder.setNumber(displayCount)
-            builder.setGroup("interactions")
             builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
                     NotificationType.INTERACTIONS, accountKey, newMaxPositionKey))
             builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.INTERACTIONS,
@@ -292,7 +293,8 @@ class ContentNotificationManager(
             }
             if (messageSum == 0) return
 
-            val builder = NotificationChannelSpec.contentMessages.notificationBuilder(context)
+            val builder = NotificationChannelSpec.contentMessages.accountNotificationBuilder(context,
+                    accountKey)
             applyNotificationPreferences(builder, pref, pref.directMessagesNotificationType)
             builder.setSmallIcon(R.drawable.ic_stat_message)
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
@@ -327,7 +329,6 @@ class ContentNotificationManager(
                 style.addLine(context.getString(R.string.and_N_more, remaining))
             }
             val notificationId = Utils.getNotificationId(NOTIFICATION_ID_DIRECT_MESSAGES, accountKey)
-            builder.setGroup("direct_messages")
             notificationManager.notify("direct_messages", notificationId, builder.build())
         } finally {
             cur.close()
@@ -340,7 +341,8 @@ class ContentNotificationManager(
         val userDisplayName = userColorNameManager.getDisplayName(status.user,
                 preferences[nameFirstKey])
         val statusUri = LinkCreator.getTwidereStatusLink(accountKey, status.id)
-        val builder = NotificationChannelSpec.contentSubscriptions.notificationBuilder(context)
+        val builder = NotificationChannelSpec.contentSubscriptions.accountNotificationBuilder(context,
+                accountKey)
         builder.color = userColorNameManager.getUserColor(userKey)
         builder.setAutoCancel(true)
         builder.setWhen(status.createdAt?.time ?: 0)
@@ -358,7 +360,6 @@ class ContentNotificationManager(
         }, PendingIntent.FLAG_UPDATE_CURRENT))
 
         val tag = "$accountKey:$userKey:${status.id}"
-        builder.setGroup("user_notif_$accountKey:$userKey")
         notificationManager.notify(tag, NOTIFICATION_ID_USER_NOTIFICATION, builder.build())
     }
 
@@ -385,7 +386,7 @@ class ContentNotificationManager(
         uriBuilder.scheme(SCHEME_TWITTNUKER)
         uriBuilder.authority(AUTHORITY_DRAFTS)
         intent.data = uriBuilder.build()
-        val nb = NotificationChannelSpec.contentNotices.notificationBuilder(context)
+        val nb = NotificationChannelSpec.appNotices.notificationBuilder(context)
         nb.setTicker(message)
         nb.setContentTitle(title)
         nb.setContentText(item.text)
