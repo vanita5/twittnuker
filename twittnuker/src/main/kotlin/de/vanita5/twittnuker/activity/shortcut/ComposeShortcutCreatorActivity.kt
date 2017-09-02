@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_COMPOSE
 
-class CreateComposeShortcutActivity : Activity() {
+class ComposeShortcutCreatorActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

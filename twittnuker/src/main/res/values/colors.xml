@@ -48,6 +48,7 @@
     <color name="home_page_margin_color">#20333333</color>
 
     <color name="bg_ic_launcher_adaptive">#0d47a1</color>
+    <color name="bg_ic_shortcut_adaptive">#FAFAFA</color>
 
     <color name="twittnuker_material_dark">@color/material_dark</color>
     <color name="twittnuker_material_light">@color/material_light</color>

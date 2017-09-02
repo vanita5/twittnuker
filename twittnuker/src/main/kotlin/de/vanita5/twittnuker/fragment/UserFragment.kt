@@ -1028,7 +1028,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             R.id.add_to_home_screen -> {
                 if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) return true
                 val promise = showProgressDialog(FRAGMENT_TAG_ADD_USER_SHORTCUT_TO_HOME_SCREEN)
-                        .and(ShortcutCreator.userShortcut(context, user.account_key, user))
+                        .and(ShortcutCreator.user(context, user.account_key, user))
                 val weakThis = WeakReference(this)
                 promise.successUi { (_, shortcut) ->
                     val fragment = weakThis.get() ?: return@successUi
@@ -1590,7 +1590,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             do {
                 val resp = microBlog.getUserListOwnerships(paging)
                 resp.mapTo(ownedLists) { item ->
-                    val userList = item.toParcelable( user.account_key)
+                    val userList = item.toParcelable(user.account_key)
                     userList.is_user_inside = listMemberships.any { it.id == item.id }
                     return@mapTo userList
                 }
