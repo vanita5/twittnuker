@@ -30,8 +30,6 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-import de.vanita5.microblog.library.twitter.model.DMResponse;
-
 
 @ParcelablePlease
 @JsonObject

@@ -28,7 +28,6 @@ import android.content.res.TypedArray;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ScrollerCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -37,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.OverScroller;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.util.TwidereMathUtils;
 public class HeaderDrawerLayout extends ViewGroup {
 
     private final ViewDragHelper mDragHelper;
-    private final ScrollerCompat mScroller;
+    private final OverScroller mScroller;
     private final GestureDetector mGestureDetector;
 
     private final InternalContainer mContainer;
@@ -73,7 +73,7 @@ public class HeaderDrawerLayout extends ViewGroup {
         a.recycle();
         mDragHelper = ViewDragHelper.create(this, mDragCallback = new DragCallback(this));
         mGestureDetector = new GestureDetector(context, new GestureListener(this));
-        mScroller = ScrollerCompat.create(context);
+        mScroller = new OverScroller(context);
     }
 
     public HeaderDrawerLayout(Context context, AttributeSet attrs) {

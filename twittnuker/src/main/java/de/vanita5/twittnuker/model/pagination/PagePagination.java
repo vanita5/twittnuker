@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.model.pagination;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-import org.jetbrains.annotations.Nullable;
 import de.vanita5.microblog.library.twitter.model.Paging;
 
 @ParcelablePlease

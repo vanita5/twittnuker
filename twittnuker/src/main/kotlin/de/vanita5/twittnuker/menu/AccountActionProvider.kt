@@ -28,7 +28,6 @@ import android.content.Intent
 import android.view.ActionProvider
 import android.view.Menu
 import android.view.SubMenu
-import android.view.View
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.model.AccountDetails
@@ -45,10 +44,6 @@ class AccountActionProvider(
 
     override fun hasSubMenu(): Boolean {
         return true
-    }
-
-    override fun onCreateActionView(): View? {
-        return null
     }
 
     override fun onPrepareSubMenu(subMenu: SubMenu) {
@@ -72,6 +67,9 @@ class AccountActionProvider(
             }
         }
     }
+
+    @Suppress("OverridingDeprecatedMember")
+    override fun onCreateActionView() = null
 
     companion object {
 

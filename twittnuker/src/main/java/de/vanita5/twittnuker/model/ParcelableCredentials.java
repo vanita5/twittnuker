@@ -30,6 +30,7 @@ import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
+@SuppressWarnings("DeprecatedIsStillUsed")
 @CursorObject
 @Deprecated
 public class ParcelableCredentials extends ParcelableAccount {

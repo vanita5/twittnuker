@@ -26,6 +26,7 @@ package io.nayuki.qrcodegen;
 import android.support.annotation.NonNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -69,7 +70,7 @@ public final class QrCode {
      */
     public static QrCode encodeBinary(@NonNull byte[] data, @NonNull Ecc ecl) {
         QrSegment seg = QrSegment.makeBytes(data);
-        return encodeSegments(Arrays.asList(seg), ecl);
+		return encodeSegments(Collections.singletonList(seg), ecl);
     }
 
 
@@ -691,7 +692,7 @@ public final class QrCode {
         final int formatBits;
 
         // Constructor.
-        private Ecc(int fb) {
+		Ecc(int fb) {
             formatBits = fb;
         }
     }

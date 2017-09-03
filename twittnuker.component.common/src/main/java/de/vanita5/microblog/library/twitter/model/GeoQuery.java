@@ -23,6 +23,8 @@
 
 package de.vanita5.microblog.library.twitter.model;
 
+import android.support.annotation.NonNull;
+
 import org.mariotaku.restfu.http.ValueMap;
 
 
@@ -167,7 +169,7 @@ public final class GeoQuery implements ValueMap {
     }
 
     @Override
-    public boolean has(String key) {
+    public boolean has(@NonNull String key) {
         switch (key) {
             case "lat":
             case "long": {
@@ -190,7 +192,7 @@ public final class GeoQuery implements ValueMap {
     }
 
     @Override
-    public String get(String key) {
+    public String get(@NonNull String key) {
         switch (key) {
             case "lat": {
                 if (location == null) return null;

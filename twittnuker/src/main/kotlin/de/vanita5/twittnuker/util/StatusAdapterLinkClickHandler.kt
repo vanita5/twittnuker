@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 
-class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPreferences) :
+class StatusAdapterLinkClickHandler<out D>(context: Context, preferences: SharedPreferences) :
         OnLinkClickHandler(context, null, preferences), Constants {
 
     private var adapter: IStatusesAdapter<D>? = null

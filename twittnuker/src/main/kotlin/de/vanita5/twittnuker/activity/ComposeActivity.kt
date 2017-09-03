@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.activity
 import android.accounts.AccountManager
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.ActivityNotFoundException
@@ -906,6 +907,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return false
     }
 
+    @SuppressLint("SetTextI18n")
     private fun handleMentionIntent(user: ParcelableUser?): Boolean {
         if (user == null || user.key == null) return false
         val accountScreenName = DataStoreUtils.getAccountScreenName(this, user.account_key)
@@ -2016,7 +2018,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private class DeleteMediaTask(
             activity: ComposeActivity,
-            val media: Array<ParcelableMediaUpdate>
+            media: Array<ParcelableMediaUpdate>
     ) : AbsDeleteMediaTask<((BooleanArray) -> Unit)?>(activity, media.mapToArray { Uri.parse(it.uri) }) {
 
         override fun beforeExecute() {

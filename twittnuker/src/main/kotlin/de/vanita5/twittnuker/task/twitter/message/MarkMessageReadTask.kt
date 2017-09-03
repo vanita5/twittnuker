@@ -110,7 +110,7 @@ class MarkMessageReadTask(
             values.put(Conversations.LAST_READ_TIMESTAMP, lastRead.second)
             val updateWhere = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
                     Expression.equalsArgs(Conversations.CONVERSATION_ID),
-                    Expression.lesserThan(Conversations.LAST_READ_TIMESTAMP,lastRead.second)).sql
+                    Expression.lesserThan(Conversations.LAST_READ_TIMESTAMP, lastRead.second)).sql
             val updateWhereArgs = arrayOf(accountKey.toString(), conversationId)
             cr.update(Conversations.CONTENT_URI, values, updateWhere, updateWhereArgs)
         }
@@ -122,6 +122,7 @@ class MarkMessageReadTask(
             @SuppressLint("Recycle")
             val cur = query(Messages.CONTENT_URI, Messages.COLUMNS,
                     where, whereArgs, OrderBy(Messages.LOCAL_TIMESTAMP, false).sql) ?: return null
+            @Suppress("ConvertTryFinallyToUseCall")
             try {
                 if (cur.moveToFirst()) {
                     val indices = ObjectCursor.indicesFrom(cur, ParcelableMessage::class.java)

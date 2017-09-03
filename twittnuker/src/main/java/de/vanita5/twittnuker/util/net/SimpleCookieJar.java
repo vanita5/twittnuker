@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util.net;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +35,12 @@ public final class SimpleCookieJar implements CookieJar {
     private final List<Cookie> allCookies = new ArrayList<>();
 
     @Override
-    public synchronized void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+    public synchronized void saveFromResponse(@NonNull HttpUrl url, @NonNull List<Cookie> cookies) {
         allCookies.addAll(cookies);
     }
 
     @Override
-    public synchronized List<Cookie> loadForRequest(HttpUrl url) {
+    public synchronized List<Cookie> loadForRequest(@NonNull HttpUrl url) {
         List<Cookie> result = new ArrayList<>();
         for (Cookie cookie : allCookies) {
             if (cookie.matches(url)) {

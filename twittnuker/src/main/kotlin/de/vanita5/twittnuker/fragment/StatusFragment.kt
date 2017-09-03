@@ -1725,7 +1725,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         fun getItemType(position: Int): Int {
             var typeStart = 0
-            for (type in 0..ITEM_TYPES_SUM - 1) {
+            for (type in 0 until ITEM_TYPES_SUM) {
                 val typeCount = getTypeCount(type)
                 val typeEnd = typeStart + typeCount
                 if (position in typeStart until typeEnd) return type
@@ -1736,7 +1736,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         fun getItemTypeStart(position: Int): Int {
             var typeStart = 0
-            for (type in 0..ITEM_TYPES_SUM - 1) {
+            for (type in 0 until ITEM_TYPES_SUM) {
                 val typeCount = getTypeCount(type)
                 val typeEnd = typeStart + typeCount
                 if (position in typeStart until typeEnd) return typeStart
@@ -1816,7 +1816,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         fun getFirstPositionOfItem(itemIdx: Int): Int {
             var position = 0
-            for (i in 0..ITEM_TYPES_SUM - 1) {
+            for (i in 0 until ITEM_TYPES_SUM) {
                 if (itemIdx == i) return position
                 position += getTypeCount(i)
             }
