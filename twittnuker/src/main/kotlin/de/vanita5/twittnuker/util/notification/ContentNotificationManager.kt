@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.formattedTextWithIndices
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
@@ -367,18 +368,8 @@ class ContentNotificationManager(
     fun showDraft(draftUri: Uri): Long {
         val draftId = draftUri.lastPathSegment.toLongOrNull() ?: return -1
         val where = Expression.equals(Drafts._ID, draftId)
-        val c = context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql,
-                null, null) ?: return -1
-        val i = ObjectCursor.indicesFrom(c, Draft::class.java)
-        val item: Draft
-        try {
-            if (!c.moveToFirst()) return -1
-            item = i.newObject(c)
-        } catch (e: IOException) {
-            return -1
-        } finally {
-            c.close()
-        }
+        val item = context.contentResolver.queryOne(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql,
+                null, null, Draft::class.java) ?: return -1
         val title = context.getString(R.string.status_not_updated)
         val message = context.getString(R.string.status_not_updated_summary)
         val intent = Intent()

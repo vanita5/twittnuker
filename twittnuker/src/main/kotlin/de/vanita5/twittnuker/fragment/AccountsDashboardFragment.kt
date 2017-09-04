@@ -28,6 +28,7 @@ import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -80,6 +81,7 @@ import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.loadProfileBanner
 import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.model.setActivated
+import de.vanita5.twittnuker.extension.queryCount
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
 import de.vanita5.twittnuker.graphic.BadgeDrawable
 import de.vanita5.twittnuker.menu.AccountToggleProvider
@@ -122,6 +124,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
     private var useStarsForLikes: Boolean = false
     private var loaderInitialized: Boolean = false
 
+    @SuppressLint("RestrictedApi")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         accountsAdapter = AccountSelectorAdapter(layoutInflater, preferences, Glide.with(this)).also {
@@ -744,7 +747,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         private fun loadAccountsInfo(loadFromDb: Boolean): AccountsInfo {
             val accounts = AccountUtils.getAllAccountDetails(AccountManager.get(context), true)
             val draftsCount = if (loadFromDb) {
-                DataStoreUtils.queryCount(context.contentResolver, Drafts.CONTENT_URI_UNSENT, null,
+                context.contentResolver.queryCount(Drafts.CONTENT_URI_UNSENT, null,
                         null)
             } else {
                 -1

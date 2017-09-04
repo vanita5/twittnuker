@@ -49,6 +49,7 @@ import org.mariotaku.mediaviewer.library.FileCache
 import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.extension.model.load
@@ -351,15 +352,12 @@ class ApplicationModule(private val context: Context) {
 
     companion object {
 
-        private var instance: ApplicationModule? = null
-
         fun get(context: Context): ApplicationModule {
-
-            return instance ?: run {
-                val module = ApplicationModule(context.applicationContext)
-                instance = module
-                return@run module
+            val appContext = context.applicationContext
+            if (appContext is TwittnukerApplication) {
+                return appContext.applicationModule
             }
+            return ApplicationModule(appContext)
         }
     }
 }

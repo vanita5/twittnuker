@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.queryCount
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
@@ -138,9 +139,8 @@ class GetMessagesTask(
         val sincePagination = param.pagination?.get(accountsCount + index) as? SinceMaxPagination
 
         val firstFetch by lazy {
-            val noConversationsBefore = DataStoreUtils.queryCount(context.contentResolver,
-                    Conversations.CONTENT_URI, Expression.equalsArgs(Conversations.ACCOUNT_KEY).sql,
-                    arrayOf(accountKey.toString())) <= 0
+            val noConversationsBefore = context.contentResolver.queryCount(Conversations.CONTENT_URI,
+                    Expression.equalsArgs(Conversations.ACCOUNT_KEY).sql, arrayOf(accountKey.toString())) <= 0
             return@lazy noConversationsBefore
         }
 
@@ -340,7 +340,7 @@ class GetMessagesTask(
             AccountUtils.getAllAccountDetails(AccountManager.get(context), accountKeys, false)
         }
 
-        protected val defaultKeys: Array<UserKey?>by lazy {
+        protected val defaultKeys: Array<UserKey?> by lazy {
             return@lazy accounts.map { account ->
                 account ?: return@map null
                 if (account.isOfficial(context)) {

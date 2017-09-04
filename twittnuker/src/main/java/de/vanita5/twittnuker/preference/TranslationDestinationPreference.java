@@ -54,6 +54,11 @@ import java.util.List;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
+/**
+ * @deprecated This will be removed soon, target language selection will be changed inside
+ * translation UI.
+ */
+@Deprecated
 public class TranslationDestinationPreference extends Preference implements OnClickListener {
 
     private String mSelectedLanguageCode = "en";

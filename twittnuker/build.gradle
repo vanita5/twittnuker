@@ -42,9 +42,16 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     aaptOptions {
         additionalParameters "--no-version-vectors"
     }
+
     buildTypes {
         debug {
             minifyEnabled true
@@ -64,15 +71,18 @@ android {
             resValue("bool", "debug", "false")
         }
     }
+
     sourceSets.each {
         it.res.srcDirs += project.files("src/${it.name}/res-localized")
         it.res.srcDirs += project.files("src/${it.name}/res-svg2png")
         it.java.srcDirs += "src/${it.name}/kotlin"
     }
+
     lintOptions {
         abortOnError false
         checkReleaseBuilds false
     }
+
     testOptions {
         unitTests.returnDefaultValues = true
     }

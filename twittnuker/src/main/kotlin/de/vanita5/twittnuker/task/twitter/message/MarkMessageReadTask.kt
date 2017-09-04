@@ -23,11 +23,9 @@
 package de.vanita5.twittnuker.task.twitter.message
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
@@ -36,6 +34,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.timestamp
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
@@ -119,19 +118,8 @@ class MarkMessageReadTask(
             val where = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
                     Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
             val whereArgs = arrayOf(accountKey.toString(), conversationId)
-            @SuppressLint("Recycle")
-            val cur = query(Messages.CONTENT_URI, Messages.COLUMNS,
-                    where, whereArgs, OrderBy(Messages.LOCAL_TIMESTAMP, false).sql) ?: return null
-            @Suppress("ConvertTryFinallyToUseCall")
-            try {
-                if (cur.moveToFirst()) {
-                    val indices = ObjectCursor.indicesFrom(cur, ParcelableMessage::class.java)
-                    return indices.newObject(cur)
-                }
-            } finally {
-                cur.close()
-            }
-            return null
+            return queryOne(Messages.CONTENT_URI, Messages.COLUMNS, where, whereArgs,
+                    OrderBy(Messages.LOCAL_TIMESTAMP, false).sql, ParcelableMessage::class.java)
         }
 
         private val TwitterOfficialConversationExtras.maxReadEvent: Pair<String, Long>?

@@ -19,6 +19,8 @@ import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import de.vanita5.twittnuker.constant.filterPossibilitySensitiveStatusesKey
 import de.vanita5.twittnuker.constant.filterUnavailableQuoteStatusesKey
+import de.vanita5.twittnuker.extension.model.component1
+import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableActivity
@@ -192,21 +194,23 @@ fun <T : ParcelableStatus> ContentResolver.updateStatusInfo(uris: Array<Uri>, co
 @WorkerThread
 fun <T> ContentResolver.updateItems(uri: Uri, columns: Array<String>?, where: String?,
         whereArgs: Array<String>?, cls: Class<T>, action: (T) -> T) {
-    val c = query(uri, columns, where, whereArgs, null) ?: return
     val values = LongSparseArray<ContentValues>()
-    try {
+
+    queryReference(uri, columns, where, whereArgs, null).use { (c) ->
+        if (c == null) return
         val ci = ObjectCursor.indicesFrom(c, cls)
         val vc = ObjectCursor.valuesCreatorFrom(cls)
         c.moveToFirst()
-        while (!c.isAfterLast) {
-            val item = action(ci.newObject(c))
-            values.put(c.getLong(ci[BaseColumns._ID]), vc.create(item))
-            c.moveToNext()
+        try {
+            while (!c.isAfterLast) {
+                val item = action(ci.newObject(c))
+                values.put(c.getLong(ci[BaseColumns._ID]), vc.create(item))
+                c.moveToNext()
+            }
+
+        } catch (e: IOException) {
+            return
         }
-    } catch (e: IOException) {
-        return
-    } finally {
-        c.close()
     }
     for (i in 0 until values.size()) {
         val updateWhere = Expression.equals(BaseColumns._ID, values.keyAt(i)).sql

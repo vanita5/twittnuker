@@ -26,10 +26,12 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.database.sqlite.SQLiteDatabase
 import org.mariotaku.ktextension.HexColorFormat
+import org.mariotaku.ktextension.queryReference
 import org.mariotaku.ktextension.toHexColor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AuthTypeInt
+import de.vanita5.twittnuker.extension.model.component1
 import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -45,10 +47,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
  */
 @Suppress("deprecation")
 fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
-    val cur = db.query(Accounts.TABLE_NAME, Accounts.COLUMNS, null, null,
-            null, null, null) ?: return
-    @Suppress("ConvertTryFinallyToUseCall")
-    try {
+    db.queryReference(Accounts.TABLE_NAME, Accounts.COLUMNS, null, null,
+            null, null, null).use { (cur) ->
+        if (cur == null) return
         val indices = ObjectCursor.indicesFrom(cur, ParcelableCredentials::class.java)
         cur.moveToFirst()
         while (!cur.isAfterLast) {
@@ -77,8 +78,6 @@ fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
             am.setAuthToken(account, ACCOUNT_AUTH_TOKEN_TYPE, JsonSerializer.serialize(credentials.toCredentials()))
             cur.moveToNext()
         }
-    } finally {
-        cur.close()
     }
 }
 

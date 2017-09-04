@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.key
 import de.vanita5.twittnuker.extension.model.api.microblog.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.queryCount
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
@@ -412,7 +413,7 @@ class StreamingService : BaseService() {
                         Expression.equalsArgs(CachedRelationships.USER_KEY),
                         Expression.equals(CachedRelationships.NOTIFICATIONS_ENABLED, 1)).sql
                 val whereArgs = arrayOf(account.key.toString(), userKey.toString())
-                if (DataStoreUtils.queryCount(context.contentResolver, CachedRelationships.CONTENT_URI,
+                if (context.contentResolver.queryCount(CachedRelationships.CONTENT_URI,
                         where, whereArgs) <= 0) return
 
                 contentNotificationManager.showUserNotification(account.key, status, userKey)
@@ -427,7 +428,7 @@ class StreamingService : BaseService() {
             }
 
             override fun onDisconnectNotice(code: Int, reason: String?): Boolean {
-                disconnect();
+                disconnect()
                 return true
             }
 

@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.extension.text.appendCompat
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.loader.CacheUserSearchLoader
@@ -324,17 +325,8 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         val where = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
                 Expression.equalsArgs(Conversations.PARTICIPANT_KEYS)).sql
         val whereArgs = arrayOf(accountKey.toString(), participantKeys.sorted().joinToString(","))
-        val cur = resolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where, whereArgs, null) ?: return null
-        @Suppress("ConvertTryFinallyToUseCall")
-        try {
-            if (cur.moveToFirst()) {
-                val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
-                return indices.newObject(cur)
-            }
-        } finally {
-            cur.close()
-        }
-        return null
+        return resolver.queryOne(Conversations.CONTENT_URI, Conversations.COLUMNS, where, whereArgs,
+                null, ParcelableMessageConversation::class.java)
     }
 
     internal class PerformSearchRequestRunnable(val query: String, fragment: MessageNewConversationFragment) : Runnable {

@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.receiver.ConnectivityStateReceiver
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
+import de.vanita5.twittnuker.util.dagger.ApplicationModule
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
 import de.vanita5.twittnuker.util.emoji.EmojioneTranslator
 import de.vanita5.twittnuker.util.kovenant.startKovenant
@@ -109,6 +110,10 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
 
     val sqLiteOpenHelper: SQLiteOpenHelper by lazy {
         TwidereSQLiteOpenHelper(this, Constants.DATABASES_NAME, Constants.DATABASES_VERSION)
+    }
+
+    val applicationModule: ApplicationModule by lazy {
+        ApplicationModule(this)
     }
 
     private val sharedPreferences: SharedPreferences by lazy {
