@@ -24,8 +24,12 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @StringDef({ProfileImageSize.NORMAL, ProfileImageSize.BIGGER, ProfileImageSize.REASONABLY_SMALL,
         ProfileImageSize.ORIGINAL})
+@Retention(RetentionPolicy.SOURCE)
 public @interface ProfileImageSize {
     String REASONABLY_SMALL = "reasonably_small";
     String BIGGER = "bigger";

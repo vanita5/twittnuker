@@ -57,7 +57,6 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_QUERY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
@@ -272,12 +271,12 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
             SuggestionsAdapter.VIEW_TYPE_USER_SUGGESTION_ITEM -> {
                 IntentUtils.openUserProfile(this, details.key,
                         UserKey.valueOf(item.extra_id!!), item.summary, null,
-                        preferences[newDocumentApiKey], Referral.DIRECT, null)
+                        preferences[newDocumentApiKey], null)
                 finish()
             }
             SuggestionsAdapter.VIEW_TYPE_USER_SCREEN_NAME -> {
                 IntentUtils.openUserProfile(this, details.key, null, item.title,
-                        null, preferences[newDocumentApiKey], Referral.DIRECT, null)
+                        null, preferences[newDocumentApiKey], null)
                 finish()
             }
             SuggestionsAdapter.VIEW_TYPE_SAVED_SEARCH, SuggestionsAdapter.VIEW_TYPE_SEARCH_HISTORY -> {

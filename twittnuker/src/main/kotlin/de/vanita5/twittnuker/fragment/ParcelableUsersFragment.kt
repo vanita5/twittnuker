@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.getAccountType
@@ -74,10 +73,6 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
         set(value) {
             super.refreshing = value
         }
-
-    protected open val userReferral: String?
-        @Referral
-        get() = null
 
     protected open val simpleLayout: Boolean
         get() = arguments.getBoolean(EXTRA_SIMPLE_LAYOUT)
@@ -212,7 +207,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     override fun onUserClick(holder: UserViewHolder, position: Int) {
         val user = adapter.getUser(position) ?: return
-        IntentUtils.openUserProfile(activity, user, preferences[newDocumentApiKey], userReferral)
+        IntentUtils.openUserProfile(activity, user, preferences[newDocumentApiKey])
     }
 
     override fun onFollowClicked(holder: UserViewHolder, position: Int) {

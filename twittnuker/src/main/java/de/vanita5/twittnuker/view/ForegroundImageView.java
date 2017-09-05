@@ -28,12 +28,12 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import de.vanita5.twittnuker.view.iface.IForegroundView;
 
-public class ForegroundImageView extends ImageView implements IForegroundView {
+public class ForegroundImageView extends AppCompatImageView implements IForegroundView {
 
     private final ForegroundViewHelper mForegroundViewHelper;
 

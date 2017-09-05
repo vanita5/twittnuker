@@ -51,7 +51,8 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
     private var videoViewIds: IntArray = IntArray(0)
 
     var style: Int = PreviewStyle.NONE
-        @PreviewStyle set @PreviewStyle get
+        @PreviewStyle set
+        @PreviewStyle get
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CardMediaContainer)
@@ -103,13 +104,11 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
 
     private fun ImageView.displayImage(displayChildIndex: Int, media: Array<ParcelableMedia>,
             requestManager: RequestManager, accountKey: UserKey?, withCredentials: Boolean) {
-            when (style) {
-            PreviewStyle.ACTUAL_SIZE, PreviewStyle.CROP -> {
-                this.scaleType = ScaleType.CENTER_CROP
-            }
-            PreviewStyle.SCALE -> {
-                this.scaleType = ScaleType.FIT_CENTER
-            }
+        this.scaleType = when (style) {
+            PreviewStyle.ACTUAL_SIZE, PreviewStyle.CROP -> ScaleType.CENTER_CROP
+            PreviewStyle.SCALE -> ScaleType.FIT_CENTER
+            PreviewStyle.NONE -> ScaleType.CENTER
+            else -> ScaleType.CENTER
         }
         val lp = this.layoutParams as MediaLayoutParams
         if (displayChildIndex < media.size) {
@@ -133,6 +132,9 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
                 }
                 PreviewStyle.SCALE -> {
                     request.fitCenter()
+                }
+                PreviewStyle.NONE -> {
+                    // Ignore
                 }
             }
             request.into(this)

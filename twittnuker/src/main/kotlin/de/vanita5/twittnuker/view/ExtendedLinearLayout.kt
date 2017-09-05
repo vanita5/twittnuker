@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.view
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -29,8 +30,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.WindowInsets
 import android.widget.LinearLayout
-import de.vanita5.twittnuker.view.iface.IExtendedView
 import org.mariotaku.ktextension.systemWindowInsets
+import de.vanita5.twittnuker.view.iface.IExtendedView
 
 class ExtendedLinearLayout(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs), IExtendedView {
 
@@ -60,6 +61,7 @@ class ExtendedLinearLayout(context: Context, attrs: AttributeSet? = null) : Line
         return super.onApplyWindowInsets(insets)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (touchInterceptor != null) {
             val ret = touchInterceptor!!.onTouchEvent(this, event)

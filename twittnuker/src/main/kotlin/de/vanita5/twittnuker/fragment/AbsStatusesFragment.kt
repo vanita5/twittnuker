@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.decorator.ExtendedDividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
@@ -451,8 +450,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
         val status = adapter.getStatus(position)
         val intent = IntentUtils.userProfile(status.account_key, status.user_key,
-                status.user_screen_name, Referral.TIMELINE_STATUS,
-                status.extras?.user_statusnet_profile_url)
+                status.user_screen_name, status.extras?.user_statusnet_profile_url)
         IntentUtils.applyNewDocument(intent, preferences[newDocumentApiKey])
         startActivity(intent)
     }

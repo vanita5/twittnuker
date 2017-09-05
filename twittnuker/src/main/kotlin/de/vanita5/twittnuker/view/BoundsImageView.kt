@@ -14,28 +14,23 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity
+package de.vanita5.twittnuker.view
 
-import android.app.Activity
-import android.os.Bundle
-import android.widget.Toast
+import android.content.Context
+import android.graphics.Canvas
+import android.support.v7.widget.AppCompatImageView
+import android.util.AttributeSet
 
-import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.util.ClipboardUtils
+class BoundsImageView(context: Context, attrs: AttributeSet? = null) : AppCompatImageView(context, attrs) {
 
-class CopyLinkActivity : Activity(), Constants {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ClipboardUtils.setText(this, intent.dataString)
-        Toast.makeText(this, R.string.message_toast_link_copied_to_clipboard, Toast.LENGTH_SHORT).show()
-        finish()
+    override fun onDraw(canvas: Canvas) {
+        setFrame(left, top, right, bottom)
+        super.onDraw(canvas)
     }
 }

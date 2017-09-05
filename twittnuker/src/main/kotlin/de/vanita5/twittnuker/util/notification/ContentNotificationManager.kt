@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.formattedTextWithIndices
 import de.vanita5.twittnuker.extension.queryOne
+import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
@@ -65,7 +66,6 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.database.FilterQueryBuilder
 import org.oshkimaadziig.george.androidutils.SpanFormatter
-import java.io.IOException
 
 class ContentNotificationManager(
         val context: Context,
@@ -178,33 +178,35 @@ class ContentNotificationManager(
                 Expression.notEquals(Activities.IS_GAP, 1)
         ).sql
         val whereArgs = arrayOf(accountKey.toString())
-        @SuppressLint("Recycle")
-        val c = cr.query(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
-                OrderBy(Activities.TIMESTAMP, false).sql) ?: return
         val builder = NotificationChannelSpec.contentInteractions.accountNotificationBuilder(context,
                 accountKey)
         val pebbleNotificationStringBuilder = StringBuilder()
-        try {
-            val count = c.count
-            if (count == 0) return
-            builder.setSmallIcon(R.drawable.ic_stat_notification)
-            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
-            applyNotificationPreferences(builder, pref, pref.mentionsNotificationType)
 
-            val resources = context.resources
-            val accountName = userColorNameManager.getDisplayName(account.user, nameFirst)
-            builder.setContentText(accountName)
-            val style = NotificationCompat.InboxStyle()
-            builder.setStyle(style)
-            builder.setAutoCancel(true)
-            style.setSummaryText(accountName)
-            val ci = ObjectCursor.indicesFrom(c, ParcelableActivity::class.java)
 
-            var newMaxPositionKey = -1L
-            val filteredUserKeys = DataStoreUtils.getFilteredUserKeys(context)
-            var consumed = 0
-            val remaining = c.forEachRow(5) { cur, _ ->
-                val activity = ci.newObject(cur)
+        builder.setSmallIcon(R.drawable.ic_stat_notification)
+        builder.setCategory(NotificationCompat.CATEGORY_SOCIAL)
+        applyNotificationPreferences(builder, pref, pref.mentionsNotificationType)
+
+        val resources = context.resources
+        val accountName = userColorNameManager.getDisplayName(account.user, nameFirst)
+        builder.setContentText(accountName)
+        val style = NotificationCompat.InboxStyle()
+        builder.setStyle(style)
+        builder.setAutoCancel(true)
+        style.setSummaryText(accountName)
+
+
+        var newMaxPositionKey = -1L
+        val filteredUserKeys = DataStoreUtils.getFilteredUserKeys(context)
+
+
+        val (remaining, consumed) = cr.queryReference(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
+                OrderBy(Activities.TIMESTAMP, false).sql).use { (cur) ->
+            if (cur == null || cur.isEmpty) return@use Pair(-1, -1)
+            val ci = ObjectCursor.indicesFrom(cur, ParcelableActivity::class.java)
+            var con = 0
+            val rem = cur.forEachRow(5) { c, _ ->
+                val activity = ci.newObject(c)
 
                 if (newMaxPositionKey == -1L) {
                     newMaxPositionKey = activity.position_key
@@ -237,30 +239,28 @@ class ContentNotificationManager(
                     pebbleNotificationStringBuilder.append(summary)
                     pebbleNotificationStringBuilder.append("\n")
                 }
-                consumed++
+                con++
                 return@forEachRow true
             }
-            if (remaining < 0) return
-            if (remaining > 0) {
-                style.addLine(resources.getString(R.string.and_N_more, remaining))
-                pebbleNotificationStringBuilder.append(resources.getString(R.string.and_N_more, remaining))
-            }
-            val displayCount = consumed + remaining
-            if (displayCount <= 0) return
-            val title = resources.getQuantityString(R.plurals.N_new_interactions,
-                    displayCount, displayCount)
-            builder.setContentTitle(title)
-            style.setBigContentTitle(title)
-            builder.setNumber(displayCount)
-            builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
-                    NotificationType.INTERACTIONS, accountKey, newMaxPositionKey))
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.INTERACTIONS,
-                    accountKey, newMaxPositionKey, false))
-        } catch (e: IOException) {
-            return
-        } finally {
-            c.close()
+            return@use Pair(rem, con)
         }
+        if (remaining < 0) return
+        if (remaining > 0) {
+            style.addLine(resources.getString(R.string.and_N_more, remaining))
+            pebbleNotificationStringBuilder.append(resources.getString(R.string.and_N_more, remaining))
+        }
+        val displayCount = consumed + remaining
+        if (displayCount <= 0) return
+        val title = resources.getQuantityString(R.plurals.N_new_interactions,
+                displayCount, displayCount)
+        builder.setContentTitle(title)
+        style.setBigContentTitle(title)
+        builder.setNumber(displayCount)
+        builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
+                NotificationType.INTERACTIONS, accountKey, newMaxPositionKey))
+        builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.INTERACTIONS,
+                accountKey, newMaxPositionKey, false))
+
         val notificationId = Utils.getNotificationId(NOTIFICATION_ID_INTERACTIONS_TIMELINE, accountKey)
         notificationManager.notify("interactions", notificationId, builder.build())
         Utils.sendPebbleNotification(context, context.getString(R.string.interactions), pebbleNotificationStringBuilder.toString())
@@ -282,7 +282,7 @@ class ContentNotificationManager(
 
             val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
 
-            var messageSum: Int = 0
+            var messageSum = 0
             var newLastReadTimestamp = -1L
             cur.forEachRow { c, _ ->
                 val unreadCount = c.getInt(indices[Conversations.UNREAD_COUNT])

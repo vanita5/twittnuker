@@ -72,7 +72,6 @@ import de.vanita5.twittnuker.adapter.RecyclerPagerAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ProfileImageSize
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
@@ -252,11 +251,11 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
                 val activity = activity
                 if (account.user != null) {
                     IntentUtils.openUserProfile(activity, account.user!!,
-                            preferences[newDocumentApiKey], Referral.SELF_PROFILE, null)
+                            preferences[newDocumentApiKey], null)
                 } else {
                     IntentUtils.openUserProfile(activity, account.key, account.key,
                             account.user.screen_name, null, preferences[newDocumentApiKey],
-                            Referral.SELF_PROFILE, null)
+                            null)
                 }
             }
         }

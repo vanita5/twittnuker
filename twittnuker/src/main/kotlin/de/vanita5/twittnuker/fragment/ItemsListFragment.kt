@@ -40,7 +40,6 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ITEMS
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
@@ -130,7 +129,7 @@ open class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAd
             override fun onUserClick(holder: UserViewHolder, position: Int) {
                 val user = dummyItemAdapter.getUser(position) ?: return
                 IntentUtils.openUserProfile(context, user, preferences[newDocumentApiKey],
-                        Referral.TIMELINE_STATUS, null)
+                        null)
             }
         }
         adapter.hashtagClickListener = { position ->

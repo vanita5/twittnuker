@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
 import de.vanita5.twittnuker.extension.model.activityStatus
@@ -470,7 +469,7 @@ class ParcelableActivitiesAdapter(
             val status = adapter.getActivity(position).activityStatus ?: return
             IntentUtils.openUserProfile(adapter.context, status.account_key, status.user_key,
                     status.user_screen_name, status.extras?.user_statusnet_profile_url,
-                    adapter.preferences[newDocumentApiKey], Referral.TIMELINE_STATUS, null)
+                    adapter.preferences[newDocumentApiKey], null)
         }
 
         override fun onStatusClick(holder: IStatusViewHolder, position: Int) {

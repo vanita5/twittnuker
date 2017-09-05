@@ -52,7 +52,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_AUTH_TOKEN_TYPE
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.applyTheme
@@ -175,7 +174,7 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
         val account = adapter.getItem(position)
         IntentUtils.openUserProfile(context, account.user, preferences[newDocumentApiKey],
-                Referral.SELF_PROFILE, null)
+                null)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<AccountDetails>> {

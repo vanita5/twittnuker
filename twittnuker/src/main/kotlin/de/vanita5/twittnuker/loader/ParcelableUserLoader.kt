@@ -40,7 +40,6 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
@@ -178,7 +177,7 @@ class ParcelableUserLoader(
     private fun showMicroBlogUser(details: AccountDetails): ParcelableUser {
         val microBlog = details.newMicroBlogInstance(context, MicroBlog::class.java)
         val profileUrl = extras?.getString(EXTRA_PROFILE_URL)
-        val response = if (extras != null && Referral.SELF_PROFILE == extras.getString(EXTRA_REFERRAL)) {
+        val response = if (extras != null && extras.getBoolean(EXTRA_IS_ACCOUNT_PROFILE)) {
             microBlog.verifyCredentials()
         } else if (details.type == AccountType.STATUSNET && userKey != null && profileUrl != null
                 && details.key.host != userKey.host) {

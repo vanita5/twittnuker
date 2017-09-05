@@ -24,7 +24,13 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
-@StringDef({AutoRefreshType.HOME_TIMELINE, AutoRefreshType.INTERACTIONS_TIMELINE, AutoRefreshType.DIRECT_MESSAGES})
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+
+@StringDef({AutoRefreshType.HOME_TIMELINE, AutoRefreshType.INTERACTIONS_TIMELINE,
+        AutoRefreshType.DIRECT_MESSAGES})
+@Retention(RetentionPolicy.SOURCE)
 public @interface AutoRefreshType {
 
     String HOME_TIMELINE = "home_timeline";

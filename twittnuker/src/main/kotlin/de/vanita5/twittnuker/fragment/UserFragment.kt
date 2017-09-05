@@ -110,7 +110,6 @@ import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.*
@@ -644,11 +643,9 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     if (account?.type == AccountType.MASTODON && account?.key?.host != accountKey.host) {
                         userKey = AcctPlaceholderUserKey(user.key.host)
                     }
-                    @Referral
-                    val referral = arguments.getString(EXTRA_REFERRAL)
                     IntentUtils.openUserProfile(activity, accountKey, userKey, user.screen_name,
                             user.extras?.statusnet_profile_url, preferences[newDocumentApiKey],
-                            referral, null)
+                            null)
                 }
             }
         }
@@ -1260,7 +1257,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         when (type) {
             TwidereLinkify.LINK_TYPE_MENTION -> {
                 IntentUtils.openUserProfile(activity, user.account_key, null, link, null,
-                        preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                        preferences[newDocumentApiKey], null)
                 return true
             }
             TwidereLinkify.LINK_TYPE_HASHTAG -> {
@@ -1301,6 +1298,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         if (profileBirthdayStub == null && profileBirthdayBanner.visibility == View.VISIBLE) {
             return profileBirthdayBanner.dispatchTouchEvent(event)

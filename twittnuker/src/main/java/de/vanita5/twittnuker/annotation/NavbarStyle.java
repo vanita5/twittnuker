@@ -24,7 +24,11 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @StringDef({NavbarStyle.DEFAULT, NavbarStyle.COLORED, NavbarStyle.TRANSPARENT})
+@Retention(RetentionPolicy.SOURCE)
 public @interface NavbarStyle {
     String DEFAULT = "default";
     String COLORED = "colored";

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util
 
+import android.annotation.SuppressLint
 import android.support.v4.app.Fragment
 import android.view.MotionEvent
 import android.view.View
@@ -127,6 +128,7 @@ open class ContentScrollHandler<A>(
     internal class TouchListener<A>(private val listener: ContentScrollHandler<A>) : View.OnTouchListener {
         private var lastY: Float = 0f
 
+        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {

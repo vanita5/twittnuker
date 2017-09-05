@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment.users
 
 import android.content.Context
 import android.os.Bundle
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.ParcelableUsersFragment
 import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
@@ -33,8 +32,6 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.pagination.Pagination
 
 class SearchUsersFragment : ParcelableUsersFragment() {
-
-    override val userReferral: String? = Referral.SEARCH_RESULT
 
     override fun onCreateUsersLoader(context: Context, args: Bundle, fromUser: Boolean):
             AbsRequestUsersLoader {

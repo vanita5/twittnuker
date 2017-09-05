@@ -24,11 +24,15 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @StringDef({
         NotificationType.INTERACTIONS,
         NotificationType.HOME_TIMELINE,
         NotificationType.DIRECT_MESSAGES
 })
+@Retention(RetentionPolicy.SOURCE)
 public @interface NotificationType {
     @NotificationType
     String INTERACTIONS = "interactions";

@@ -24,12 +24,16 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @StringDef({
         ReadPositionTag.ACTIVITIES_ABOUT_ME,
         ReadPositionTag.HOME_TIMELINE,
         ReadPositionTag.DIRECT_MESSAGES,
         ReadPositionTag.CUSTOM_TIMELINE,
 })
+@Retention(RetentionPolicy.SOURCE)
 public @interface ReadPositionTag {
     String HOME_TIMELINE = "home_timeline";
     String ACTIVITIES_ABOUT_ME = "activities_about_me";

@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.annotation.ProfileImageSize
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.*
@@ -267,7 +268,7 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         val summary = data.getSubtitle(context)
 
         val requestManager = Glide.with(this)
-        val profileImageStyle = preferences[profileImageStyleKey]
+        @ImageShapeStyle val profileImageStyle = preferences[profileImageStyleKey]
         requestManager.loadProfileImage(context, data, profileImageStyle).into(conversationAvatar)
         requestManager.loadProfileImage(context, data, profileImageStyle, size = ProfileImageSize.REASONABLY_SMALL).into(appBarIcon)
         appBarTitle.spannable = name

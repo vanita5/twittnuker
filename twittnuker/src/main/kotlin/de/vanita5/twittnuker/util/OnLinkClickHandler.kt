@@ -33,7 +33,6 @@ import okhttp3.HttpUrl
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_TWITTER_COM
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity
-import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_HOST
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
@@ -61,7 +60,7 @@ open class OnLinkClickHandler(
         when (type) {
             TwidereLinkify.LINK_TYPE_MENTION -> {
                 IntentUtils.openUserProfile(context, accountKey, null, link, null,
-                        preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                        preferences[newDocumentApiKey], null)
                 return true
             }
             TwidereLinkify.LINK_TYPE_HASHTAG -> {
@@ -108,13 +107,13 @@ open class OnLinkClickHandler(
             }
             TwidereLinkify.LINK_TYPE_USER_ID -> {
                 IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
-                        preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                        preferences[newDocumentApiKey], null)
                 return true
             }
             TwidereLinkify.LINK_TYPE_USER_ACCT -> {
                 val acctKey = UserKey.valueOf(link)
                 IntentUtils.openUserProfile(context, accountKey, AcctPlaceholderUserKey(acctKey.host),
-                        acctKey.id, null, preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                        acctKey.id, null, preferences[newDocumentApiKey], null)
                 return true
             }
         }
@@ -178,7 +177,7 @@ open class OnLinkClickHandler(
                 }
                 val screenName = orig.substring(1, length)
                 IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id), screenName,
-                        null, preferences[newDocumentApiKey], Referral.USER_MENTION, null)
+                        null, preferences[newDocumentApiKey], null)
                 return true
             }
         } else if (TwidereLinkify.isHashSymbol(ch) && TwidereLinkify.isHashSymbol(orig[length - 1])) {

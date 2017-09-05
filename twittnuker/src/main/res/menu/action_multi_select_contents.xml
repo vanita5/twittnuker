@@ -25,9 +25,9 @@
 
     <item
         android:id="@id/select_account"
-        android:actionProviderClass="de.vanita5.twittnuker.menu.AccountActionProvider"
         android:icon="@drawable/ic_action_user"
         android:title="@string/select_account"
+        app:actionProviderClass="de.vanita5.twittnuker.menu.AccountActionProvider"
         app:showAsAction="always" />
     <item
         android:id="@id/reply"

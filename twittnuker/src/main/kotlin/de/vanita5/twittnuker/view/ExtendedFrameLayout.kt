@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.view
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -61,6 +62,7 @@ open class ExtendedFrameLayout(context: Context, attrs: AttributeSet? = null) :
         return super.onApplyWindowInsets(insets)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (touchInterceptor != null) {
             val ret = touchInterceptor!!.onTouchEvent(this, event)
