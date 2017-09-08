@@ -68,6 +68,7 @@ import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
 import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
 import de.vanita5.twittnuker.fragment.search.MastodonSearchFragment
 import de.vanita5.twittnuker.fragment.search.SearchFragment
+import de.vanita5.twittnuker.fragment.status.StatusFragment
 import de.vanita5.twittnuker.fragment.statuses.*
 import de.vanita5.twittnuker.fragment.users.*
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
@@ -170,7 +171,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
             ft.commit()
         }
         setTitle(linkId, uri)
-        finishOnly = uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY)?.toBoolean() ?: false
+        finishOnly = uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY)?.toBoolean() == true
 
         supportActionBar?.setBackgroundDrawable(ActionBarColorDrawable.create(overrideTheme.colorToolbar,
                 true))

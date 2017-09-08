@@ -32,6 +32,7 @@
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">Retweet löschen</string>
     <string name="action_center">Mitte</string>
+    <string name="action_change_language">Sprache ändern</string>
     <string name="action_clear">Löschen</string>
     <string name="action_clear_messages">Nachrichten löschen</string>
     <string name="action_comment">Kommentar</string>
