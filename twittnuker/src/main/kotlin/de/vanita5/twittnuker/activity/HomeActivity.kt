@@ -27,6 +27,7 @@ import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.PendingIntent
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -86,6 +87,7 @@ import de.vanita5.twittnuker.annotation.NavbarStyle
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.notificationBuilder
 import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -98,6 +100,7 @@ import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
+import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
@@ -105,6 +108,7 @@ import de.vanita5.twittnuker.service.RegistrationIntentService
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
 import java.lang.ref.WeakReference
@@ -880,7 +884,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         // Skip if app doesn't support extra features
         if (!extraFeaturesService.isSupported()) return
         // Skip if already bought enhanced features pack or have set promotions options
-        if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FEATURES_PACK)
+        if (extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FEATURES_PACK)
                 || promotionsEnabledKey in preferences) {
             return
         }
