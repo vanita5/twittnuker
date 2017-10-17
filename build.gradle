@@ -7,7 +7,7 @@ buildscript {
         maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta5'
+        classpath 'com.android.tools.build:gradle:3.0.0-rc1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -41,7 +41,7 @@ subprojects {
             ]
             libVersions = [
                     Kotlin              : '1.1.4-2',
-                    SupportLib          : '26.0.1',
+                    SupportLib          : '26.0.2',
                     SupportTest         : '1.0.0',
                     MariotakuCommons    : '0.9.17',
                     RestFu              : '0.9.57',
@@ -85,7 +85,7 @@ subprojects {
         if (project.hasProperty('android')) {
             android {
                 compileSdkVersion 26
-                buildToolsVersion '26.0.1'
+                buildToolsVersion '26.0.2'
 
                 lintOptions {
                     abortOnError false
