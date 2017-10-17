@@ -21,9 +21,12 @@
     <string name="action_add_gif">Gif hinzufügen</string>
     <string name="action_add_media">Medien hinzufügen</string>
     <string name="action_add_member">Mitglied hinzufügen</string>
+    <string name="action_add_name_to_home_screen"><xliff:g example="Name" id="name">%1$s</xliff:g> zum Startbildschirm hinzufügen</string>
+    <string name="action_add_tab_to_home_screen">Tab zum Startbildschirm hinzufügen</string>
     <string name="action_add_tab">Tab hinzufügen</string>
     <string name="action_add_to_filter">Zum Filter hinzufügen</string>
     <string name="action_add_to_home_screen">Zum Startbildschirm hinzufügen</string>
+    <string name="action_add_to_home_screen_more">Zum Startbildschirm hinzufügen…</string>
     <string name="action_add_to_list">Zur Liste hinzufügen</string>
     <!-- [verb] Action for blocking user -->
     <string name="action_block">Blockieren</string>

@@ -28,17 +28,24 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v4.content.pm.ShortcutInfoCompat
+import android.support.v4.content.pm.ShortcutManagerCompat
 import android.support.v4.graphics.drawable.IconCompat
 import com.bumptech.glide.Glide
 import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.then
+import nl.komponents.kovenant.ui.alwaysUi
+import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.ImageShapeStyle
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.dismissProgressDialog
 import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.showProgressDialog
+import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
@@ -107,6 +114,20 @@ object ShortcutCreator {
         builder.setShortLabel(userColorNameManager.getDisplayName(user, preferences[nameFirstKey]))
         builder.setIcon(IconCompat.createWithResource(context, R.mipmap.ic_shortcut_quote))
         return Promise.of(builder.build())
+    }
+
+    inline fun performCreation(fragment: BaseFragment, createPromise: () -> Promise<ShortcutInfoCompat, Exception>) {
+        if (!ShortcutManagerCompat.isRequestPinShortcutSupported(fragment.context)) return
+        val promise = fragment.showProgressDialog("create_shortcut")
+                .and(createPromise())
+        val weakThis = WeakReference(fragment)
+        promise.successUi { (_, shortcut) ->
+            val f = weakThis.get() ?: return@successUi
+            ShortcutManagerCompat.requestPinShortcut(f.context, shortcut, null)
+        }.alwaysUi {
+            val f = weakThis.get() ?: return@alwaysUi
+            f.dismissProgressDialog("create_shortcut")
+        }
     }
 
     private fun Drawable.toProfileImageIcon(context: Context): IconCompat {
