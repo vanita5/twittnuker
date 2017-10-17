@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment
 import android.os.Bundle
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
+import de.vanita5.twittnuker.preference.notification.AccountNotificationChannelsPreference
 
 class AccountNotificationSettingsFragment : BaseAccountPreferenceFragment() {
 
@@ -39,11 +40,13 @@ class AccountNotificationSettingsFragment : BaseAccountPreferenceFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val preference = findPreference(KEY_NOTIFICATION_LIGHT_COLOR)
-        val account = account
-        if (preference != null && account != null) {
-            preference.setDefaultValue(account.color)
+        val account = this.account
+        findPreference(KEY_NOTIFICATION_LIGHT_COLOR)?.let {
+            if (account != null) {
+                it.setDefaultValue(account.color)
+            }
         }
+        (findPreference("notification_channels") as? AccountNotificationChannelsPreference)?.account = account
     }
 
 }

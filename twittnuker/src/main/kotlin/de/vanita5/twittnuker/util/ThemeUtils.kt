@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -457,6 +458,15 @@ object ThemeUtils {
         val a = context.obtainStyledAttributes(null, intArrayOf(attr), 0, styleRes)
         try {
             return a.getColor(0, def)
+        } finally {
+            a.recycle()
+        }
+    }
+
+    fun getColorStateListFromAttribute(context: Context, @AttrRes attr: Int, styleRes: Int = 0): ColorStateList? {
+        val a = context.obtainStyledAttributes(null, intArrayOf(attr), 0, styleRes)
+        try {
+            return a.getColorStateList(0)
         } finally {
             a.recycle()
         }

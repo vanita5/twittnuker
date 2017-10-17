@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.SpanItem
+import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.view.FixedTextView
 import de.vanita5.twittnuker.view.ProfileImageView
 
@@ -64,7 +65,14 @@ class MessageViewHolder(itemView: View, adapter: MessagesConversationAdapter) : 
     override fun display(message: ParcelableMessage, showDate: Boolean) {
         super.display(message, showDate)
 
+        messageBubble.bubbleColor = if (message.is_outgoing) {
+            adapter.bubbleColorOutgoing
+        } else {
+            adapter.bubbleColorIncoming
+        }
         messageBubble.setOutgoing(message.is_outgoing)
+
+        text.setTextColor(ThemeUtils.getColorDependent(messageBubble.bubbleColor.defaultColor))
 
         // Loop through text and spans to found non-space char count
         val hideText = run {

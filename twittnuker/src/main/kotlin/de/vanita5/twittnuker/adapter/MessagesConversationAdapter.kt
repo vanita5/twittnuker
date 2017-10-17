@@ -23,14 +23,19 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.support.v4.graphics.ColorUtils
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.RequestManager
 import org.apache.commons.lang3.time.DateUtils
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.library.objectcursor.ObjectCursor
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.PreviewStyle
@@ -43,6 +48,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
+import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -80,6 +86,9 @@ class MessagesConversationAdapter(
         private set
     var listener: Listener? = null
     var displaySenderProfile: Boolean = false
+
+    val bubbleColorOutgoing: ColorStateList? = ThemeUtils.getColorStateListFromAttribute(context, R.attr.messageBubbleColor)
+    val bubbleColorIncoming: ColorStateList? = context.getIncomingMessageColor()
 
     override var loadMoreIndicatorPosition: Long
         get() = super.loadMoreIndicatorPosition
@@ -216,6 +225,19 @@ class MessagesConversationAdapter(
         private const val ITEM_TYPE_STICKER_MESSAGE = 2
         private const val ITEM_TYPE_NOTICE_MESSAGE = 3
         private const val ITEM_LOAD_OLDER_INDICATOR = 4
+
+        private fun Context.getIncomingMessageColor(): ColorStateList {
+            val foregroundColor = ThemeUtils.getColorForeground(this)
+            val themeColor = Chameleon.getOverrideTheme(this, ChameleonUtils.getActivity(this)).colorAccent
+            val normalColor = ThemeUtils.getOptimalAccentColor(themeColor, foregroundColor)
+            val pressedColor = if (ColorUtils.calculateLuminance(normalColor) < 0.1) {
+                ColorUtils.compositeColors(0x20FFFFFF, normalColor)
+            } else {
+                ColorUtils.compositeColors(0x20000000, normalColor)
+            }
+            return ColorStateList(arrayOf(intArrayOf(android.R.attr.state_pressed), intArrayOf(0)),
+                    intArrayOf(pressedColor, normalColor))
+        }
     }
 
 

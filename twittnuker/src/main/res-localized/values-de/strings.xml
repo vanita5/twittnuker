@@ -645,6 +645,8 @@
     <string name="none">Nichts</string>
     <string name="notification_channel_description_content_interactions">Interaktionen wie Mentions oder Retweets</string>
     <string name="notification_channel_description_content_messages">Wichtige Nachrichten wie DMs</string>
+    <string name="notification_channel_descriptions_content_subscriptions">Tweet Benachrichtigungen von Nutzern</string>
+    <string name="notification_channel_descriptions_content_updates">Updates wie neue Tweets</string>
     <string name="notification_channel_name_app_notices">Hinweise</string>
     <string name="notification_channel_name_background_progresses">Hintergrundprozesse</string>
     <string name="notification_channel_name_content_interactions">Interaktionen</string>
