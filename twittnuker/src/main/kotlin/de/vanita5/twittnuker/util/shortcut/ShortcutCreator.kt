@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.extension.loadProfileImage
 import de.vanita5.twittnuker.extension.showProgressDialog
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
@@ -127,6 +128,19 @@ object ShortcutCreator {
         builder.setIntent(launchIntent)
         builder.setShortLabel(userColorNameManager.getDisplayName(user, preferences[nameFirstKey]))
         builder.setIcon(IconCompat.createWithResource(context, R.mipmap.ic_shortcut_gallery))
+        return Promise.of(builder.build())
+    }
+
+    fun userListTimeline(context: Context, accountKey: UserKey?, list: ParcelableUserList): Promise<ShortcutInfoCompat, Exception> {
+        val holder = DependencyHolder.get(context)
+        val preferences = holder.preferences
+        val userColorNameManager = holder.userColorNameManager
+        val launchIntent = IntentUtils.userListTimeline(accountKey, list.id,
+                list.user_key, list.user_screen_name, list.name)
+        val builder = ShortcutInfoCompat.Builder(context, "$accountKey:user-list-timeline:${list.id}")
+        builder.setIntent(launchIntent)
+        builder.setShortLabel(userColorNameManager.getDisplayName(list, preferences[nameFirstKey]))
+        builder.setIcon(IconCompat.createWithResource(context, R.mipmap.ic_shortcut_list))
         return Promise.of(builder.build())
     }
 
