@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.app
 
+import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.app.Application
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
@@ -41,6 +43,7 @@ import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
+import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.isCurrentThreadCompat
 import org.mariotaku.ktextension.setLayoutDirectionCompat
 import org.mariotaku.mediaviewer.library.MediaDownloader
@@ -157,7 +160,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         Analyzer.preferencesChanged(sharedPreferences)
         DataSyncProvider.Factory.notifyUpdate(this)
 
-        NotificationChannelsManager.updateAccountChannelsAndGroups(this)
+        AccountManager.get(this).addOnAccountsUpdatedListenerSafe(OnAccountsUpdateListener {
+            NotificationChannelsManager.updateAccountChannelsAndGroups(this)
+        }, updateImmediately = true)
     }
 
 
@@ -296,10 +301,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 return executor.submit(callable)
             }
         })
-    }
-
-    private fun updateAccountNotificationGroup() {
-
     }
 
     companion object {
