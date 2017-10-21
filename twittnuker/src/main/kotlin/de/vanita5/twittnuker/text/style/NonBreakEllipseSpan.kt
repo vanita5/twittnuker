@@ -28,7 +28,6 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.style.ReplacementSpan
 
-
 class NonBreakEllipseSpan : ReplacementSpan() {
     override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
         return 1

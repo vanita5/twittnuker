@@ -34,7 +34,7 @@ import android.view.ContextMenu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
@@ -80,8 +80,8 @@ open class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAd
         }
     }
 
-    override fun onCreateAdapter(context: Context): VariousItemsAdapter {
-        val adapter = VariousItemsAdapter(context, Glide.with(this))
+    override fun onCreateAdapter(context: Context, requestManager: RequestManager): VariousItemsAdapter {
+        val adapter = VariousItemsAdapter(context, requestManager)
         val dummyItemAdapter = adapter.dummyAdapter
         dummyItemAdapter.statusClickListener = object : IStatusViewHolder.StatusClickListener {
             override fun onStatusClick(holder: IStatusViewHolder, position: Int) {

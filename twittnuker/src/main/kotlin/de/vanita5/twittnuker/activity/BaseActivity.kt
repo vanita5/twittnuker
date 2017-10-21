@@ -46,6 +46,8 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.squareup.otto.Bus
 import nl.komponents.kovenant.Promise
 import org.mariotaku.chameleon.Chameleon
@@ -121,6 +123,9 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     @Inject
     lateinit var taskServiceRunner: TaskServiceRunner
 
+    lateinit var requestManager: RequestManager
+        private set
+
     protected val statusScheduleProvider: StatusScheduleProvider?
         get() = statusScheduleProviderFactory.newInstance(this)
 
@@ -153,7 +158,7 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     private var isNightBackup: Int = TwilightManagerAccessor.UNSPECIFIED
 
-    private val actionHelper = IBaseActivity.ActionHelper(this)
+    private val actionHelper = IBaseActivity.ActionHelper<BaseActivity>()
 
     private val themePreferences by lazy {
         getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -250,9 +255,25 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
         }
         onApplyNavigationStyle(themeNavigationStyle, themeColor)
         super.onCreate(savedInstanceState)
+        requestManager = Glide.with(this)
         ActivitySupport.setTaskDescription(this, TaskDescriptionCompat(title.toString(), null,
                 ColorUtils.setAlphaComponent(overrideTheme.colorToolbar, 0xFF)))
         GeneralComponent.get(this).inject(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requestManager.onStart()
+    }
+
+    override fun onStop() {
+        requestManager.onStop()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        requestManager.onDestroy()
+        super.onDestroy()
     }
 
     override fun onResume() {
@@ -323,11 +344,11 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
 
     override fun onResumeFragments() {
         super.onResumeFragments()
-        actionHelper.dispatchOnResumeFragments()
+        actionHelper.dispatchOnResumeFragments(this)
     }
 
     override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseActivity) -> Unit): Promise<Unit, Exception> {
-        return actionHelper.executeAfterFragmentResumed(useHandler, action)
+        return actionHelper.executeAfterFragmentResumed(this, useHandler, action)
     }
 
 

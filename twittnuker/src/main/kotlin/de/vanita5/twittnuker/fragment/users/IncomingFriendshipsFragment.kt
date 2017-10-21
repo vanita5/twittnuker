@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment.users
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
@@ -46,8 +47,8 @@ class IncomingFriendshipsFragment : ParcelableUsersFragment(), IUsersAdapter.Req
         return IncomingFriendshipsLoader(context, accountKey, adapter.getData(), fromUser)
     }
 
-    override fun onCreateAdapter(context: Context): ParcelableUsersAdapter {
-        val adapter = super.onCreateAdapter(context)
+    override fun onCreateAdapter(context: Context, requestManager: RequestManager): ParcelableUsersAdapter {
+        val adapter = super.onCreateAdapter(context, requestManager)
         val accountKey = arguments.getParcelable<UserKey?>(EXTRA_ACCOUNT_KEY) ?: return adapter
         if (USER_TYPE_FANFOU_COM == accountKey.host) {
             adapter.requestClickListener = this

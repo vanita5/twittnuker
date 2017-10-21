@@ -31,7 +31,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.contains
 import de.vanita5.microblog.library.twitter.model.TranslationResult
@@ -54,7 +53,7 @@ import de.vanita5.twittnuker.view.holder.status.DetailStatusViewHolder
 
 class StatusDetailsAdapter(
         val fragment: StatusFragment
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(fragment.context, Glide.with(fragment)),
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(fragment.context, fragment.requestManager),
         IStatusesAdapter<List<ParcelableStatus>>, IItemCountsAdapter {
 
     override val twidereLinkify: TwidereLinkify

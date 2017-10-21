@@ -1,30 +1,30 @@
 /*
- *          Twittnuker - Twitter client for Android
+ * Twittnuker - Twitter client for Android
  *
- *  Copyright 2013-2017 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
- *          This program incorporates a modified version of
- *          Twidere - Twitter client for Android
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
- *  Copyright 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package de.vanita5.twittnuker.fragment.users
 
 import android.content.Context
 import android.os.Bundle
+import com.bumptech.glide.RequestManager
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
@@ -43,8 +43,8 @@ class StatusFavoritersListFragment : ParcelableUsersFragment() {
         return StatusFavoritersLoader(context, accountKey, statusId, adapter.getData(), false)
     }
 
-    override fun onCreateAdapter(context: Context): ParcelableUsersAdapter {
-        return super.onCreateAdapter(context).apply {
+    override fun onCreateAdapter(context: Context, requestManager: RequestManager): ParcelableUsersAdapter {
+        return super.onCreateAdapter(context, requestManager).apply {
             loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
         }
     }

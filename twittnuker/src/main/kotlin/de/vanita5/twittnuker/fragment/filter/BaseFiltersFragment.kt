@@ -68,7 +68,6 @@ import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.text.style.EmojiSpan
-import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.ThemeUtils
 
@@ -282,8 +281,6 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val activity = activity
-            val context = activity
             val builder = AlertDialog.Builder(context)
             builder.setView(R.layout.dialog_auto_complete_textview)
 
@@ -307,7 +304,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
                     if (autoCompleteType == AUTO_COMPLETE_TYPE_SOURCES) {
                         userAutoCompleteAdapter = SourceAutoCompleteAdapter(activity)
                     } else {
-                        val adapter = ComposeAutoCompleteAdapter(activity, Glide.with(this))
+                        val adapter = ComposeAutoCompleteAdapter(activity, requestManager)
                         val am = AccountManager.get(activity)
                         adapter.account = AccountUtils.getDefaultAccountDetails(activity, am, false)
                         userAutoCompleteAdapter = adapter

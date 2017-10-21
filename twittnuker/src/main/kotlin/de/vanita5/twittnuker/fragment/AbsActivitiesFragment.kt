@@ -36,12 +36,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.OnScrollListener
 import android.view.*
-import com.bumptech.glide.Glide
 import com.squareup.otto.Subscribe
-import de.vanita5.microblog.library.twitter.model.Activity
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
+import de.vanita5.microblog.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
@@ -58,6 +57,7 @@ import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.readFromBottomKey
 import de.vanita5.twittnuker.constant.rememberPositionKey
+import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
@@ -65,7 +65,6 @@ import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.extension.model.activityStatus
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -107,7 +106,8 @@ abstract class AbsActivitiesFragment protected constructor() :
         registerForContextMenu(recyclerView)
         navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this)
-        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(false, false, Glide.with(this))
+        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(false, false,
+                requestManager)
 
         val loaderArgs = Bundle(arguments)
         loaderArgs.putBoolean(EXTRA_FROM_USER, true)
@@ -215,8 +215,8 @@ abstract class AbsActivitiesFragment protected constructor() :
         val readFromBottom = preferences[readFromBottomKey]
         val firstLoad = adapterData.isNullOrEmpty()
 
-        var lastReadId: Long = -1
-        var lastReadViewTop: Int = 0
+        var lastReadId = -1L
+        var lastReadViewTop = 0
         var loadMore = false
         var wasAtTop = false
 

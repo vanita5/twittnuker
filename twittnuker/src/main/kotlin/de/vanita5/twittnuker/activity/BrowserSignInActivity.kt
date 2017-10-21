@@ -39,6 +39,7 @@ import org.attoparser.ParseException
 import org.mariotaku.ktextension.dismissDialogFragment
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.extension.applyDefault
 import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator
@@ -288,12 +289,5 @@ class BrowserSignInActivity : BaseActivity() {
         private const val INJECT_CONTENT = "javascript:window.injector.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');"
         private const val TAG_BROWSER_WINDOW = "browser_window"
 
-        @SuppressLint("SetJavaScriptEnabled")
-        private fun WebSettings.applyDefault() {
-            loadsImagesAutomatically = true
-            javaScriptEnabled = true
-            blockNetworkImage = false
-            saveFormData = true
-        }
     }
 }
