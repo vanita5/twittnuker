@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.annotation.CacheFileType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
 import de.vanita5.twittnuker.extension.model.authorizationHeader
+import de.vanita5.twittnuker.extension.model.getBestVideoUrlAndType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.media.VideoPageFragment.Companion.EXTRA_PAUSED_BY_USER
 import de.vanita5.twittnuker.fragment.media.VideoPageFragment.Companion.EXTRA_PLAY_AUDIO
@@ -333,8 +334,8 @@ class ExoPlayerPageFragment : MediaViewerFragment(), IBaseFragment<ExoPlayerPage
     }
 
     private fun ParcelableMedia.getDownloadUri(): Uri? {
-        val bestVideoUrlAndType = VideoPageFragment.getBestVideoUrlAndType(this, SUPPORTED_VIDEO_TYPES)
-        if (bestVideoUrlAndType != null && bestVideoUrlAndType.first != null) {
+        val bestVideoUrlAndType = this.getBestVideoUrlAndType(SUPPORTED_VIDEO_TYPES)
+        if (bestVideoUrlAndType != null) {
             return Uri.parse(bestVideoUrlAndType.first)
         }
         return arguments.getParcelable<Uri>(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)

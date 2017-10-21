@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.media
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -33,7 +32,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +52,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_MEDIA
 import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
+import de.vanita5.twittnuker.extension.model.getBestVideoUrlAndType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
@@ -175,7 +174,7 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
 
     override fun getDownloadExtra(): Any? {
         val extra = MediaExtra()
-        val fallbackUrlAndType = getBestVideoUrlAndType(media, FALLBACK_VIDEO_TYPES)
+        val fallbackUrlAndType = media?.getBestVideoUrlAndType(FALLBACK_VIDEO_TYPES)
         if (fallbackUrlAndType != null) {
             extra.fallbackUrl = fallbackUrlAndType.first
         }
@@ -187,8 +186,8 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
     }
 
     override fun getDownloadUri(): Uri? {
-        val bestVideoUrlAndType = getBestVideoUrlAndType(media, SUPPORTED_VIDEO_TYPES)
-        if (bestVideoUrlAndType != null && bestVideoUrlAndType.first != null) {
+        val bestVideoUrlAndType = media?.getBestVideoUrlAndType(SUPPORTED_VIDEO_TYPES)
+        if (bestVideoUrlAndType != null) {
             return Uri.parse(bestVideoUrlAndType.first)
         }
         return arguments.getParcelable<Uri>(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)
@@ -399,27 +398,5 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
         internal val MediaViewerFragment.accountKey: UserKey
             get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 
-
-        @SuppressLint("SwitchIntDef")
-        internal fun getBestVideoUrlAndType(media: ParcelableMedia?, supportedTypes: Array<String>): Pair<String, String>? {
-            if (media == null) return null
-            when (media.type) {
-                ParcelableMedia.Type.VIDEO, ParcelableMedia.Type.ANIMATED_GIF -> {
-                    if (media.video_info == null) {
-                        return Pair.create<String, String>(media.media_url, null)
-                    }
-                    val firstMatch = media.video_info.variants.filter { variant ->
-                        supportedTypes.any { it.equals(variant.content_type, ignoreCase = true) }
-                    }.sortedByDescending(ParcelableMedia.VideoInfo.Variant::bitrate).firstOrNull() ?: return null
-                    return Pair.create(firstMatch.url, firstMatch.content_type)
-                }
-                ParcelableMedia.Type.CARD_ANIMATED_GIF -> {
-                    return Pair.create<String, String>(media.media_url, "video/mp4")
-                }
-                else -> {
-                    return null
-                }
-            }
-        }
     }
 }
