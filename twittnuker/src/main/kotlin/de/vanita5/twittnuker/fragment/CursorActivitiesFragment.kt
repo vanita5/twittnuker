@@ -351,5 +351,6 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     companion object {
         val activityColumnsLite = Activities.COLUMNS - arrayOf(Activities.SOURCES,Activities.TARGETS,
                 Activities.TARGET_OBJECTS)
+
     }
 }
