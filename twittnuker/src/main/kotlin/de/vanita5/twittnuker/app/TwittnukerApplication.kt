@@ -45,7 +45,6 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.isCurrentThreadCompat
-import org.mariotaku.ktextension.setLayoutDirectionCompat
 import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
@@ -54,6 +53,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.model.loadRemoteSettings
 import de.vanita5.twittnuker.extension.model.save
+import de.vanita5.twittnuker.extension.setLocale
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.receiver.ConnectivityStateReceiver
 import de.vanita5.twittnuker.service.StreamingService
@@ -79,7 +79,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChangeListener {
+class TwittnukerApplication : Application(), OnSharedPreferenceChangeListener {
 
     @Inject
     lateinit internal var activityTracker: ActivityTracker
@@ -136,13 +136,13 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             StrictModeUtils.detectAllVmPolicy()
         }
         super.onCreate()
-        EmojioneTranslator.init(this)
-        NotificationChannelsManager.initialize(this)
         applyLanguageSettings()
         startKovenant()
         initializeAsyncTask()
         initDebugMode()
         initBugReport()
+        EmojioneTranslator.init(this)
+        NotificationChannelsManager.initialize(this)
 
         GeneralComponent.get(this).inject(this)
 
@@ -224,14 +224,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         stopKovenant()
     }
 
-    @Suppress("DEPRECATION")
     private fun applyLanguageSettings() {
         val locale = sharedPreferences[overrideLanguageKey] ?: return
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.locale = locale
-        config.setLayoutDirectionCompat(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
+        resources.setLocale(locale)
     }
 
     private fun loadDefaultFeatures() {

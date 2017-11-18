@@ -66,6 +66,8 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
 import de.vanita5.twittnuker.annotation.NavbarStyle
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.extension.defaultSharedPreferences
+import de.vanita5.twittnuker.extension.overriding
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowInsetsCallback
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
@@ -345,6 +347,19 @@ open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThe
     override fun onResumeFragments() {
         super.onResumeFragments()
         actionHelper.dispatchOnResumeFragments(this)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (newBase == null) {
+            super.attachBaseContext(null)
+            return
+        }
+        val locale = newBase.defaultSharedPreferences[overrideLanguageKey]
+        if (locale == null) {
+            super.attachBaseContext(newBase)
+            return
+        }
+        super.attachBaseContext(newBase.overriding(locale))
     }
 
     override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseActivity) -> Unit): Promise<Unit, Exception> {
