@@ -51,6 +51,9 @@ before_install:
 install:
   - cat ./travis/configs/gradle.properties > ./gradle.properties
 
+before_script:
+  - ./gradlew twittnuker:tasks
+
 script:
   - ./gradlew clean assembleDebug --stacktrace
   # #- ./gradlew assembleDebugAndroidTest
