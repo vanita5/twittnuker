@@ -24,6 +24,7 @@ env:
     - secure: "TnMd1gCo4Hqks+ha+x8OsksdcV0j/4m684fc0VN9rbgGiC1DQ2h85gGDfwy2PpUCV0qiENQY3qsKzZvADIwlYSpPY4Z2clB6MH4rs7Esh4/8VX3v+EG7HbkPCbXx/eWHauT8X/bLYTbMBAv+VrUFX+D8EoLM3tp/WPOs26Pp6BQ="
     - JAVA_OPTS="-Xmx2048m"
     - ADB_INSTALL_TIMEOUT=8
+    - GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dkotlin.compiler.execution.strategy=in-process"
 
 addons:
   apt:

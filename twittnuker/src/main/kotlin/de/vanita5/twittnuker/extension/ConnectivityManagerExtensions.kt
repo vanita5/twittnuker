@@ -14,21 +14,28 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.restfu
+package de.vanita5.twittnuker.extension
 
-import org.mariotaku.restfu.http.MultiValueMap
+import android.annotation.TargetApi
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkInfo
+import android.os.Build
 
-operator fun <T> MultiValueMap<T>.contains(key: String): Boolean {
-    return getFirst(key) != null
-}
+val ConnectivityManager.activateNetworkCompat: Network?
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    get() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return activeNetwork
+        }
+        val activeInfo = activeNetworkInfo ?: return null
+        return allNetworks.firstOrNull { activeInfo.same(getNetworkInfo(it)) }
+    }
 
-operator fun <T> MultiValueMap<T>.set(key: String, value: T) {
-    if (value in get(key)) return
-    add(key, value)
-}
+private fun NetworkInfo.same(another: NetworkInfo) = type == another.type && subtype == another.subtype

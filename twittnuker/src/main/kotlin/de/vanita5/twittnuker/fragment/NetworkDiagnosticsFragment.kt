@@ -55,14 +55,15 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.extension.model.getEndpoint
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.restfu.headers
+import de.vanita5.twittnuker.extension.restfu.set
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.net.SystemDnsFetcher
 import de.vanita5.twittnuker.util.net.TwidereDns
-
-import org.xbill.DNS.ResolverConfig
 import java.io.IOException
 import java.io.OutputStream
 import java.lang.ref.WeakReference
@@ -137,12 +138,8 @@ class NetworkDiagnosticsFragment : BaseFragment() {
             logPrintln(("System DNS servers"))
 
 
-            val servers = ResolverConfig.getCurrentConfig().servers()
-            if (servers != null) {
-                logPrintln(Arrays.toString(servers))
-            } else {
-                logPrintln("null")
-            }
+            val servers = SystemDnsFetcher.get(context)
+            logPrintln(servers?.toString() ?: "null")
             logPrintln()
 
             for (accountKey in DataStoreUtils.getAccountKeys(context)) {
@@ -189,6 +186,9 @@ class NetworkDiagnosticsFragment : BaseFragment() {
                     val builder = HttpRequest.Builder()
                     builder.method(GET.METHOD)
                     builder.url(baseUrl)
+                    builder.headers {
+                        this["Accept"] = "*/*"
+                    }
                     val start = SystemClock.uptimeMillis()
                     response = client.newCall(builder.build()).execute()
                     logPrint(" OK (${SystemClock.uptimeMillis() - start} ms)")
