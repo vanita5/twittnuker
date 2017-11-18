@@ -28,6 +28,7 @@ import android.app.Application
 import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.net.ConnectivityManager
@@ -51,6 +52,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.extension.firstLanguage
 import de.vanita5.twittnuker.extension.model.loadRemoteSettings
 import de.vanita5.twittnuker.extension.model.save
 import de.vanita5.twittnuker.extension.setLocale
@@ -215,6 +217,9 @@ class TwittnukerApplication : Application(), OnSharedPreferenceChangeListener {
                     stopService(streamingIntent)
                 }
             }
+            KEY_OVERRIDE_LANGUAGE -> {
+                applyLanguageSettings()
+            }
         }
         Analyzer.preferencesChanged(preferences)
     }
@@ -225,7 +230,8 @@ class TwittnukerApplication : Application(), OnSharedPreferenceChangeListener {
     }
 
     private fun applyLanguageSettings() {
-        val locale = sharedPreferences[overrideLanguageKey] ?: return
+        val locale = sharedPreferences[overrideLanguageKey] ?: Resources.getSystem().
+                firstLanguage ?: return
         resources.setLocale(locale)
     }
 

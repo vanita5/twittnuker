@@ -117,7 +117,7 @@ object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
 
 }
 
-object overrideLanguageKey : KSimpleKey<Locale?>("override_language", null) {
+object overrideLanguageKey : KSimpleKey<Locale?>(KEY_OVERRIDE_LANGUAGE, null) {
     override fun read(preferences: SharedPreferences): Locale? {
         return preferences.getString(key, null)?.takeIf(String::isNotEmpty)?.replace('-', '_')
                 ?.let(LocaleUtils::toLocale)
