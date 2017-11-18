@@ -10,13 +10,8 @@ android:
     - tools
     - tools # To fix https://github.com/travis-ci/travis-ci/issues/6040
     - platform-tools
-    - build-tools-26.0.0
+    - build-tools-26.0.1
     - android-26
-
-    # Additional components
-    - extra-google-google_play_services-41
-    - extra-google-m2repository-54
-    - extra-android-m2repository-47.0.0
 
 env:
   global:
@@ -55,7 +50,7 @@ before_install:
   # #- adb shell input keyevent 82 &
 
 script:
-  - ./gradlew clean assembleDebug --stacktrace --no-daemon
+  - ./gradlew clean assembleDebug --stacktrace
   # #- ./gradlew assembleDebugAndroidTest
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
