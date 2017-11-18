@@ -49,7 +49,7 @@ before_install:
   # #- adb shell input keyevent 82 &
 
 install:
-  - cat ./travis/configs/gradle.properties >> ./gradle.properties
+  - cat ./travis/configs/gradle.properties > ./gradle.properties
 
 script:
   - ./gradlew clean assembleDebug --stacktrace
