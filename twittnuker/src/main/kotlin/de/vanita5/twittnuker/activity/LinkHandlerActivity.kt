@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.exception.NoAccountException
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FiltersFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersImportBlocksFragment
@@ -122,13 +123,16 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
                 finish()
                 return
             }
-        } catch (e: Utils.NoAccountException) {
+        } catch (e: NoAccountException) {
             val selectIntent = Intent(this, AccountSelectorActivity::class.java)
             val accountHost: String? = intent.getStringExtra(EXTRA_ACCOUNT_HOST) ?:
                     uri.getQueryParameter(QUERY_PARAM_ACCOUNT_HOST) ?: e.accountHost
+            val accountType: String? = intent.getStringExtra(EXTRA_ACCOUNT_TYPE) ?:
+                    uri.getQueryParameter(QUERY_PARAM_ACCOUNT_TYPE) ?: e.accountType
             selectIntent.putExtra(EXTRA_SINGLE_SELECTION, true)
             selectIntent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
             selectIntent.putExtra(EXTRA_ACCOUNT_HOST, accountHost)
+            selectIntent.putExtra(EXTRA_ACCOUNT_TYPE, accountType)
             selectIntent.putExtra(EXTRA_START_INTENT, intent)
             startActivity(selectIntent)
             finish()
@@ -549,7 +553,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
         fab.contentDescription = info.title
     }
 
-    @Throws(Utils.NoAccountException::class)
+    @Throws(NoAccountException::class)
     private fun createFragmentForIntent(context: Context, linkId: Int, intent: Intent): Fragment? {
         intent.setExtrasClassLoader(classLoader)
         val extras = intent.extras
@@ -567,6 +571,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
 
         }
         var userHost: String? = null
+        var accountType: String? = null
         var accountRequired = true
         when (linkId) {
             LINK_ID_ACCOUNTS -> {
@@ -619,6 +624,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
                 if (paramUserKey != null) {
                     userHost = paramUserKey.host
                 }
+                accountType = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_TYPE)
             }
             LINK_ID_USER_LIST_MEMBERSHIPS -> {
                 fragment = UserListMembershipsFragment()
@@ -911,8 +917,9 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowInsetsCallback, IControl
         }
 
         if (accountRequired && accountKey == null) {
-            val exception = Utils.NoAccountException()
+            val exception = NoAccountException()
             exception.accountHost = userHost
+            exception.accountType = accountType
             throw exception
         }
         args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey)

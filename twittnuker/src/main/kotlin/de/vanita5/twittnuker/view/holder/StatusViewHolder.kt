@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.view.holder
 
-import android.graphics.Typeface
+import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
@@ -30,9 +30,7 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
@@ -52,6 +50,7 @@ import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.quoted_user_acct
 import de.vanita5.twittnuker.extension.model.retweeted_by_user_acct
 import de.vanita5.twittnuker.extension.model.user_acct
+import de.vanita5.twittnuker.extension.setVisible
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableLocation
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -61,8 +60,11 @@ import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.text.TwidereClickableSpan
-import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
+import de.vanita5.twittnuker.util.HtmlSpanBuilder
+import de.vanita5.twittnuker.util.ThemeUtils
+import de.vanita5.twittnuker.util.UnitConvertUtils
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
 import de.vanita5.twittnuker.view.ShapedImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
@@ -178,13 +180,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         if (displayPinned && status.is_pinned_status) {
             statusInfoLabel.setText(R.string.pinned_status)
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_pinned)
-            statusInfoLabel.visibility = View.VISIBLE
-            statusInfoIcon.visibility = View.VISIBLE
-
-            statusContentUpperSpace.visibility = View.GONE
-        } else if (TwitterCardUtils.isPoll(status)) {
-            statusInfoLabel.setText(R.string.label_poll)
-            statusInfoIcon.setImageResource(R.drawable.ic_activity_action_poll)
             statusInfoLabel.visibility = View.VISIBLE
             statusInfoIcon.visibility = View.VISIBLE
 
@@ -338,20 +333,19 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             itemContent.drawEnd()
         }
 
+        val hasMediaLabel = mediaLabel.displayMediaLabel(status.card_name, status.media, status.location,
+                status.place_full_name, status.is_possibly_sensitive)
         if (status.media.isNotNullOrEmpty()) {
-
-            mediaLabel.displayMediaLabel(status.card_name, status.media, status.location,
-                    status.place_full_name, status.is_possibly_sensitive)
 
             if (!adapter.sensitiveContentEnabled && status.is_possibly_sensitive) {
                 // Sensitive content, show label instead of media view
-                mediaLabel.visibility = View.VISIBLE
                 mediaLabel.contentDescription = status.media?.firstOrNull()?.alt_text
+                mediaLabel.setVisible(hasMediaLabel)
                 mediaPreview.visibility = View.GONE
             } else if (!adapter.mediaPreviewEnabled) {
                 // Media preview disabled, just show label
-                mediaLabel.visibility = View.VISIBLE
                 mediaLabel.contentDescription = status.media?.firstOrNull()?.alt_text
+                mediaLabel.setVisible(hasMediaLabel)
                 mediaPreview.visibility = View.GONE
             } else {
                 // Show media
@@ -363,8 +357,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                         mediaClickListener = this)
             }
         } else {
-            // No media, hide all related views
-            mediaLabel.visibility = View.GONE
+            // No media, hide media preview
+            mediaLabel.setVisible(hasMediaLabel)
             mediaPreview.visibility = View.GONE
         }
 
@@ -457,36 +451,37 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     }
 
     private fun displayQuotedMedia(requestManager: RequestManager, status: ParcelableStatus) {
-        if (status.quoted_media?.isNotEmpty() ?: false) {
-
-            quotedMediaLabel.displayMediaLabel(null, status.quoted_media, null, null,
-                    status.is_possibly_sensitive)
+        val hasMediaLabel = quotedMediaLabel.displayMediaLabel(null, status.quoted_media,
+                null, null, status.is_possibly_sensitive)
+        if (status.quoted_media.isNotNullOrEmpty()) {
 
             if (!adapter.sensitiveContentEnabled && status.is_possibly_sensitive) {
+                quotedMediaLabel.setVisible(hasMediaLabel)
                 // Sensitive content, show label instead of media view
                 quotedMediaPreview.visibility = View.GONE
-                quotedMediaLabel.visibility = View.VISIBLE
             } else if (!adapter.mediaPreviewEnabled) {
+                quotedMediaLabel.setVisible(hasMediaLabel)
                 // Media preview disabled, just show label
                 quotedMediaPreview.visibility = View.GONE
-                quotedMediaLabel.visibility = View.VISIBLE
             } else if (status.media.isNotNullOrEmpty()) {
+                quotedMediaLabel.setVisible(hasMediaLabel)
                 // Already displaying media, show label only
                 quotedMediaPreview.visibility = View.GONE
-                quotedMediaLabel.visibility = View.VISIBLE
             } else {
+                quotedMediaLabel.visibility = View.GONE
+
                 // Show media
                 quotedMediaPreview.visibility = View.VISIBLE
-                quotedMediaLabel.visibility = View.GONE
 
                 quotedMediaPreview.displayMedia(requestManager = requestManager,
                         media = status.quoted_media, accountKey = status.account_key,
                         mediaClickListener = this)
             }
         } else {
+            quotedMediaLabel.setVisible(hasMediaLabel)
+
             // No media, hide all related views
             quotedMediaPreview.visibility = View.GONE
-            quotedMediaLabel.visibility = View.GONE
         }
     }
 
@@ -624,34 +619,50 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     }
 
     private fun TextView.displayMediaLabel(cardName: String?, media: Array<ParcelableMedia?>?,
-                                     location: ParcelableLocation?, placeFullName: String?,
-                                     sensitive: Boolean) {
+            location: ParcelableLocation?, placeFullName: String?, sensitive: Boolean): Boolean {
+        var result = false
         if (sensitive) {
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, R.drawable.ic_label_warning, 0, 0, 0)
+            setLabelIcon(R.drawable.ic_label_warning)
             setText(R.string.label_sensitive_content)
+            result = true
         } else if (media != null && media.isNotEmpty()) {
             val type = media.type
-            if (type in videoTypes) {
-                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, R.drawable.ic_label_video, 0, 0, 0)
-                setText(R.string.label_video)
-            } else if (media.size > 1) {
-                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, R.drawable.ic_label_gallery, 0, 0, 0)
-                setText(R.string.label_photos)
-            } else {
-                TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, R.drawable.ic_label_gallery, 0, 0, 0)
-                setText(R.string.label_photo)
+            when {
+                type in videoTypes -> {
+                    setLabelIcon(R.drawable.ic_label_video)
+                    setText(R.string.label_video)
+                }
+                media.size > 1 -> {
+                    setLabelIcon(R.drawable.ic_label_gallery)
+                    setText(R.string.label_photos)
+                }
+                else -> {
+                    setLabelIcon(R.drawable.ic_label_gallery)
+                    setText(R.string.label_photo)
+                }
             }
-        } else {
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, R.drawable.ic_label_gallery, 0, 0, 0)
-            setText(R.string.label_media)
+            result = true
+        } else if (cardName != null) {
+            if (cardName.startsWith("poll")) {
+                setLabelIcon(R.drawable.ic_label_poll)
+                setText(R.string.label_poll)
+                result = true
+            }
         }
         refreshDrawableState()
+        return result
     }
 
-    private val Array<ParcelableMedia?>.type: Int get() {
-        forEach { if (it != null) return it.type }
-        return 0
+    private fun TextView.setLabelIcon(@DrawableRes icon: Int) {
+        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, icon, 0,
+                0, 0)
     }
+
+    private val Array<ParcelableMedia?>.type: Int
+        get() {
+            forEach { if (it != null) return it.type }
+            return 0
+        }
 
     private fun hasVideo(media: Array<ParcelableMedia?>?): Boolean {
         if (media == null) return false
@@ -692,8 +703,12 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     listener.onItemActionClick(holder, R.id.favorite, position)
                 }
                 holder.mediaLabel -> {
-                    val firstMedia = holder.adapter.getStatus(position).media?.firstOrNull() ?: return
-                    listener.onMediaClick(holder, v, firstMedia, position)
+                    val firstMedia = holder.adapter.getStatus(position).media?.firstOrNull()
+                    if (firstMedia != null) {
+                        listener.onMediaClick(holder, v, firstMedia, position)
+                    } else {
+                        listener.onStatusClick(holder, position)
+                    }
                 }
             }
         }
