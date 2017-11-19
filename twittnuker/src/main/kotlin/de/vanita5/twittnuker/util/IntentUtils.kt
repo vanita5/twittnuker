@@ -567,7 +567,7 @@ object IntentUtils {
         val builder = Uri.Builder()
         builder.scheme(SCHEME_TWITTNUKER_SETTINGS)
         builder.authority(initialTag.orEmpty())
-        return builder.intent()
+        return builder.intent(Intent.ACTION_MAIN)
     }
 
     fun openProfileEditor(context: Context, accountKey: UserKey?) {
@@ -595,8 +595,8 @@ object IntentUtils {
         }
         val builder = CustomTabsIntent.Builder()
         builder.addDefaultShareMenuItem()
-        theme?.let { theme ->
-            builder.setToolbarColor(theme.colorToolbar)
+        theme?.let { t ->
+            builder.setToolbarColor(t.colorToolbar)
         }
         val customTabsIntent = builder.build()
         val intent = customTabsIntent.intent
