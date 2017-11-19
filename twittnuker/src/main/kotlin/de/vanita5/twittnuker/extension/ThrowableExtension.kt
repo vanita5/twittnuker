@@ -29,18 +29,16 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils
 import java.security.cert.CertPathValidatorException
 
-
 fun Throwable.getErrorMessage(context: Context): CharSequence = when (this) {
     is MicroBlogException -> getMicroBlogErrorMessage(context)
     is CertPathValidatorException -> context.getString(R.string.message_toast_ssl_tls_error)
     else -> message ?: toString()
 }
 
-
 private fun MicroBlogException.getMicroBlogErrorMessage(context: Context): String {
-    if (isRateLimitExceeded) {
-        val status = rateLimitStatus
-        val secUntilReset = status.secondsUntilReset * 1000L
+    val rateLimitStatus = this.rateLimitStatus
+    if (isRateLimitExceeded && rateLimitStatus != null) {
+        val secUntilReset = rateLimitStatus.secondsUntilReset * 1000L
         val nextResetTime = DateUtils.getRelativeTimeSpanString(System.currentTimeMillis() + secUntilReset)
         return context.getString(R.string.error_message_rate_limit, nextResetTime.trim())
     } else if (isCausedByNetworkIssue) {
@@ -50,12 +48,10 @@ private fun MicroBlogException.getMicroBlogErrorMessage(context: Context): Strin
         }
         return context.getString(R.string.message_toast_network_error_with_message, msg)
     }
-    val msg = if (StatusCodeMessageUtils.containsTwitterError(errorCode)) {
-        StatusCodeMessageUtils.getTwitterErrorMessage(context, errorCode)
-    } else if (StatusCodeMessageUtils.containsHttpStatus(statusCode)) {
-        StatusCodeMessageUtils.getHttpStatusMessage(context, statusCode)
-    } else {
-        errorMessage
+    val msg = when {
+        StatusCodeMessageUtils.containsTwitterError(errorCode) -> StatusCodeMessageUtils.getTwitterErrorMessage(context, errorCode)
+        StatusCodeMessageUtils.containsHttpStatus(statusCode) -> StatusCodeMessageUtils.getHttpStatusMessage(context, statusCode)
+        else -> errorMessage
     }
     return msg ?: message ?: javaClass.simpleName
 }
