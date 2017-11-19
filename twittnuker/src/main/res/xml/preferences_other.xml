@@ -30,11 +30,6 @@
         android:key="import_export_settings"
         android:title="@string/import_export_settings"/>
 
-    <Preference
-        android:fragment="de.vanita5.twittnuker.fragment.NetworkDiagnosticsFragment"
-        android:order="13"
-        android:title="@string/network_diagnostics"/>
-
     <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="bug_reports"
@@ -60,5 +55,9 @@
             android:name="should_restart"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
+
+    <Preference
+        android:fragment="de.vanita5.twittnuker.fragment.NetworkDiagnosticsFragment"
+        android:title="@string/network_diagnostics"/>
 
 </PreferenceScreen>
