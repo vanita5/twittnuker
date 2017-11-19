@@ -503,11 +503,7 @@ public interface TwidereDataStore {
 
         String USER_KEY = "user_key";
 
-        String ENABLE_IN_HOME_TIMELINE = "enable_in_home_timeline";
-
-        String ENABLE_IN_MENTIONS = "enable_in_mentions";
-
-        String ENABLE_FOR_RETWEETS = "enable_for_retweets";
+        String SCOPE = "scope";
 
         String[] COLUMNS = FiltersData$BaseItemTableInfo.COLUMNS;
 
@@ -548,6 +544,7 @@ public interface TwidereDataStore {
             String NAME = "name";
             String SCREEN_NAME = "screen_name";
             String SOURCE = "source";
+            String SCOPE = "scope";
 
             String[] COLUMNS = FiltersData$UserItemTableInfo.COLUMNS;
 

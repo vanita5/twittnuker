@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.ParameterizedExpression
@@ -75,6 +76,8 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
     abstract val isFilterEnabled: Boolean
     abstract val notificationType: Int
     abstract val contentUri: Uri
+    @FilterScope
+    abstract val filterScopes: Int
 
     private var contentObserver: ContentObserver? = null
     private val accountListener: OnAccountsUpdateListener = OnAccountsUpdateListener {
@@ -208,7 +211,7 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     protected fun getFiltersWhere(table: String): Expression? {
         if (!isFilterEnabled) return null
-        return buildStatusFilterWhereClause(preferences, table, null)
+        return buildStatusFilterWhereClause(preferences, table, null, filterScopes)
     }
 
     protected open fun processWhere(where: Expression, whereArgs: Array<String>): ParameterizedExpression {
@@ -316,6 +319,6 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     companion object {
         private val statusColumnsLite = Statuses.COLUMNS - arrayOf(Statuses.MENTIONS_JSON,
-                Statuses.CARD)
+                Statuses.CARD, Statuses.FILTER_FLAGS)
     }
 }

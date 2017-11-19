@@ -30,6 +30,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
+
+import de.vanita5.twittnuker.annotation.FilterScope;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -111,6 +113,10 @@ public class FiltersData {
         @CursorField(value = Filters.Users.SOURCE, type = "INTEGER DEFAULT -1")
         @JsonField(name = "source")
         long source = -1;
+        @CursorField(value = Filters.Users.SCOPE, type = "INTEGER DEFAULT 0")
+        @JsonField(name = "scope")
+        @FilterScope
+        int scope = 0;
 
         public UserKey getUserKey() {
             return userKey;
@@ -144,6 +150,15 @@ public class FiltersData {
             this.source = source;
         }
 
+        @FilterScope
+        public int getScope() {
+            return scope;
+        }
+
+        public void setScope(@FilterScope int scope) {
+            this.scope = scope;
+        }
+
         @Override
         public String toString() {
             return "UserItem{" +
@@ -152,6 +167,7 @@ public class FiltersData {
                     ", name='" + name + '\'' +
                     ", screenName='" + screenName + '\'' +
                     ", source=" + source +
+                    ", scope=" + scope +
                     '}';
         }
 
@@ -194,6 +210,11 @@ public class FiltersData {
         @Nullable
         UserKey userKey = null;
 
+        @CursorField(value = Filters.SCOPE, type = "INTEGER DEFAULT 0")
+        @JsonField(name = "scope")
+        @FilterScope
+        int scope = 0;
+
         public long getId() {
             return _id;
         }
@@ -223,6 +244,15 @@ public class FiltersData {
             this.userKey = userKey;
         }
 
+        @FilterScope
+        public int getScope() {
+            return scope;
+        }
+
+        public void setScope(@FilterScope int scope) {
+            this.scope = scope;
+        }
+
         @Override
         public String toString() {
             return "BaseItem{" +
@@ -230,6 +260,7 @@ public class FiltersData {
                     ", value='" + value + '\'' +
                     ", source=" + source +
                     ", userKey=" + userKey +
+                    ", scope=" + scope +
                     '}';
         }
 

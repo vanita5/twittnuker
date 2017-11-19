@@ -28,6 +28,7 @@ import de.vanita5.microblog.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_INTERACTIONS_TIMELINE
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.model.ParameterizedExpression
@@ -52,6 +53,9 @@ class InteractionsTimelineFragment : CursorActivitiesFragment() {
 
     override val timelineSyncTag: String?
         get() = getTimelineSyncTag(accountKeys)
+
+    override val filterScopes: Int
+        get() = FilterScope.INTERACTIONS
 
     override fun onCreateAdapter(context: Context, requestManager: RequestManager): ParcelableActivitiesAdapter {
         val adapter = ParcelableActivitiesAdapter(context, requestManager)

@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_HOME_TIMELINE
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.model.ParameterizedExpression
@@ -49,6 +50,9 @@ class HomeTimelineFragment : CursorStatusesFragment() {
 
     override val timelineSyncTag: String?
         get() = getTimelineSyncTag(accountKeys)
+
+    override val filterScopes: Int
+        get() = FilterScope.HOME
 
     override fun updateRefreshState() {
         val twitter = twitterWrapper

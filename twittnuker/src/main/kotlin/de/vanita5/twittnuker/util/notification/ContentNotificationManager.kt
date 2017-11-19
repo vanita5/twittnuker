@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.HomeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.annotation.NotificationType
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
@@ -91,7 +92,7 @@ class ContentNotificationManager(
         )
         val selectionArgs = arrayOf(accountKey.toString())
         val filteredSelection = buildStatusFilterWhereClause(preferences, Statuses.TABLE_NAME,
-                selection)
+                selection, FilterScope.HOME)
         val userProjection = arrayOf(Statuses.USER_KEY, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME)
         val statusProjection = arrayOf(Statuses.POSITION_KEY)
 
@@ -172,12 +173,15 @@ class ContentNotificationManager(
         val cr = context.contentResolver
         val accountKey = pref.accountKey
         val account = AccountUtils.getAccountDetails(am, accountKey, false) ?: return
-        val where = Expression.and(
+        val selection = Expression.and(
                 Expression.equalsArgs(Activities.ACCOUNT_KEY),
                 Expression.greaterThan(Activities.POSITION_KEY, position),
                 Expression.notEquals(Activities.IS_GAP, 1)
-        ).sql
-        val whereArgs = arrayOf(accountKey.toString())
+        )
+        val selectionArgs = arrayOf(accountKey.toString())
+
+        val filteredSelection = DataStoreUtils.buildActivityFilterWhereClause(Activities.AboutMe.TABLE_NAME,
+                selection, FilterScope.INTERACTIONS)
         val builder = NotificationChannelSpec.contentInteractions.accountNotificationBuilder(context,
                 accountKey)
         val pebbleNotificationStringBuilder = StringBuilder()
@@ -200,7 +204,8 @@ class ContentNotificationManager(
         val filteredUserKeys = DataStoreUtils.getFilteredUserKeys(context)
 
 
-        val (remaining, consumed) = cr.queryReference(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
+        val (remaining, consumed) = cr.queryReference(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS,
+                filteredSelection.sql, selectionArgs,
                 OrderBy(Activities.TIMESTAMP, false).sql).use { (cur) ->
             if (cur == null || cur.isEmpty) return@use Pair(-1, -1)
             val ci = ObjectCursor.indicesFrom(cur, ParcelableActivity::class.java)
