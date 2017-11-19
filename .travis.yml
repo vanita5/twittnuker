@@ -52,7 +52,7 @@ install:
   - cat ./travis/configs/gradle.properties > ./gradle.properties
 
 script:
-  - ./gradlew clean assembleDebug --stacktrace
+  - ./gradlew assembleDebug --stacktrace
   # #- ./gradlew assembleDebugAndroidTest
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
