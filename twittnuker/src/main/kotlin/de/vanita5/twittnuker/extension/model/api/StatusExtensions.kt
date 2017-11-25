@@ -36,6 +36,7 @@ import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.exception.MalformedResponseException
 import de.vanita5.twittnuker.extension.model.addFilterFlag
 import de.vanita5.twittnuker.extension.model.toParcelable
+import de.vanita5.twittnuker.extension.model.updateFilterInfo
 import de.vanita5.twittnuker.extension.toSpanItem
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
@@ -201,6 +202,8 @@ fun Status.applyTo(accountKey: UserKey, accountType: String, profileImageSize: S
     if (result.media.isNotNullOrEmpty() || result.quoted_media.isNotNullOrEmpty()) {
         result.addFilterFlag(ParcelableStatus.FilterFlags.HAS_MEDIA)
     }
+
+    result.updateFilterInfo()
 }
 
 

@@ -613,7 +613,7 @@ object IntentUtils {
         }
     }
 
-    private fun UriBuilder(authority: String): Uri.Builder {
+    fun UriBuilder(authority: String): Uri.Builder {
         return Uri.Builder().scheme(SCHEME_TWITTNUKER).authority(authority)
     }
 

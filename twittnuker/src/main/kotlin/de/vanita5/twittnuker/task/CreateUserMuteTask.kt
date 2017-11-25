@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -102,7 +103,27 @@ class CreateUserMuteTask(
         val message = context.getString(R.string.muted_user, manager.getDisplayName(user,
                 nameFirst))
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
 
+
+    companion object {
+        fun muteUsers(context: Context, account: AccountDetails, userKeys: Array<UserKey>) {
+            when (account.type) {
+                AccountType.TWITTER -> {
+                    val twitter = account.newMicroBlogInstance(context, MicroBlog::class.java)
+                    userKeys.forEach { userKey ->
+                        twitter.createMute(userKey.id).toParcelable(account)
+                    }
+                }
+                AccountType.MASTODON -> {
+                    val mastodon = account.newMicroBlogInstance(context, Mastodon::class.java)
+                    userKeys.forEach { userKey ->
+                        mastodon.muteUser(userKey.id)
+                    }
+                }
+                else -> throw APINotSupportedException(account.type)
+            }
+        }
     }
 
 }

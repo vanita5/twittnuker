@@ -34,6 +34,7 @@ import de.vanita5.microblog.library.twitter.model.Paging
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.model.getMaxId
@@ -63,6 +64,9 @@ abstract class GetActivitiesTask(
         (Boolean) -> Unit>(context) {
 
     protected abstract val errorInfoKey: String
+
+    @FilterScope
+    protected abstract val filterScopes: Int
 
     protected abstract val contentUri: Uri
 
@@ -176,8 +180,8 @@ abstract class GetActivitiesTask(
         }
         var olderCount = -1
         if (minPositionKey > 0) {
-            olderCount = DataStoreUtils.getActivitiesCount(context, contentUri, Activities.POSITION_KEY,
-                    minPositionKey, false, arrayOf(details.key))
+            olderCount = DataStoreUtils.getActivitiesCount(context, preferences, contentUri,
+                    Activities.POSITION_KEY, minPositionKey, false, arrayOf(details.key), filterScopes)
         }
         val writeUri = UriUtils.appendQueryParameters(contentUri, QUERY_PARAM_NOTIFY_CHANGE, notify)
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {

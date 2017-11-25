@@ -56,7 +56,6 @@ import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.buildStatusFilterWhereClause
 
 abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
@@ -211,7 +210,7 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     protected fun getFiltersWhere(table: String): Expression? {
         if (!isFilterEnabled) return null
-        return buildStatusFilterWhereClause(preferences, table, null, filterScopes)
+        return DataStoreUtils.buildStatusFilterWhereClause(preferences, table, null, filterScopes)
     }
 
     protected open fun processWhere(where: Expression, whereArgs: Array<String>): ParameterizedExpression {
@@ -319,6 +318,7 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     companion object {
         private val statusColumnsLite = Statuses.COLUMNS - arrayOf(Statuses.MENTIONS_JSON,
-                Statuses.CARD, Statuses.FILTER_FLAGS)
+                Statuses.CARD, Statuses.FILTER_FLAGS, Statuses.FILTER_USERS, Statuses.FILTER_LINKS,
+                Statuses.FILTER_SOURCES, Statuses.FILTER_NAMES, Statuses.FILTER_TEXTS)
     }
 }

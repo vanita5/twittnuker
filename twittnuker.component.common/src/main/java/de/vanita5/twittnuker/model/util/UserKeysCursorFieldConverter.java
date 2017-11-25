@@ -37,4 +37,9 @@ public class UserKeysCursorFieldConverter extends AbsArrayCursorFieldConverter<U
     protected UserKey parseItem(String s) {
         return UserKey.valueOf(s);
     }
+
+    @Override
+    protected String convertToString(UserKey item) {
+        return item.toString();
+    }
 }

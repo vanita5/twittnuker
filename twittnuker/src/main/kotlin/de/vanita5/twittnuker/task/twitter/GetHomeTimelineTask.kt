@@ -31,6 +31,7 @@ import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
@@ -47,11 +48,11 @@ import de.vanita5.twittnuker.util.sync.TimelineSyncManager
 
 class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
 
-    override val contentUri: Uri
-        get() = Statuses.CONTENT_URI
+    override val contentUri: Uri = Statuses.CONTENT_URI
 
-    override val errorInfoKey: String
-        get() = ErrorInfoStore.KEY_HOME_TIMELINE
+    override val filterScopes: Int = FilterScope.HOME
+
+    override val errorInfoKey: String = ErrorInfoStore.KEY_HOME_TIMELINE
 
     private val profileImageSize = context.getString(R.string.profile_image_size)
 

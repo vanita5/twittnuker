@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_CHANGE
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.exception.AccountNotFoundException
 import de.vanita5.twittnuker.extension.model.*
@@ -67,6 +68,9 @@ abstract class GetStatusesTask(
         (Boolean) -> Unit>(context) {
 
     protected abstract val contentUri: Uri
+
+    @FilterScope
+    protected abstract val filterScopes: Int
 
     protected abstract val errorInfoKey: String
 
@@ -193,7 +197,8 @@ abstract class GetStatusesTask(
         var olderCount = -1
         if (minPositionKey > 0) {
             olderCount = DataStoreUtils.getStatusesCount(context, preferences, uri, null,
-                    Statuses.POSITION_KEY, minPositionKey, false, arrayOf(accountKey))
+                    Statuses.POSITION_KEY, minPositionKey, false, arrayOf(accountKey),
+                    filterScopes)
         }
         val rowsDeleted = resolver.delete(writeUri, deleteWhere, deleteWhereArgs)
 

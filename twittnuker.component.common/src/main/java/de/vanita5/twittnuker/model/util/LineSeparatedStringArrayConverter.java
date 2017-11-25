@@ -14,23 +14,34 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view
+package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.view.iface.IExtendedView
+import org.mariotaku.commons.objectcursor.AbsArrayCursorFieldConverter;
 
-interface TintedStatusLayout : IExtendedView {
-    var statusBarColor: Int
+public class LineSeparatedStringArrayConverter extends AbsArrayCursorFieldConverter<String> {
+    @Override
+    protected String[] newArray(int size) {
+        return new String[size];
+    }
 
-    var statusBarAlpha: Float
+    @Override
+    protected String convertToString(String item) {
+        return item;
+    }
 
-    var statusBarHeight: Int
+    @Override
+    protected String parseItem(String str) {
+        return str;
+    }
 
-    var setPaddingEnabled: Boolean
-
+    @Override
+    protected char separatorChar() {
+        return '\n';
+    }
 }
