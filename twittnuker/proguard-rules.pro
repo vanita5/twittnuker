@@ -139,9 +139,6 @@
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
 -keep class **$$JsonObjectMapper { *; }
 
--keep class de.vanita5.microblog.library.annotation.NoObfuscate
--keep @de.vanita5.microblog.library.annotation.NoObfuscate class *
-
 # https://github.com/mariotaku/RestFu
 -keep class org.mariotaku.restfu.annotation.** { *; }
 

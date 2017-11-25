@@ -23,12 +23,12 @@
 
 package de.vanita5.microblog.library.twitter.model;
 
-import de.vanita5.microblog.library.annotation.NoObfuscate;
+import android.support.annotation.Keep;
 
 /**
  * Response list supports cursor pagination
  */
-@NoObfuscate
+@Keep
 public class PageableResponseList<T> extends ResponseList<T> implements TwitterResponse, CursorSupport {
 
     long previousCursor;

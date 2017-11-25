@@ -23,12 +23,12 @@
 
 package de.vanita5.microblog.library.twitter.model;
 
+import android.support.annotation.Keep;
+
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-
-import de.vanita5.microblog.library.annotation.NoObfuscate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  *  Mapper for IDs object
  */
 @SuppressWarnings("unused")
-@NoObfuscate
+@Keep
 public class IDs$$JsonObjectMapper extends JsonMapper<IDs> {
 
     @SuppressWarnings("TryWithIdenticalCatches")

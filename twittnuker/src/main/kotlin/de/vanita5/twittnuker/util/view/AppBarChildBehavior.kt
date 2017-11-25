@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.view
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Rect
+import android.support.annotation.Keep
 import android.support.annotation.StyleableRes
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
@@ -33,7 +34,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
-import de.vanita5.microblog.library.annotation.NoObfuscate
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.*
 
@@ -278,7 +278,7 @@ class AppBarChildBehavior(
 
     }
 
-    @NoObfuscate
+    @Keep
     open class TextViewTransformation : ChildTransformation {
 
         private var sourceSize: Float = Float.NaN

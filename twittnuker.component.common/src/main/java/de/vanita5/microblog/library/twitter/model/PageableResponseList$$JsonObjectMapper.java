@@ -23,6 +23,8 @@
 
 package de.vanita5.microblog.library.twitter.model;
 
+import android.support.annotation.Keep;
+
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.ParameterizedType;
@@ -31,12 +33,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
-import de.vanita5.microblog.library.annotation.NoObfuscate;
-
 import java.io.IOException;
 
 @SuppressWarnings("unused")
-@NoObfuscate
+@Keep
 public final class PageableResponseList$$JsonObjectMapper<T> extends JsonMapper<PageableResponseList<T>> {
     private final JsonMapper<T> m84ClassJsonMapper;
 

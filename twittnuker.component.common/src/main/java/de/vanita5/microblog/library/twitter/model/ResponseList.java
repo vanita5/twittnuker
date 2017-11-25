@@ -23,7 +23,8 @@
 
 package de.vanita5.microblog.library.twitter.model;
 
-import de.vanita5.microblog.library.annotation.NoObfuscate;
+import android.support.annotation.Keep;
+
 import de.vanita5.microblog.library.twitter.util.InternalParseUtil;
 import org.mariotaku.restfu.http.HttpResponse;
 
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * Response list
  */
-@NoObfuscate
+@Keep
 public class ResponseList<T> extends ArrayList<T> implements TwitterResponse {
 
     private int accessLevel;

@@ -25,6 +25,7 @@ package de.vanita5.microblog.library.twitter.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -33,15 +34,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-import de.vanita5.microblog.library.annotation.NoObfuscate;
-
 import java.io.IOException;
 
 /**
  * Created by mariotaku on 15/5/10.
  */
 @ParcelablePlease
-@NoObfuscate
+@Keep
 public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport, Parcelable {
 
     long previousCursor;

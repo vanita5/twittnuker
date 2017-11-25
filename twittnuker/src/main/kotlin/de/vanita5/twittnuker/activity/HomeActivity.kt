@@ -83,6 +83,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.annotation.NavbarStyle
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.*
