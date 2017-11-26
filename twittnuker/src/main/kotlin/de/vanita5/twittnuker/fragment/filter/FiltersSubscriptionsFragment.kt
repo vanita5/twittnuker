@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.extension.model.getComponentLabel
 import de.vanita5.twittnuker.extension.model.instantiateComponent
 import de.vanita5.twittnuker.extension.model.setupUrl
+import de.vanita5.twittnuker.extension.util.isAdvancedFiltersEnabled
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
@@ -96,9 +97,9 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
         if (savedInstanceState == null) {
             when (arguments?.getString(EXTRA_ACTION)) {
                 ACTION_ADD_URL_SUBSCRIPTION -> {
-                    if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)) {
+                    if (!extraFeaturesService.isAdvancedFiltersEnabled) {
                         val df = ExtraFeaturesIntroductionDialogFragment.create(
-                                ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)
+                                ExtraFeaturesService.FEATURE_ADVANCED_FILTERS)
                         df.setTargetFragment(this, REQUEST_ADD_URL_SUBSCRIPTION_PURCHASE)
                         df.show(fragmentManager, ExtraFeaturesIntroductionDialogFragment.FRAGMENT_TAG)
                     } else {
@@ -106,9 +107,9 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
                     }
                 }
                 else -> {
-                    if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)) {
+                    if (!extraFeaturesService.isAdvancedFiltersEnabled) {
                         val df = ExtraFeaturesIntroductionDialogFragment.create(
-                                ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)
+                                ExtraFeaturesService.FEATURE_ADVANCED_FILTERS)
                         df.setTargetFragment(this, REQUEST_PURCHASE_EXTRA_FEATURES)
                         df.show(fragmentManager, ExtraFeaturesIntroductionDialogFragment.FRAGMENT_TAG)
                     }

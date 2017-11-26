@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.onShow
+import de.vanita5.twittnuker.extension.util.isAdvancedFiltersEnabled
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.loader.users.AbsRequestUsersLoader
@@ -124,9 +125,9 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
                     Toast.makeText(context, R.string.message_toast_no_user_selected, Toast.LENGTH_SHORT).show()
                     return true
                 }
-                if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_IMPORT)) {
+                if (!extraFeaturesService.isAdvancedFiltersEnabled) {
                     ExtraFeaturesIntroductionDialogFragment.show(fragmentManager,
-                            feature = ExtraFeaturesService.FEATURE_FILTERS_IMPORT,
+                            feature = ExtraFeaturesService.FEATURE_ADVANCED_FILTERS,
                             requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
                     return true
                 }
@@ -204,9 +205,9 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
     override fun onCreateAdapter(context: Context, requestManager: RequestManager): SelectableUsersAdapter {
         val adapter = SelectableUsersAdapter(context, this.requestManager)
         adapter.itemCheckedListener = listener@ { _, _ ->
-            if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_IMPORT)) {
+            if (!extraFeaturesService.isAdvancedFiltersEnabled) {
                 ExtraFeaturesIntroductionDialogFragment.show(fragmentManager,
-                        feature = ExtraFeaturesService.FEATURE_FILTERS_IMPORT,
+                        feature = ExtraFeaturesService.FEATURE_ADVANCED_FILTERS,
                         requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
                 return@listener false
             }

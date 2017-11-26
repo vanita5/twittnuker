@@ -108,7 +108,9 @@ public interface IntentConstants {
     String EXTRA_TEXT = "text";
     String EXTRA_TITLE = "title";
     String EXTRA_TYPE = "type";
-    //String EXTRA_SUCCEED = "succeed";
+    String EXTRA_VALUE = "value";
+    String EXTRA_SCOPE = "scope";
+    // String EXTRA_SUCCEED = "succeed";
     String EXTRA_IDS = "ids";
     String EXTRA_REFRESH_IDS = "refresh_ids";
     String EXTRA_IS_SHARE = "is_share";

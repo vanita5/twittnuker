@@ -311,12 +311,12 @@
     <string name="external_group_host_format">Externe Gruppe bei <xliff:g id="host">%s</xliff:g></string>
     <string name="external_user_host_format">Externer Account bei <xliff:g id="host">%s</xliff:g></string>
     <string name="extra_configurations">Erweiterte Einstellungen</string>
-    <string name="extra_feature_description_filters_import">Importe Filterliste aus Blocks und Mutes</string>
+    <string name="extra_feature_description_advanced_filters">Importe Filterliste aus Blocks und Mutes</string>
     <string name="extra_feature_description_filters_subscription">Abonniere Filterlisten</string>
     <string name="extra_feature_description_schedule_status">Tweet planen (später senden)</string>
     <string name="extra_feature_description_share_gif">Gifs teilen</string>
     <string name="extra_feature_description_sync_data">Synchronisieren von Daten mit Dropbox, Google Drive etc.</string>
-    <string name="extra_feature_title_filters_import">Filter Import</string>
+    <string name="extra_feature_title_advanced_filters">Filter Import</string>
     <string name="extra_feature_title_filters_subscription">Filter Abonnement</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Unterstütze Twittnuker und schalte erweiterte Funktionen frei</string>
@@ -417,6 +417,15 @@
     <string name="label_feedback_content">Inhalt</string>
     <string name="label_feedback_title">Titel</string>
     <string name="label_filters_subscription">Abonnement</string>
+    <string name="label_filter_apply_to">Anwenden auf…</string>
+    <string name="label_filter_for">Für…</string>
+    <string name="label_filter_scope_home">Home</string>
+    <string name="label_filter_scope_interactions">Interaktionen</string>
+    <string name="label_filter_scope_messages">Nachrichten</string>
+    <string name="label_filter_scope_search_other">Andere</string>
+    <string name="label_filter_scope_search_results">Suchergebnisse</string>
+    <string name="label_filter_target_name">Name</string>
+    <string name="label_filter_target_text">Text</string>
     <string name="label_follow_request_sent">Folgeanfrage gesendet</string>
     <string name="label_format_buffer_time_source"><xliff:g example="12:00, April 1" id="time">%1$s</xliff:g> via <xliff:g example="api" id="source">%2$s</xliff:g></string>
     <string name="label_location_coarse">Ungefähr (Ort)</string>

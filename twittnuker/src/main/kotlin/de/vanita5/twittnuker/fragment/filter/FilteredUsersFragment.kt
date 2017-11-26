@@ -160,7 +160,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
         return FilterUsersListAdapter(context)
     }
 
-    override fun addOrEditItem(id: Long, value: String?) {
+    override fun addOrEditItem(id: Long, value: String?, scope: Int) {
         // No-op
     }
 
