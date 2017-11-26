@@ -45,13 +45,13 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter
 import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.extension.applyOnShow
-import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.queryLong
-import de.vanita5.twittnuker.extension.setVisible
+import de.vanita5.twittnuker.extension.*
+import de.vanita5.twittnuker.extension.util.isAdvancedFiltersEnabled
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
+import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 class AddEditItemFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
@@ -83,7 +83,11 @@ class AddEditItemFragment : BaseDialogFragment(), DialogInterface.OnClickListene
         }
 
     private var Dialog.scope: FilterScopes?
-        get() = defaultScope.also { saveScopes(it) }
+        get() = defaultScope.also {
+            if (extraFeaturesService.isAdvancedFiltersEnabled) {
+                saveScopes(it)
+            }
+        }
         set(value) {
             loadScopes(value ?: defaultScope)
         }
@@ -156,11 +160,24 @@ class AddEditItemFragment : BaseDialogFragment(), DialogInterface.OnClickListene
             advancedToggle.setOnClickListener {
                 advancedExpanded = !advancedExpanded
             }
-            advancedExpanded = false
+            advancedContainer.children.filter { it is CheckBox }.forEach {
+                val checkBox = it as CheckBox
+                checkBox.setOnClickListener onClick@ {
+                    if (extraFeaturesService.isAdvancedFiltersEnabled) return@onClick
+                    // Revert check state
+                    checkBox.isChecked = !checkBox.isChecked
+                    val df = ExtraFeaturesIntroductionDialogFragment.create(
+                            ExtraFeaturesService.FEATURE_ADVANCED_FILTERS)
+                    df.setTargetFragment(this@AddEditItemFragment, REQUEST_CHANGE_SCOPE_PURCHASE)
+                    df.show(fragmentManager, ExtraFeaturesIntroductionDialogFragment.FRAGMENT_TAG)
+                }
+            }
 
             if (savedInstanceState == null) {
                 value = defaultValue
                 scope = defaultScope
+                advancedExpanded = false
+                editText.setSelection(editText.length().coerceAtLeast(0))
             } else {
                 value = savedInstanceState.getString(EXTRA_VALUE)
                 scope = savedInstanceState.getParcelable(EXTRA_SCOPE)
@@ -263,6 +280,10 @@ class AddEditItemFragment : BaseDialogFragment(), DialogInterface.OnClickListene
             }
         }
 
+    }
+
+    companion object {
+        private const val REQUEST_CHANGE_SCOPE_PURCHASE = 101
     }
 
 }
