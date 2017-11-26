@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.statuses
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import okhttp3.HttpUrl
@@ -45,18 +44,20 @@ import org.mariotaku.restfu.http.mime.SimpleBody
 import de.vanita5.twittnuker.alias.MastodonStatus
 import de.vanita5.twittnuker.alias.MastodonTimelineOption
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.updateFilterInfoForUserTimeline
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.timeline.UserTimelineFilter
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.database.ContentFiltersUtils
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicReference
 
@@ -89,12 +90,13 @@ class UserTimelineLoader(
             it.toParcelable(account)
         }
         else -> getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
-            it.toParcelable(account, profileImageSize = profileImageSize)
+            it.toParcelable(account, profileImageSize = profileImageSize,
+                    updateFilterInfoAction = ::updateFilterInfoForUserTimeline)
         }
     }
 
     @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
+    override fun shouldFilterStatus(status: ParcelableStatus): Boolean {
         if (timelineFilter != null) {
             if (status.is_retweet && !timelineFilter.isIncludeRetweets) {
                 return true
@@ -102,10 +104,8 @@ class UserTimelineLoader(
         }
         if (accountKey != null && userKey != null && TextUtils.equals(accountKey.id, userKey.id))
             return false
-        val retweetUserKey = status.user_key.takeIf { status.is_retweet }
-        return InternalTwitterContentUtils.isFiltered(database, retweetUserKey, status.text_plain,
-                status.quoted_text_plain, status.spans, status.quoted_spans, status.source,
-                status.quoted_source, null, status.quoted_user_key)
+        return ContentFiltersUtils.isFiltered(context.contentResolver, status, true,
+                FilterScope.USER_TIMELINE)
     }
 
     private fun getMastodonStatuses(account: AccountDetails, paging: Paging): LinkHeaderList<MastodonStatus> {

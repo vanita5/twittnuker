@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.statuses
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.mariotaku.ktextension.isNullOrEmpty
 import de.vanita5.microblog.library.MicroBlog
@@ -32,10 +31,12 @@ import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.*
 import de.vanita5.twittnuker.alias.MastodonTimelineOption
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.api.tryShowUser
 import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
+import de.vanita5.twittnuker.extension.model.api.updateFilterInfoForUserTimeline
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
@@ -43,7 +44,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.database.ContentFiltersUtils
 
 class MediaTimelineLoader(
         context: Context,
@@ -72,21 +73,20 @@ class MediaTimelineLoader(
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
-        when (account.type) {
-            AccountType.MASTODON -> return getMastodonStatuses(account, paging)
-            else -> return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
-                it.toParcelable(account, profileImageSize)
+        return when (account.type) {
+            AccountType.MASTODON -> getMastodonStatuses(account, paging)
+            else -> getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
+                it.toParcelable(account, profileImageSize = profileImageSize,
+                        updateFilterInfoAction = ::updateFilterInfoForUserTimeline)
             }
         }
     }
 
     @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
+    override fun shouldFilterStatus(status: ParcelableStatus): Boolean {
         if (status.media.isNullOrEmpty()) return false
-        val retweetUserKey = status.user_key.takeIf { status.is_retweet }
-        return !isMyTimeline && InternalTwitterContentUtils.isFiltered(database, retweetUserKey,
-                status.text_plain, status.quoted_text_plain, status.spans, status.quoted_spans,
-                status.source, status.quoted_source, null, status.quoted_user_key)
+        return !isMyTimeline && ContentFiltersUtils.isFiltered(context.contentResolver, status,
+                true, FilterScope.USER_TIMELINE)
     }
 
     private fun getMicroBlogStatuses(account: AccountDetails, paging: Paging): ResponseList<Status> {

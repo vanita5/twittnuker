@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.loader.statuses
 import android.accounts.AccountManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.mariotaku.kpreferences.get
 import de.vanita5.microblog.library.MicroBlogException
@@ -33,7 +32,6 @@ import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
-import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.api.applyLoadLimit
 import de.vanita5.twittnuker.loader.iface.IPaginationLoader
@@ -173,8 +171,7 @@ abstract class AbsRequestStatusesLoader(
             data.addAll(statuses)
         }
 
-        val db = TwittnukerApplication.getInstance(context).sqLiteDatabase
-        data.forEach { it.is_filtered = shouldFilterStatus(db, it) }
+        data.forEach { it.is_filtered = shouldFilterStatus(it) }
 
         if (comparator != null) {
             data.sortWith(comparator!!)
@@ -191,8 +188,7 @@ abstract class AbsRequestStatusesLoader(
     }
 
     @WorkerThread
-    protected abstract fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean
-
+    protected abstract fun shouldFilterStatus(status: ParcelableStatus): Boolean
 
     protected open fun processPaging(paging: Paging, details: AccountDetails, loadItemLimit: Int) {
         paging.applyLoadLimit(details, loadItemLimit)

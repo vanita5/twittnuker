@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.statuses
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.mariotaku.ktextension.isNullOrEmpty
 import de.vanita5.microblog.library.MicroBlog
@@ -33,6 +32,7 @@ import de.vanita5.microblog.library.twitter.model.SearchQuery
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.microblog.library.twitter.model.UniversalSearchQuery
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.pagination.PaginatedList
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.database.ContentFiltersUtils
 
 open class MediaStatusesSearchLoader(
         context: Context,
@@ -63,9 +63,11 @@ open class MediaStatusesSearchLoader(
     }
 
     @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
+    override fun shouldFilterStatus(status: ParcelableStatus): Boolean {
         if (status.media.isNullOrEmpty()) return true
-        return InternalTwitterContentUtils.isFiltered(database, status, true)
+        val allowed = query?.split(' ')?.toTypedArray()
+        return ContentFiltersUtils.isFiltered(context.contentResolver, status, true,
+                FilterScope.SEARCH_RESULTS, allowed)
     }
 
     override fun processPaging(paging: Paging, details: AccountDetails, loadItemLimit: Int) {

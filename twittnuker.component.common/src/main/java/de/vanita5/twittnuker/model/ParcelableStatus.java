@@ -40,10 +40,10 @@ import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 
-import de.vanita5.twittnuker.model.util.LineSeparatedStringArrayConverter;
+import de.vanita5.twittnuker.model.util.FilterStringsFieldConverter;
+import de.vanita5.twittnuker.model.util.FilterUserKeysFieldConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
-import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
@@ -336,16 +336,16 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @CursorField(Statuses.FILTER_FLAGS)
     public long filter_flags;
 
-    @CursorField(value = Statuses.FILTER_USERS, converter = UserKeysCursorFieldConverter.class)
+    @CursorField(value = Statuses.FILTER_USERS, converter = FilterUserKeysFieldConverter.class)
     public UserKey[] filter_users;
 
-    @CursorField(value = Statuses.FILTER_SOURCES, converter = LineSeparatedStringArrayConverter.class)
+    @CursorField(value = Statuses.FILTER_SOURCES, converter = FilterStringsFieldConverter.class)
     public String[] filter_sources;
 
-    @CursorField(value = Statuses.FILTER_LINKS, converter = LineSeparatedStringArrayConverter.class)
+    @CursorField(value = Statuses.FILTER_LINKS, converter = FilterStringsFieldConverter.class)
     public String[] filter_links;
 
-    @CursorField(value = Statuses.FILTER_NAMES, converter = LineSeparatedStringArrayConverter.class)
+    @CursorField(value = Statuses.FILTER_NAMES, converter = FilterStringsFieldConverter.class)
     public String[] filter_names;
 
     @CursorField(value = Statuses.FILTER_TEXTS)

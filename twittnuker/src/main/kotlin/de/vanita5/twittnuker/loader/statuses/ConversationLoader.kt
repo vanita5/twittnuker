@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.statuses
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import org.attoparser.config.ParseConfiguration
 import org.attoparser.dom.DOMMarkupParser
@@ -51,7 +50,7 @@ import de.vanita5.twittnuker.model.pagination.PaginatedArrayList
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.database.ContentFiltersUtils
 import java.text.ParseException
 import java.util.*
 
@@ -123,8 +122,8 @@ class ConversationLoader(
     }
 
     @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
-        return InternalTwitterContentUtils.isFiltered(database, status, false)
+    override fun shouldFilterStatus(status: ParcelableStatus): Boolean {
+        return ContentFiltersUtils.isFiltered(context.contentResolver, status, false, 0)
     }
 
     @Throws(MicroBlogException::class)

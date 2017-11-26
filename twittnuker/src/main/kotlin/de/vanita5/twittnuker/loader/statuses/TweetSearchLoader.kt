@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.loader.statuses
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
@@ -33,6 +32,7 @@ import de.vanita5.microblog.library.twitter.model.SearchQuery
 import de.vanita5.microblog.library.twitter.model.Status
 import de.vanita5.microblog.library.twitter.model.UniversalSearchQuery
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.toParcelable
@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.pagination.PaginatedList
 import de.vanita5.twittnuker.model.pagination.Pagination
 import de.vanita5.twittnuker.model.pagination.SinceMaxPagination
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import de.vanita5.twittnuker.util.database.ContentFiltersUtils
 
 open class TweetSearchLoader(
         context: Context,
@@ -62,22 +62,24 @@ open class TweetSearchLoader(
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
-        when (account.type) {
-            AccountType.MASTODON -> return getMastodonStatuses(account, paging)
-            else -> return getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
+        return when (account.type) {
+            AccountType.MASTODON -> getMastodonStatuses(account, paging)
+            else -> getMicroBlogStatuses(account, paging).mapMicroBlogToPaginated {
                 it.toParcelable(account, profileImageSize)
             }
         }
     }
 
     @WorkerThread
-    override fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean {
-        return InternalTwitterContentUtils.isFiltered(database, status, true)
+    override fun shouldFilterStatus(status: ParcelableStatus): Boolean {
+        val allowed = query?.split(' ')?.toTypedArray()
+        return ContentFiltersUtils.isFiltered(context.contentResolver, status, true,
+                FilterScope.SEARCH_RESULTS, allowed)
     }
 
     protected open fun processQuery(details: AccountDetails, query: String): String {
         if (details.type == AccountType.TWITTER) {
-            if (details.extras?.official ?: false) {
+            if (details.extras?.official == true) {
                 return smQuery(query, pagination)
             }
             return "$query exclude:retweets"
