@@ -356,7 +356,8 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         val activityColumnsLite = Activities.COLUMNS - arrayOf(Activities.SOURCES,Activities.TARGETS,
                 Activities.TARGET_OBJECTS, Activities.MENTIONS_JSON, Activities.CARD,
                 Activities.FILTER_FLAGS, Activities.FILTER_USERS, Activities.FILTER_LINKS,
-                Activities.FILTER_SOURCES, Activities.FILTER_NAMES, Activities.FILTER_TEXTS)
+                Activities.FILTER_SOURCES, Activities.FILTER_NAMES, Activities.FILTER_TEXTS,
+                Activities.FILTER_DESCRIPTIONS)
 
     }
 }

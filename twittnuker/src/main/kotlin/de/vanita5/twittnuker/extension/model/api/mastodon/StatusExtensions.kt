@@ -29,7 +29,9 @@ import org.mariotaku.ktextension.isNotNullOrEmpty
 import org.mariotaku.ktextension.mapToArray
 import de.vanita5.microblog.library.mastodon.model.Status
 import de.vanita5.twittnuker.extension.model.addFilterFlag
+import de.vanita5.twittnuker.extension.model.api.isHtml
 import de.vanita5.twittnuker.extension.model.api.spanItems
+import de.vanita5.twittnuker.extension.model.updateFilterInfo
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.text.HashtagSpan
@@ -42,6 +44,7 @@ fun Status.toParcelable(details: AccountDetails): ParcelableStatus {
         account_color = details.color
     }
 }
+
 fun Status.toParcelable(accountKey: UserKey): ParcelableStatus {
     val result = ParcelableStatus()
     applyTo(accountKey, result)
@@ -124,6 +127,8 @@ fun Status.applyTo(accountKey: UserKey, result: ParcelableStatus) {
     }
 
     result.extras = extras
+
+    result.updateFilterInfo(arrayOf(accountDescriptionUnescaped, reblog?.accountDescriptionUnescaped))
 }
 
 private fun calculateDisplayTextRange(text: String, spans: Array<SpanItem>?, media: Array<ParcelableMedia>?): IntArray? {
@@ -132,6 +137,16 @@ private fun calculateDisplayTextRange(text: String, spans: Array<SpanItem>?, med
     if (lastMatch.end < text.length) return null
     return intArrayOf(0, lastMatch.start)
 }
+
+private val Status.accountDescriptionUnescaped: String?
+    get() {
+        val note = account?.note ?: return null
+        return if (note.isHtml) {
+            HtmlSpanBuilder.fromHtml(note, note, MastodonSpanProcessor).toString()
+        } else {
+            HtmlEscapeHelper.unescape(note)
+        }
+    }
 
 object MastodonSpanProcessor : HtmlSpanBuilder.SpanProcessor {
 

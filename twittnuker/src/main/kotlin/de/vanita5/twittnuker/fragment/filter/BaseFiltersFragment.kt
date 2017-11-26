@@ -50,6 +50,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.invertSelection
 import de.vanita5.twittnuker.extension.selectAll
 import de.vanita5.twittnuker.extension.selectNone
@@ -225,7 +226,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         context.contentResolver.delete(contentUri, where.sql, Array(ids.size) { ids[it].toString() })
     }
 
-    protected open fun addOrEditItem(id: Long = -1, value: String? = null, scope: Int = 0) {
+    protected open fun addOrEditItem(id: Long = -1, value: String? = null, scope: Int = FilterScope.DEFAULT) {
         val dialog = AddEditItemFragment()
         dialog.arguments = Bundle {
             this[EXTRA_URI] = contentUri

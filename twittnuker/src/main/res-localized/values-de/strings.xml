@@ -400,6 +400,7 @@
     <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
     <string name="label_account">Account</string>
     <string name="label_account_type">Account Typ</string>
+    <string name="label_advanced">Erweitert</string>
     <string name="label_auth_type">Authentifizierungtyp</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="label_buffer_accounts">Buffer Accounts</string>
@@ -424,6 +425,7 @@
     <string name="label_filter_scope_messages">Nachrichten</string>
     <string name="label_filter_scope_search_other">Andere</string>
     <string name="label_filter_scope_search_results">Suchergebnisse</string>
+    <string name="label_filter_target_description">Beschreibung</string>
     <string name="label_filter_target_name">Name</string>
     <string name="label_filter_target_text">Text</string>
     <string name="label_follow_request_sent">Folgeanfrage gesendet</string>

@@ -28,6 +28,7 @@ import de.vanita5.microblog.library.mastodon.model.Relationship
 import de.vanita5.microblog.library.twitter.model.Activity
 import de.vanita5.twittnuker.extension.model.toLite
 import de.vanita5.twittnuker.extension.model.toSummaryLine
+import de.vanita5.twittnuker.extension.model.updateActivityFilterInfo
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -94,6 +95,8 @@ fun Notification.toParcelable(accountKey: UserKey, relationships: Map<String, Re
 
     result.sources_lite = result.sources?.mapToArray { it.toLite() }
     result.source_keys = result.sources_lite?.mapToArray { it.key }
+
+    result.updateActivityFilterInfo()
 
     return result
 }

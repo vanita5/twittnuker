@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.extension.model.api.applyTo
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.model.toLite
 import de.vanita5.twittnuker.extension.model.toSummaryLine
-import de.vanita5.twittnuker.extension.model.updateFilterInfo
+import de.vanita5.twittnuker.extension.model.updateActivityFilterInfo
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUserList
@@ -155,7 +155,7 @@ fun Activity.toParcelable(accountKey: UserKey, accountType: String, isGap: Boole
     } ?: false
     result.is_gap = isGap
 
-    result.updateFilterInfo()
+    result.updateActivityFilterInfo()
 
     return result
 }

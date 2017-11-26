@@ -23,13 +23,13 @@
 package de.vanita5.twittnuker.extension.model
 
 import org.mariotaku.ktextension.addAllTo
+import org.mariotaku.ktextension.addTo
 import de.vanita5.microblog.library.mastodon.annotation.StatusVisibility
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.Utils
-import org.mariotaku.ktextension.addTo
 
 
 inline val ParcelableStatus.originalId: String
@@ -149,7 +149,7 @@ fun ParcelableStatus.addFilterFlag(@ParcelableStatus.FilterFlags flags: Long) {
     filter_flags = filter_flags or flags
 }
 
-fun ParcelableStatus.updateFilterInfo() {
+fun ParcelableStatus.updateFilterInfo(descriptions: Array<String?>?) {
     val links = mutableSetOf<String>()
     spans?.mapNotNullTo(links) { span ->
         if (span.type != SpanItem.SpanType.LINK) return@mapNotNullTo null
@@ -188,6 +188,8 @@ fun ParcelableStatus.updateFilterInfo() {
         item.alt_text?.appendNewLineTo(texts)
     }
     filter_texts = texts.toString()
+
+    filter_descriptions = descriptions?.filterNotNull()?.joinToString("\n")
 }
 
 fun ParcelableStatus.updateExtraInformation(details: AccountDetails) {
