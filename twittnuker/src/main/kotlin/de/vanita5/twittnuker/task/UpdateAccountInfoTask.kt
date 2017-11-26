@@ -33,7 +33,6 @@ import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
-import de.vanita5.twittnuker.extension.model.component1
 import de.vanita5.twittnuker.extension.model.setAccountKey
 import de.vanita5.twittnuker.extension.model.setAccountUser
 import de.vanita5.twittnuker.extension.queryReference

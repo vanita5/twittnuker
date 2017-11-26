@@ -14,7 +14,6 @@ import org.mariotaku.ktextension.toStringArray
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
-import de.vanita5.twittnuker.extension.model.component1
 import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.Draft

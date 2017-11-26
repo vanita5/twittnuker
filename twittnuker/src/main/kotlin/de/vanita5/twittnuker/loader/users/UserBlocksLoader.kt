@@ -28,6 +28,7 @@ import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.mapToPaginated
@@ -73,7 +74,7 @@ class UserBlocksLoader(
     }
 
     override fun onLoadInBackground(): List<ParcelableUser> {
-        filteredUsers = DataStoreUtils.getFilteredUserKeys(context)
+        filteredUsers = DataStoreUtils.getFilteredUserKeys(context, FilterScope.ALL)
         return super.onLoadInBackground()
     }
 

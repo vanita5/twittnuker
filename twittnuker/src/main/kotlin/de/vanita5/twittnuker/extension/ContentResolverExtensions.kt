@@ -30,7 +30,6 @@ import org.mariotaku.ktextension.map
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.SQLFunctions
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_LIMIT
-import de.vanita5.twittnuker.extension.model.component1
 import de.vanita5.twittnuker.model.CursorReference
 import de.vanita5.twittnuker.util.TwidereQueryBuilder
 import de.vanita5.twittnuker.util.content.ContentResolverUtils

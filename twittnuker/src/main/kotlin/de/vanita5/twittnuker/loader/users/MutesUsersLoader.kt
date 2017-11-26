@@ -28,6 +28,7 @@ import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
 import de.vanita5.microblog.library.twitter.model.Paging
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.extension.model.api.mastodon.mapToPaginated
 import de.vanita5.twittnuker.extension.model.api.mastodon.toParcelable
 import de.vanita5.twittnuker.extension.model.api.microblog.mapToPaginated
@@ -46,7 +47,7 @@ class MutesUsersLoader(
         fromUser: Boolean
 ) : AbsRequestUsersLoader(context, accountKey, data, fromUser) {
 
-    private val filteredUsers by lazy { DataStoreUtils.getFilteredUserKeys(context) }
+    private val filteredUsers by lazy { DataStoreUtils.getFilteredUserKeys(context, FilterScope.ALL) }
 
     @Throws(MicroBlogException::class)
     override fun getUsers(details: AccountDetails, paging: Paging): PaginatedList<ParcelableUser> {

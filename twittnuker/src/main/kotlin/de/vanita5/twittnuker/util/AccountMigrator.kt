@@ -31,7 +31,6 @@ import org.mariotaku.ktextension.toHexColor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AuthTypeInt
-import de.vanita5.twittnuker.extension.model.component1
 import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
