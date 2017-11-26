@@ -35,6 +35,7 @@
         android:id="@id/retweet"
         android:icon="@drawable/ic_action_retweet"
         android:title="@string/action_retweet"
+        app:actionProviderClass="de.vanita5.twittnuker.menu.RetweetItemProvider"
         app:showAsAction="always" />
     <item
         android:id="@id/favorite"

@@ -14,30 +14,18 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package android.support.v7.view.menu;
+package android.support.v7.view.menu
 
-import android.content.Context;
-import android.support.v7.view.menu.ActionMenuItemView;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
 
-@SuppressWarnings("RestrictedApi")
-public class TwidereActionMenuItemView extends ActionMenuItemView {
+class TwidereActionMenuItemView(context: Context, attrs: AttributeSet? = null) : ActionMenuItemView(context, attrs) {
 
-    public TwidereActionMenuItemView(Context context) {
-        super(context);
-    }
-
-    public TwidereActionMenuItemView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public interface IgnoreTinting {
-
-    }
+    interface IgnoreTinting
 }
