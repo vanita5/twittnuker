@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.annotation.FilterScope
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.ParameterizedExpression
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -206,6 +207,13 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
         if (position == 0) {
             clearNotifications()
         }
+    }
+
+    override fun getFullStatus(position: Int): ParcelableStatus? {
+        val _id = adapter.getRowId(position)
+        val where = Expression.equals(Statuses._ID, _id).sql
+        return context.contentResolver.queryOne(contentUri, Statuses.COLUMNS, where, null, null,
+                ParcelableStatus::class.java)
     }
 
     protected fun getFiltersWhere(table: String): Expression? {
