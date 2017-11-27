@@ -118,6 +118,10 @@ public class FiltersData {
         @FilterScope
         int scope = 0;
 
+        public long getId() {
+            return _id;
+        }
+
         public UserKey getUserKey() {
             return userKey;
         }
@@ -152,6 +156,7 @@ public class FiltersData {
 
         @FilterScope
         public int getScope() {
+            if (scope == 0) return FilterScope.DEFAULT;
             return scope;
         }
 
@@ -213,7 +218,7 @@ public class FiltersData {
         @CursorField(value = Filters.SCOPE, type = "INTEGER DEFAULT 0")
         @JsonField(name = "scope")
         @FilterScope
-        int scope = 0;
+        int scope = FilterScope.ALL;
 
         public long getId() {
             return _id;
@@ -246,6 +251,7 @@ public class FiltersData {
 
         @FilterScope
         public int getScope() {
+            if (scope == 0) return FilterScope.DEFAULT;
             return scope;
         }
 

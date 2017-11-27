@@ -42,7 +42,7 @@
         android:hint="@string/host_mapping_host"
         android:inputType="text|textUri"
         android:maxLines="1"
-        app:backgroundTint="?colorAccent"/>
+        app:backgroundTint="?colorControlStateful"/>
 
     <de.vanita5.twittnuker.view.FixedEditText
         android:id="@+id/editAddress"
@@ -52,6 +52,6 @@
         android:hint="@string/host_mapping_address"
         android:inputType="text|textUri"
         android:maxLines="1"
-        app:backgroundTint="?colorAccent"/>
+        app:backgroundTint="?colorControlStateful"/>
 
 </LinearLayout>

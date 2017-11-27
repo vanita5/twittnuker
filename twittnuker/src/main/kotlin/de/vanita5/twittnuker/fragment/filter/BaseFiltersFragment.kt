@@ -86,11 +86,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         setHasOptionsMenu(true)
         listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
         listView.setOnItemClickListener { _, _, pos, _ ->
-            if (!supportsEdit) return@setOnItemClickListener
-            val adapter = this.adapter as FilterListAdapter
-            val item = adapter.getFilterItem(pos) ?: return@setOnItemClickListener
-            if (item.source >= 0) return@setOnItemClickListener
-            addOrEditItem(item.id, item.value, item.scope)
+            onItemClick(pos)
         }
         listView.setMultiChoiceModeListener(this)
         loaderManager.initLoader(0, null, this)
@@ -113,7 +109,6 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         actionMode = mode
         setControlVisible(true)
         mode.menuInflater.inflate(R.menu.action_multi_select_items, menu)
-        mode.menuInflater.inflate(R.menu.action_multi_select_filtered_users, menu)
         menu.setGroupAvailability(R.id.selection_group, true)
         return true
     }
@@ -218,6 +213,13 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
 
     override fun onCreateAdapter(context: Context): SimpleCursorAdapter {
         return FilterListAdapter(context)
+    }
+
+    protected open fun onItemClick(position: Int) {
+        val adapter = this.adapter as FilterListAdapter
+        val item = adapter.getFilterItem(position) ?: return
+        if (item.source >= 0) return
+        addOrEditItem(item.id, item.value, item.scope)
     }
 
     protected open fun performDeletion() {

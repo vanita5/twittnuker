@@ -47,8 +47,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 @Suppress("deprecation")
 fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
     db.queryReference(Accounts.TABLE_NAME, Accounts.COLUMNS, null, null,
-            null, null, null).use { (cur) ->
-        if (cur == null) return
+            null, null, null)?.use { (cur) ->
         val indices = ObjectCursor.indicesFrom(cur, ParcelableCredentials::class.java)
         cur.moveToFirst()
         while (!cur.isAfterLast) {

@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.util.database
 
 import android.content.ContentResolver
 import de.vanita5.twittnuker.annotation.FilterScope
-import de.vanita5.twittnuker.extension.rawQuery
+import de.vanita5.twittnuker.extension.rawQueryReference
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.*
@@ -33,28 +33,17 @@ object ContentFiltersUtils {
 
     fun isFiltered(cr: ContentResolver, status: ParcelableStatus, filterRts: Boolean,
                    @FilterScope scope: Int, allowedKeywords: Array<String>? = null): Boolean {
-        return isFiltered(cr, status.filter_users, status.filter_texts,
+        val query = isFilteredQuery(status.filter_users, status.filter_texts,
                 status.filter_sources, status.filter_links, status.filter_names,
                 status.filter_descriptions, filterRts, scope, allowedKeywords)
+        return cr.rawQueryReference(query.first, query.second)?.use { (cur) ->
+            cur.moveToFirst() && cur.getInt(0) != 0
+        } ?: false
     }
 
-    fun isFiltered(cr: ContentResolver, users: Array<UserKey>?, texts: String?, sources: Array<String>?,
-                   links: Array<String>?, names: Array<String>?, descriptions: String?, filterRts: Boolean,
-                   @FilterScope scope: Int, allowedKeywords: Array<String>? = null): Boolean {
-        val query = isFilteredQuery(users, texts, sources, links, names, descriptions, true,
-                scope, allowedKeywords)
-        val cur = cr.rawQuery(query.first, query.second) ?: return false
-        @Suppress("ConvertTryFinallyToUseCall")
-        try {
-            return cur.moveToFirst() && cur.getInt(0) != 0
-        } finally {
-            cur.close()
-        }
-    }
-
-    fun isFilteredQuery(users: Array<UserKey>?, texts: String?, sources: Array<String>?,
-                        links: Array<String>?, names: Array<String>?, descriptions: String?,
-                        filterRts: Boolean, @FilterScope scope: Int, allowedKeywords: Array<String>? = null): Pair<String, Array<String>> {
+    private fun isFilteredQuery(users: Array<UserKey>?, texts: String?, sources: Array<String>?,
+            links: Array<String>?, names: Array<String>?, descriptions: String?,
+            filterRts: Boolean, @FilterScope scope: Int, allowedKeywords: Array<String>? = null): Pair<String, Array<String>> {
         val selectionArgs = mutableListOf<String>()
         val queryBuilder = StringBuilder("SELECT ")
 

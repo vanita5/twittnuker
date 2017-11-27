@@ -43,7 +43,7 @@
         android:layout_margin="@dimen/element_spacing_normal"
         android:textAppearance="?android:textAppearanceMedium"
         android:typeface="monospace"
-        app:backgroundTint="?colorAccent">
+        app:backgroundTint="?colorControlStateful">
 
         <requestFocus/>
     </de.vanita5.twittnuker.view.FixedEditText>
