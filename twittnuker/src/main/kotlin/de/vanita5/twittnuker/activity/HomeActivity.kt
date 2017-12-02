@@ -44,6 +44,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
+import android.support.v4.app.NotificationCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager.OnPageChangeListener
@@ -105,6 +106,7 @@ import de.vanita5.twittnuker.model.notification.NotificationChannelSpec
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.receiver.NotificationReceiver
 import de.vanita5.twittnuker.service.RegistrationIntentService
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
@@ -896,6 +898,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 || promotionsEnabledKey in preferences) {
             return
         }
+
         val intent = Intent(this, PremiumDashboardActivity::class.java)
         val contentIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val builder = NotificationChannelSpec.appNotices.notificationBuilder(this)
@@ -903,8 +906,21 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         builder.setSmallIcon(R.drawable.ic_stat_gift)
         builder.setTicker(getString(R.string.message_ticker_promotions_reward))
         builder.setContentTitle(getString(R.string.title_promotions_reward))
-        builder.setContentText(getString(R.string.message_promotions_reward))
+        builder.setContentText(getString(R.string.message_ticker_promotions_reward))
         builder.setContentIntent(contentIntent)
+        builder.setStyle(NotificationCompat.BigTextStyle(builder)
+                .setBigContentTitle(getString(R.string.title_promotions_reward))
+                .bigText(getString(R.string.message_promotions_reward)))
+        builder.addAction(R.drawable.ic_action_confirm, getString(R.string.action_enable),
+                PendingIntent.getBroadcast(this, 0, Intent(this,
+                        NotificationReceiver::class.java).setAction(BROADCAST_PROMOTIONS_ACCEPTED)
+                        .putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID_PROMOTIONS_OFFER),
+                        PendingIntent.FLAG_ONE_SHOT))
+        builder.addAction(R.drawable.ic_action_cancel, getString(R.string.action_no_thanks),
+                PendingIntent.getBroadcast(this, 0, Intent(this,
+                        NotificationReceiver::class.java).setAction(BROADCAST_PROMOTIONS_DENIED)
+                        .putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID_PROMOTIONS_OFFER),
+                        PendingIntent.FLAG_ONE_SHOT))
         notificationManager.notify(NOTIFICATION_ID_PROMOTIONS_OFFER, builder.build())
     }
 
@@ -1049,7 +1065,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             builder.setPositiveButton(android.R.string.ok) { _, _ ->
                 kPreferences[defaultAutoRefreshKey] = true
             }
-            builder.setNegativeButton(R.string.no_thanks) { _, _ ->
+            builder.setNegativeButton(R.string.action_no_thanks) { _, _ ->
                 kPreferences[defaultAutoRefreshKey] = false
             }
             val dialog = builder.create()

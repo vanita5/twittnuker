@@ -654,7 +654,7 @@
   <string name="no_status_content_text">没有内容</string>
   <string name="no_tab">没有标签页</string>
   <string name="no_tab_hint">没有标签页</string>
-  <string name="no_thanks">不用了，谢谢</string>
+  <string name="action_no_thanks">不用了，谢谢</string>
   <string name="no_user_found">没有找到用户</string>
   <string name="no_version_suffix">没有版本后缀</string>
   <string name="none">无</string>

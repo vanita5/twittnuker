@@ -84,6 +84,9 @@ class DependencyHolder internal constructor(context: Context) {
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
         internal set
+    @Inject
+    lateinit var notificationManager: NotificationManagerWrapper
+        internal set
 
     init {
         GeneralComponent.get(context).inject(this)
