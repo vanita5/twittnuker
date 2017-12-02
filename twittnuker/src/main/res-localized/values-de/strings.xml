@@ -311,13 +311,9 @@
     <string name="external_group_host_format">Externe Gruppe bei <xliff:g id="host">%s</xliff:g></string>
     <string name="external_user_host_format">Externer Account bei <xliff:g id="host">%s</xliff:g></string>
     <string name="extra_configurations">Erweiterte Einstellungen</string>
-    <string name="extra_feature_description_advanced_filters">Importe Filterliste aus Blocks und Mutes</string>
-    <string name="extra_feature_description_filters_subscription">Abonniere Filterlisten</string>
     <string name="extra_feature_description_schedule_status">Tweet planen (später senden)</string>
     <string name="extra_feature_description_share_gif">Gifs teilen</string>
     <string name="extra_feature_description_sync_data">Synchronisieren von Daten mit Dropbox, Google Drive etc.</string>
-    <string name="extra_feature_title_advanced_filters">Filter Import</string>
-    <string name="extra_feature_title_filters_subscription">Filter Abonnement</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Unterstütze Twittnuker und schalte erweiterte Funktionen frei</string>
     <string name="extra_features_pack_description">oder kaufe dir das Feature Pack und erhalte alle aktuellen und zukünftigen Funktionen</string>
