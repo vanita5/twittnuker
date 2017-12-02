@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.activity.PremiumDashboardActivity
 import de.vanita5.twittnuker.constant.promotionsEnabledKey
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
-class LaunchPromotionOfferViewController : PremiumDashboardActivity.ExtraFeatureViewController() {
+class PromotionOfferViewController : PremiumDashboardActivity.ExtraFeatureViewController() {
 
     override fun onCreate() {
         super.onCreate()

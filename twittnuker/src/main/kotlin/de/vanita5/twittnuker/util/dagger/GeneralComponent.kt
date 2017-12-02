@@ -142,7 +142,7 @@ interface GeneralComponent {
 
     fun inject(loader: BaseUserListsLoader)
 
-    fun inject(controller: PremiumDashboardActivity.ExtraFeatureViewController)
+    fun inject(controller: PremiumDashboardActivity.BaseItemViewController)
 
     fun inject(fragment: ExoPlayerPageFragment)
 

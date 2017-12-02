@@ -21,20 +21,19 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/consume_purchase"
-        android:enabled="@bool/debug"
-        android:title="@string/action_consume_purchase"
-        android:visible="@bool/debug"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/enable_promotions"
-        android:enabled="@bool/debug"
-        android:title="@string/action_enable_promotions"
-        android:visible="@bool/debug"/>
-    <item
-        android:id="@+id/disable_promotions"
-        android:title="@string/action_disable_promotions"/>
-</menu>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/element_spacing_small"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/element_spacing_small"
+    app:cardBackgroundColor="?cardItemBackgroundColor">
+
+    <de.vanita5.twittnuker.view.ContainerView
+        android:id="@+id/containerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</android.support.v7.widget.CardView>

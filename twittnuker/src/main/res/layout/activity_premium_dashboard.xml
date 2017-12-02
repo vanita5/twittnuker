@@ -30,7 +30,5 @@
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
     android:paddingBottom="@dimen/element_spacing_normal"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/element_spacing_normal"
     tools:context="de.vanita5.twittnuker.activity.PremiumDashboardActivity"/>

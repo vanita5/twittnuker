@@ -134,9 +134,7 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val o = pagerAdapter.instantiateItem(viewPager, viewPager.currentItem)
-        if (o is Fragment) {
-            o.onActivityResult(requestCode, resultCode, data)
-        }
+        o.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun scrollToStart(): Boolean {
@@ -161,6 +159,7 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
     }
 
     override fun onApplySystemWindowInsets(insets: Rect) {
+
     }
 
     override fun getSystemWindowInsets(caller: Fragment, insets: Rect): Boolean {
