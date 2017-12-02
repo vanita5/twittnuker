@@ -29,11 +29,16 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import com.squareup.otto.Subscribe
+import nl.komponents.kovenant.combine.and
+import nl.komponents.kovenant.ui.alwaysUi
+import org.mariotaku.ktextension.weak
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.SYNC_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.dismissProgressDialog
 import de.vanita5.twittnuker.extension.onShow
+import de.vanita5.twittnuker.extension.showProgressDialog
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment
 import de.vanita5.twittnuker.util.TaskServiceRunner
@@ -93,10 +98,16 @@ class SyncSettingsFragment : BasePreferenceFragment() {
 
     private fun cleanupAndDisconnect() {
         val providerInfo = kPreferences[dataSyncProviderInfoKey] ?: return
-        syncController.cleanupSyncCache(providerInfo)
-        kPreferences[dataSyncProviderInfoKey] = null
-        DataSyncProvider.Factory.notifyUpdate(context)
-        activity?.finish()
+        val weakThis = weak()
+        val task = showProgressDialog("cleanup_sync_cache").
+                and(syncController.cleanupSyncCache(providerInfo))
+        task.alwaysUi {
+            val f = weakThis.get() ?: return@alwaysUi
+            f.dismissProgressDialog("cleanup_sync_cache")
+            f.kPreferences[dataSyncProviderInfoKey] = null
+            DataSyncProvider.Factory.notifyUpdate(f.context)
+            f.activity?.finish()
+        }
     }
 
     class DisconnectSyncConfirmDialogFragment : BaseDialogFragment() {

@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.util.sync
 
 import android.content.Context
+import nl.komponents.kovenant.Promise
+import java.lang.Exception
 
 abstract class SyncController(val context: Context) {
     abstract fun appStarted()
@@ -31,7 +33,7 @@ abstract class SyncController(val context: Context) {
         syncProvider.newSyncTaskRunner(context).performSync()
     }
 
-    fun cleanupSyncCache(syncProvider: DataSyncProvider) {
-        syncProvider.newSyncTaskRunner(context).cleanupSyncCache()
+    fun cleanupSyncCache(syncProvider: DataSyncProvider): Promise<Boolean, Exception> {
+        return syncProvider.newSyncTaskRunner(context).cleanupSyncCache()
     }
 }
