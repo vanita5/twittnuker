@@ -262,7 +262,7 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/settings"
+            android:label="@string/action_settings"
             android:parentActivityName=".activity.HomeActivity"
             android:theme="@style/Theme.Twidere"
             android:windowSoftInputMode="adjustResize">
