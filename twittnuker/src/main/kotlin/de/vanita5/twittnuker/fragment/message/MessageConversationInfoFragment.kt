@@ -60,7 +60,6 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.ktextension.spannable
-import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
@@ -80,11 +79,8 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.exception.UnsupportedCountIndexException
-import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.extension.getDirectMessageMaxParticipants
-import de.vanita5.twittnuker.extension.loadProfileImage
+import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.extension.model.*
-import de.vanita5.twittnuker.extension.onShow
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
@@ -491,8 +487,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
             val where = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
                     Expression.equalsArgs(Conversations.CONVERSATION_ID)).sql
             val whereArgs = arrayOf(accountKey.toString(), conversationId)
-            context.contentResolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where,
-                    whereArgs, null).useCursor { cur ->
+            context.contentResolver.queryReference(Conversations.CONTENT_URI, Conversations.COLUMNS, where,
+                    whereArgs, null)?.use { (cur) ->
                 if (cur.moveToFirst()) {
                     val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
                     return indices.newObject(cur)

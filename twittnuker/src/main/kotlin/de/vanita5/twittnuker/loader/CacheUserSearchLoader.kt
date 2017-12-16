@@ -22,13 +22,13 @@
 
 package de.vanita5.twittnuker.loader
 
-import android.annotation.SuppressLint
 import android.content.Context
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.twitter.model.Paging
-import de.vanita5.twittnuker.loader.users.UserSearchLoader
+import de.vanita5.twittnuker.extension.queryReference
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.loader.users.UserSearchLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -68,19 +68,18 @@ class CacheUserSearchLoader(
         val selection = Expression.and(Expression.equalsArgs(Columns.Column(CachedUsers.USER_TYPE)),
                 Expression.or(Expression.likeRaw(Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
                 Expression.likeRaw(Columns.Column(CachedUsers.NAME), "?||'%'", "^")))
-        val selectionArgs = arrayOf(queryEscaped, queryEscaped)
-        @SuppressLint("Recycle")
-        val c = context.contentResolver.query(CachedUsers.CONTENT_URI, CachedUsers.BASIC_COLUMNS,
-                selection.sql, selectionArgs, null)!!
-        val i = ObjectCursor.indicesFrom(c, ParcelableUser::class.java)
-        c.moveToFirst()
-        while (!c.isAfterLast) {
-            if (list.none { it.key.toString() == c.getString(i[CachedUsers.USER_KEY]) }) {
-            list.add(i.newObject(c))
+        val selectionArgs = arrayOf(details.type, queryEscaped, queryEscaped)
+        context.contentResolver.queryReference(CachedUsers.CONTENT_URI, CachedUsers.BASIC_COLUMNS,
+                selection.sql, selectionArgs, null)?.use { (c) ->
+            val i = ObjectCursor.indicesFrom(c, ParcelableUser::class.java)
+            c.moveToFirst()
+            while (!c.isAfterLast) {
+                if (list.none { it.key.toString() == c.getString(i[CachedUsers.USER_KEY]) }) {
+                list.add(i.newObject(c))
+            }
+                c.moveToNext()
+            }
         }
-            c.moveToNext()
-        }
-        c.close()
         val collator = Collator.getInstance()
         list.sortWith(Comparator { l, r ->
             val compare = collator.compare(r.name, l.name)

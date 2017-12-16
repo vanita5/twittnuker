@@ -1,6 +1,5 @@
 package de.vanita5.twittnuker.util
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -15,18 +14,14 @@ import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import de.vanita5.twittnuker.extension.queryReference
-import de.vanita5.twittnuker.extension.rawQuery
-import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.extension.rawQueryReference
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.DataStoreUtils.ACTIVITIES_URIS
 import java.io.IOException
 
 
-@SuppressLint("Recycle")
 fun Context.deleteDrafts(draftIds: LongArray): Int {
     val where = Expression.inArgs(Drafts._ID, draftIds.size).sql
     val whereArgs = draftIds.mapToArray(Long::toString)
@@ -147,10 +142,10 @@ fun <T> ContentResolver.updateItems(uri: Uri, columns: Array<String>?, where: St
     }
 }
 
-fun ContentResolver.getUnreadMessagesEntriesCursor(projection: Array<Columns.Column>,
+fun ContentResolver.getUnreadMessagesEntriesCursorReference(projection: Array<Columns.Column>,
         accountKeys: Array<UserKey>, extraWhere: Expression? = null,
         extraWhereArgs: Array<String>? = null, extraHaving: Expression? = null,
-        extraHavingArgs: Array<String>? = null): Cursor? {
+        extraHavingArgs: Array<String>? = null): CursorReference<Cursor>? {
     val qb = SQLQueryBuilder.select(Columns(*projection))
     qb.from(Table(Conversations.TABLE_NAME))
     qb.join(Join(false, Join.Operation.LEFT_OUTER, Table(Messages.TABLE_NAME),
@@ -191,5 +186,5 @@ fun ContentResolver.getUnreadMessagesEntriesCursor(projection: Array<Columns.Col
     if (extraHavingArgs != null) {
         selectionArgs += extraHavingArgs
     }
-    return rawQuery(qb.buildSQL(), selectionArgs)
+    return rawQueryReference(qb.buildSQL(), selectionArgs)
 }

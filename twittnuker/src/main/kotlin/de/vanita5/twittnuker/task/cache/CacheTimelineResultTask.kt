@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.task.cache
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.util.ArraySet
 import org.mariotaku.ktextension.ContentValues
@@ -60,7 +59,6 @@ class CacheTimelineResultTask(
             val selectionArgsList = users.mapTo(mutableListOf(account.key.toString())) {
                 it.key.toString()
             }
-            @SuppressLint("Recycle")
             val localRelationships = cr.queryAll(CachedRelationships.CONTENT_URI, CachedRelationships.COLUMNS,
                     Expression.and(Expression.equalsArgs(CachedRelationships.ACCOUNT_KEY),
                             Expression.inArgs(CachedRelationships.USER_KEY, users.size)).sql,

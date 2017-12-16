@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.content.*
 import android.database.Cursor
 import android.net.Uri
@@ -34,7 +33,6 @@ import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.mapToArray
-import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
@@ -57,7 +55,7 @@ import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.queryCount
 import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.extension.queryReference
-import de.vanita5.twittnuker.extension.rawQuery
+import de.vanita5.twittnuker.extension.rawQueryReference
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras
@@ -741,7 +739,6 @@ object DataStoreUtils {
         })
     }
 
-    @SuppressLint("Recycle")
     private fun <T, I> getFieldsArray(
             context: Context, uri: Uri,
             keys: Array<UserKey?>, keyField: String,
@@ -770,7 +767,7 @@ object DataStoreUtils {
         if (sortExpression != null) {
             builder.orderBy(sortExpression)
         }
-        resolver.rawQuery(builder.buildSQL(), bindingArgs)?.useCursor { cur ->
+        resolver.rawQueryReference(builder.buildSQL(), bindingArgs)?.use { (cur) ->
             cur.moveToFirst()
             val colIdx = creator.newIndex(cur)
             while (!cur.isAfterLast) {

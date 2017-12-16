@@ -23,14 +23,12 @@
 package de.vanita5.twittnuker.task.twitter.message
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.toIntOr
 import org.mariotaku.ktextension.toLongOr
-import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
@@ -44,6 +42,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.model.api.toParcelable
 import de.vanita5.twittnuker.extension.queryCount
+import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
@@ -499,15 +498,14 @@ class GetMessagesTask(
             }
         }
 
-    @SuppressLint("Recycle")
         internal fun MutableMap<String, ParcelableMessageConversation>.addLocalConversations(context: Context,
                 accountKey: UserKey, conversationIds: Set<String>) {
             val newIds = conversationIds.filterNot { it in this.keys }
             val where = Expression.and(Expression.inArgs(Conversations.CONVERSATION_ID, newIds.size),
                 Expression.equalsArgs(Conversations.ACCOUNT_KEY)).sql
             val whereArgs = newIds.toTypedArray() + accountKey.toString()
-            return context.contentResolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS,
-                    where, whereArgs, null).useCursor { cur ->
+            context.contentResolver.queryReference(Conversations.CONTENT_URI, Conversations.COLUMNS,
+                    where, whereArgs, null)?.use { (cur) ->
                 val indices = ObjectCursor.indicesFrom(cur, ParcelableMessageConversation::class.java)
                 cur.moveToFirst()
                 while (!cur.isAfterLast) {

@@ -22,15 +22,14 @@
 
 package de.vanita5.twittnuker.task.filter
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import org.mariotaku.abstask.library.AbstractTask
-import org.mariotaku.ktextension.useCursor
 import org.mariotaku.library.objectcursor.ObjectCursor
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.instantiateComponent
+import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.model.FiltersSubscription
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
@@ -42,11 +41,11 @@ import java.util.*
 
 class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?, Boolean, (Boolean) -> Unit>() {
 
-    @SuppressLint("Recycle")
     override fun doLongOperation(param: Unit?): Boolean {
         val resolver = context.contentResolver
         val sourceIds = ArrayList<Long>()
-        resolver.query(Filters.Subscriptions.CONTENT_URI, Filters.Subscriptions.COLUMNS, null, null, null)?.useCursor { cursor ->
+        resolver.queryReference(Filters.Subscriptions.CONTENT_URI, Filters.Subscriptions.COLUMNS,
+                null, null, null)?.use { (cursor) ->
             val indices = ObjectCursor.indicesFrom(cursor, FiltersSubscription::class.java)
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -97,8 +96,8 @@ class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?
         items?.map { item ->
             item.source = sourceId
             return@map creator.create(item)
-        }?.let { items ->
-            ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, items)
+        }?.let {
+            ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, it)
         }
     }
 
@@ -109,8 +108,8 @@ class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?
         items?.map { item ->
             item.source = sourceId
             return@map creator.create(item)
-        }?.let { items ->
-            ContentResolverUtils.bulkInsert(resolver, uri, items)
+        }?.let {
+            ContentResolverUtils.bulkInsert(resolver, uri, it)
         }
     }
 

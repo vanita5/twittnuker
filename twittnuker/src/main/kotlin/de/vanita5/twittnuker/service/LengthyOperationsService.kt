@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.service
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.Context
@@ -36,6 +35,7 @@ import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import de.vanita5.microblog.library.MicroBlogException
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.abstask.library.AbstractTask
@@ -43,9 +43,6 @@ import org.mariotaku.abstask.library.ManualTaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.getNullableTypedArrayExtra
 import org.mariotaku.ktextension.toLongOr
-import org.mariotaku.ktextension.useCursor
-import org.mariotaku.library.objectcursor.ObjectCursor
-import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.twitter.TwitterUpload
 import de.vanita5.microblog.library.twitter.model.MediaUploadResponse
 import de.vanita5.microblog.library.twitter.model.MediaUploadResponse.ProcessingInfo
@@ -58,6 +55,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.refreshAfterTweetKey
 import de.vanita5.twittnuker.extension.getErrorMessage
 import de.vanita5.twittnuker.extension.model.notificationBuilder
+import de.vanita5.twittnuker.extension.queryOne
 import de.vanita5.twittnuker.extension.withAppendedPath
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
@@ -122,12 +120,8 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         val draftId = uri.lastPathSegment.toLongOr(-1L)
         if (draftId == -1L) return
         val where = Expression.equals(Drafts._ID, draftId)
-        @SuppressLint("Recycle")
-        val draft: Draft = contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null)?.useCursor {
-            val i = ObjectCursor.indicesFrom(it, Draft::class.java)
-            if (!it.moveToFirst()) return@useCursor null
-            return@useCursor i.newObject(it)
-        } ?: return
+        val draft: Draft = contentResolver.queryOne(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql,
+                null, null, cls = Draft::class.java) ?: return
 
         contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
         if (TextUtils.isEmpty(draft.action_type)) {
@@ -165,7 +159,6 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         }
     }
 
-    @SuppressLint("Recycle")
     private fun handleDiscardDraftIntent(intent: Intent) {
         val data = intent.data ?: return
         task {

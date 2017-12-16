@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.task.twitter.message
 
 import android.accounts.AccountManager
 import android.content.Context
-import org.mariotaku.ktextension.useCursor
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.queryReference
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
@@ -53,8 +53,8 @@ class ClearMessagesTask(
         val messagesWhereArgs = arrayOf(accountKey.toString(), conversationId)
         val projection = arrayOf(Messages.MESSAGE_ID)
         val messageIds = mutableListOf<String>()
-        context.contentResolver.query(Messages.CONTENT_URI, projection, messagesWhere,
-                messagesWhereArgs, null)?.useCursor { cur ->
+        context.contentResolver.queryReference(Messages.CONTENT_URI, projection, messagesWhere,
+                messagesWhereArgs, null)?.use { (cur) ->
             cur.moveToFirst()
             while (!cur.isAfterLast) {
                 val messageId = cur.getString(0)
