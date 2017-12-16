@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.model.originalId
+import de.vanita5.twittnuker.extension.model.retweet_sort_id
 import de.vanita5.twittnuker.fragment.status.StatusFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler
@@ -210,13 +211,12 @@ class StatusDetailsAdapter(
             setTypeCount(ITEM_IDX_REPLY, 0)
             replyStart = -1
         } else {
-            var sortId = status.sort_id
-
-            if (status.is_retweet) {
-                sortId = data.find {
-                    it.id == status.retweet_id
-                }?.sort_id ?: status.retweet_timestamp
+            val sortId = if (status.is_retweet) {
+                status.retweet_sort_id
+            } else {
+                status.sort_id
             }
+
             var conversationCount = 0
             var replyCount = 0
             var replyStart = -1

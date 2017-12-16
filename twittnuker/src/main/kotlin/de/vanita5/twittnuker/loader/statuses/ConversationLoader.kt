@@ -62,10 +62,12 @@ class ConversationLoader(
         loadingMore: Boolean
 ) : AbsRequestStatusesLoader(context, status.account_key, adapterData, null, -1, fromUser, loadingMore) {
 
-    private val status = ParcelUtils.clone(status).apply { makeOriginal() }
+    override val comparator: Comparator<ParcelableStatus>? = null
 
     var canLoadAllReplies: Boolean = false
         private set
+
+    private val status = ParcelUtils.clone(status).apply { makeOriginal() }
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(account: AccountDetails, paging: Paging): PaginatedList<ParcelableStatus> {
