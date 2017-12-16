@@ -145,7 +145,7 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
         super.onPause()
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is IControlBarActivity) {
             context.registerControlBarOffsetListener(this)
@@ -170,6 +170,10 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         requestApplyInsets()
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun getDownloadExtra(): Any? {
