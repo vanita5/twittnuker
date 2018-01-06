@@ -1,4 +1,4 @@
-#-dontobfuscate
+-dontobfuscate
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
@@ -106,6 +106,14 @@
 
 -dontwarn InnerClasses
 
+# https://github.com/osmdroid/osmdroid/issues/633
+-dontwarn org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck
+
+# https://github.com/dropbox/dropbox-sdk-java#does-this-sdk-require-any-special-proguard-rules-for-shrink-optimizations
+-dontwarn com.dropbox.core.DbxStandardSessionStore**
+-dontwarn com.dropbox.core.http.OkHttpRequestor**
+-dontwarn com.dropbox.core.http.GoogleAppEngineRequestor**
+
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
 -keepattributes SourceFile
@@ -130,6 +138,7 @@
 -keep class twitter4j.** { public protected private *; }
 -keep class de.vanita5.twittnuker.** { public protected private *; }
 -keep class org.mariotaku.** { public protected private *; }
+-keep class de.vanita5.** { public protected private *; }
 
 #android-gif-drawable
 -keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
@@ -142,7 +151,9 @@
 # https://github.com/mariotaku/RestFu
 -keep class org.mariotaku.restfu.annotation.** { *; }
 
-# http://square.github.io/otto/
+-keep class * extends org.mariotaku.library.objectcursor.ObjectCursor$CursorIndices
+
+# https://github.com/square/otto/
 -keepclassmembers class ** {
     @com.squareup.otto.Subscribe public *;
     @com.squareup.otto.Produce public *;
@@ -153,6 +164,9 @@
     <init>(android.content.Context);
 }
 
+# https://github.com/bumptech/glide
+-keep class * extends com.bumptech.glide.module.GlideModule
+
 # Essential components
 -keep class * extends de.vanita5.twittnuker.util.Analyzer
 -keep class * extends de.vanita5.twittnuker.util.MapFragmentFactory
@@ -162,13 +176,13 @@
 -keep class * extends de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 # Extra feature component factories
--keep class * extends de.vanita5.twittnuker.util.gifshare.GifShareProvider.Factory
--keep class * extends de.vanita5.twittnuker.util.schedule.StatusScheduleProvider.Factory
--keep class * extends de.vanita5.twittnuker.util.sync.DataSyncProvider.Factory
--keep class * extends de.vanita5.twittnuker.util.sync.TimelineSyncManager.Factory
+-keep class * extends de.vanita5.twittnuker.util.gifshare.GifShareProvider$Factory
+-keep class * extends de.vanita5.twittnuker.util.schedule.StatusScheduleProvider$Factory
+-keep class * extends de.vanita5.twittnuker.util.sync.DataSyncProvider$Factory
+-keep class * extends de.vanita5.twittnuker.util.sync.TimelineSyncManager$Factory
 
 # View components
--keep class * extends de.vanita5.twittnuker.util.view.AppBarChildBehavior.ChildTransformation
+-keep class * extends de.vanita5.twittnuker.util.view.AppBarChildBehavior$ChildTransformation
 
 #jackson fasterxml
 -keepnames class org.codehaus.jackson.** { *; }
