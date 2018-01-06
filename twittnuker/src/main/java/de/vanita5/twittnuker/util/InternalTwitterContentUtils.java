@@ -27,9 +27,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import org.apache.commons.text.translate.CharSequenceTranslator;
-import org.apache.commons.text.translate.EntityArrays;
-import org.apache.commons.text.translate.LookupTranslator;
 import de.vanita5.microblog.library.twitter.model.DMResponse;
 import de.vanita5.microblog.library.twitter.model.DirectMessage;
 import de.vanita5.microblog.library.twitter.model.MediaEntity;
@@ -46,8 +43,6 @@ import java.util.zip.CRC32;
 import kotlin.Pair;
 
 public class InternalTwitterContentUtils {
-
-    private static final CharSequenceTranslator UNESCAPE_TWITTER_RAW_TEXT = new LookupTranslator(EntityArrays.BASIC_UNESCAPE);
 
     private InternalTwitterContentUtils() {
     }
@@ -95,12 +90,6 @@ public class InternalTwitterContentUtils {
             }
         }
         return builder.buildWithIndices();
-    }
-
-    @Nullable
-    public static String unescapeTwitterStatusText(final CharSequence text) {
-        if (text == null) return null;
-        return UNESCAPE_TWITTER_RAW_TEXT.translate(text);
     }
 
     @NonNull

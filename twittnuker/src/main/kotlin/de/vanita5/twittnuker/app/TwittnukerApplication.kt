@@ -38,7 +38,6 @@ import android.support.multidex.MultiDex
 import com.bumptech.glide.Glide
 import nl.komponents.kovenant.task
 import okhttp3.Dns
-import org.apache.commons.lang3.concurrent.ConcurrentUtils
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import org.mariotaku.kpreferences.KPreferences
@@ -60,6 +59,7 @@ import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.receiver.ConnectivityStateReceiver
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.concurrent.ConstantFuture
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.ApplicationModule
 import de.vanita5.twittnuker.util.dagger.GeneralComponent
@@ -166,7 +166,6 @@ class TwittnukerApplication : Application(), OnSharedPreferenceChangeListener {
             NotificationChannelsManager.updateAccountChannelsAndGroups(this)
         }, updateImmediately = true)
     }
-
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         applyLanguageSettings()
@@ -297,7 +296,7 @@ class TwittnukerApplication : Application(), OnSharedPreferenceChangeListener {
         LoganSquareMapperFinder.setDefaultExecutor(object : LoganSquareMapperFinder.FutureExecutor {
             override fun <T> submit(callable: Callable<T>): Future<T> {
                 if (Looper.getMainLooper().isCurrentThreadCompat) {
-                    return ConcurrentUtils.constantFuture(callable.call())
+                    return ConstantFuture(callable.call())
                 }
                 return executor.submit(callable)
             }

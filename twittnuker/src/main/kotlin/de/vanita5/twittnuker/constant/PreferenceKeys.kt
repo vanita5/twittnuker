@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.constant
 
 import android.content.SharedPreferences
 import android.os.Build
+import android.support.v4.os.LocaleHelperAccessor
 import android.support.v4.util.ArraySet
 import android.text.TextUtils
-import org.apache.commons.lang3.LocaleUtils
 import org.mariotaku.kpreferences.*
 import org.mariotaku.ktextension.bcp47Tag
 import org.mariotaku.ktextension.toLongOr
@@ -119,8 +119,8 @@ object cacheSizeLimitKey : KSimpleKey<Int>(KEY_CACHE_SIZE_LIMIT, 500) {
 
 object overrideLanguageKey : KSimpleKey<Locale?>(KEY_OVERRIDE_LANGUAGE, null) {
     override fun read(preferences: SharedPreferences): Locale? {
-        return preferences.getString(key, null)?.takeIf(String::isNotEmpty)?.replace('-', '_')
-                ?.let(LocaleUtils::toLocale)
+        return preferences.getString(key, null)?.takeIf(String::isNotEmpty)
+                ?.let(LocaleHelperAccessor::forLanguageTag)
     }
 
     override fun write(editor: SharedPreferences.Editor, value: Locale?): Boolean {

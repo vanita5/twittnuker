@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.extension.model.api
 
 import android.text.Spanned
 import android.text.style.URLSpan
-import org.apache.commons.text.translate.EntityArrays
 import org.apache.commons.text.translate.LookupTranslator
 import org.mariotaku.commons.text.CodePointArray
 import org.mariotaku.ktextension.isNotNullOrEmpty
@@ -44,6 +43,7 @@ import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.text.AcctMentionSpan
 import de.vanita5.twittnuker.text.HashtagSpan
+import de.vanita5.twittnuker.util.EntityArrays
 import de.vanita5.twittnuker.util.HtmlBuilder
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
@@ -315,7 +315,7 @@ fun updateFilterInfoForUserTimeline(status: Status, result: ParcelableStatus) {
 }
 
 private fun String.twitterUnescaped(): String {
-    return twitterRawTextTranslator.translate(this)
+    return TwitterRawTextTranslator.translate(this)
 }
 
 private inline val Status.userDescriptionUnescaped: String?
@@ -406,7 +406,7 @@ private fun Status.getInReplyToUserKey(accountKey: UserKey): UserKey? {
 
 private val noticeUriRegex = Regex("tag:([\\w\\d.]+),(\\d{4}-\\d{2}-\\d{2}):noticeId=(\\d+):objectType=(\\w+)")
 
-private object twitterRawTextTranslator : LookupTranslator(EntityArrays.BASIC_UNESCAPE)
+private object TwitterRawTextTranslator : LookupTranslator(EntityArrays.BASIC_UNESCAPE)
 
 class StatusTextWithIndices {
     var text: String? = null
