@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper
 import de.vanita5.twittnuker.util.UriUtils
 import de.vanita5.twittnuker.util.Utils
+import org.mariotaku.ktextension.toLongOr
 
 
 inline val ParcelableStatus.originalId: String
