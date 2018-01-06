@@ -30,6 +30,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import kotlin.ranges.RangesKt;
+
 public class TwidereColorUtils {
 
     private TwidereColorUtils() {
@@ -85,20 +87,20 @@ public class TwidereColorUtils {
         return (r * 299 + g * 587 + b * 114) / 1000;
     }
 
-	public static void colorToYIQ(int color, int[] yiq) {
-		final int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
-		yiq[0] = (r * 299 + g * 587 + b * 114) / 1000;
-		yiq[1] = (r * 596 - g * 275 - b * 321) / 1000;
-		yiq[2] = (r * 212 - g * 523 + b * 311) / 1000;
-	}
+    public static void colorToYIQ(int color, int[] yiq) {
+        final int r = Color.red(color), g = Color.green(color), b = Color.blue(color);
+        yiq[0] = (r * 299 + g * 587 + b * 114) / 1000;
+        yiq[1] = (r * 596 - g * 275 - b * 321) / 1000;
+        yiq[2] = (r * 212 - g * 523 + b * 311) / 1000;
+    }
 
 
-	public static int YIQToColor(int alpha, int[] yiq) {
-		final int r = TwidereMathUtils.clamp((yiq[0] * 1000 + yiq[1] * 956 + yiq[2] * 620) / 1000, 0, 255);
-		final int g = TwidereMathUtils.clamp((yiq[0] * 1000 - yiq[1] * 272 - yiq[2] * 647) / 1000, 0, 255);
-		final int b = TwidereMathUtils.clamp((yiq[0] * 1000 - yiq[1] * 1108 + yiq[2] * 1705) / 1000, 0, 255);
-		return Color.argb(alpha, r, g, b);
-	}
+    public static int YIQToColor(int alpha, int[] yiq) {
+        final int r = RangesKt.coerceIn((yiq[0] * 1000 + yiq[1] * 956 + yiq[2] * 620) / 1000, 0, 255);
+        final int g = RangesKt.coerceIn((yiq[0] * 1000 - yiq[1] * 272 - yiq[2] * 647) / 1000, 0, 255);
+        final int b = RangesKt.coerceIn((yiq[0] * 1000 - yiq[1] * 1108 + yiq[2] * 1705) / 1000, 0, 255);
+        return Color.argb(alpha, r, g, b);
+    }
 
     public static int getContrastYIQ(int color, int colorDark, int colorLight) {
         return getContrastYIQ(color, 128, colorDark, colorLight);

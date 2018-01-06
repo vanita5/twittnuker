@@ -98,9 +98,11 @@ android {
         exclude 'META-INF/INDEX.LIST'
         exclude 'META-INF/maven/**'
         exclude 'META-INF/*.kotlin_module'
-        exclude 'kotlin/*.kotlin_builtins'
+        exclude 'kotlin/**.kotlin_builtins'
         exclude 'org/osmdroid/**.png'
+        exclude 'javax/annotation/**.java'
         exclude 'generated-sources/**'
+        exclude 'jsr305_annotations/**'
         exclude 'sdk-version.​txt'
         exclude 'build-data.properties'
     }

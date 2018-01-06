@@ -39,7 +39,7 @@ import android.view.ViewGroup;
 import android.widget.OverScroller;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.util.TwidereMathUtils;
+import kotlin.ranges.RangesKt;
 
 /**
  * Custom ViewGroup for user profile page like Google+ but with tab swipe
@@ -287,7 +287,7 @@ public class HeaderDrawerLayout extends ViewGroup {
 
     private void offsetHeaderBy(int dy) {
         final int prevTop = mContainer.getTop();
-        final int clampedDy = TwidereMathUtils.clamp(prevTop + dy, getHeaderTopMinimum(), getHeaderTopMaximum()) - prevTop;
+        final int clampedDy = RangesKt.coerceIn(prevTop + dy, getHeaderTopMinimum(), getHeaderTopMaximum()) - prevTop;
         mContainer.offsetTopAndBottom(clampedDy);
     }
 
@@ -424,7 +424,7 @@ public class HeaderDrawerLayout extends ViewGroup {
                 mDrawer.scrollByCallback(-dy);
             }
             mScrollingHeaderByHelper = true;
-            return TwidereMathUtils.clamp(top, min, max);
+            return RangesKt.coerceIn(top, min, max);
         }
 
         private boolean isScrollingHeaderByHelper() {
