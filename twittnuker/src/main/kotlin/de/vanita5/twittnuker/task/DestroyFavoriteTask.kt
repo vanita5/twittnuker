@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.widget.Toast
-import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
@@ -88,7 +87,7 @@ class DestroyFavoriteTask(
     }
 
     override fun afterExecute(callback: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {
-        destroyingFavoriteIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
+        destroyingFavoriteIds.remove(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         val taskEvent = FavoriteTaskEvent(FavoriteTaskEvent.Action.DESTROY, accountKey, statusId)
         taskEvent.isFinished = true
         if (result != null) {
@@ -105,7 +104,7 @@ class DestroyFavoriteTask(
     }
 
     companion object {
-        private val destroyingFavoriteIds = ArrayIntList()
+        private val destroyingFavoriteIds = ArrayList<Int>()
 
         fun isDestroyingFavorite(accountKey: UserKey?, statusId: String?): Boolean {
             return destroyingFavoriteIds.contains(calculateHashCode(accountKey, statusId))

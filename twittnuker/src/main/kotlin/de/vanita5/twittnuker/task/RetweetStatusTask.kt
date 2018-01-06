@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.widget.Toast
-import org.apache.commons.collections.primitives.ArrayIntList
 import de.vanita5.microblog.library.MicroBlog
 import de.vanita5.microblog.library.MicroBlogException
 import de.vanita5.microblog.library.mastodon.Mastodon
@@ -102,7 +101,7 @@ class RetweetStatusTask(
     }
 
     override fun afterExecute(callback: Any?, result: ParcelableStatus?, exception: MicroBlogException?) {
-        creatingRetweetIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
+        creatingRetweetIds.remove(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         if (result != null) {
             bus.post(StatusRetweetedEvent(result))
             Toast.makeText(context, R.string.message_toast_status_retweeted, Toast.LENGTH_SHORT).show()
@@ -136,7 +135,7 @@ class RetweetStatusTask(
 
     companion object {
 
-        private val creatingRetweetIds = ArrayIntList()
+        private val creatingRetweetIds = ArrayList<Int>()
 
         fun isCreatingRetweet(accountKey: UserKey?, statusId: String?): Boolean {
             return creatingRetweetIds.contains(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
