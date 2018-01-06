@@ -58,7 +58,7 @@ subprojects {
                     IABv3                   : '1.0.38',
                     Mime4J                  : '0.7.2',
                     OkHttp                  : '3.8.1',
-                    OSMDroid                : '5.6.4',
+                    OSMDroid                : '5.6.5',
                     LeakCanary              : '1.5.1',
                     TwitterText             : '1.14.7',
                     MediaViewerLibrary      : '0.9.23',
