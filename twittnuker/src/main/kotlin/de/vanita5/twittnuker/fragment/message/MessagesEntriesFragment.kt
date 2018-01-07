@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.message
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -46,6 +47,9 @@ import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter.MessageConversationClickListener
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_TYPES
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.getTitle
@@ -94,6 +98,19 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     override fun onStop() {
         bus.unregister(this)
         super.onStop()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_SELECT_ACCOUNT -> {
+                if (resultCode != Activity.RESULT_OK) return
+                val accountKey = data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY)
+                startActivity(IntentUtils.newMessageConversation(accountKey))
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessageConversation>?> {
@@ -181,6 +198,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         val accountKey = accountKeys.singleOrNull() ?: run {
             val selectIntent = Intent(context, AccountSelectorActivity::class.java)
             selectIntent.putExtra(EXTRA_ACCOUNT_KEYS, accountKeys)
+            selectIntent.putExtra(EXTRA_ACCOUNT_TYPES, arrayOf(AccountType.TWITTER,
+                    AccountType.FANFOU))
             startActivityForResult(selectIntent, REQUEST_SELECT_ACCOUNT)
             return true
         }
