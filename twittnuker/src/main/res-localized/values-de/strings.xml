@@ -39,6 +39,7 @@
     <string name="action_change_language">Sprache ändern</string>
     <string name="action_clear">Löschen</string>
     <string name="action_clear_messages">Nachrichten löschen</string>
+    <string name="action_clear_messages_and_delete_conversation">Lösche und entferne Unterhaltung</string>
     <string name="action_comment">Kommentieren</string>
     <string name="action_compose">Neuer Tweet</string>
     <string name="action_compose_message_convert_to_status">In Tweet umwandeln</string>

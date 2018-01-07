@@ -29,6 +29,7 @@ import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.queryReference
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -49,47 +50,58 @@ class ClearMessagesTask(
     override fun onExecute(params: Unit?): Boolean {
         val account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?:
                 throw MicroBlogException("No account")
-        val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-        val messagesWhere = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
-                Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
-        val messagesWhereArgs = arrayOf(accountKey.toString(), conversationId)
-        val projection = arrayOf(Messages.MESSAGE_ID)
-        val messageIds = mutableListOf<String>()
-        context.contentResolver.queryReference(Messages.CONTENT_URI, projection, messagesWhere,
-                messagesWhereArgs, null)?.use { (cur) ->
-            cur.moveToFirst()
-            while (!cur.isAfterLast) {
-                val messageId = cur.getString(0)
-                try {
-                    if (DestroyMessageTask.performDestroyMessage(context, microBlog, account,
-                            messageId)) {
-                        messageIds.add(messageId)
-                    }
-                } catch (e: MicroBlogException) {
-                    // Ignore
-                }
-                cur.moveToNext()
-            }
-        }
-        ContentResolverUtils.bulkDelete(context.contentResolver, Messages.CONTENT_URI,
-                Messages.MESSAGE_ID, false, messageIds, messagesWhere, messagesWhereArgs)
-        val conversationWhere = Expression.and(Expression.equalsArgs(Messages.Conversations.ACCOUNT_KEY),
-                Expression.equalsArgs(Messages.Conversations.CONVERSATION_ID)).sql
-        val conversationWhereArgs = arrayOf(accountKey.toString(), conversationId)
-        context.contentResolver.updateItems(Messages.Conversations.CONTENT_URI,
-                Messages.Conversations.COLUMNS, conversationWhere, conversationWhereArgs,
-                cls = ParcelableMessageConversation::class.java) { item ->
-            item.message_extras = null
-            item.message_type = null
-            item.message_timestamp = -1L
-            item.text_unescaped = null
-            item.media = null
-            return@updateItems item
-        }
+        clearMessages(context, account, conversationId)
         return true
     }
 
     override fun afterExecute(callback: ((Boolean) -> Unit)?, result: Boolean?, exception: MicroBlogException?) {
         callback?.invoke(result ?: false)
+    }
+
+    companion object {
+
+        fun clearMessages(context: Context, account: AccountDetails, conversationId: String): Boolean {
+            val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
+            val messagesWhere = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
+                    Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
+            val messagesWhereArgs = arrayOf(account.key.toString(), conversationId)
+            val projection = arrayOf(Messages.MESSAGE_ID)
+            val messageIds = mutableListOf<String>()
+            var allSuccess = true
+            context.contentResolver.queryReference(Messages.CONTENT_URI, projection, messagesWhere,
+                    messagesWhereArgs, null)?.use { (cur) ->
+                cur.moveToFirst()
+                while (!cur.isAfterLast) {
+                    val messageId = cur.getString(0)
+                    try {
+                        if (DestroyMessageTask.performDestroyMessage(context, microBlog, account,
+                                messageId)) {
+                            messageIds.add(messageId)
+                        }
+                    } catch (e: MicroBlogException) {
+                        allSuccess = false
+                        // Ignore
+                    }
+                    cur.moveToNext()
+                }
+            }
+            ContentResolverUtils.bulkDelete(context.contentResolver, Messages.CONTENT_URI,
+                    Messages.MESSAGE_ID, false, messageIds, messagesWhere, messagesWhereArgs)
+            val conversationWhere = Expression.and(Expression.equalsArgs(Messages.Conversations.ACCOUNT_KEY),
+                    Expression.equalsArgs(Messages.Conversations.CONVERSATION_ID)).sql
+            val conversationWhereArgs = arrayOf(account.key.toString(), conversationId)
+            context.contentResolver.updateItems(Messages.Conversations.CONTENT_URI,
+                    Messages.Conversations.COLUMNS, conversationWhere, conversationWhereArgs,
+                    cls = ParcelableMessageConversation::class.java) { item ->
+                item.message_extras = null
+                item.message_type = null
+                item.message_timestamp = -1L
+                item.text_unescaped = null
+                item.media = null
+                return@updateItems item
+            }
+            return allSuccess
+        }
+
     }
 }
