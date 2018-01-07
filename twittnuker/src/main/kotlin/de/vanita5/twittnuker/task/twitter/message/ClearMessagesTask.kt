@@ -29,11 +29,13 @@ import de.vanita5.microblog.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.queryReference
+import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import de.vanita5.twittnuker.util.updateItems
 
 
 class ClearMessagesTask(
@@ -71,6 +73,19 @@ class ClearMessagesTask(
         }
         ContentResolverUtils.bulkDelete(context.contentResolver, Messages.CONTENT_URI,
                 Messages.MESSAGE_ID, false, messageIds, messagesWhere, messagesWhereArgs)
+        val conversationWhere = Expression.and(Expression.equalsArgs(Messages.Conversations.ACCOUNT_KEY),
+                Expression.equalsArgs(Messages.Conversations.CONVERSATION_ID)).sql
+        val conversationWhereArgs = arrayOf(accountKey.toString(), conversationId)
+        context.contentResolver.updateItems(Messages.Conversations.CONTENT_URI,
+                Messages.Conversations.COLUMNS, conversationWhere, conversationWhereArgs,
+                cls = ParcelableMessageConversation::class.java) { item ->
+            item.message_extras = null
+            item.message_type = null
+            item.message_timestamp = -1L
+            item.text_unescaped = null
+            item.media = null
+            return@updateItems item
+        }
         return true
     }
 
