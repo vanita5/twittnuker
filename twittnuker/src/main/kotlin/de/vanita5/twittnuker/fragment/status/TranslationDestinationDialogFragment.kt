@@ -33,6 +33,7 @@ import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.getTypedArray
 import org.mariotaku.ktextension.mapToArray
 import org.mariotaku.ktextension.set
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.translationDestinationKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.onShow
@@ -50,6 +51,7 @@ class TranslationDestinationDialogFragment : BaseDialogFragment() {
         val languages = arguments.getTypedArray<DisplayLanguage>(EXTRA_LANGUAGES).sortedArrayWith(LanguageComparator())
         val selectedLanguage = preferences[translationDestinationKey] ?: arguments.getString(EXTRA_SELECTED_LANGUAGE)
         val selectedIndex = languages.indexOfFirst { selectedLanguage == it.code }
+        builder.setTitle(R.string.title_translate_to)
         builder.setSingleChoiceItems(languages.mapToArray { it.name }, selectedIndex) { _, which ->
             currentIndex.set(which)
         }
