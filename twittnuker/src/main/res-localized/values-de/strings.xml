@@ -103,6 +103,7 @@
     <string name="action_retweet">Retweet</string>
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Speichern</string>
+    <string name="action_save_to">Speichern in…</string>
     <string name="action_search">Suchen</string>
     <string name="action_select_all">Alle</string>
     <string name="action_select_none">Nichts</string>
@@ -577,6 +578,7 @@
     <string name="message_toast_link_copied_to_clipboard">Link in die Zwischenablage kopiert</string>
     <string name="message_toast_livewp_daydream_enabled_message">Ich hab ein kleines Geschenk für dich in den Systemeinstellungen versteckt :)</string>
     <string name="message_toast_login_verification_failed">Login-Verifizierung fehlgeschlagen.</string>
+    <string name="message_toast_media_saved">Gespeichert</string>
     <!-- Toast message for network errors -->
     <string name="message_toast_network_error">Netzwerkfehler</string>
     <string name="message_toast_network_error_with_message">Netzwerkfehler: <xliff:g id="message">%s</xliff:g></string>
