@@ -215,7 +215,7 @@
                     android:minWidth="@dimen/element_size_small"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="?android:textColorSecondary"
-                    tools:text="140"/>
+                    tools:text="280"/>
     
                 <de.vanita5.twittnuker.view.IconActionView
                     android:id="@+id/updateStatusIcon"

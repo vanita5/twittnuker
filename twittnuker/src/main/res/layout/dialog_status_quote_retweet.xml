@@ -74,7 +74,7 @@
                 android:paddingLeft="@dimen/element_spacing_normal"
                 android:paddingRight="@dimen/element_spacing_normal"
                 android:textColor="?android:textColorSecondary"
-                tools:text="140" />
+                tools:text="280" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/quoteOriginal"
