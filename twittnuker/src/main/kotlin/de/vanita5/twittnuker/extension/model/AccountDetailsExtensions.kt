@@ -97,7 +97,7 @@ fun AccountDetails.getMediaSizeLimit(@MediaCategory mediaCategory: String? = nul
  */
 val AccountDetails.textLimit: Int get() {
     if (type == null) {
-        return Validator.MAX_TWEET_LENGTH
+        return Validator.MAX_TWEET_LENGTH*2
     }
     when (type) {
         AccountType.STATUSNET -> {
@@ -113,7 +113,7 @@ val AccountDetails.textLimit: Int get() {
             }
         }
     }
-    return Validator.MAX_TWEET_LENGTH
+    return Validator.MAX_TWEET_LENGTH*2
 }
 
 val Array<AccountDetails>.textLimit: Int
